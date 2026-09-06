@@ -1,0 +1,18 @@
+{
+  "id": "chat.drafts",
+  "version": 1,
+  "kind": "util",
+  "title": "Conversation draft store",
+  "summary": "Keyed draft map with injectable storage (sessionStorage/localStorage). Debounce-friendly for chat composers.",
+  "tags": [
+    "chat",
+    "draft",
+    "storage"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { DraftStore } = require('./parts/chat.drafts');"
+}

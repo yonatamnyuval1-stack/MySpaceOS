@@ -1,0 +1,116 @@
+{
+  "profile": {
+    "tagline": "Mail & Connect hub: sync, accounts & messages",
+    "icon": "✉️",
+    "color": "#60a5fa"
+  },
+  "commands": [
+    {
+      "verb": "messages",
+      "title": "List messages",
+      "description": "List mail messages",
+      "delivery": "ipc",
+      "channel": "messages.list",
+      "input": {
+        "accountId": "string?",
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get message",
+      "description": "Fetch a message",
+      "delivery": "ipc",
+      "channel": "messages.get",
+      "input": {
+        "id": "string",
+        "accountId": "string?"
+      }
+    },
+    {
+      "verb": "labels",
+      "title": "List labels",
+      "description": "Mailbox labels",
+      "delivery": "ipc",
+      "channel": "labels.list",
+      "input": {
+        "accountId": "string?"
+      }
+    },
+    {
+      "verb": "sync",
+      "title": "Sync now",
+      "description": "Trigger mail sync",
+      "delivery": "ipc",
+      "channel": "sync.now"
+    },
+    {
+      "verb": "accounts",
+      "title": "List accounts",
+      "description": "Connected accounts",
+      "delivery": "ipc",
+      "channel": "accounts.list"
+    },
+    {
+      "verb": "connect",
+      "title": "Connect account",
+      "description": "Start account connect",
+      "delivery": "ipc",
+      "channel": "accounts.connect",
+      "input": {
+        "provider": "string?"
+      }
+    },
+    {
+      "verb": "disconnect",
+      "title": "Disconnect account",
+      "description": "Disconnect an account",
+      "delivery": "ipc",
+      "channel": "accounts.disconnect",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "hub",
+      "title": "Hub catalog",
+      "description": "Connect hub services",
+      "delivery": "ipc",
+      "channel": "hub.catalog"
+    },
+    {
+      "verb": "hubList",
+      "title": "Hub list",
+      "description": "Connected hub apps",
+      "delivery": "ipc",
+      "channel": "hub.list"
+    },
+    {
+      "verb": "hubOpen",
+      "title": "Hub open",
+      "description": "Open a hub service",
+      "delivery": "ipc",
+      "channel": "hub.open",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "status",
+      "title": "Status",
+      "description": "Mail status",
+      "delivery": "ipc",
+      "channel": "status"
+    },
+    {
+      "verb": "open",
+      "title": "Open Mail",
+      "description": "Open Mail / Connect",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    }
+  ],
+  "events": []
+}

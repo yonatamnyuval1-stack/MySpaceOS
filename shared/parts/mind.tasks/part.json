@@ -1,0 +1,19 @@
+{
+  "id": "mind.tasks",
+  "version": 1,
+  "kind": "util",
+  "title": "Mind task catalog",
+  "summary": "Quick / Everyday / Deep task tiers with model options. route AI work by cost and difficulty.",
+  "tags": [
+    "mind",
+    "ai",
+    "models"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { publicTasks, normalizeTaskId } = require('./parts/mind.tasks');",
+  "publisher": "mind"
+}

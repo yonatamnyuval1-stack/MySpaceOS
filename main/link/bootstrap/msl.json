@@ -1,0 +1,209 @@
+{
+  "profile": {
+    "tagline": "My Space Link: capabilities, keys & inject",
+    "icon": "🔗",
+    "color": "#a78bfa"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List capabilities",
+      "description": "Browse MSL capabilities",
+      "delivery": "ipc",
+      "channel": "msl.list",
+      "broker": "msl",
+      "examples": [
+        "pulse(send msl list)"
+      ]
+    },
+    {
+      "verb": "invoke",
+      "title": "Invoke capability",
+      "description": "Call an MSL capability",
+      "delivery": "ipc",
+      "channel": "msl.invoke",
+      "broker": "msl",
+      "input": {
+        "uri": "string?",
+        "id": "string?",
+        "args": "object?"
+      },
+      "examples": [
+        "pulse(send msl invoke uri=msl:v1/…)"
+      ]
+    },
+    {
+      "verb": "keyParse",
+      "title": "Parse key",
+      "description": "Parse an msl:v1 key URI",
+      "delivery": "ipc",
+      "channel": "msl.key.parse",
+      "broker": "msl",
+      "input": {
+        "uri": "string"
+      }
+    },
+    {
+      "verb": "keyBuild",
+      "title": "Build key",
+      "description": "Build an msl:v1 key URI",
+      "delivery": "ipc",
+      "channel": "msl.key.build",
+      "broker": "msl",
+      "input": {
+        "capability": "string?",
+        "args": "object?"
+      }
+    },
+    {
+      "verb": "keyResolve",
+      "title": "Resolve key",
+      "description": "Resolve a key to a capability call",
+      "delivery": "ipc",
+      "channel": "msl.key.resolve",
+      "broker": "msl",
+      "input": {
+        "uri": "string"
+      }
+    },
+    {
+      "verb": "keysList",
+      "title": "List keys",
+      "description": "Saved / minted keys",
+      "delivery": "ipc",
+      "channel": "msl.keys.list",
+      "broker": "msl"
+    },
+    {
+      "verb": "keysSave",
+      "title": "Save key",
+      "description": "Persist a minted key",
+      "delivery": "ipc",
+      "channel": "msl.keys.save",
+      "broker": "msl",
+      "input": {
+        "uri": "string",
+        "label": "string?"
+      }
+    },
+    {
+      "verb": "keysDelete",
+      "title": "Delete key",
+      "description": "Remove a saved key",
+      "delivery": "ipc",
+      "channel": "msl.keys.delete",
+      "broker": "msl",
+      "input": {
+        "id": "string?",
+        "uri": "string?"
+      }
+    },
+    {
+      "verb": "injectList",
+      "title": "List injects",
+      "description": "Injected key wirings",
+      "delivery": "ipc",
+      "channel": "msl.inject.list",
+      "broker": "msl"
+    },
+    {
+      "verb": "injectSet",
+      "title": "Set inject",
+      "description": "Wire a key into a target",
+      "delivery": "ipc",
+      "channel": "msl.inject.set",
+      "broker": "msl",
+      "input": {
+        "target": "string",
+        "uri": "string"
+      }
+    },
+    {
+      "verb": "injectRemove",
+      "title": "Remove inject",
+      "description": "Remove an inject",
+      "delivery": "ipc",
+      "channel": "msl.inject.remove",
+      "broker": "msl",
+      "input": {
+        "target": "string?",
+        "id": "string?"
+      }
+    },
+    {
+      "verb": "injectClear",
+      "title": "Clear injects",
+      "description": "Clear all injects",
+      "delivery": "ipc",
+      "channel": "msl.inject.clear",
+      "broker": "msl"
+    },
+    {
+      "verb": "injectTargets",
+      "title": "Inject targets",
+      "description": "List inject targets",
+      "delivery": "ipc",
+      "channel": "msl.inject.targets",
+      "broker": "msl"
+    },
+    {
+      "verb": "open",
+      "title": "Open MSL",
+      "description": "Open the MSL panel",
+      "delivery": "ui",
+      "input": {
+        "tab": "string?"
+      },
+      "examples": [
+        "pulse(send msl open tab=keys)"
+      ]
+    },
+    {
+      "verb": "openCaps",
+      "title": "Open capabilities",
+      "description": "MSL capabilities tab",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openKeys",
+      "title": "Open keys",
+      "description": "MSL keys tab",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openMint",
+      "title": "Open mint",
+      "description": "MSL mint tab",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openInject",
+      "title": "Open inject",
+      "description": "MSL inject tab",
+      "delivery": "ui",
+      "input": {}
+    }
+  ],
+  "events": [
+    {
+      "topic": "msl.invoked",
+      "title": "Capability invoked",
+      "description": "Fired after an MSL invoke",
+      "payload": {
+        "uri": "string",
+        "ok": "boolean"
+      }
+    },
+    {
+      "topic": "msl.key.saved",
+      "title": "Key saved",
+      "description": "A key was minted/saved",
+      "payload": {
+        "uri": "string"
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "cards.srs",
+  "version": 1,
+  "kind": "util",
+  "title": "Spaced repetition scheduler",
+  "summary": "SM-2-style scheduleCard(again|hard|good|easy) plus dueQueue for study sessions. Build flashcard apps on top.",
+  "tags": [
+    "srs",
+    "flashcards",
+    "study"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {
+    "scheduleCard": "scheduleCard(card, grade) → next card fields",
+    "dueQueue": "dueQueue(cards, now?, limit?) → due cards sorted"
+  },
+  "usage": "const { scheduleCard, dueQueue } = require('./parts/cards.srs');"
+}

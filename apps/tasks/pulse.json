@@ -1,0 +1,90 @@
+{
+  "profile": {
+    "tagline": "Projects, lists & next actions",
+    "icon": "✅",
+    "color": "#7dd3fc"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List tasks",
+      "description": "List tasks by view (inbox / next / today / …)",
+      "delivery": "ipc",
+      "channel": "items.list",
+      "input": {
+        "view": "string?",
+        "projectId": "string?",
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "search",
+      "title": "Search tasks",
+      "description": "Search tasks by text",
+      "delivery": "ipc",
+      "channel": "items.search",
+      "input": { "q": "string" }
+    },
+    {
+      "verb": "create",
+      "title": "Add task",
+      "description": "Capture a task into Inbox (or @next / +Project)",
+      "delivery": "ipc",
+      "channel": "item.add",
+      "input": {
+        "text": "string?",
+        "title": "string?",
+        "bucket": "string?",
+        "projectId": "string?"
+      },
+      "emit": "tasks.created",
+      "examples": ["pulse(send tasks create text=Buy milk @next)"]
+    },
+    {
+      "verb": "complete",
+      "title": "Complete task",
+      "description": "Mark a task done",
+      "delivery": "ipc",
+      "channel": "item.complete",
+      "input": { "ref": "string" },
+      "emit": "tasks.completed"
+    },
+    {
+      "verb": "delete",
+      "title": "Delete task",
+      "delivery": "ipc",
+      "channel": "item.delete",
+      "input": { "ref": "string" },
+      "emit": "tasks.deleted"
+    },
+    {
+      "verb": "flag",
+      "title": "Flag task",
+      "delivery": "ipc",
+      "channel": "item.flag",
+      "input": { "ref": "string", "flagged": "boolean?" }
+    },
+    {
+      "verb": "move",
+      "title": "Move bucket",
+      "delivery": "ipc",
+      "channel": "item.move",
+      "input": { "ref": "string", "bucket": "string" }
+    },
+    {
+      "verb": "schedule",
+      "title": "Send to Today",
+      "description": "Copy task onto Today's timed agenda",
+      "delivery": "ipc",
+      "channel": "item.scheduleToday",
+      "input": { "ref": "string", "dueTime": "string?" }
+    },
+    {
+      "verb": "project-create",
+      "title": "New project",
+      "delivery": "ipc",
+      "channel": "project.add",
+      "input": { "name": "string" }
+    }
+  ]
+}

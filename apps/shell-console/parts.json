@@ -1,0 +1,17 @@
+{
+  "note": "Shell Console: Shell series",
+  "exports": [
+    {
+      "ref": "shell.args",
+      "note": "Shell arg / key:value parser"
+    },
+    {
+      "ref": "shell.program",
+      "note": "Program AST + command chains"
+    },
+    {
+      "ref": "shell.duration",
+      "note": "Timer / when-rule durations"
+    }
+  ]
+}

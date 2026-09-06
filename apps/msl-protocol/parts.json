@@ -1,0 +1,13 @@
+{
+  "note": "MSL platform service: Link series",
+  "exports": [
+    {
+      "ref": "msl.key",
+      "note": "MSL URI codec"
+    },
+    {
+      "ref": "msl.context.slim",
+      "note": "AI context slimmer for injected keys"
+    }
+  ]
+}

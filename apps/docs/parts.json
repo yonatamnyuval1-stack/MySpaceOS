@@ -1,0 +1,13 @@
+{
+  "note": "Real Parts published from docs.",
+  "exports": [
+    {
+      "ref": "ui.omnibox",
+      "note": "Handbook search pattern"
+    },
+    {
+      "ref": "search.fuzzy",
+      "note": "Text ranking helper"
+    }
+  ]
+}

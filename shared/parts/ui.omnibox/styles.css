@@ -1,0 +1,57 @@
+.parts-omnibox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  font: 14px/1.4 system-ui, sans-serif;
+}
+.parts-omnibox-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
+  outline: none;
+}
+.parts-omnibox-input:focus {
+  border-color: rgba(167, 139, 250, 0.55);
+}
+.parts-omnibox-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 240px;
+  overflow: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.parts-omnibox-list:empty {
+  display: none;
+}
+.parts-omnibox-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.parts-omnibox-item:hover,
+.parts-omnibox-item.is-active {
+  background: rgba(167, 139, 250, 0.14);
+}
+.parts-omnibox-item strong {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.parts-omnibox-item span {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}

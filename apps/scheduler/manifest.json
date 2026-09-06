@@ -1,0 +1,6 @@
+{
+  "id": "scheduler",
+  "name": "Scheduler",
+  "version": "1.0.0",
+  "description": "OS time runtime — schedules that fire shell, scripts, and Jobs"
+}

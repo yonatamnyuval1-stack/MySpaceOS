@@ -1,0 +1,13 @@
+{
+  "id": "pi-digits",
+  "name": "Pi Digits",
+  "version": "1.0.0",
+  "description": "Memorize digits of π with playful drills, chunks, and spaced review",
+  "icon": "π",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

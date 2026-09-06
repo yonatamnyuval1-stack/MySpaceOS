@@ -1,0 +1,124 @@
+{
+  "profile": {
+    "tagline": "Runtime for My Space Language programs",
+    "icon": "📜",
+    "color": "#22d3ee"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List scripts",
+      "description": "List saved scripts",
+      "delivery": "ipc",
+      "channel": "scripts.list",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get script",
+      "description": "Fetch a script",
+      "delivery": "ipc",
+      "channel": "scripts.get",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "create",
+      "title": "Create script",
+      "description": "Create a script",
+      "delivery": "ipc",
+      "channel": "scripts.create",
+      "input": {
+        "name": "string",
+        "body": "string?"
+      }
+    },
+    {
+      "verb": "update",
+      "title": "Update script",
+      "description": "Update a script",
+      "delivery": "ipc",
+      "channel": "scripts.update",
+      "input": {
+        "id": "string",
+        "name": "string?",
+        "body": "string?"
+      }
+    },
+    {
+      "verb": "set",
+      "title": "Set script body",
+      "description": "Create or replace a script body by name (language write)",
+      "delivery": "ipc",
+      "channel": "scripts.set",
+      "input": {
+        "name": "string",
+        "body": "string"
+      }
+    },
+    {
+      "verb": "append",
+      "title": "Append to script",
+      "description": "Append a line to a script by name (language write)",
+      "delivery": "ipc",
+      "channel": "scripts.append",
+      "input": {
+        "name": "string",
+        "text": "string"
+      }
+    },
+    {
+      "verb": "delete",
+      "title": "Delete script",
+      "description": "Delete a script",
+      "delivery": "ipc",
+      "channel": "scripts.delete",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "duplicate",
+      "title": "Duplicate script",
+      "description": "Clone a script",
+      "delivery": "ipc",
+      "channel": "scripts.duplicate",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "run",
+      "title": "Run script",
+      "description": "Execute a script",
+      "delivery": "ipc",
+      "channel": "scripts.run",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "parse",
+      "title": "Parse script",
+      "description": "Parse / validate a script",
+      "delivery": "ipc",
+      "channel": "scripts.parse",
+      "input": {
+        "body": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Scripts",
+      "description": "Open Scripts UI",
+      "delivery": "ui",
+      "input": {
+        "id": "string?"
+      }
+    }
+  ],
+  "events": []
+}

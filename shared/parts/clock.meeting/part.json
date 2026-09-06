@@ -1,0 +1,22 @@
+{
+  "id": "clock.meeting",
+  "version": 1,
+  "kind": "util",
+  "title": "Meeting slot finder",
+  "summary": "Score participants across timezones and findBestSlots for a date: the engine behind multi-zone meeting planners.",
+  "tags": [
+    "clock",
+    "meeting",
+    "timezone",
+    "scheduling"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {
+    "findBestSlots": "findBestSlots({ participants, dateStr, durationMin, referenceTz })",
+    "participantScore": "participantScore(slotDate, participant, durationMin)"
+  },
+  "usage": "const { findBestSlots, participantScore } = require('./parts/clock.meeting');"
+}

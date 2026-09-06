@@ -1,0 +1,407 @@
+{
+  "version": 2,
+  "brandMark": "atom",
+  "note": "Every platform service uses the My Space atom. Series: AI = rose (Mind + Flow), Web = green (Browser + Connect), Shell = cyan (Shell atlas + Scripts runtime for My Space Language), Link = violet (MSL + Pulse + Parts + Resolve). Platform = white atom majors without a color series (Files, Jobs, Scheduler, Permissions, Themes, …). My Space Language orchestrates the OS and, with host languages (Python, Node, …), lets users build My Space apps and artifacts — Shell maps it, Scripts runs programs, host(…) runs app logic when wired. Not MSL (My Space Link).",
+  "services": [
+    {
+      "id": "os",
+      "name": "My Space OS",
+      "tier": "core",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-os",
+      "tagline": "Personal desktop layer on your OS",
+      "summary": "Desktop, windows/tabs, pins, focus, wallpaper, and launching internal or external programs inside one shell.",
+      "surfaces": [
+        { "id": "desktop", "label": "Desktop", "hint": "Show desktop" },
+        { "id": "settings", "label": "Settings", "hint": "Space settings" }
+      ]
+    },
+    {
+      "id": "browser",
+      "name": "Browser",
+      "tier": "major",
+      "series": "web",
+      "seriesLabel": "Web",
+      "accent": "green",
+      "mark": "atom-green",
+      "action": "open-browser",
+      "tagline": "In-app browsing and unified search",
+      "summary": "Workspace web tabs, address bar, and My Space Browser: browse without leaving the shell.",
+      "surfaces": [
+        { "id": "home", "label": "Home", "hint": "My Space Browser" },
+        { "id": "web", "label": "Web", "hint": "New browser tab" }
+      ]
+    },
+    {
+      "id": "connect",
+      "name": "Connect",
+      "tier": "major",
+      "series": "web",
+      "seriesLabel": "Web",
+      "accent": "green",
+      "mark": "atom-green",
+      "action": "open-connect",
+      "tagline": "Find and open web services inside My Space",
+      "summary": "Service catalog (not a desktop app): mail, messaging, social, browsers, and more. Open from the search icon on the taskbar or tab bar. Looks the same as before.",
+      "surfaces": [
+        { "id": "catalog", "label": "Catalog", "hint": "All services" },
+        { "id": "browser", "label": "My Space Browser", "hint": "Search apps + web" }
+      ]
+    },
+    {
+      "id": "shell",
+      "name": "Shell",
+      "tier": "major",
+      "series": "shell",
+      "seriesLabel": "Shell",
+      "accent": "cyan",
+      "mark": "atom-cyan",
+      "action": "open-shell",
+      "tagline": "Atlas for My Space Language",
+      "summary": "Entry map for My Space Language: orchestration grammar, live operations, and the build roadmap (host interop with Python/Node, app scaffold, pack). Type on the desktop line; author programs in Scripts; use host languages for app-internal logic. Shell is not the language and not the runtime.",
+      "surfaces": [
+        { "id": "overview", "label": "Overview", "hint": "Language · Scripts · Shell" },
+        { "id": "language", "label": "Language", "hint": "My Space Language" },
+        { "id": "modules", "label": "Operations", "hint": "All module verbs" },
+        { "id": "core", "label": "Core", "hint": "wait, backup, check…" }
+      ]
+    },
+    {
+      "id": "scripts",
+      "name": "Scripts",
+      "tier": "major",
+      "series": "shell",
+      "seriesLabel": "Shell",
+      "accent": "cyan",
+      "mark": "atom-cyan",
+      "action": "open-scripts",
+      "tagline": "Runtime for My Space Language programs",
+      "summary": "Save and run multi-line programs written in My Space Language (not a separate language). Scripts is the runtime/library; Shell is the atlas; platform services are what many operations call. Open from Platform → Scripts. Language: scripts(…).",
+      "surfaces": [
+        { "id": "library", "label": "Library", "hint": "Saved programs" },
+        { "id": "new", "label": "New", "hint": "Create a program" }
+      ]
+    },
+    {
+      "id": "msl",
+      "name": "MSL",
+      "tier": "major",
+      "series": "link",
+      "seriesLabel": "Link",
+      "accent": "violet",
+      "mark": "atom-violet",
+      "action": "open-msl",
+      "tagline": "My Space Link: cross-app capabilities",
+      "summary": "Full app for the capability bus: browse providers, mint msl:v1 keys, manage the library, and inject into AI apps. Open from Platform → MSL. Shell: msl(open) · msl(list) · msl(invoke …).",
+      "surfaces": [
+        { "id": "caps", "label": "Capabilities", "hint": "Browse caps" },
+        { "id": "keys", "label": "Keys", "hint": "Minted keys" },
+        { "id": "mint", "label": "Mint", "hint": "Create a key" },
+        { "id": "inject", "label": "Inject", "hint": "Wire a key" }
+      ]
+    },
+    {
+      "id": "parts",
+      "name": "Parts",
+      "tier": "major",
+      "series": "link",
+      "seriesLabel": "Link",
+      "accent": "violet",
+      "mark": "atom-violet",
+      "action": "open-parts",
+      "tagline": "GitHub between apps: embeddable modules",
+      "summary": "Full app catalog of clean, reusable code parts (search helpers, UI fragments, data utilities). Browse like a forge, open a part like a repo, adopt by copying files — written without host-app coupling. Complements MSL (live calls) and Pulse (messages). Shell: parts(…).",
+      "surfaces": [
+        { "id": "explore", "label": "Explore", "hint": "Browse parts" },
+        { "id": "publish", "label": "Publish", "hint": "Upload from any app" },
+        { "id": "about", "label": "About", "hint": "How Parts works" }
+      ]
+    },
+    {
+      "id": "pulse",
+      "name": "Pulse",
+      "tier": "major",
+      "series": "link",
+      "seriesLabel": "Link",
+      "accent": "violet",
+      "mark": "atom-violet",
+      "action": "open-pulse",
+      "tagline": "Link Bus: internal apps & Composio external tools",
+      "summary": "Cross-app messaging bus for internal apps and Composio external tools. Per-app command profiles (pulse.json), send/subscribe, plus External tab for API key, Connect Links, and toolkit sync. Complements MSL. Shell: pulse(…) · pulse(external).",
+      "surfaces": [
+        { "id": "routes", "label": "Routes", "hint": "Command catalog" },
+        { "id": "external", "label": "External", "hint": "Composio tools" },
+        { "id": "events", "label": "Events", "hint": "Event topics" },
+        { "id": "subs", "label": "Subscriptions", "hint": "Who listens" },
+        { "id": "log", "label": "Log", "hint": "Activity log" },
+        { "id": "send", "label": "Send", "hint": "Test console" }
+      ]
+    },
+    {
+      "id": "resolve",
+      "name": "Resolve",
+      "tier": "major",
+      "series": "link",
+      "seriesLabel": "Link",
+      "accent": "violet",
+      "mark": "atom-violet",
+      "action": "open-resolve",
+      "tagline": "App troubleshooting: report, triage & fix",
+      "summary": "Platform service for app incidents: apps report via Pulse in real time, Resolve matches playbooks, and you apply fixes from the inbox. Shell: resolve(…) · pulse(send resolve report …).",
+      "surfaces": [
+        { "id": "inbox", "label": "Inbox", "hint": "Open incidents" },
+        { "id": "playbooks", "label": "Playbooks", "hint": "Known fixes" },
+        { "id": "about", "label": "About", "hint": "How Resolve works" }
+      ]
+    },
+    {
+      "id": "jobs",
+      "name": "Jobs",
+      "tier": "major",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-jobs",
+      "tagline": "OS compute runtime + capacity contract",
+      "summary": "Full compute runtime app (not a desktop tile): queue, active, done, enqueue, and capacity pools: Interactive, Connect, Shell, Background. Connect opens are prioritized. Uses the default My Space atom — not a branded logo series. Shell: jobs(open) · jobs(list) · jobs(capacity).",
+      "surfaces": [
+        { "id": "queue", "label": "Queue", "hint": "All jobs" },
+        { "id": "active", "label": "Active", "hint": "Queued & running" },
+        { "id": "done", "label": "Done", "hint": "Finished jobs" },
+        { "id": "enqueue", "label": "Enqueue", "hint": "Add work" },
+        { "id": "capacity", "label": "Capacity", "hint": "Pools & budget" }
+      ]
+    },
+    {
+      "id": "scheduler",
+      "name": "Scheduler",
+      "tier": "major",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-scheduler",
+      "tagline": "OS time runtime: when work fires",
+      "summary": "Platform time contracts (not a desktop tile): active schedules, history, and create. Triggers: every / daily / in / at. Actions enqueue to Jobs by default (or run shell direct). Same store as schedule(…) in Shell and Scripts. Complements Jobs (compute) and Shell when (events). Shell: schedule(open) · schedule(list) · schedule(add every 1h …).",
+      "surfaces": [
+        { "id": "active", "label": "Active", "hint": "Enabled schedules" },
+        { "id": "all", "label": "All", "hint": "Including paused" },
+        { "id": "history", "label": "History", "hint": "Recent firings" },
+        { "id": "new", "label": "New", "hint": "Create a schedule" },
+        { "id": "about", "label": "About", "hint": "How Scheduler works" }
+      ]
+    },
+    {
+      "id": "updates",
+      "name": "Updates",
+      "tier": "major",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-updates",
+      "tagline": "Current build & new releases",
+      "summary": "Platform release service (not a desktop tile): your installed version, new major updates on this page (not the bell), Restart & Update, skip, and full changelog from config/updates.json. Open from Platform → Updates. Shell: updates(open).",
+      "surfaces": [
+        { "id": "pending", "label": "Current", "hint": "Installed + new updates" },
+        { "id": "history", "label": "History", "hint": "Full changelog" },
+        { "id": "about", "label": "About", "hint": "How updates work" }
+      ]
+    },
+    {
+      "id": "network",
+      "name": "Network",
+      "tier": "major",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-network",
+      "tagline": "Host connectivity: status, adapters, ports",
+      "summary": "Platform network service (not a desktop tile): online status, primary IP, reachability probes (DNS / internet / Gemini / GitHub), adapters, and listening ports. Opens Windows Network settings when needed. Shell: network(open) · network(status) · network(check).",
+      "surfaces": [
+        { "id": "status", "label": "Status", "hint": "Online + reachability" },
+        { "id": "adapters", "label": "Adapters", "hint": "Interfaces & DNS" },
+        { "id": "ports", "label": "Ports", "hint": "Listening endpoints" },
+        { "id": "about", "label": "About", "hint": "How Network works" }
+      ]
+    },
+    {
+      "id": "info",
+      "name": "Info",
+      "tier": "major",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-info",
+      "tagline": "Encyclopedia of apps & platform services",
+      "summary": "Platform catalog (not a desktop tile): every app and every Platform service with about text, surfaces, live digests, and storage. Filter All · Services · Apps · External. Shell: info(open) · info(services).",
+      "surfaces": [
+        { "id": "catalog", "label": "Catalog", "hint": "Everything" },
+        { "id": "services", "label": "Services", "hint": "Platform only" },
+        { "id": "apps", "label": "Apps", "hint": "Desktop apps" },
+        { "id": "about", "label": "About", "hint": "How Info works" }
+      ]
+    },
+    {
+      "id": "backup",
+      "name": "Backup",
+      "tier": "major",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-backup",
+      "tagline": "Export & restore My Space data",
+      "summary": "Platform backup service (not a desktop tile): export userData to a zip, restore from zip (restarts), history of exports/restores, and open the data folder. Shell: backup(open) · backup(export) · backup(status).",
+      "surfaces": [
+        { "id": "status", "label": "Status", "hint": "Size & actions" },
+        { "id": "history", "label": "History", "hint": "Past exports" },
+        { "id": "about", "label": "About", "hint": "How backup works" }
+      ]
+    },
+    {
+      "id": "storage",
+      "name": "Storage",
+      "tier": "major",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-storage",
+      "tagline": "Disk & My Space data",
+      "summary": "Platform storage service (not a desktop tile): host drive usage, per-app userData breakdown, large-file scan, and safe cleanup inside userData. Shell: storage(open) · storage(status) · storage(apps) · storage(cleanup).",
+      "surfaces": [
+        { "id": "status", "label": "Status", "hint": "Drives & userData" },
+        { "id": "apps", "label": "Apps", "hint": "Data per app" },
+        { "id": "large-files", "label": "Large files", "hint": "Drive scan" },
+        { "id": "cleanup", "label": "Cleanup", "hint": "Safe reclaim" },
+        { "id": "about", "label": "About", "hint": "How Storage works" }
+      ]
+    },
+    {
+      "id": "themes",
+      "name": "Themes",
+      "tier": "major",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-themes",
+      "tagline": "Colors & modes per app",
+      "summary": "Platform appearance: light/dark + button styles for desktop apps and platform services. Live apply. Shell: themes(open) · themes(files dark) · themes(today light) · themes(list).",
+      "surfaces": [
+        { "id": "apps", "label": "Apps", "hint": "Pick an app" },
+        { "id": "about", "label": "About", "hint": "How Themes works" }
+      ]
+    },
+    {
+      "id": "mind",
+      "name": "Mind",
+      "tier": "major",
+      "series": "ai",
+      "seriesLabel": "AI",
+      "accent": "rose",
+      "mark": "atom-rose",
+      "action": "open-mind",
+      "tagline": "OS AI runtime — conversations, tasks, models",
+      "summary": "Platform AI control plane (not a desktop app). Everyday · Quick · Deep. Long-term Memory for facts and preferences. Gemini key and optional Ollama in Setup.",
+      "surfaces": [
+        { "id": "chat", "label": "Chat", "hint": "History threads" },
+        { "id": "ask-ai", "label": "Mind Chat", "hint": "Side assistant · tools · history" },
+        { "id": "setup", "label": "Setup", "hint": "Keys & models" },
+        { "id": "memory", "label": "Memory", "hint": "Facts Mind remembers" }
+      ]
+    },
+    {
+      "id": "flow",
+      "name": "Model Flow",
+      "tier": "major",
+      "series": "ai",
+      "seriesLabel": "AI",
+      "accent": "rose",
+      "mark": "atom-rose",
+      "action": "open-flow",
+      "tagline": "AI plans tool flows: you approve before they run",
+      "summary": "Personal automation studio (not a desktop app): plan → edit → approve → run. Shell: flow(…). Connects to Model Lab as an external provider — Lab is not a My Space service.",
+      "surfaces": [
+        { "id": "studio", "label": "Studio", "hint": "Plan & approve" },
+        { "id": "tools", "label": "Tools", "hint": "Live vs staged" },
+        { "id": "history", "label": "History", "hint": "Past runs" }
+      ]
+    },
+    {
+      "id": "search",
+      "name": "Search",
+      "tier": "supporting",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-search",
+      "tagline": "System-wide find",
+      "summary": "Command palette and desktop search across apps, content, Connect services, and web suggestions."
+    },
+    {
+      "id": "notifications",
+      "name": "Notifications",
+      "tier": "supporting",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-notifications",
+      "tagline": "Bell inbox and alerts",
+      "summary": "Update banners, mail alerts, sender blocklist, and quiet control from the taskbar bell."
+    },
+    {
+      "id": "system-info",
+      "name": "System Info",
+      "tier": "supporting",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-system-info",
+      "tagline": "Ports, processes & machine data",
+      "summary": "Live view of this PC inside My Space (not a desktop app). Open from Platform → System Info. Shell: sysinfo(…) / sys(…). Looks the same as before.",
+      "surfaces": [
+        { "id": "system", "label": "Overview", "hint": "System summary" },
+        { "id": "processes", "label": "Processes", "hint": "Running processes" },
+        { "id": "network", "label": "Network", "hint": "Network interfaces" },
+        { "id": "ports", "label": "Ports", "hint": "Listening ports" }
+      ]
+    },
+    {
+      "id": "bridge",
+      "name": "OS Bridge",
+      "tier": "supporting",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-bridge",
+      "tagline": "Phone, host folders & Windows shortcuts",
+      "summary": "Connect this PC to your phone from Platform (not a desktop tile). Pairing panel, send files, clipboard+, device management, inbox uploads, host places & Windows settings. Shell: bridge(panel) · bridge(full). Remote Hub stays separate.",
+      "surfaces": [
+        { "id": "devices", "label": "Devices", "hint": "Pair, send files, manage phones" },
+        { "id": "places", "label": "Places", "hint": "Host folders" },
+        { "id": "actions", "label": "Share", "hint": "Clipboard+ & paths" },
+        { "id": "host", "label": "Host", "hint": "Windows settings" }
+      ]
+    },
+    {
+      "id": "files",
+      "name": "Files",
+      "tier": "major",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-files",
+      "tagline": "Browse this PC inside My Space",
+      "summary": "OS file browser (not a desktop tile): places, drives, favorites, recent, preview, and file actions. Open from Platform → Files. Shell: files(…) · files(panel) · files(full). MSL: files.dir.list / files.path.open.",
+      "surfaces": [
+        { "id": "browse", "label": "Browse", "hint": "Places & drives" },
+        { "id": "recent", "label": "Recent", "hint": "Recently opened" },
+        { "id": "favorites", "label": "Favorites", "hint": "Pinned folders" },
+        { "id": "downloads", "label": "Downloads", "hint": "Downloads folder" }
+      ]
+    },
+    {
+      "id": "permissions",
+      "name": "Permissions",
+      "tier": "major",
+      "accent": "white",
+      "mark": "atom-white",
+      "action": "open-permissions",
+      "tagline": "What Mind, Jobs, Bridge & alerts may do",
+      "summary": "Full access-control app (not a desktop tile): AI tools, mutating-action confirmations, mail blocklist, Jobs capacity gates, Bridge trusted devices, and Composio allowlist. Open from Platform → Permissions. Shell: permissions(…) · perms(…).",
+      "surfaces": [
+        { "id": "overview", "label": "Overview", "hint": "Status at a glance" },
+        { "id": "tools", "label": "AI tools", "hint": "Mind tool switches" },
+        { "id": "notifications", "label": "Notifications", "hint": "Mail alerts & blocklist" },
+        { "id": "jobs", "label": "Jobs", "hint": "Compute gates" },
+        { "id": "bridge", "label": "Bridge", "hint": "Trusted devices" },
+        { "id": "external", "label": "External", "hint": "Composio allowlist" }
+      ]
+    }
+  ]
+}

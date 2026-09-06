@@ -1,0 +1,9 @@
+{
+  "note": "My Space Browser: Web series",
+  "exports": [
+    {
+      "ref": "browser.url",
+      "note": "URL normalize + unsafe host list"
+    }
+  ]
+}

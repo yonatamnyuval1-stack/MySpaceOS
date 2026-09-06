@@ -1,0 +1,17 @@
+{
+  "note": "Scripts platform service",
+  "exports": [
+    {
+      "ref": "shell.args",
+      "note": "Shared arg parser"
+    },
+    {
+      "ref": "shell.program",
+      "note": "Multi-line program AST"
+    },
+    {
+      "ref": "space.format",
+      "note": ".space export/import envelope"
+    }
+  ]
+}

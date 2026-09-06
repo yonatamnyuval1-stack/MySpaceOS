@@ -1,0 +1,72 @@
+{
+  "profile": {
+    "tagline": "Desktop, settings & shell surfaces",
+    "icon": "🖥️",
+    "color": "#e2e8f0"
+  },
+  "commands": [
+    {
+      "verb": "showDesktop",
+      "title": "Show desktop",
+      "description": "Minimize / show desktop",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openSettings",
+      "title": "Open settings",
+      "description": "Space settings",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openPlatform",
+      "title": "Open Platform",
+      "description": "Platform services catalog",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openSearch",
+      "title": "Open search",
+      "description": "Command palette",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openNotifications",
+      "title": "Open notifications",
+      "description": "Bell inbox",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "launch",
+      "title": "Launch app",
+      "description": "Launch an app by id",
+      "delivery": "ui",
+      "input": {
+        "appId": "string",
+        "page": "string?"
+      }
+    },
+    {
+      "verb": "toast",
+      "title": "Toast",
+      "description": "Show a desktop toast",
+      "delivery": "ui",
+      "input": {
+        "message": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open OS surfaces",
+      "description": "Open settings or desktop",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    }
+  ]
+}

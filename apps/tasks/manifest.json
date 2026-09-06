@@ -1,0 +1,13 @@
+{
+  "id": "tasks",
+  "name": "Tasks",
+  "version": "1.0.0",
+  "description": "Projects, lists & next actions — GTD between Notes and Today",
+  "icon": "✅",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

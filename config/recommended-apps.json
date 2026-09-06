@@ -1,0 +1,41 @@
+{
+  "description": "Safe shortcuts to add via Start. websites work inside My Space; .exe apps open in their own window.",
+  "apps": [
+    {
+      "name": "Stack Overflow",
+      "type": "url",
+      "url": "https://stackoverflow.com",
+      "description": "Q&A for developers"
+    },
+    {
+      "name": "MDN Web Docs",
+      "type": "url",
+      "url": "https://developer.mozilla.org",
+      "description": "Web documentation"
+    },
+    {
+      "name": "npm",
+      "type": "url",
+      "url": "https://www.npmjs.com",
+      "description": "Packages"
+    },
+    {
+      "name": "Vercel",
+      "type": "url",
+      "url": "https://vercel.com",
+      "description": "Deploy frontend"
+    },
+    {
+      "name": "Notion",
+      "type": "url",
+      "url": "https://www.notion.so",
+      "description": "Notes (may need login in browser if unstable)"
+    },
+    {
+      "name": "ChatGPT",
+      "type": "url",
+      "url": "https://chat.openai.com",
+      "description": "AI assistant"
+    }
+  ]
+}

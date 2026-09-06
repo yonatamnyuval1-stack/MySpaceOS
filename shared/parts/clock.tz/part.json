@@ -1,0 +1,18 @@
+{
+  "id": "clock.tz",
+  "version": 1,
+  "kind": "util",
+  "title": "Timezone clock helpers",
+  "summary": "List IANA zones, format times in a zone, get civil time parts, offsets, and analog clock angles: foundation for world clocks and schedulers.",
+  "tags": [
+    "clock",
+    "timezone",
+    "intl"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { getPartsInZone, formatInZone, localTimeZone } = require('./parts/clock.tz');"
+}

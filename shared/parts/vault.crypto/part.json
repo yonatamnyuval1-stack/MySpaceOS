@@ -1,0 +1,23 @@
+{
+  "id": "vault.crypto",
+  "version": 1,
+  "kind": "util",
+  "title": "Vault crypto (scrypt + AES-GCM)",
+  "summary": "Password hash/verify and AES-256-GCM JSON encrypt/decrypt. Node crypto core used by mail/profiles/coupons.",
+  "tags": [
+    "vault",
+    "crypto",
+    "security"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {
+    "createAuthRecord": "createAuthRecord(password)",
+    "encryptJson": "encryptJson(key, data)",
+    "decryptJson": "decryptJson(key, blob)"
+  },
+  "usage": "const { encryptJson, decryptJson, createAuthRecord } = require('./parts/vault.crypto');",
+  "publisher": "os"
+}

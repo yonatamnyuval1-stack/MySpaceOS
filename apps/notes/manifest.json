@@ -1,0 +1,13 @@
+{
+  "id": "notes",
+  "name": "Notes",
+  "version": "1.0.0",
+  "description": "Quick capture: notebooks, tags, pin & archive",
+  "icon": "📝",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

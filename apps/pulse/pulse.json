@@ -1,0 +1,47 @@
+{
+  "profile": {
+    "tagline": "Link Bus: browse app command profiles",
+    "icon": "",
+    "color": "#a78bfa"
+  },
+  "commands": [
+    {
+      "verb": "open",
+      "title": "Open Pulse",
+      "description": "Open the Pulse directory",
+      "delivery": "ui",
+      "input": {
+        "moduleId": "string?"
+      },
+      "examples": [
+        "pulse(send pulse open)",
+        "pulse(send pulse open moduleId=notes)"
+      ]
+    },
+    {
+      "verb": "openDirectory",
+      "title": "Open directory",
+      "description": "Open the apps directory view",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openActivity",
+      "title": "Open activity",
+      "description": "Open recent Pulse activity",
+      "delivery": "ui",
+      "input": {}
+    }
+  ],
+  "events": [
+    {
+      "topic": "pulse.command.sent",
+      "title": "Command sent",
+      "description": "A Pulse command was sent",
+      "payload": {
+        "route": "string",
+        "ok": "boolean"
+      }
+    }
+  ]
+}

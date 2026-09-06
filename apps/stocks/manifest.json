@@ -1,0 +1,13 @@
+{
+  "id": "stocks",
+  "name": "Stocks",
+  "version": "1.0.0",
+  "description": "Multi-asset watchlist — stocks, metals, forex, crypto & more",
+  "icon": "📈",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

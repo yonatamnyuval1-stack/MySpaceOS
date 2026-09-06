@@ -1,0 +1,332 @@
+(function () {
+  const COUNTRIES = [
+    ["af", "Afghanistan", "אפגניסטן"],
+    ["al", "Albania", "אלבניה"],
+    ["dz", "Algeria", "אלג'יריה"],
+    ["ad", "Andorra", "אנדורה"],
+    ["ao", "Angola", "אנגולה"],
+    ["ag", "Antigua and Barbuda", "אנטיגואה וברבודה"],
+    ["ar", "Argentina", "ארגנטינה"],
+    ["am", "Armenia", "ארמניה"],
+    ["au", "Australia", "אוסטרליה"],
+    ["at", "Austria", "אוסטריה"],
+    ["az", "Azerbaijan", "אזרבייג'ן"],
+    ["bs", "Bahamas", "בהאמה"],
+    ["bh", "Bahrain", "בחריין"],
+    ["bd", "Bangladesh", "בנגלדש"],
+    ["bb", "Barbados", "ברבדוס"],
+    ["by", "Belarus", "בלארוס"],
+    ["be", "Belgium", "בלגיה"],
+    ["bz", "Belize", "בליז"],
+    ["bj", "Benin", "בנין"],
+    ["bt", "Bhutan", "בהוטן"],
+    ["bo", "Bolivia", "בוליביה"],
+    ["ba", "Bosnia and Herzegovina", "בוסניה והרצגובינה"],
+    ["bw", "Botswana", "בוטסואנה"],
+    ["br", "Brazil", "ברזיל"],
+    ["bn", "Brunei", "ברוניי"],
+    ["bg", "Bulgaria", "בולגריה"],
+    ["bf", "Burkina Faso", "בורקינה פאסו"],
+    ["bi", "Burundi", "בורונדי"],
+    ["cv", "Cabo Verde", "כף ורדה"],
+    ["kh", "Cambodia", "קמבודיה"],
+    ["cm", "Cameroon", "קמרון"],
+    ["ca", "Canada", "קנדה"],
+    ["cf", "Central African Republic", "הרפובליקה המרכז-אפריקאית"],
+    ["td", "Chad", "צ'אד"],
+    ["cl", "Chile", "צ'ילה"],
+    ["cn", "China", "סין"],
+    ["co", "Colombia", "קולומביה"],
+    ["km", "Comoros", "קומורו"],
+    ["cg", "Congo", "קונגו"],
+    ["cd", "DR Congo", "הרפובליקה הדמוקרטית של קונגו"],
+    ["cr", "Costa Rica", "קוסטה ריקה"],
+    ["ci", "Côte d'Ivoire", "חוף השנהב"],
+    ["hr", "Croatia", "קרואטיה"],
+    ["cu", "Cuba", "קובה"],
+    ["cy", "Cyprus", "קפריסין"],
+    ["cz", "Czechia", "צ'כיה"],
+    ["dk", "Denmark", "דנמרק"],
+    ["dj", "Djibouti", "ג'יבוטי"],
+    ["dm", "Dominica", "דומיניקה"],
+    ["do", "Dominican Republic", "הרפובליקה הדומיניקנית"],
+    ["ec", "Ecuador", "אקוודור"],
+    ["eg", "Egypt", "מצרים"],
+    ["sv", "El Salvador", "אל סלוודור"],
+    ["gq", "Equatorial Guinea", "גינאה המשוונית"],
+    ["er", "Eritrea", "אריתריאה"],
+    ["ee", "Estonia", "אסטוניה"],
+    ["sz", "Eswatini", "אסוואטיני"],
+    ["et", "Ethiopia", "אתיופיה"],
+    ["fj", "Fiji", "פיג'י"],
+    ["fi", "Finland", "פינלנד"],
+    ["fr", "France", "צרפת"],
+    ["ga", "Gabon", "גבון"],
+    ["gm", "Gambia", "גמביה"],
+    ["ge", "Georgia", "גאורגיה"],
+    ["de", "Germany", "גרמניה"],
+    ["gh", "Ghana", "גאנה"],
+    ["gr", "Greece", "יוון"],
+    ["gd", "Grenada", "גרנדה"],
+    ["gt", "Guatemala", "גואטמלה"],
+    ["gn", "Guinea", "גינאה"],
+    ["gw", "Guinea-Bissau", "גינאה-ביסאו"],
+    ["gy", "Guyana", "גיאנה"],
+    ["ht", "Haiti", "האיטי"],
+    ["hn", "Honduras", "הונדורס"],
+    ["hu", "Hungary", "הונגריה"],
+    ["is", "Iceland", "איסלנד"],
+    ["in", "India", "הודו"],
+    ["id", "Indonesia", "אינדונזיה"],
+    ["ir", "Iran", "איראן"],
+    ["iq", "Iraq", "עיראק"],
+    ["ie", "Ireland", "אירלנד"],
+    ["il", "Israel", "ישראל"],
+    ["it", "Italy", "איטליה"],
+    ["jm", "Jamaica", "ג'מייקה"],
+    ["jp", "Japan", "יפן"],
+    ["jo", "Jordan", "ירדן"],
+    ["kz", "Kazakhstan", "קזחסטן"],
+    ["ke", "Kenya", "קניה"],
+    ["ki", "Kiribati", "קיריבטי"],
+    ["kp", "North Korea", "צפון קוריאה"],
+    ["kr", "South Korea", "דרום קוריאה"],
+    ["kw", "Kuwait", "כווית"],
+    ["kg", "Kyrgyzstan", "קירגיזסטן"],
+    ["la", "Laos", "לאוס"],
+    ["lv", "Latvia", "לטביה"],
+    ["lb", "Lebanon", "לבנון"],
+    ["ls", "Lesotho", "לסוטו"],
+    ["lr", "Liberia", "ליבריה"],
+    ["ly", "Libya", "לוב"],
+    ["li", "Liechtenstein", "ליכטנשטיין"],
+    ["lt", "Lithuania", "ליטא"],
+    ["lu", "Luxembourg", "לוקסמבורג"],
+    ["mg", "Madagascar", "מדגסקר"],
+    ["mw", "Malawi", "מלאווי"],
+    ["my", "Malaysia", "מלזיה"],
+    ["mv", "Maldives", "האיים המלדיביים"],
+    ["ml", "Mali", "מאלי"],
+    ["mt", "Malta", "מלטה"],
+    ["mh", "Marshall Islands", "איי מרשל"],
+    ["mr", "Mauritania", "מאוריטניה"],
+    ["mu", "Mauritius", "מאוריציוס"],
+    ["mx", "Mexico", "מקסיקו"],
+    ["fm", "Micronesia", "מיקרונזיה"],
+    ["md", "Moldova", "מולדובה"],
+    ["mc", "Monaco", "מונקו"],
+    ["mn", "Mongolia", "מונגוליה"],
+    ["me", "Montenegro", "מונטנגרו"],
+    ["ma", "Morocco", "מרוקו"],
+    ["mz", "Mozambique", "מוזמביק"],
+    ["mm", "Myanmar", "מיאנמר"],
+    ["na", "Namibia", "נמיביה"],
+    ["nr", "Nauru", "נאורו"],
+    ["np", "Nepal", "נפאל"],
+    ["nl", "Netherlands", "הולנד"],
+    ["nz", "New Zealand", "ניו זילנד"],
+    ["ni", "Nicaragua", "ניקרגואה"],
+    ["ne", "Niger", "ניז'ר"],
+    ["ng", "Nigeria", "ניגריה"],
+    ["mk", "North Macedonia", "מקדוניה הצפונית"],
+    ["no", "Norway", "נורווגיה"],
+    ["om", "Oman", "עומאן"],
+    ["pk", "Pakistan", "פקיסטן"],
+    ["pw", "Palau", "פלאו"],
+    ["pa", "Panama", "פנמה"],
+    ["pg", "Papua New Guinea", "פפואה גינאה החדשה"],
+    ["py", "Paraguay", "פרגוואי"],
+    ["pe", "Peru", "פרו"],
+    ["ph", "Philippines", "הפיליפינים"],
+    ["pl", "Poland", "פולין"],
+    ["pt", "Portugal", "פורטוגל"],
+    ["qa", "Qatar", "קטאר"],
+    ["ro", "Romania", "רומניה"],
+    ["ru", "Russia", "רוסיה"],
+    ["rw", "Rwanda", "רואנדה"],
+    ["kn", "Saint Kitts and Nevis", "סנט קיטס ונוויס"],
+    ["lc", "Saint Lucia", "סנט לוסיה"],
+    ["vc", "Saint Vincent and the Grenadines", "סנט וינסנט והגרנדינים"],
+    ["ws", "Samoa", "סמואה"],
+    ["sm", "San Marino", "סן מרינו"],
+    ["st", "Sao Tome and Principe", "סאו טומה ופרינסיפה"],
+    ["sa", "Saudi Arabia", "ערב הסעודית"],
+    ["sn", "Senegal", "סנגל"],
+    ["rs", "Serbia", "סרביה"],
+    ["sc", "Seychelles", "סיישל"],
+    ["sl", "Sierra Leone", "סיירה לאון"],
+    ["sg", "Singapore", "סינגפור"],
+    ["sk", "Slovakia", "סלובקיה"],
+    ["si", "Slovenia", "סלובניה"],
+    ["sb", "Solomon Islands", "איי שלמה"],
+    ["so", "Somalia", "סומליה"],
+    ["za", "South Africa", "דרום אפריקה"],
+    ["ss", "South Sudan", "דרום סודאן"],
+    ["es", "Spain", "ספרד"],
+    ["lk", "Sri Lanka", "סרי לנקה"],
+    ["sd", "Sudan", "סודאן"],
+    ["sr", "Suriname", "סורינאם"],
+    ["se", "Sweden", "שוודיה"],
+    ["ch", "Switzerland", "שווייץ"],
+    ["sy", "Syria", "סוריה"],
+    ["tw", "Taiwan", "טייוואן"],
+    ["tj", "Tajikistan", "טג'יקיסטן"],
+    ["tz", "Tanzania", "טנזניה"],
+    ["th", "Thailand", "תאילנד"],
+    ["tl", "Timor-Leste", "טימור-לסטה"],
+    ["tg", "Togo", "טוגו"],
+    ["to", "Tonga", "טונגה"],
+    ["tt", "Trinidad and Tobago", "טרינידד וטובגו"],
+    ["tn", "Tunisia", "תוניסיה"],
+    ["tr", "Turkey", "טורקיה"],
+    ["tm", "Turkmenistan", "טורקמניסטן"],
+    ["tv", "Tuvalu", "טובאלו"],
+    ["ug", "Uganda", "אוגנדה"],
+    ["ua", "Ukraine", "אוקראינה"],
+    ["ae", "United Arab Emirates", "איחוד האמירויות"],
+    ["gb", "United Kingdom", "הממלכה המאוחדת"],
+    ["us", "United States", "ארצות הברית"],
+    ["uy", "Uruguay", "אורוגוואי"],
+    ["uz", "Uzbekistan", "אוזבקיסטן"],
+    ["vu", "Vanuatu", "ונואטו"],
+    ["va", "Vatican City", "ותיקן"],
+    ["ve", "Venezuela", "ונצואלה"],
+    ["vn", "Vietnam", "וייטנאם"],
+    ["ye", "Yemen", "תימן"],
+    ["zm", "Zambia", "זמביה"],
+    ["zw", "Zimbabwe", "זימבבואה"],
+
+    ["ax", "Åland", "אולנד"],
+    ["as", "American Samoa", "סמואה האמריקנית"],
+    ["ai", "Anguilla", "אנגווילה"],
+    ["aw", "Aruba", "ארובה"],
+    ["bm", "Bermuda", "ברמודה"],
+    ["vg", "British Virgin Islands", "איי הבתולה הבריטיים"],
+    ["ky", "Cayman Islands", "איי קיימן"],
+    ["cx", "Christmas Island", "אי חג המולד"],
+    ["cc", "Cocos (Keeling) Islands", "איי קוקוס"],
+    ["ck", "Cook Islands", "איי קוק"],
+    ["cw", "Curaçao", "קוראסאו"],
+    ["fk", "Falkland Islands", "איי פוקלנד"],
+    ["fo", "Faroe Islands", "איי פארו"],
+    ["gf", "French Guiana", "גיאנה הצרפתית"],
+    ["pf", "French Polynesia", "פולינזיה הצרפתית"],
+    ["gi", "Gibraltar", "גיברלטר"],
+    ["gl", "Greenland", "גרינלנד"],
+    ["gp", "Guadeloupe", "גוואדלופ"],
+    ["gu", "Guam", "גואם"],
+    ["gg", "Guernsey", "גרנזי"],
+    ["hk", "Hong Kong", "הונג קונג"],
+    ["im", "Isle of Man", "האי מאן"],
+    ["je", "Jersey", "ג'רזי"],
+    ["xk", "Kosovo", "קוסובו"],
+    ["mo", "Macao", "מקאו"],
+    ["mq", "Martinique", "מרטיניק"],
+    ["yt", "Mayotte", "מיוט"],
+    ["ms", "Montserrat", "מונטסראט"],
+    ["nc", "New Caledonia", "קלדוניה החדשה"],
+    ["nu", "Niue", "ניואה"],
+    ["nf", "Norfolk Island", "נורפוק"],
+    ["mp", "Northern Mariana Islands", "איי מריאנה הצפוניים"],
+    ["ps", "Palestine", "פלסטין"],
+    ["pn", "Pitcairn Islands", "פיטקרן"],
+    ["pr", "Puerto Rico", "פוארטו ריקו"],
+    ["re", "Réunion", "ראוניון"],
+    ["bl", "Saint Barthélemy", "סן ברתלמי"],
+    ["sh", "Saint Helena", "סנט הלנה"],
+    ["pm", "Saint Pierre and Miquelon", "סן פייר ומיקלון"],
+    ["sx", "Sint Maarten", "סין מארטן"],
+    ["tk", "Tokelau", "טוקלאו"],
+    ["tc", "Turks and Caicos Islands", "איי טורקס וקאיקוס"],
+    ["vi", "U.S. Virgin Islands", "איי הבתולה של ארצות הברית"],
+    ["wf", "Wallis and Futuna", "ווליס ופוטונה"],
+    ["eh", "Western Sahara", "סהרה המערבית"],
+  ].map(([code, name, nameHe]) => ({
+    code,
+    name,
+    nameHe,
+    flag: `https://flagcdn.com/w320/${code}.png`,
+    flagSvg: `https://flagcdn.com/${code}.svg`,
+  }));
+
+  function countryLabel(country, lang) {
+    if (!country) return "";
+    if (lang === "he" && country.nameHe) return country.nameHe;
+    return country.name;
+  }
+
+  const EASY_ORDER = [
+    "us", "gb", "fr", "de", "it", "es", "jp", "cn", "br", "ca",
+    "au", "in", "ru", "mx", "kr", "il", "tr", "ar", "za", "eg",
+    "se", "no", "ch", "nl", "be", "pt", "gr", "pl", "ie", "nz",
+    "sa", "ae", "th", "vn", "id", "ph", "my", "sg", "ua", "fi",
+    "dk", "at", "cz", "hu", "ro", "cl", "co", "pe", "ng", "ke",
+    "ma", "dz", "tn", "iq", "ir", "pk", "bd", "lk", "np", "cu",
+    "jm", "cr", "pa", "uy", "py", "bo", "ec", "ve", "do", "gt",
+    "hn", "sv", "ni", "ht", "cy", "mt", "is", "lu", "sk", "si",
+    "hr", "rs", "ba", "al", "bg", "lt", "lv", "ee", "by", "md",
+    "ge", "am", "az", "kz", "uz", "af", "sy", "lb", "jo", "kw",
+    "qa", "bh", "om", "ye", "ly", "sd", "et", "gh", "ci", "sn",
+    "cm", "tz", "ug", "zw", "zm", "ao", "mz", "mg", "rw", "so",
+    "cd", "cg", "ga", "gn", "ml", "ne", "td", "bf", "bj", "tg",
+    "lr", "sl", "gm", "gw", "cv", "mr", "mu", "sc", "km", "dj",
+    "er", "ss", "na", "bw", "ls", "sz", "mw", "bi", "cf", "gq",
+  ];
+
+  const byCode = new Map(COUNTRIES.map((c) => [c.code, c]));
+  const easyRanked = [];
+  const seen = new Set();
+  for (const code of EASY_ORDER) {
+    const c = byCode.get(code);
+    if (c && !seen.has(code)) {
+      easyRanked.push(c);
+      seen.add(code);
+    }
+  }
+  for (const c of COUNTRIES) {
+    if (!seen.has(c.code)) {
+      easyRanked.push(c);
+      seen.add(c.code);
+    }
+  }
+
+  const LEVEL_POOLS = { 1: 30, 2: 50, 3: 80, 4: 110 };
+
+  function poolForLevel(level) {
+    // Level 5 = every flag in the dataset
+    if (Number(level) === 5) return COUNTRIES.slice();
+    const n = LEVEL_POOLS[level];
+    if (!n) return COUNTRIES.slice();
+    return easyRanked.slice(0, Math.min(n, easyRanked.length));
+  }
+
+  function poolForHard50Level(level) {
+    const nLevel = Number(level);
+    const all = COUNTRIES;
+    if (nLevel === 1 || nLevel === 0) return all.slice();
+    if (nLevel === 2) {
+      const exclude = new Set(easyRanked.slice(0, 30).map((c) => c.code));
+      return all.filter((c) => !exclude.has(c.code));
+    }
+    if (nLevel === 3) {
+      const exclude = new Set(easyRanked.slice(0, 50).map((c) => c.code));
+      return all.filter((c) => !exclude.has(c.code));
+    }
+    if (nLevel === 4) return easyRanked.slice(-100);
+    if (nLevel === 5) return easyRanked.slice(-70);
+    return all.slice();
+  }
+
+  window.FlagQuizData = {
+    countries: COUNTRIES,
+    easyRanked,
+    LEVEL_POOLS,
+    poolForLevel,
+    poolForHard50Level,
+    countryLabel,
+    flagUrl(code, size = 320) {
+      const c = String(code || "").toLowerCase();
+      return `https://flagcdn.com/w${size}/${c}.png`;
+    },
+  };
+})();

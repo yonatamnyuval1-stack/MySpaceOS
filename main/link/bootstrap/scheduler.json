@@ -1,0 +1,124 @@
+{
+  "profile": {
+    "tagline": "OS time contracts: schedule shell & scripts",
+    "icon": "⏱",
+    "color": "#94a3b8"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List schedules",
+      "description": "List time schedules",
+      "delivery": "ipc",
+      "channel": "schedule.list",
+      "broker": "scheduler",
+      "input": {
+        "status": "string?",
+        "limit": "number?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get schedule",
+      "description": "Fetch a schedule by id",
+      "delivery": "ipc",
+      "channel": "schedule.get",
+      "broker": "scheduler",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "add",
+      "title": "Add schedule",
+      "description": "Create a time schedule (spec or structured)",
+      "delivery": "ipc",
+      "channel": "schedule.add",
+      "broker": "scheduler",
+      "input": {
+        "spec": "string?",
+        "trigger": "object?",
+        "action": "object?",
+        "title": "string?"
+      }
+    },
+    {
+      "verb": "pause",
+      "title": "Pause schedule",
+      "description": "Pause an active schedule",
+      "delivery": "ipc",
+      "channel": "schedule.pause",
+      "broker": "scheduler",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "resume",
+      "title": "Resume schedule",
+      "description": "Resume a paused schedule",
+      "delivery": "ipc",
+      "channel": "schedule.resume",
+      "broker": "scheduler",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "remove",
+      "title": "Remove schedule",
+      "description": "Delete a schedule",
+      "delivery": "ipc",
+      "channel": "schedule.remove",
+      "broker": "scheduler",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "runNow",
+      "title": "Run now",
+      "description": "Fire a schedule immediately",
+      "delivery": "ipc",
+      "channel": "schedule.runNow",
+      "broker": "scheduler",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "history",
+      "title": "History",
+      "description": "Recent schedule firings",
+      "delivery": "ipc",
+      "channel": "schedule.history",
+      "broker": "scheduler",
+      "input": {
+        "limit": "number?"
+      }
+    },
+    {
+      "verb": "stats",
+      "title": "Stats",
+      "description": "Scheduler snapshot",
+      "delivery": "ipc",
+      "channel": "schedule.stats",
+      "broker": "scheduler"
+    },
+    {
+      "verb": "open",
+      "title": "Open Scheduler",
+      "description": "Open the Scheduler UI",
+      "delivery": "ui",
+      "input": {}
+    }
+  ],
+  "events": [
+    {
+      "topic": "scheduler.updated",
+      "title": "Scheduler updated",
+      "description": "Schedules or history changed",
+      "payload": {}
+    }
+  ]
+}

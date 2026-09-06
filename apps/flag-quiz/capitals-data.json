@@ -1,0 +1,962 @@
+{
+  "af": {
+    "capital": "Kabul",
+    "capitalHe": "קאבול"
+  },
+  "al": {
+    "capital": "Tirana",
+    "capitalHe": "טירנה"
+  },
+  "dz": {
+    "capital": "Algiers",
+    "capitalHe": "אלג'יר"
+  },
+  "ad": {
+    "capital": "Andorra la Vella",
+    "capitalHe": "אנדורה לה וולה"
+  },
+  "ao": {
+    "capital": "Luanda",
+    "capitalHe": "לואנדה"
+  },
+  "ag": {
+    "capital": "Saint John's",
+    "capitalHe": "סיינט ג'ון"
+  },
+  "ar": {
+    "capital": "Buenos Aires",
+    "capitalHe": "בואנוס איירס"
+  },
+  "am": {
+    "capital": "Yerevan",
+    "capitalHe": "ירוואן"
+  },
+  "au": {
+    "capital": "Canberra",
+    "capitalHe": "קנברה"
+  },
+  "at": {
+    "capital": "Vienna",
+    "capitalHe": "וינה"
+  },
+  "az": {
+    "capital": "Baku",
+    "capitalHe": "באקו"
+  },
+  "bs": {
+    "capital": "Nassau",
+    "capitalHe": "נסאו"
+  },
+  "bh": {
+    "capital": "Manama",
+    "capitalHe": "מנאמה"
+  },
+  "bd": {
+    "capital": "Dhaka",
+    "capitalHe": "דאקה"
+  },
+  "bb": {
+    "capital": "Bridgetown",
+    "capitalHe": "ברידג'טאון"
+  },
+  "by": {
+    "capital": "Minsk",
+    "capitalHe": "מינסק"
+  },
+  "be": {
+    "capital": "Brussels",
+    "capitalHe": "בריסל"
+  },
+  "bz": {
+    "capital": "Belmopan",
+    "capitalHe": "בלמופן"
+  },
+  "bj": {
+    "capital": "Porto-Novo",
+    "capitalHe": "פורטו נובו"
+  },
+  "bt": {
+    "capital": "Thimphu",
+    "capitalHe": "טימפו"
+  },
+  "bo": {
+    "capital": "Sucre",
+    "capitalHe": "סוקרה"
+  },
+  "ba": {
+    "capital": "Sarajevo",
+    "capitalHe": "סרייבו"
+  },
+  "bw": {
+    "capital": "Gaborone",
+    "capitalHe": "גאבורונה"
+  },
+  "br": {
+    "capital": "Brasília",
+    "capitalHe": "ברזיליה"
+  },
+  "bn": {
+    "capital": "Bandar Seri Begawan",
+    "capitalHe": "בנדר סרי בגוואן"
+  },
+  "bg": {
+    "capital": "Sofia",
+    "capitalHe": "סופיה"
+  },
+  "bf": {
+    "capital": "Ouagadougou",
+    "capitalHe": "ואגאדוגו"
+  },
+  "bi": {
+    "capital": "Gitega",
+    "capitalHe": "גיטגה"
+  },
+  "cv": {
+    "capital": "Praia",
+    "capitalHe": "פראיה"
+  },
+  "kh": {
+    "capital": "Phnom Penh",
+    "capitalHe": "פנום פן"
+  },
+  "cm": {
+    "capital": "Yaoundé",
+    "capitalHe": "יאונדה"
+  },
+  "ca": {
+    "capital": "Ottawa",
+    "capitalHe": "אוטווה"
+  },
+  "cf": {
+    "capital": "Bangui",
+    "capitalHe": "בנגי"
+  },
+  "td": {
+    "capital": "N'Djamena",
+    "capitalHe": "נג'מנה"
+  },
+  "cl": {
+    "capital": "Santiago",
+    "capitalHe": "סנטיאגו"
+  },
+  "cn": {
+    "capital": "Beijing",
+    "capitalHe": "בייג'ינג"
+  },
+  "co": {
+    "capital": "Bogotá",
+    "capitalHe": "בוגוטה"
+  },
+  "km": {
+    "capital": "Moroni",
+    "capitalHe": "מורוני"
+  },
+  "cg": {
+    "capital": "Brazzaville",
+    "capitalHe": "ברזוויל"
+  },
+  "cd": {
+    "capital": "Kinshasa",
+    "capitalHe": "קינשסה"
+  },
+  "cr": {
+    "capital": "San José",
+    "capitalHe": "סן חוסה"
+  },
+  "ci": {
+    "capital": "Yamoussoukro",
+    "capitalHe": "יאמוססוקרו"
+  },
+  "hr": {
+    "capital": "Zagreb",
+    "capitalHe": "זאגרב"
+  },
+  "cu": {
+    "capital": "Havana",
+    "capitalHe": "הוואנה"
+  },
+  "cy": {
+    "capital": "Nicosia",
+    "capitalHe": "ניקוסיה"
+  },
+  "cz": {
+    "capital": "Prague",
+    "capitalHe": "פראג"
+  },
+  "dk": {
+    "capital": "Copenhagen",
+    "capitalHe": "קופנהגן"
+  },
+  "dj": {
+    "capital": "Djibouti",
+    "capitalHe": "ג'יבוטי"
+  },
+  "dm": {
+    "capital": "Roseau",
+    "capitalHe": "רוזו"
+  },
+  "do": {
+    "capital": "Santo Domingo",
+    "capitalHe": "סנטו דומינגו"
+  },
+  "ec": {
+    "capital": "Quito",
+    "capitalHe": "קיטו"
+  },
+  "eg": {
+    "capital": "Cairo",
+    "capitalHe": "קהיר"
+  },
+  "sv": {
+    "capital": "San Salvador",
+    "capitalHe": "סן סלוודור"
+  },
+  "gq": {
+    "capital": "Malabo",
+    "capitalHe": "מלבו"
+  },
+  "er": {
+    "capital": "Asmara",
+    "capitalHe": "אסמרה"
+  },
+  "ee": {
+    "capital": "Tallinn",
+    "capitalHe": "טאלין"
+  },
+  "sz": {
+    "capital": "Lobamba",
+    "capitalHe": "מבאבנה"
+  },
+  "et": {
+    "capital": "Addis Ababa",
+    "capitalHe": "אדיס אבבה"
+  },
+  "fj": {
+    "capital": "Suva",
+    "capitalHe": "סובה"
+  },
+  "fi": {
+    "capital": "Helsinki",
+    "capitalHe": "הלסינקי"
+  },
+  "fr": {
+    "capital": "Paris",
+    "capitalHe": "פריז"
+  },
+  "ga": {
+    "capital": "Libreville",
+    "capitalHe": "ליברוויל"
+  },
+  "gm": {
+    "capital": "Banjul",
+    "capitalHe": "בנג'ול"
+  },
+  "ge": {
+    "capital": "Tbilisi",
+    "capitalHe": "טביליסי"
+  },
+  "de": {
+    "capital": "Berlin",
+    "capitalHe": "ברלין"
+  },
+  "gh": {
+    "capital": "Accra",
+    "capitalHe": "אקרה"
+  },
+  "gr": {
+    "capital": "Athens",
+    "capitalHe": "אתונה"
+  },
+  "gd": {
+    "capital": "St. George's",
+    "capitalHe": "סנט ג'ורג'"
+  },
+  "gt": {
+    "capital": "Guatemala City",
+    "capitalHe": "גואטמלה סיטי"
+  },
+  "gn": {
+    "capital": "Conakry",
+    "capitalHe": "קונאקרי"
+  },
+  "gw": {
+    "capital": "Bissau",
+    "capitalHe": "ביסאו"
+  },
+  "gy": {
+    "capital": "Georgetown",
+    "capitalHe": "ג'ורג'טאון"
+  },
+  "ht": {
+    "capital": "Port-au-Prince",
+    "capitalHe": "פורט או פרנס"
+  },
+  "hn": {
+    "capital": "Tegucigalpa",
+    "capitalHe": "טגוסיגלפה"
+  },
+  "hu": {
+    "capital": "Budapest",
+    "capitalHe": "בודפשט"
+  },
+  "is": {
+    "capital": "Reykjavik",
+    "capitalHe": "רייקיאוויק"
+  },
+  "in": {
+    "capital": "New Delhi",
+    "capitalHe": "ניו דלהי"
+  },
+  "id": {
+    "capital": "Jakarta",
+    "capitalHe": "ג'קרטה"
+  },
+  "ir": {
+    "capital": "Tehran",
+    "capitalHe": "טהרן"
+  },
+  "iq": {
+    "capital": "Baghdad",
+    "capitalHe": "בגדאד"
+  },
+  "ie": {
+    "capital": "Dublin",
+    "capitalHe": "דבלין"
+  },
+  "il": {
+    "capital": "Jerusalem",
+    "capitalHe": "ירושלים"
+  },
+  "it": {
+    "capital": "Rome",
+    "capitalHe": "רומא"
+  },
+  "jm": {
+    "capital": "Kingston",
+    "capitalHe": "קינגסטון"
+  },
+  "jp": {
+    "capital": "Tokyo",
+    "capitalHe": "טוקיו"
+  },
+  "jo": {
+    "capital": "Amman",
+    "capitalHe": "עמאן"
+  },
+  "kz": {
+    "capital": "Nur-Sultan",
+    "capitalHe": "אסטנה"
+  },
+  "ke": {
+    "capital": "Nairobi",
+    "capitalHe": "ניירובי"
+  },
+  "ki": {
+    "capital": "South Tarawa",
+    "capitalHe": "טאראווה"
+  },
+  "kp": {
+    "capital": "Pyongyang",
+    "capitalHe": "פיונגיאנג"
+  },
+  "kr": {
+    "capital": "Seoul",
+    "capitalHe": "סיאול"
+  },
+  "kw": {
+    "capital": "Kuwait City",
+    "capitalHe": "כווית סיטי"
+  },
+  "kg": {
+    "capital": "Bishkek",
+    "capitalHe": "בישקק"
+  },
+  "la": {
+    "capital": "Vientiane",
+    "capitalHe": "ויינטיאן"
+  },
+  "lv": {
+    "capital": "Riga",
+    "capitalHe": "ריגה"
+  },
+  "lb": {
+    "capital": "Beirut",
+    "capitalHe": "ביירות"
+  },
+  "ls": {
+    "capital": "Maseru",
+    "capitalHe": "מסרו"
+  },
+  "lr": {
+    "capital": "Monrovia",
+    "capitalHe": "מונרוביה"
+  },
+  "ly": {
+    "capital": "Tripoli",
+    "capitalHe": "טריפולי"
+  },
+  "li": {
+    "capital": "Vaduz",
+    "capitalHe": "ואדוץ"
+  },
+  "lt": {
+    "capital": "Vilnius",
+    "capitalHe": "וילנה"
+  },
+  "lu": {
+    "capital": "Luxembourg",
+    "capitalHe": "לוקסמבורג"
+  },
+  "mg": {
+    "capital": "Antananarivo",
+    "capitalHe": "אנטננריבו"
+  },
+  "mw": {
+    "capital": "Lilongwe",
+    "capitalHe": "לילונגווה"
+  },
+  "my": {
+    "capital": "Kuala Lumpur",
+    "capitalHe": "קואלה לומפור"
+  },
+  "mv": {
+    "capital": "Malé",
+    "capitalHe": "מאלה"
+  },
+  "ml": {
+    "capital": "Bamako",
+    "capitalHe": "במקו"
+  },
+  "mt": {
+    "capital": "Valletta",
+    "capitalHe": "ולטה"
+  },
+  "mh": {
+    "capital": "Majuro",
+    "capitalHe": "מג'ורו"
+  },
+  "mr": {
+    "capital": "Nouakchott",
+    "capitalHe": "נואקשוט"
+  },
+  "mu": {
+    "capital": "Port Louis",
+    "capitalHe": "פורט לואי"
+  },
+  "mx": {
+    "capital": "Mexico City",
+    "capitalHe": "מקסיקו סיטי"
+  },
+  "fm": {
+    "capital": "Palikir",
+    "capitalHe": "פאליקיר"
+  },
+  "md": {
+    "capital": "Chișinău",
+    "capitalHe": "קישינב"
+  },
+  "mc": {
+    "capital": "Monaco",
+    "capitalHe": "מונקו"
+  },
+  "mn": {
+    "capital": "Ulan Bator",
+    "capitalHe": "אולן בטור"
+  },
+  "me": {
+    "capital": "Podgorica",
+    "capitalHe": "פודגוריצה"
+  },
+  "ma": {
+    "capital": "Rabat",
+    "capitalHe": "רבאט"
+  },
+  "mz": {
+    "capital": "Maputo",
+    "capitalHe": "מפוטו"
+  },
+  "mm": {
+    "capital": "Naypyidaw",
+    "capitalHe": "נייפידאו"
+  },
+  "na": {
+    "capital": "Windhoek",
+    "capitalHe": "וינדהוק"
+  },
+  "nr": {
+    "capital": "Yaren",
+    "capitalHe": "ירן"
+  },
+  "np": {
+    "capital": "Kathmandu",
+    "capitalHe": "קטמנדו"
+  },
+  "nl": {
+    "capital": "Amsterdam",
+    "capitalHe": "אמסטרדם"
+  },
+  "nz": {
+    "capital": "Wellington",
+    "capitalHe": "ולינגטון"
+  },
+  "ni": {
+    "capital": "Managua",
+    "capitalHe": "מנגואה"
+  },
+  "ne": {
+    "capital": "Niamey",
+    "capitalHe": "ניאמיי"
+  },
+  "ng": {
+    "capital": "Abuja",
+    "capitalHe": "אבוג'ה"
+  },
+  "mk": {
+    "capital": "Skopje",
+    "capitalHe": "סקופיה"
+  },
+  "no": {
+    "capital": "Oslo",
+    "capitalHe": "אוסלו"
+  },
+  "om": {
+    "capital": "Muscat",
+    "capitalHe": "מסקט"
+  },
+  "pk": {
+    "capital": "Islamabad",
+    "capitalHe": "איסלמאבאד"
+  },
+  "pw": {
+    "capital": "Ngerulmud",
+    "capitalHe": "נגרולמוד"
+  },
+  "pa": {
+    "capital": "Panama City",
+    "capitalHe": "פנמה סיטי"
+  },
+  "pg": {
+    "capital": "Port Moresby",
+    "capitalHe": "פורט מורסבי"
+  },
+  "py": {
+    "capital": "Asunción",
+    "capitalHe": "אסונסיון"
+  },
+  "pe": {
+    "capital": "Lima",
+    "capitalHe": "לימה"
+  },
+  "ph": {
+    "capital": "Manila",
+    "capitalHe": "מנילה"
+  },
+  "pl": {
+    "capital": "Warsaw",
+    "capitalHe": "ורשה"
+  },
+  "pt": {
+    "capital": "Lisbon",
+    "capitalHe": "ליסבון"
+  },
+  "qa": {
+    "capital": "Doha",
+    "capitalHe": "דוחה"
+  },
+  "ro": {
+    "capital": "Bucharest",
+    "capitalHe": "בוקרשט"
+  },
+  "ru": {
+    "capital": "Moscow",
+    "capitalHe": "מוסקבה"
+  },
+  "rw": {
+    "capital": "Kigali",
+    "capitalHe": "קיגאלי"
+  },
+  "kn": {
+    "capital": "Basseterre",
+    "capitalHe": "בסטר"
+  },
+  "lc": {
+    "capital": "Castries",
+    "capitalHe": "קסטריז"
+  },
+  "vc": {
+    "capital": "Kingstown",
+    "capitalHe": "קינגסטאון"
+  },
+  "ws": {
+    "capital": "Apia",
+    "capitalHe": "אפיה"
+  },
+  "sm": {
+    "capital": "City of San Marino",
+    "capitalHe": "סן מרינו"
+  },
+  "st": {
+    "capital": "São Tomé",
+    "capitalHe": "סאו טומה"
+  },
+  "sa": {
+    "capital": "Riyadh",
+    "capitalHe": "ריאד"
+  },
+  "sn": {
+    "capital": "Dakar",
+    "capitalHe": "דקאר"
+  },
+  "rs": {
+    "capital": "Belgrade",
+    "capitalHe": "בלגרד"
+  },
+  "sc": {
+    "capital": "Victoria",
+    "capitalHe": "ויקטוריה"
+  },
+  "sl": {
+    "capital": "Freetown",
+    "capitalHe": "פריטאון"
+  },
+  "sg": {
+    "capital": "Singapore",
+    "capitalHe": "סינגפור"
+  },
+  "sk": {
+    "capital": "Bratislava",
+    "capitalHe": "ברטיסלאבה"
+  },
+  "si": {
+    "capital": "Ljubljana",
+    "capitalHe": "לובליאנה"
+  },
+  "sb": {
+    "capital": "Honiara",
+    "capitalHe": "הוניארה"
+  },
+  "so": {
+    "capital": "Mogadishu",
+    "capitalHe": "מוגדישו"
+  },
+  "za": {
+    "capital": "Pretoria",
+    "capitalHe": "פרטוריה"
+  },
+  "ss": {
+    "capital": "Juba",
+    "capitalHe": "ג'ובה"
+  },
+  "es": {
+    "capital": "Madrid",
+    "capitalHe": "מדריד"
+  },
+  "lk": {
+    "capital": "Colombo",
+    "capitalHe": "סרי ג'יאוורדנפורה קוטה"
+  },
+  "sd": {
+    "capital": "Khartoum",
+    "capitalHe": "חרטום"
+  },
+  "sr": {
+    "capital": "Paramaribo",
+    "capitalHe": "פרמריבו"
+  },
+  "se": {
+    "capital": "Stockholm",
+    "capitalHe": "סטוקהולם"
+  },
+  "ch": {
+    "capital": "Bern",
+    "capitalHe": "ברן"
+  },
+  "sy": {
+    "capital": "Damascus",
+    "capitalHe": "דמשק"
+  },
+  "tw": {
+    "capital": "Taipei",
+    "capitalHe": "טאיפיי"
+  },
+  "tj": {
+    "capital": "Dushanbe",
+    "capitalHe": "דושנבה"
+  },
+  "tz": {
+    "capital": "Dodoma",
+    "capitalHe": "דודומה"
+  },
+  "th": {
+    "capital": "Bangkok",
+    "capitalHe": "בנגקוק"
+  },
+  "tl": {
+    "capital": "Dili",
+    "capitalHe": "דילי"
+  },
+  "tg": {
+    "capital": "Lomé",
+    "capitalHe": "לומה"
+  },
+  "to": {
+    "capital": "Nuku'alofa",
+    "capitalHe": "נוקואלופה"
+  },
+  "tt": {
+    "capital": "Port of Spain",
+    "capitalHe": "פורט אוף ספיין"
+  },
+  "tn": {
+    "capital": "Tunis",
+    "capitalHe": "תוניס"
+  },
+  "tr": {
+    "capital": "Ankara",
+    "capitalHe": "אנקרה"
+  },
+  "tm": {
+    "capital": "Ashgabat",
+    "capitalHe": "אשגבאט"
+  },
+  "tv": {
+    "capital": "Funafuti",
+    "capitalHe": "פונאפוטי"
+  },
+  "ug": {
+    "capital": "Kampala",
+    "capitalHe": "קמפלה"
+  },
+  "ua": {
+    "capital": "Kyiv",
+    "capitalHe": "קייב"
+  },
+  "ae": {
+    "capital": "Abu Dhabi",
+    "capitalHe": "אבו דאבי"
+  },
+  "gb": {
+    "capital": "London",
+    "capitalHe": "לונדון"
+  },
+  "us": {
+    "capital": "Washington D.C.",
+    "capitalHe": "וושינגטון די.סי."
+  },
+  "uy": {
+    "capital": "Montevideo",
+    "capitalHe": "מונטווידאו"
+  },
+  "uz": {
+    "capital": "Tashkent",
+    "capitalHe": "טשקנט"
+  },
+  "vu": {
+    "capital": "Port Vila",
+    "capitalHe": "פורט וילה"
+  },
+  "va": {
+    "capital": "Vatican City",
+    "capitalHe": "ותיקן"
+  },
+  "ve": {
+    "capital": "Caracas",
+    "capitalHe": "קראקס"
+  },
+  "vn": {
+    "capital": "Hanoi",
+    "capitalHe": "האנוי"
+  },
+  "ye": {
+    "capital": "Sana'a",
+    "capitalHe": "צנעא"
+  },
+  "zm": {
+    "capital": "Lusaka",
+    "capitalHe": "לוסקה"
+  },
+  "zw": {
+    "capital": "Harare",
+    "capitalHe": "הרארה"
+  },
+  "ax": {
+    "capital": "Mariehamn",
+    "capitalHe": "מריהאמן"
+  },
+  "as": {
+    "capital": "Pago Pago",
+    "capitalHe": "פאגו פאגו"
+  },
+  "ai": {
+    "capital": "The Valley",
+    "capitalHe": "דה ואלי"
+  },
+  "aw": {
+    "capital": "Oranjestad",
+    "capitalHe": "אורנייסטאד"
+  },
+  "bm": {
+    "capital": "Hamilton",
+    "capitalHe": "המילטון"
+  },
+  "vg": {
+    "capital": "Road Town",
+    "capitalHe": "רואד טאון"
+  },
+  "ky": {
+    "capital": "George Town",
+    "capitalHe": "ג'ורג' טאון"
+  },
+  "cx": {
+    "capital": "Flying Fish Cove",
+    "capitalHe": "פליינג פיש קווב"
+  },
+  "cc": {
+    "capital": "West Island",
+    "capitalHe": "וסט איילנד"
+  },
+  "ck": {
+    "capital": "Avarua",
+    "capitalHe": "אוורואה"
+  },
+  "cw": {
+    "capital": "Willemstad",
+    "capitalHe": "וילמסטאד"
+  },
+  "fk": {
+    "capital": "Stanley",
+    "capitalHe": "סטנלי"
+  },
+  "fo": {
+    "capital": "Tórshavn",
+    "capitalHe": "טורסהאבן"
+  },
+  "gf": {
+    "capital": "Cayenne",
+    "capitalHe": "קאיין"
+  },
+  "pf": {
+    "capital": "Papeetē",
+    "capitalHe": "פפאטה"
+  },
+  "gi": {
+    "capital": "Gibraltar",
+    "capitalHe": "גיברלטר"
+  },
+  "gl": {
+    "capital": "Nuuk",
+    "capitalHe": "נוק"
+  },
+  "gp": {
+    "capital": "Basse-Terre",
+    "capitalHe": "באס-טר"
+  },
+  "gu": {
+    "capital": "Hagåtña",
+    "capitalHe": "הגטניה"
+  },
+  "gg": {
+    "capital": "St. Peter Port",
+    "capitalHe": "סנט פיטר פורט"
+  },
+  "hk": {
+    "capital": "City of Victoria",
+    "capitalHe": "הונג קונג"
+  },
+  "im": {
+    "capital": "Douglas",
+    "capitalHe": "דאגלס"
+  },
+  "je": {
+    "capital": "Saint Helier",
+    "capitalHe": "סנט הלייר"
+  },
+  "xk": {
+    "capital": "Pristina",
+    "capitalHe": "פרישטינה"
+  },
+  "mq": {
+    "capital": "Fort-de-France",
+    "capitalHe": "פור-דה-פראנס"
+  },
+  "yt": {
+    "capital": "Mamoudzou",
+    "capitalHe": "ממוצו"
+  },
+  "ms": {
+    "capital": "Plymouth",
+    "capitalHe": "פלימות'"
+  },
+  "nc": {
+    "capital": "Nouméa",
+    "capitalHe": "נומאה"
+  },
+  "nu": {
+    "capital": "Alofi",
+    "capitalHe": "אלופי"
+  },
+  "nf": {
+    "capital": "Kingston",
+    "capitalHe": "קינגסטון"
+  },
+  "mp": {
+    "capital": "Saipan",
+    "capitalHe": "סייפן"
+  },
+  "ps": {
+    "capital": "Ramallah",
+    "capitalHe": "רמאללה"
+  },
+  "pn": {
+    "capital": "Adamstown",
+    "capitalHe": "אדמסטאון"
+  },
+  "pr": {
+    "capital": "San Juan",
+    "capitalHe": "סן חואן"
+  },
+  "re": {
+    "capital": "Saint-Denis",
+    "capitalHe": "סן דני"
+  },
+  "bl": {
+    "capital": "Gustavia",
+    "capitalHe": "גוסטביה"
+  },
+  "sh": {
+    "capital": "Jamestown",
+    "capitalHe": "ג'יימסטאון"
+  },
+  "pm": {
+    "capital": "Saint-Pierre",
+    "capitalHe": "סן פייר"
+  },
+  "sx": {
+    "capital": "Philipsburg",
+    "capitalHe": "פיליפסבורג"
+  },
+  "tk": {
+    "capital": "Fakaofo",
+    "capitalHe": "אטאפו"
+  },
+  "tc": {
+    "capital": "Cockburn Town",
+    "capitalHe": "קוקברן טאון"
+  },
+  "vi": {
+    "capital": "Charlotte Amalie",
+    "capitalHe": "שארלוט אמאלי"
+  },
+  "wf": {
+    "capital": "Mata-Utu",
+    "capitalHe": "מאטה אוטו"
+  },
+  "eh": {
+    "capital": "Laayoune",
+    "capitalHe": "לעיון"
+  },
+  "mo": {
+    "capital": "Macao",
+    "capitalHe": "מקאו"
+  }
+}

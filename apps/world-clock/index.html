@@ -1,0 +1,380 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark" >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clock</title>
+    <link rel="stylesheet" href="styles.css?v=20260825b" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">◷</span>
+          <div>
+            <strong>Clock</strong>
+            <span class="brand-sub" id="brand-sub">v1.0 · Local</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav" aria-label="Sections">
+          <button type="button" class="nav-item active" data-page="local">
+            <span class="nav-icon">◎</span>
+            Local time
+          </button>
+          <button type="button" class="nav-item" data-page="world">
+            <span class="nav-icon">◉</span>
+            World clocks
+          </button>
+          <button type="button" class="nav-item" data-page="meetings">
+            <span class="nav-icon">◫</span>
+            Meeting planner
+          </button>
+          <button type="button" class="nav-item" data-page="timer">
+            <span class="nav-icon">◔</span>
+            Timer
+          </button>
+          <button type="button" class="nav-item" data-page="pomodoro">
+            <span class="nav-icon">◍</span>
+            Pomodoro
+          </button>
+          <button type="button" class="nav-item" data-page="stopwatch">
+            <span class="nav-icon">◑</span>
+            Stopwatch
+          </button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p>Built for My Space</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Local time</h1>
+            <p class="subtitle" id="page-subtitle">Your system clock and timezone</p>
+          </div>
+        </header>
+
+        <div class="content">
+          <section class="page active" id="page-local" data-page="local">
+            <div class="local-hero">
+              <div class="local-face" aria-hidden="true"></div>
+              <div class="local-info">
+                <p class="local-time" aria-live="polite">00:00:00</p>
+                <p class="local-date">—</p>
+                <p class="local-meta mono">—</p>
+              </div>
+            </div>
+            <div class="stats-row">
+              <article class="stat-card">
+                <span class="stat-label">Mode</span>
+                <span class="stat-value">24-hour</span>
+              </article>
+              <article class="stat-card">
+                <span class="stat-label">Countries</span>
+                <span class="stat-value" id="stat-countries">270+</span>
+              </article>
+              <article class="stat-card">
+                <span class="stat-label">IANA zones</span>
+                <span class="stat-value" id="stat-zones">—</span>
+              </article>
+            </div>
+          </section>
+
+          <section class="page" id="page-world" data-page="world" hidden>
+            <div class="world-search-wrap">
+              <label class="search-label" for="world-search">Search country or city</label>
+              <input
+                type="search"
+                id="world-search"
+                class="search-input"
+                placeholder="e.g. Japan, Israel, New York, London…"
+                autocomplete="off"
+              />
+              <div id="world-search-results" class="search-results" role="listbox"></div>
+            </div>
+            <p id="world-empty" class="world-empty" hidden>
+              No pinned clocks yet. Search above and pick a result to add one.
+            </p>
+            <div id="world-grid" class="world-grid"></div>
+          </section>
+
+          <section class="page page--meetings" id="page-meetings" data-page="meetings" hidden>
+            <div class="meetings-intro">
+              <p>
+                Pick cities and a date — we suggest the best time in <strong>your timezone</strong>.
+                Then add the meeting to <strong>Google Calendar</strong>, <strong>Outlook</strong>, or a
+                <strong>.ics file</strong> (works with most calendar apps).
+              </p>
+            </div>
+
+            <div class="meetings-step">
+              <h2 class="meetings-step-title">
+                <span class="meetings-step-num" aria-hidden="true">1</span>
+                Who is on the call?
+              </h2>
+              <div class="meetings-add-row">
+                <div class="world-search-wrap meetings-search-wrap">
+                  <label class="search-label" for="meetings-search">Add a city or country</label>
+                  <input
+                    type="search"
+                    id="meetings-search"
+                    class="search-input"
+                    placeholder="e.g. Tokyo, Berlin, Tel Aviv…"
+                    autocomplete="off"
+                  />
+                  <div id="meetings-search-results" class="search-results" role="listbox"></div>
+                </div>
+                <button type="button" class="btn btn-ghost" id="meetings-from-favorites">
+                  Use my pinned clocks
+                </button>
+              </div>
+              <p id="meetings-participants-empty" class="meetings-hint">
+                Add at least 2 places (up to 8). Example: your city and the people you are calling.
+              </p>
+              <div id="meetings-chips" class="meetings-chips" role="list"></div>
+              <details class="meetings-advanced" id="meetings-advanced">
+                <summary>Office hours (optional)</summary>
+                <p class="meetings-hint meetings-hint--tight">
+                  We assume a normal workday. Change the default or set hours per city.
+                </p>
+                <div class="meetings-office-default">
+                  <label>
+                    <span>Default office hours</span>
+                    <span class="meetings-hours-row">
+                      <select id="meetings-work-start" class="meetings-input meetings-input--short"></select>
+                      <span>to</span>
+                      <select id="meetings-work-end" class="meetings-input meetings-input--short"></select>
+                    </span>
+                  </label>
+                </div>
+                <div id="meetings-per-city" class="meetings-per-city"></div>
+              </details>
+            </div>
+
+            <div class="meetings-step">
+              <h2 class="meetings-step-title">
+                <span class="meetings-step-num" aria-hidden="true">2</span>
+                When is the meeting?
+              </h2>
+              <div class="meetings-when-row">
+                <label class="meetings-field" for="meetings-title">
+                  <span>Meeting title</span>
+                  <input
+                    type="text"
+                    id="meetings-title"
+                    class="meetings-input meetings-input--wide"
+                    placeholder="e.g. Team sync"
+                    maxlength="120"
+                  />
+                </label>
+                <label class="meetings-field" for="meetings-date">
+                  <span>Date</span>
+                  <input type="date" id="meetings-date" class="meetings-input" />
+                </label>
+                <label class="meetings-field" for="meetings-duration">
+                  <span>Length</span>
+                  <select id="meetings-duration" class="meetings-input">
+                    <option value="30">30 minutes</option>
+                    <option value="60" selected>1 hour</option>
+                    <option value="90">90 minutes</option>
+                    <option value="120">2 hours</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <section class="meetings-result" id="meetings-result" aria-live="polite">
+              <h2 class="meetings-step-title meetings-step-title--plain">
+                <span class="meetings-step-num" aria-hidden="true">3</span>
+                Best time to meet
+              </h2>
+              <div id="meetings-hero" class="meetings-hero"></div>
+              <div id="meetings-alternatives" class="meetings-alternatives"></div>
+              <div id="meetings-scheduled-wrap" class="meetings-scheduled-wrap" hidden>
+                <h3 class="meetings-alt-title">Saved in Clock</h3>
+                <div id="meetings-scheduled-list" class="meetings-scheduled-list"></div>
+              </div>
+            </section>
+
+            <section class="meetings-step meetings-step--now">
+              <h2 class="meetings-step-title meetings-step-title--plain">Right now</h2>
+              <p class="meetings-hint meetings-hint--tight">Live clock in each city.</p>
+              <div id="meetings-now-grid" class="meetings-now-grid"></div>
+            </section>
+
+            <details class="meetings-day-map" id="meetings-day-map">
+              <summary>Full day map (24 hours in your timezone)</summary>
+              <div class="meetings-legend" aria-hidden="true">
+                <span class="meetings-legend-item meetings-legend-item--work">Office hours</span>
+                <span class="meetings-legend-item meetings-legend-item--edge">Near office</span>
+                <span class="meetings-legend-item meetings-legend-item--awake">Awake</span>
+                <span class="meetings-legend-item meetings-legend-item--night">Sleeping</span>
+              </div>
+              <div id="meetings-timeline" class="meetings-timeline"></div>
+            </details>
+          </section>
+
+          <section class="page page--timer" id="page-timer" data-page="timer" hidden>
+            <div class="timer-layout">
+              <div class="timer-ring-wrap">
+                <svg class="timer-ring" viewBox="0 0 100 100" aria-hidden="true">
+                  <circle class="timer-ring-bg" cx="50" cy="50" r="45" />
+                  <circle
+                    id="timer-ring-progress"
+                    class="timer-ring-progress"
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    style="stroke-dasharray: 283; stroke-dashoffset: 283"
+                  />
+                </svg>
+                <p class="timer-display" id="timer-display">05:00</p>
+                <p class="timer-status" id="timer-status">Ready</p>
+              </div>
+              <div class="timer-panel">
+                <div class="timer-presets">
+                  <button type="button" class="chip" data-preset-sec="60">1 min</button>
+                  <button type="button" class="chip" data-preset-sec="300">5 min</button>
+                  <button type="button" class="chip" data-preset-sec="600">10 min</button>
+                  <button type="button" class="chip" data-preset-sec="900">15 min</button>
+                  <button type="button" class="chip" data-preset-sec="1500">25 min</button>
+                  <button type="button" class="chip" data-preset-sec="3600">1 hr</button>
+                </div>
+                <div class="timer-inputs">
+                  <label>
+                    <span>Hours</span>
+                    <input type="number" id="timer-h" min="0" max="99" value="0" />
+                  </label>
+                  <label>
+                    <span>Min</span>
+                    <input type="number" id="timer-m" min="0" max="59" value="5" />
+                  </label>
+                  <label>
+                    <span>Sec</span>
+                    <input type="number" id="timer-s" min="0" max="59" value="0" />
+                  </label>
+                </div>
+                <div class="timer-actions">
+                  <button type="button" class="btn btn-primary" id="timer-start">Start</button>
+                  <button type="button" class="btn" id="timer-pause" disabled>Pause</button>
+                  <button type="button" class="btn btn-ghost" id="timer-reset">Reset</button>
+                </div>
+                <p class="timer-hint">When the timer ends you'll hear a sound and get a desktop notification.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="page page--pomodoro" id="page-pomodoro" data-page="pomodoro" hidden>
+            <div class="pomo-layout">
+              <div class="pomo-main">
+                <span class="pomo-phase-badge" id="pomo-phase-badge">Work session</span>
+                <div class="timer-ring-wrap pomo-ring-wrap">
+                  <svg class="timer-ring" viewBox="0 0 100 100" aria-hidden="true">
+                    <circle class="timer-ring-bg" cx="50" cy="50" r="45" />
+                    <circle
+                      id="pomo-ring-progress"
+                      class="timer-ring-progress pomo-ring-progress"
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      style="stroke-dasharray: 283; stroke-dashoffset: 283"
+                    />
+                  </svg>
+                  <p class="timer-display pomo-display" id="pomo-display">25:00</p>
+                  <p class="pomo-phase-label" id="pomo-phase-label">Focus</p>
+                  <p class="timer-status" id="pomo-status">Ready</p>
+                </div>
+                <div class="pomo-dots" id="pomo-dots" aria-label="Cycle progress"></div>
+                <p class="pomo-next" id="pomo-next">After this: Short break (5m)</p>
+                <div class="pomo-actions">
+                  <button type="button" class="btn btn-primary btn-lg" id="pomo-start">Start</button>
+                  <button type="button" class="btn btn-lg" id="pomo-skip">Skip</button>
+                  <button type="button" class="btn btn-ghost btn-lg" id="pomo-reset">Reset</button>
+                </div>
+              </div>
+              <aside class="pomo-side">
+                <div class="stats-row pomo-stats">
+                  <article class="stat-card">
+                    <span class="stat-label">Today</span>
+                    <span class="stat-value"><span id="pomo-today">0</span> 🍅</span>
+                  </article>
+                  <article class="stat-card">
+                    <span class="stat-label">This cycle</span>
+                    <span class="stat-value" id="pomo-cycle">0 / 4</span>
+                  </article>
+                </div>
+                <button type="button" class="btn btn-ghost pomo-settings-toggle" id="pomo-settings-toggle">
+                  ⚙ Settings
+                </button>
+                <div class="pomo-settings" id="pomo-settings" hidden>
+                  <h3 class="pomo-settings-title">Session lengths</h3>
+                  <div class="pomo-settings-grid">
+                    <label>
+                      <span>Focus (min)</span>
+                      <input type="number" id="pomo-work" min="1" max="120" value="25" />
+                    </label>
+                    <label>
+                      <span>Short break</span>
+                      <input type="number" id="pomo-short" min="1" max="60" value="5" />
+                    </label>
+                    <label>
+                      <span>Long break</span>
+                      <input type="number" id="pomo-long" min="1" max="60" value="15" />
+                    </label>
+                    <label>
+                      <span>Long every</span>
+                      <input type="number" id="pomo-every" min="2" max="12" value="4" title="Pomodoros before long break" />
+                    </label>
+                  </div>
+                  <label class="pomo-check">
+                    <input type="checkbox" id="pomo-auto-break" checked />
+                    <span>Auto-start breaks</span>
+                  </label>
+                  <label class="pomo-check">
+                    <input type="checkbox" id="pomo-auto-work" checked />
+                    <span>Auto-start focus after break</span>
+                  </label>
+                  <p class="timer-hint">Sound and desktop notification at the end of each phase.</p>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section class="page page--stopwatch" id="page-stopwatch" data-page="stopwatch" hidden>
+            <div class="stopwatch-layout">
+              <p class="sw-display mono" id="sw-display">00:00.00</p>
+              <div class="sw-actions">
+                <button type="button" class="btn btn-primary btn-lg" id="sw-start">Start</button>
+                <button type="button" class="btn btn-lg" id="sw-lap">Lap</button>
+                <button type="button" class="btn btn-ghost btn-lg" id="sw-reset">Reset</button>
+              </div>
+              <div id="sw-laps" class="sw-laps"></div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="lib/country-data.js"></script>
+    <script src="lib/utils.js"></script>
+    <script src="lib/time.js"></script>
+    <script src="lib/search.js"></script>
+    <script src="lib/meeting-planner.js"></script>
+    <script src="lib/storage.js"></script>
+    <script src="lib/audio.js"></script>
+    <script src="pages/local.js"></script>
+    <script src="pages/world.js"></script>
+    <script src="pages/meetings.js"></script>
+    <script src="pages/timer.js"></script>
+    <script src="pages/pomodoro.js"></script>
+    <script src="pages/stopwatch.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+

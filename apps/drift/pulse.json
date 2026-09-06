@@ -1,0 +1,109 @@
+{
+  "profile": {
+    "tagline": "What changed — zones, scans & insights",
+    "icon": "📈",
+    "color": "#86efac"
+  },
+  "commands": [
+    {
+      "verb": "zones",
+      "title": "List zones",
+      "description": "Watched zones",
+      "delivery": "ipc",
+      "channel": "zones.list"
+    },
+    {
+      "verb": "zoneAdd",
+      "title": "Add zone",
+      "description": "Watch a folder",
+      "delivery": "ipc",
+      "channel": "zones.add",
+      "input": {
+        "path": "string",
+        "label": "string?"
+      }
+    },
+    {
+      "verb": "zoneRemove",
+      "title": "Remove zone",
+      "description": "Stop watching",
+      "delivery": "ipc",
+      "channel": "zones.remove",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "zoneToggle",
+      "title": "Toggle zone",
+      "description": "Enable/disable a zone",
+      "delivery": "ipc",
+      "channel": "zones.toggle",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "scan",
+      "title": "Run scan",
+      "description": "Scan for changes",
+      "delivery": "ipc",
+      "channel": "scan.run",
+      "input": {
+        "zoneId": "string?"
+      }
+    },
+    {
+      "verb": "events",
+      "title": "List events",
+      "description": "Change events",
+      "delivery": "ipc",
+      "channel": "events.list",
+      "input": {
+        "limit": "number?"
+      }
+    },
+    {
+      "verb": "eventsClear",
+      "title": "Clear events",
+      "description": "Clear event log",
+      "delivery": "ipc",
+      "channel": "events.clear"
+    },
+    {
+      "verb": "insights",
+      "title": "Insights",
+      "description": "Drift insights",
+      "delivery": "ipc",
+      "channel": "insights.get"
+    },
+    {
+      "verb": "folderOpen",
+      "title": "Open folder",
+      "description": "Open a folder",
+      "delivery": "ipc",
+      "channel": "folder.open",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "folderReveal",
+      "title": "Reveal folder",
+      "description": "Reveal in Explorer",
+      "delivery": "ipc",
+      "channel": "folder.reveal",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Drift",
+      "description": "Open Drift UI",
+      "delivery": "ui",
+      "input": {}
+    }
+  ],
+  "events": []
+}

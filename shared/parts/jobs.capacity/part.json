@@ -1,0 +1,19 @@
+{
+  "id": "jobs.capacity",
+  "version": 1,
+  "kind": "util",
+  "title": "Jobs capacity contract",
+  "summary": "Pool defaults, normalizeCapacity, Connect boost exceptions, and canStartJob rules. the Jobs OS compute contract.",
+  "tags": [
+    "jobs",
+    "capacity",
+    "pools"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { normalizeCapacity, canStartJob } = require('./parts/jobs.capacity');",
+  "publisher": "jobs"
+}

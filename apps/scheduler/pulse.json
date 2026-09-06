@@ -1,0 +1,12 @@
+{
+  "name": "Scheduler",
+  "description": "OS time contracts — list, add, pause, run-now",
+  "commands": [
+    {
+      "verb": "open",
+      "summary": "Open Scheduler active, all, history, or new",
+      "args": { "page": "active | all | history | new | about" },
+      "examples": ["pulse(send scheduler open)", "pulse(send scheduler open page:history)"]
+    }
+  ]
+}

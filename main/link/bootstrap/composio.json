@@ -1,0 +1,134 @@
+{
+  "profile": {
+    "tagline": "External tools: Composio layer on Pulse",
+    "icon": "🔗",
+    "color": "#a78bfa"
+  },
+  "commands": [
+    {
+      "verb": "status",
+      "title": "Status",
+      "description": "Composio key, session, connections",
+      "delivery": "ipc",
+      "channel": "status",
+      "broker": "composio",
+      "input": {},
+      "examples": ["pulse(send composio status)"]
+    },
+    {
+      "verb": "setKey",
+      "title": "Set API key",
+      "description": "Store Composio API key (main process only)",
+      "delivery": "ipc",
+      "channel": "key.set",
+      "broker": "composio",
+      "input": { "apiKey": "string" }
+    },
+    {
+      "verb": "clearKey",
+      "title": "Clear API key",
+      "description": "Remove stored Composio API key",
+      "delivery": "ipc",
+      "channel": "key.clear",
+      "broker": "composio",
+      "input": {}
+    },
+    {
+      "verb": "listToolkits",
+      "title": "List toolkits",
+      "description": "Browse Composio toolkit catalog",
+      "delivery": "ipc",
+      "channel": "toolkits.list",
+      "broker": "composio",
+      "input": { "q": "string?", "limit": "number?" },
+      "examples": ["pulse(send composio listToolkits q=gmail)"]
+    },
+    {
+      "verb": "listTools",
+      "title": "List tools",
+      "description": "List tools for a toolkit",
+      "delivery": "ipc",
+      "channel": "tools.list",
+      "broker": "composio",
+      "input": { "toolkit": "string", "q": "string?" }
+    },
+    {
+      "verb": "listConnections",
+      "title": "List connections",
+      "description": "Connected external accounts",
+      "delivery": "ipc",
+      "channel": "connections.list",
+      "broker": "composio",
+      "input": {}
+    },
+    {
+      "verb": "connect",
+      "title": "Connect toolkit",
+      "description": "Open Composio Connect Link for a toolkit",
+      "delivery": "ipc",
+      "channel": "connect",
+      "broker": "composio",
+      "input": { "toolkit": "string" },
+      "examples": ["pulse(send composio connect toolkit=github)"]
+    },
+    {
+      "verb": "execute",
+      "title": "Execute tool",
+      "description": "Run an external Composio tool by slug",
+      "delivery": "ipc",
+      "channel": "execute",
+      "broker": "composio",
+      "input": { "tool": "string", "arguments": "object?" },
+      "examples": ["pulse(send composio execute tool=GITHUB_LIST_REPOS)"]
+    },
+    {
+      "verb": "sync",
+      "title": "Sync profiles",
+      "description": "Declare Pulse profiles for connected / allowlisted toolkits",
+      "delivery": "ipc",
+      "channel": "sync",
+      "broker": "composio",
+      "input": {},
+      "examples": ["pulse(send composio sync)"]
+    },
+    {
+      "verb": "setAllowlist",
+      "title": "Set allowlist",
+      "description": "Restrict which toolkits Pulse may use",
+      "delivery": "ipc",
+      "channel": "settings.set",
+      "broker": "composio",
+      "input": { "allowlist": "string[]?" }
+    },
+    {
+      "verb": "resetSession",
+      "title": "Reset session",
+      "description": "Drop cached Composio session id",
+      "delivery": "ipc",
+      "channel": "session.reset",
+      "broker": "composio",
+      "input": {}
+    },
+    {
+      "verb": "open",
+      "title": "Open External tab",
+      "description": "Open Pulse focused on External tools",
+      "delivery": "ui",
+      "input": {}
+    }
+  ],
+  "events": [
+    {
+      "topic": "composio.connected",
+      "title": "Toolkit connected",
+      "description": "A Composio Connect Link completed",
+      "payload": { "toolkit": "string" }
+    },
+    {
+      "topic": "composio.executed",
+      "title": "External tool executed",
+      "description": "An external tool finished",
+      "payload": { "tool": "string", "ok": "boolean" }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "notif.sender",
+  "version": 1,
+  "kind": "util",
+  "title": "Notification sender keys",
+  "summary": "Normalize mail From → stable blocklist keys; scrape sender from notification route/title/body.",
+  "tags": [
+    "notifications",
+    "mail",
+    "blocklist"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { normalizeSenderKey, senderKeyFromNotification } = require('./parts/notif.sender');",
+  "publisher": "notifications"
+}

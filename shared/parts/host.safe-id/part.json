@@ -1,0 +1,22 @@
+{
+  "id": "host.safe-id",
+  "version": 1,
+  "kind": "util",
+  "title": "Safe host id slug",
+  "summary": "Sanitize device/folder ids to [a-zA-Z0-9_-]: used by OS Bridge pairing file lookup.",
+  "tags": [
+    "host",
+    "id",
+    "bridge"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {
+    "safeId": "safeId(raw)",
+    "matchesPrefix": "matchesPrefix(filename, id)"
+  },
+  "usage": "const { safeId } = require('./parts/host.safe-id');",
+  "publisher": "os-bridge"
+}

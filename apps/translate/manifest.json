@@ -1,0 +1,13 @@
+{
+  "id": "translate",
+  "name": "Translate",
+  "version": "1.0.0",
+  "description": "100+ languages — translate, phrases, batch, history & speech",
+  "icon": "🌐",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "profile": {
+    "tagline": "π digits: progress & practice",
+    "icon": "π",
+    "color": "#c4b5fd"
+  },
+  "commands": [
+    {
+      "verb": "progress",
+      "title": "Get progress",
+      "description": "Current π memorization progress",
+      "delivery": "ipc",
+      "channel": "progress.get"
+    },
+    {
+      "verb": "progressSave",
+      "title": "Save progress",
+      "description": "Save digit progress",
+      "delivery": "ipc",
+      "channel": "progress.save",
+      "input": {
+        "digits": "number?",
+        "index": "number?"
+      }
+    },
+    {
+      "verb": "progressReset",
+      "title": "Reset progress",
+      "description": "Reset progress",
+      "delivery": "ipc",
+      "channel": "progress.reset"
+    },
+    {
+      "verb": "screenPublish",
+      "title": "Publish screen",
+      "description": "Publish practice screen",
+      "delivery": "ipc",
+      "channel": "screen.publish",
+      "input": {
+        "state": "object?"
+      }
+    },
+    {
+      "verb": "screenGet",
+      "title": "Get screen",
+      "description": "Read screen state",
+      "delivery": "ipc",
+      "channel": "screen.get"
+    },
+    {
+      "verb": "meta",
+      "title": "Meta",
+      "description": "π Digits metadata",
+      "delivery": "ipc",
+      "channel": "meta"
+    },
+    {
+      "verb": "open",
+      "title": "Open π Digits",
+      "description": "Open π Digits",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    },
+    {
+      "verb": "openPractice",
+      "title": "Open practice",
+      "description": "Open practice mode",
+      "delivery": "ui",
+      "input": {}
+    }
+  ],
+  "events": []
+}

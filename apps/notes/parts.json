@@ -1,0 +1,9 @@
+{
+  "note": "Real Parts published from notes (code lives in shared/parts: clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "search.fuzzy",
+      "note": "Recommended for note search"
+    }
+  ]
+}

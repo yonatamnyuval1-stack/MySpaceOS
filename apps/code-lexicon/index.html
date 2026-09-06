@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Lexicon</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">📖</span>
+          <div>
+            <strong>Code Lexicon</strong>
+            <span class="brand-sub" id="brand-sub">Programming glossary</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="browse">
+            <span class="nav-icon">⌕</span>
+            Search
+          </button>
+          <button type="button" class="nav-item" data-page="categories">
+            <span class="nav-icon">▤</span>
+            Categories
+          </button>
+        </nav>
+        <p class="nav-section-label" id="cat-section-label">Filter</p>
+        <nav class="nav nav--cats" id="category-nav"></nav>
+        <footer class="sidebar-foot">
+          <p id="sidebar-stats">Loading…</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Search</h1>
+            <p class="subtitle" id="page-subtitle">Browse 4000+ programming concepts with explanations</p>
+          </div>
+        </header>
+
+        <section class="page page--scroll active" id="page-browse" data-page="browse">
+          <div class="stats-row" id="browse-stats"></div>
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">⌕</span>
+              <input type="search" id="term-search" class="search" placeholder="Search terms, tags, definitions…" autocomplete="off" />
+            </div>
+            <select id="level-filter" class="select-sm" title="Difficulty">
+              <option value="all">All levels</option>
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+            <select id="sort-select" class="select-sm">
+              <option value="name">Name A–Z</option>
+              <option value="category">Category</option>
+            </select>
+          </div>
+          <p class="results-meta" id="results-meta"></p>
+          <div class="terms-grid" id="terms-grid"></div>
+          <div class="pager hidden" id="pager">
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-prev">← Previous</button>
+            <span id="pager-label"></span>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-next">Next →</button>
+          </div>
+        </section>
+
+        <section class="page page--scroll" id="page-categories" data-page="categories" hidden></section>
+      </main>
+
+      <aside class="detail-panel hidden" id="detail-panel">
+        <header class="detail-head">
+          <h2 id="detail-title">Term</h2>
+          <div class="detail-head-actions">
+            <button type="button" class="btn btn-ghost btn-sm" id="detail-close" aria-label="Close">✕</button>
+          </div>
+        </header>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </div>
+
+    <script src="lib/utils.js"></script>
+    <script src="lib/storage.js"></script>
+    <script src="pages/browse.js"></script>
+    <script src="pages/categories.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

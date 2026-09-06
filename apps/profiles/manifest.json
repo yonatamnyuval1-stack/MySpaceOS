@@ -1,0 +1,6 @@
+{
+  "id": "profiles",
+  "name": "Vault",
+  "version": "1.1.0",
+  "description": "Encrypted password vault: passwords & secrets behind a master password"
+}

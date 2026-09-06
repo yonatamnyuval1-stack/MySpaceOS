@@ -1,0 +1,223 @@
+﻿
+{
+  "def": {
+    "buttons": "default",
+    "className": "buttons-default",
+    "backgroundImage": "linear-gradient(135deg, rgb(201, 168, 74), rgb(232, 196, 104))",
+    "backgroundColor": "rgb(201, 168, 74)",
+    "color": "rgb(26, 20, 8)",
+    "borderRadius": "10px",
+    "matched": [
+      {
+        "sel": ".btn",
+        "br": "var(--radius)",
+        "brPri": "",
+        "bg": "var(--bg-elevated)",
+        "bgPri": "",
+        "color": "var(--text)",
+        "colorPri": "",
+        "img": "",
+        "imgPri": ""
+      },
+      {
+        "sel": ".btn-primary",
+        "br": "",
+        "brPri": "",
+        "bg": "rgb(201, 168, 74)",
+        "bgPri": "",
+        "color": "rgb(26, 20, 8)",
+        "colorPri": "",
+        "img": "linear-gradient(135deg, #c9a84a, var(--accent))",
+        "imgPri": ""
+      }
+    ]
+  },
+  "soft": {
+    "buttons": "soft",
+    "className": "buttons-soft",
+    "backgroundImage": "none",
+    "backgroundColor": "rgb(201, 168, 74)",
+    "color": "rgb(26, 20, 8)",
+    "borderRadius": "10px",
+    "matched": [
+      {
+        "sel": ".btn",
+        "br": "var(--radius)",
+        "brPri": "",
+        "bg": "var(--bg-elevated)",
+        "bgPri": "",
+        "color": "var(--text)",
+        "colorPri": "",
+        "img": "",
+        "imgPri": ""
+      },
+      {
+        "sel": ".btn-primary",
+        "br": "",
+        "brPri": "",
+        "bg": "rgb(201, 168, 74)",
+        "bgPri": "",
+        "color": "rgb(26, 20, 8)",
+        "colorPri": "",
+        "img": "linear-gradient(135deg, #c9a84a, var(--accent))",
+        "imgPri": ""
+      },
+      {
+        "sel": "html[data-buttons=\"soft\"] .btn, html.buttons-soft .btn",
+        "br": "999px",
+        "brPri": "important",
+        "bg": "rgba(232, 196, 104, 0.08)",
+        "bgPri": "important",
+        "color": "",
+        "colorPri": "",
+        "img": "initial",
+        "imgPri": "important"
+      },
+      {
+        "sel": "html[data-buttons=\"soft\"] .btn-primary, html.buttons-soft .btn-primary",
+        "br": "999px",
+        "brPri": "important",
+        "bg": "rgba(232, 196, 104, 0.2)",
+        "bgPri": "important",
+        "color": "rgb(232, 196, 104)",
+        "colorPri": "important",
+        "img": "none",
+        "imgPri": "important"
+      }
+    ]
+  },
+  "solid": {
+    "buttons": "solid",
+    "className": "buttons-solid",
+    "backgroundImage": "none",
+    "backgroundColor": "rgb(201, 168, 74)",
+    "color": "rgb(26, 20, 8)",
+    "borderRadius": "10px",
+    "matched": [
+      {
+        "sel": ".btn",
+        "br": "var(--radius)",
+        "brPri": "",
+        "bg": "var(--bg-elevated)",
+        "bgPri": "",
+        "color": "var(--text)",
+        "colorPri": "",
+        "img": "",
+        "imgPri": ""
+      },
+      {
+        "sel": ".btn-primary",
+        "br": "",
+        "brPri": "",
+        "bg": "rgb(201, 168, 74)",
+        "bgPri": "",
+        "color": "rgb(26, 20, 8)",
+        "colorPri": "",
+        "img": "linear-gradient(135deg, #c9a84a, var(--accent))",
+        "imgPri": ""
+      },
+      {
+        "sel": "html[data-buttons=\"solid\"] .btn, html.buttons-solid .btn",
+        "br": "6px",
+        "brPri": "important",
+        "bg": "var(--bg-hover)",
+        "bgPri": "important",
+        "color": "",
+        "colorPri": "",
+        "img": "",
+        "imgPri": "important"
+      },
+      {
+        "sel": "html[data-buttons=\"solid\"] .btn-primary, html.buttons-solid .btn-primary",
+        "br": "6px",
+        "brPri": "important",
+        "bg": "rgb(232, 196, 104)",
+        "bgPri": "important",
+        "color": "rgb(26, 20, 8)",
+        "colorPri": "important",
+        "img": "none",
+        "imgPri": "important"
+      }
+    ]
+  },
+  "outline": {
+    "buttons": "outline",
+    "className": "buttons-outline",
+    "backgroundImage": "none",
+    "backgroundColor": "rgb(201, 168, 74)",
+    "color": "rgb(26, 20, 8)",
+    "borderRadius": "10px",
+    "matched": [
+      {
+        "sel": ".btn",
+        "br": "var(--radius)",
+        "brPri": "",
+        "bg": "var(--bg-elevated)",
+        "bgPri": "",
+        "color": "var(--text)",
+        "colorPri": "",
+        "img": "",
+        "imgPri": ""
+      },
+      {
+        "sel": ".btn-primary",
+        "br": "",
+        "brPri": "",
+        "bg": "rgb(201, 168, 74)",
+        "bgPri": "",
+        "color": "rgb(26, 20, 8)",
+        "colorPri": "",
+        "img": "linear-gradient(135deg, #c9a84a, var(--accent))",
+        "imgPri": ""
+      },
+      {
+        "sel": "html[data-buttons=\"outline\"] .btn, html.buttons-outline .btn",
+        "br": "var(--radius)",
+        "brPri": "important",
+        "bg": "transparent",
+        "bgPri": "important",
+        "color": "",
+        "colorPri": "",
+        "img": "initial",
+        "imgPri": "important"
+      },
+      {
+        "sel": "html[data-buttons=\"outline\"] .btn-primary, html.buttons-outline .btn-primary",
+        "br": "var(--radius)",
+        "brPri": "important",
+        "bg": "transparent",
+        "bgPri": "important",
+        "color": "rgb(232, 196, 104)",
+        "colorPri": "important",
+        "img": "none",
+        "imgPri": "important"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "name": "default has gradient",
+      "ok": true
+    },
+    {
+      "name": "soft clears gradient",
+      "ok": true
+    },
+    {
+      "name": "soft changes color from default",
+      "ok": false
+    },
+    {
+      "name": "soft is pill (large radius)",
+      "ok": false
+    },
+    {
+      "name": "solid flat gold fill",
+      "ok": false
+    },
+    {
+      "name": "outline accent border color on text",
+      "ok": false
+    }
+  ]
+}

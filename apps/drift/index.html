@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drift</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">📈</span>
+          <div>
+            <strong>Drift</strong>
+            <span class="brand-sub" id="brand-sub">Activity</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="activity">
+            <span class="nav-icon">⏱</span>
+            Activity
+          </button>
+          <button type="button" class="nav-item" data-page="zones">
+            <span class="nav-icon">📁</span>
+            Zones
+          </button>
+          <button type="button" class="nav-item" data-page="insights">
+            <span class="nav-icon">◔</span>
+            Insights
+          </button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p id="sidebar-status">Local only · your machine</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Activity</h1>
+            <p class="subtitle" id="page-subtitle">Timeline of file and project changes</p>
+          </div>
+          <div class="topbar-actions" id="topbar-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="btn-scan">↻ Scan now</button>
+          </div>
+        </header>
+
+        <section class="page page--scroll active" id="page-activity" data-page="activity">
+          <div class="stats-row" id="activity-stats"></div>
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">⌕</span>
+              <input type="search" id="event-search" class="search" placeholder="Search events…" />
+            </div>
+            <select id="type-filter" class="select-sm"></select>
+            <select id="zone-filter" class="select-sm" title="Watch zone"></select>
+            <select id="time-filter" class="select-sm"></select>
+          </div>
+          <p class="results-meta" id="results-meta"></p>
+          <div class="timeline" id="event-timeline"></div>
+          <div class="pager hidden" id="pager">
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-prev">← Older</button>
+            <span id="pager-label"></span>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-next">Newer →</button>
+          </div>
+        </section>
+
+        <section class="page page--scroll" id="page-zones" data-page="zones" hidden></section>
+        <section class="page page--scroll" id="page-insights" data-page="insights" hidden></section>
+      </main>
+
+      <aside class="detail-panel hidden" id="detail-panel">
+        <header class="detail-head">
+          <h2 id="detail-title">Event</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="detail-close" aria-label="Close">✕</button>
+        </header>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </div>
+
+    <script src="lib/utils.js"></script>
+    <script src="lib/storage.js"></script>
+    <script src="pages/activity.js"></script>
+    <script src="pages/zones.js"></script>
+    <script src="pages/insights.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

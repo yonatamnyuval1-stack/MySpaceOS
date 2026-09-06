@@ -1,0 +1,18 @@
+{
+  "id": "time.when",
+  "version": 1,
+  "kind": "util",
+  "title": "Activity timestamps",
+  "summary": "Human timestamps: Today/Yesterday + time, or short date, for feeds and activity logs.",
+  "tags": [
+    "time",
+    "drift",
+    "activity"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { formatWhen, relativeTime } = require('./parts/time.when');"
+}

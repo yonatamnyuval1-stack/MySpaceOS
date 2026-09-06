@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vault</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell vault-page" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">🔐</span>
+          <div>
+            <strong>Vault</strong>
+            <span class="brand-sub" id="brand-sub">v1.0 · Encrypted secrets</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="vault">
+            <span class="nav-icon">🔐</span>
+            Vault
+          </button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p>Passwords · secrets · locked storage</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Vault</h1>
+            <p class="subtitle" id="page-subtitle">Encrypted passwords & secrets</p>
+          </div>
+        </header>
+
+        <section class="page page--scroll active" id="page-vault" data-page="vault"></section>
+      </main>
+    </div>
+
+    <script src="lib/utils.js"></script>
+    <script src="lib/storage.js"></script>
+    <script src="pages/vault.js"></script>
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Docs — My Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">⌘</span>
+          <div>
+            <strong class="brand-name">Docs</strong>
+            <span class="brand-sub">My Space handbook</span>
+          </div>
+        </div>
+
+        <div class="search-wrap sidebar-search">
+          <span class="search-ico" aria-hidden="true">⌕</span>
+          <input
+            type="search"
+            id="docs-search"
+            class="search"
+            placeholder="Search docs…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </div>
+
+        <nav class="nav" id="group-nav" aria-label="Documentation categories"></nav>
+
+        <footer class="sidebar-foot">
+          <button type="button" class="foot-btn" id="btn-bookmarks">Bookmarks</button>
+          <p id="sidebar-meta">—</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="crumbs" id="crumbs"></div>
+          <div class="topbar-actions">
+            <button type="button" class="btn btn-ghost" id="btn-prev" title="Previous page">←</button>
+            <button type="button" class="btn btn-ghost" id="btn-next" title="Next page">→</button>
+            <button type="button" class="btn btn-ghost" id="btn-bookmark" title="Bookmark">☆</button>
+            <button type="button" class="btn btn-accent" id="btn-copy" title="Copy page title">Copy id</button>
+          </div>
+        </header>
+
+        <div class="stage" id="stage">
+          <section class="article" id="article"></section>
+          <aside class="toc" id="toc" aria-label="On this page"></aside>
+        </div>
+
+        <section class="search-results hidden" id="search-results"></section>
+      </main>
+    </div>
+
+    <script src="catalog.js"></script>
+    <script src="catalog-pages.js"></script>
+    <script src="catalog-apps.js"></script>
+    <script src="catalog-deep.js"></script>
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

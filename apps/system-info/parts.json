@@ -1,0 +1,13 @@
+{
+  "note": "System Info platform service",
+  "exports": [
+    {
+      "ref": "bytes.format",
+      "note": "Disk / RAM size labels"
+    },
+    {
+      "ref": "netstat.parse",
+      "note": "Port table from netstat lines"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "profile": {
+    "tagline": "Coupons & codes: save, redeem & copy",
+    "icon": "🎟️",
+    "color": "#f472b6"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List coupons",
+      "description": "List coupons",
+      "delivery": "ipc",
+      "channel": "coupons.list",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get coupon",
+      "description": "Fetch a coupon",
+      "delivery": "ipc",
+      "channel": "coupons.get",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "save",
+      "title": "Save coupon",
+      "description": "Create or update",
+      "delivery": "ipc",
+      "channel": "coupons.save",
+      "input": {
+        "id": "string?",
+        "title": "string?",
+        "code": "string?"
+      }
+    },
+    {
+      "verb": "delete",
+      "title": "Delete coupon",
+      "description": "Delete a coupon",
+      "delivery": "ipc",
+      "channel": "coupons.delete",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "redeem",
+      "title": "Redeem",
+      "description": "Mark redeemed",
+      "delivery": "ipc",
+      "channel": "coupons.redeem",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "copyCode",
+      "title": "Copy code",
+      "description": "Copy coupon code",
+      "delivery": "ipc",
+      "channel": "coupons.copyCode",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "copyPin",
+      "title": "Copy PIN",
+      "description": "Copy coupon PIN",
+      "delivery": "ipc",
+      "channel": "coupons.copyPin",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "unlock",
+      "title": "Unlock",
+      "description": "Unlock coupons store",
+      "delivery": "ipc",
+      "channel": "coupons.unlock",
+      "input": {
+        "password": "string?"
+      }
+    },
+    {
+      "verb": "lock",
+      "title": "Lock",
+      "description": "Lock coupons store",
+      "delivery": "ipc",
+      "channel": "coupons.lock"
+    },
+    {
+      "verb": "expiryCheck",
+      "title": "Expiry check",
+      "description": "Check expiring coupons",
+      "delivery": "ipc",
+      "channel": "coupons.expiry.check"
+    },
+    {
+      "verb": "status",
+      "title": "Status",
+      "description": "Coupons status",
+      "delivery": "ipc",
+      "channel": "coupons.status"
+    },
+    {
+      "verb": "open",
+      "title": "Open Coupons",
+      "description": "Open Coupons UI",
+      "delivery": "ui",
+      "input": {
+        "id": "string?"
+      }
+    }
+  ],
+  "events": []
+}

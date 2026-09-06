@@ -1,0 +1,9 @@
+{
+  "note": "Real Parts published from chat (code lives in shared/parts: clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "chat.drafts",
+      "note": "Composer draft store pattern"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "day-planner",
+  "name": "Today",
+  "version": "1.1.0",
+  "description": "Daily agenda by hour: reminders, done, and snooze",
+  "icon": "📅",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

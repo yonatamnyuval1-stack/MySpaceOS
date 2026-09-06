@@ -1,0 +1,218 @@
+.shell-atlas {
+  position: fixed;
+  inset: 0;
+  z-index: 10090;
+  display: flex;
+  background: #ffffff;
+  color: #0d1117;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+}
+.shell-atlas.hidden { display: none !important; }
+
+.shell-atlas-side {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #d8dee4;
+  background: #f6f8fa;
+  min-height: 0;
+}
+.shell-atlas-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1rem 0.9rem;
+  border-bottom: 1px solid #eaeef2;
+}
+.shell-atlas-brand img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #0d1117;
+}
+.shell-atlas-brand strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.shell-atlas-brand span {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.72rem;
+  color: #656d76;
+}
+
+.shell-atlas-search-wrap {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #eaeef2;
+}
+.shell-atlas-search {
+  width: 100%;
+  border: 1px solid #d8dee4;
+  border-radius: 8px;
+  padding: 0.45rem 0.65rem;
+  font: inherit;
+  background: #fff;
+  color: #0d1117;
+}
+.shell-atlas-search:focus {
+  outline: none;
+  border-color: #0969da;
+}
+
+.shell-atlas-nav {
+  flex: 1;
+  overflow: auto;
+  padding: 0.5rem 0.55rem 1rem;
+  min-height: 0;
+}
+.shell-atlas-nav-label {
+  margin: 0.55rem 0.45rem 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #656d76;
+}
+.shell-atlas-nav-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: #424a53;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 500;
+  padding: 0.42rem 0.55rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.shell-atlas-nav-item:hover { background: #eaeef2; color: #0d1117; }
+.shell-atlas-nav-item.is-active {
+  background: rgba(9, 105, 218, 0.1);
+  color: #0d1117;
+  box-shadow: inset 2px 0 0 #0969da;
+}
+.shell-atlas-nav-item .muted {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #656d76;
+  margin-top: 0.1rem;
+}
+
+.shell-atlas-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+.shell-atlas-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.5rem 1rem;
+  border-bottom: 1px solid #eaeef2;
+  flex-shrink: 0;
+}
+.shell-atlas-top h1 {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.shell-atlas-top .lede {
+  margin: 0.35rem 0 0;
+  color: #656d76;
+  font-size: 0.9rem;
+  max-width: 42rem;
+  line-height: 1.45;
+}
+.shell-atlas-close {
+  border: 1px solid #d8dee4;
+  background: #f6f8fa;
+  color: #0d1117;
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.shell-atlas-close:hover { background: #eaeef2; }
+
+.shell-atlas-body {
+  flex: 1;
+  overflow: auto;
+  padding: 1.25rem 1.75rem 2.5rem;
+  min-height: 0;
+}
+
+.shell-atlas-section {
+  margin-bottom: 1.75rem;
+  max-width: 52rem;
+}
+.shell-atlas-section h2 {
+  margin: 0 0 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #656d76;
+}
+.shell-atlas-section p {
+  margin: 0 0 0.7rem;
+  line-height: 1.55;
+  color: #1f2328;
+}
+.shell-atlas-section ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.4rem;
+}
+.shell-atlas-section li {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #eaeef2;
+  border-radius: 8px;
+  background: #f6f8fa;
+  line-height: 1.45;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  color: #24292f;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.shell-atlas-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 1.25rem;
+}
+.shell-atlas-chip {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(9, 105, 218, 0.1);
+  color: #0550ae;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.shell-atlas-empty {
+  color: #656d76;
+  padding: 2rem 0;
+}
+
+@media (max-width: 800px) {
+  .shell-atlas-side { width: 200px; }
+  .shell-atlas-body { padding: 1rem 1.1rem 2rem; }
+}

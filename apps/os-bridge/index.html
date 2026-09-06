@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OS Bridge</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-logo" aria-hidden="true">🔗</span>
+          <div>
+            <strong>OS Bridge</strong>
+            <span class="brand-sub" id="brand-sub">Host & devices</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="devices">
+            <span class="nav-icon">◈</span>
+            Devices
+          </button>
+          <button type="button" class="nav-item" data-page="places">
+            <span class="nav-icon">▤</span>
+            Places
+          </button>
+          <button type="button" class="nav-item" data-page="actions">
+            <span class="nav-icon">↗</span>
+            Share
+          </button>
+          <button type="button" class="nav-item" data-page="host">
+            <span class="nav-icon">▣</span>
+            Host
+          </button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p id="sidebar-status">Local Wi‑Fi, not Remote Hub</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Devices</h1>
+            <p class="subtitle" id="page-subtitle">Pair a phone on the same Wi‑Fi</p>
+          </div>
+          <div class="topbar-actions" id="topbar-actions"></div>
+        </header>
+
+        <section class="page page--scroll active" id="page-devices" data-page="devices"></section>
+        <section class="page page--scroll" id="page-places" data-page="places" hidden></section>
+        <section class="page page--scroll" id="page-actions" data-page="actions" hidden></section>
+        <section class="page page--scroll" id="page-host" data-page="host" hidden></section>
+      </main>
+    </div>
+    <div id="toast" class="toast" hidden role="status"></div>
+
+    <script src="lib/utils.js"></script>
+    <script src="lib/qrcode-browser.js"></script>
+    <script src="pages/devices.js"></script>
+    <script src="pages/places.js"></script>
+    <script src="pages/actions.js"></script>
+    <script src="pages/host.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

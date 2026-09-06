@@ -1,0 +1,6 @@
+{
+  "id": "jobs",
+  "name": "Jobs",
+  "version": "1.0.0",
+  "description": "OS compute runtime: queue, pools, and capacity contract"
+}

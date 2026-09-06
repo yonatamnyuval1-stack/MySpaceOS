@@ -1,0 +1,14 @@
+{
+  "id": "ui.omnibox",
+  "version": 1,
+  "kind": "ui",
+  "title": "Omnibox",
+  "summary": "Mountable search field + results list. Wire your own search function.",
+  "tags": ["search", "ui"],
+  "entry": "index.js",
+  "files": ["index.js", "styles.css"],
+  "api": {
+    "mount": "mount(rootEl, { placeholder, search(q)→[{id,label,hint?}], onPick(item) })"
+  },
+  "usage": "PartsUiOmnibox.mount(el, { search: async (q) => [...], onPick: (item) => {} });"
+}

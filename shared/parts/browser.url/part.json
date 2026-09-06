@@ -1,0 +1,19 @@
+{
+  "id": "browser.url",
+  "version": 1,
+  "kind": "util",
+  "title": "Browser URL helpers",
+  "summary": "Detect bare domains/localhost, coerce to http(s), and flag embed-unsafe hosts for webviews.",
+  "tags": [
+    "browser",
+    "url",
+    "webview"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { normalizeUrl, isUnsafeWebviewUrl } = require('./parts/browser.url');",
+  "publisher": "browser"
+}

@@ -1,0 +1,147 @@
+{
+  "profile": {
+    "tagline": "Console engine: history, aliases, macros & when",
+    "icon": "⌨️",
+    "color": "#67e8f9"
+  },
+  "commands": [
+    {
+      "verb": "run",
+      "title": "Run command",
+      "description": "Run via console engine",
+      "delivery": "ipc",
+      "channel": "command.run",
+      "input": {
+        "command": "string"
+      }
+    },
+    {
+      "verb": "history",
+      "title": "History",
+      "description": "Command history",
+      "delivery": "ipc",
+      "channel": "history.list",
+      "input": {
+        "limit": "number?"
+      }
+    },
+    {
+      "verb": "historyAdd",
+      "title": "Add history",
+      "description": "Append history entry",
+      "delivery": "ipc",
+      "channel": "history.add",
+      "input": {
+        "command": "string"
+      }
+    },
+    {
+      "verb": "historyClear",
+      "title": "Clear history",
+      "description": "Clear history",
+      "delivery": "ipc",
+      "channel": "history.clear"
+    },
+    {
+      "verb": "aliases",
+      "title": "List aliases",
+      "description": "Shell aliases",
+      "delivery": "ipc",
+      "channel": "aliases.list"
+    },
+    {
+      "verb": "aliasSet",
+      "title": "Set alias",
+      "description": "Create/update alias",
+      "delivery": "ipc",
+      "channel": "aliases.set",
+      "input": {
+        "name": "string",
+        "value": "string"
+      }
+    },
+    {
+      "verb": "aliasRemove",
+      "title": "Remove alias",
+      "description": "Delete alias",
+      "delivery": "ipc",
+      "channel": "aliases.remove",
+      "input": {
+        "name": "string"
+      }
+    },
+    {
+      "verb": "macros",
+      "title": "List macros",
+      "description": "Saved macros",
+      "delivery": "ipc",
+      "channel": "macros.list"
+    },
+    {
+      "verb": "macroSet",
+      "title": "Set macro",
+      "description": "Create/update macro",
+      "delivery": "ipc",
+      "channel": "macros.set",
+      "input": {
+        "name": "string",
+        "body": "string"
+      }
+    },
+    {
+      "verb": "macroRemove",
+      "title": "Remove macro",
+      "description": "Delete macro",
+      "delivery": "ipc",
+      "channel": "macros.remove",
+      "input": {
+        "name": "string"
+      }
+    },
+    {
+      "verb": "whenList",
+      "title": "List when-rules",
+      "description": "Automation rules",
+      "delivery": "ipc",
+      "channel": "when.list"
+    },
+    {
+      "verb": "whenAdd",
+      "title": "Add when-rule",
+      "description": "Create a when-rule",
+      "delivery": "ipc",
+      "channel": "when.add",
+      "input": {
+        "trigger": "string?",
+        "action": "string?"
+      }
+    },
+    {
+      "verb": "export",
+      "title": "Export",
+      "description": "Export console data",
+      "delivery": "ipc",
+      "channel": "data.export"
+    },
+    {
+      "verb": "import",
+      "title": "Import",
+      "description": "Import console data",
+      "delivery": "ipc",
+      "channel": "data.import",
+      "input": {
+        "json": "string?"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Console",
+      "description": "Open Console UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    }
+  ],
+  "events": []
+}

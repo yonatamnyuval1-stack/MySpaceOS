@@ -1,0 +1,9 @@
+{
+  "note": "Real Parts published from day-planner (code lives in shared/parts: clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "date.agenda",
+      "note": "Local agenda date/hour helpers"
+    }
+  ]
+}

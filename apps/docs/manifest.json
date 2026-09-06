@@ -1,0 +1,13 @@
+{
+  "id": "docs",
+  "name": "Docs",
+  "version": "1.0.0",
+  "description": "Official My Space documentation: shell, apps, protocols & automation",
+  "icon": "📖",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

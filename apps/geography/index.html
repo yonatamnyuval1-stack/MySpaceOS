@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geography</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon">🌍</span>
+          <div>
+            <strong>Geography</strong>
+            <span class="brand-sub" id="brand-sub">World countries</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="explore"><span class="nav-icon">🗺️</span> Explore</button>
+          <button type="button" class="nav-item" data-page="learn"><span class="nav-icon">📚</span> Learn</button>
+          <button type="button" class="nav-item" data-page="traveled"><span class="nav-icon">✈️</span> My travels</button>
+        </nav>
+        <p class="nav-section-label hidden" id="region-section-label">Filter by region</p>
+        <nav class="nav nav--cats hidden" id="region-nav"></nav>
+        <footer class="sidebar-foot"><p>250+ countries · deep profiles · travel log</p></footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Explore</h1>
+            <p class="subtitle" id="page-subtitle">Browse countries: flags, facts & rich info</p>
+          </div>
+          <div class="topbar-actions" id="topbar-actions">
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-refresh">↻ Refresh data</button>
+          </div>
+        </header>
+
+        <section class="page page--scroll active" id="page-explore" data-page="explore">
+          <div class="stats-row" id="explore-stats"></div>
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">⌕</span>
+              <input type="search" id="country-search" class="search" placeholder="Search country, capital, region…" />
+            </div>
+            <select id="sort-select" class="select-sm">
+              <option value="name">Name A–Z</option>
+              <option value="population">Population</option>
+              <option value="area">Area</option>
+            </select>
+          </div>
+          <div class="loading-msg hidden" id="explore-loading">Loading countries…</div>
+          <div class="countries-grid" id="countries-grid"></div>
+        </section>
+
+        <section class="page page--learn" id="page-learn" data-page="learn" hidden>
+          <p class="page-hint" id="learn-status">Select a country for a full in-app learning profile.</p>
+          <div class="learn-layout">
+            <aside class="learn-sidebar">
+              <div class="search-wrap learn-search">
+                <span class="search-icon">⌕</span>
+                <input type="search" id="learn-country-search" class="search" placeholder="Find country…" />
+              </div>
+              <div class="learn-picker" id="learn-picker"></div>
+            </aside>
+            <div class="learn-main" id="learn-content">
+              <p class="empty-msg">Choose a country from the list, or open one from Explore with “Learn more”.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="page page--scroll" id="page-traveled" data-page="traveled" hidden>
+          <div class="stats-row" id="travel-stats"></div>
+          <div class="toolbar traveled-toolbar">
+            <button type="button" class="btn btn-primary" id="btn-add-visit">+ Add country visited</button>
+          </div>
+          <div class="visited-grid" id="visited-grid"></div>
+        </section>
+      </main>
+
+      <aside class="detail-panel hidden" id="detail-panel">
+        <header class="detail-head">
+          <h2 id="detail-title">Country</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="detail-close">✕</button>
+        </header>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </div>
+
+    <dialog class="modal" id="visit-modal">
+      <form method="dialog" class="modal-inner" id="visit-form">
+        <header class="modal-head">
+          <h3 id="visit-modal-title">Add visited country</h3>
+          <button type="button" class="btn btn-ghost btn-sm" id="visit-modal-close">✕</button>
+        </header>
+        <div class="modal-body" id="visit-modal-body"></div>
+        <footer class="modal-foot">
+          <button type="button" class="btn btn-danger btn-sm hidden" id="visit-delete">Delete</button>
+          <span class="modal-spacer"></span>
+          <button type="button" class="btn btn-ghost" id="visit-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <script src="lib/utils.js"></script>
+    <script src="lib/storage.js"></script>
+    <script src="pages/explore.js"></script>
+    <script src="pages/learn.js"></script>
+    <script src="pages/traveled.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

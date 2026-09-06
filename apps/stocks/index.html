@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stocks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" id="stocks-theme" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("myspace-stocks-ui-layout") === "classic") {
+            location.replace("index.legacy.html");
+          }
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+  <body class="ui-organized">
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <div>
+            <strong>Stocks</strong>
+            <span class="brand-sub" id="brand-sub">v1.2 · Markets</span>
+          </div>
+        </div>
+        <p class="nav-label">Navigate</p>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="dashboard">
+            <span class="nav-icon" aria-hidden="true">◆</span> <span data-i18n="nav.market">Market</span>
+          </button>
+          <button type="button" class="nav-item" data-page="portfolio">
+            <span class="nav-icon" aria-hidden="true">▣</span> <span data-i18n="nav.portfolio">Portfolio</span>
+          </button>
+          <button type="button" class="nav-item" data-page="alerts">
+            <span class="nav-icon" aria-hidden="true">◎</span> <span data-i18n="nav.alerts">Alerts</span>
+          </button>
+          <button type="button" class="nav-item" data-page="buylist">
+            <span class="nav-icon" aria-hidden="true">▤</span> <span data-i18n="nav.buylist">Buy list</span>
+          </button>
+          <button type="button" class="nav-item" data-page="ai-analysis">
+            <span class="nav-icon" aria-hidden="true">✦</span> <span data-i18n="nav.ai">AI Analysis</span>
+          </button>
+        </nav>
+        <div class="sidebar-foot">Live quotes · AI research</div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-brand">
+            <div class="topbar-text">
+              <h1 id="page-title">Market</h1>
+              <p class="subtitle" id="page-subtitle">NASDAQ watchlist</p>
+            </div>
+          </div>
+          <div class="topbar-search-wrap">
+            <input
+              type="search"
+              id="top-search"
+              class="top-search-input"
+              placeholder="Search symbols…"
+              data-i18n-attr="placeholder"
+              data-i18n="search.placeholder"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <div id="top-search-results" class="top-search-results" hidden></div>
+          </div>
+          <div class="topbar-actions" id="topbar-actions">
+            <div class="mode-switcher">
+              <button type="button" class="mode-btn" id="mode-btn" title="Switch market mode">
+                <span id="mode-btn-icon">📊</span>
+                <span id="mode-btn-label">Stocks</span>
+                <span class="mode-chevron">▾</span>
+              </button>
+              <div class="mode-menu" id="mode-menu" hidden></div>
+            </div>
+          </div>
+        </header>
+
+        <section class="page active" id="page-dashboard" data-page="dashboard">
+          <div class="page-stack">
+            <div class="page-status">
+              <p class="error-banner" id="dash-error" hidden></p>
+              <div class="alert-banner" id="dash-alerts" hidden></div>
+              <p class="last-update muted" id="last-update"></p>
+            </div>
+
+            <section class="panel" id="panel-indices">
+              <header class="panel-head">
+                <h2 class="section-title" id="indices-section">Overview</h2>
+              </header>
+              <div class="panel-body">
+                <div class="indices-row" id="indices-row"></div>
+              </div>
+            </section>
+
+            <div class="dash-split">
+              <section class="panel">
+                <header class="panel-head">
+                  <h2 class="section-title">Heatmap</h2>
+                </header>
+                <div class="panel-body">
+                  <div class="heatmap" id="heatmap"></div>
+                </div>
+              </section>
+
+              <section class="panel">
+                <header class="panel-head">
+                  <h2 class="section-title">Movers</h2>
+                </header>
+                <div class="panel-body">
+                  <div class="movers-row">
+                    <div class="movers-col">
+                      <h3 class="movers-title up">▲ Top gainers</h3>
+                      <div class="movers-list" id="gainers-list"></div>
+                    </div>
+                    <div class="movers-col">
+                      <h3 class="movers-title down">▼ Top losers</h3>
+                      <div class="movers-list" id="losers-list"></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <section class="panel panel--flush">
+              <header class="panel-head panel-head--row">
+                <h2 class="section-title">Watchlist</h2>
+              </header>
+              <div class="table-wrap table-wrap--in-panel">
+                <table class="data-table" id="watchlist-table">
+                  <thead>
+                    <tr>
+                      <th>Symbol</th>
+                      <th>Price</th>
+                      <th>Change %</th>
+                      <th>Change</th>
+                      <th>Volume</th>
+                      <th id="col-mktcap">Market cap</th>
+                      <th>5D</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="watchlist-body"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="page" id="page-search" data-page="search" hidden aria-hidden="true"></section>
+
+        <section class="page" id="page-portfolio" data-page="portfolio" hidden>
+          <div class="page-stack manage-page">
+            <p class="error-banner" id="portfolio-error" hidden></p>
+
+            <section class="panel summary-hero" id="pf-summary">
+              <div class="panel-body summary-hero-body">
+                <div class="summary-hero-main">
+                  <span class="summary-kicker">Portfolio value</span>
+                  <div class="summary-hero-value" id="pf-value">$0</div>
+                  <div class="summary-hero-pl" id="pf-pl-line">
+                    <span class="stat-val" id="pf-pl">$0</span>
+                    <span class="summary-hero-pl-label">Total P/L</span>
+                  </div>
+                </div>
+                <div class="summary-hero-side">
+                  <div class="stat-card compact">
+                    <span class="stat-val" id="pf-cost">$0</span>
+                    <span class="stat-label">Cost basis</span>
+                  </div>
+                  <div class="stat-card compact">
+                    <span class="stat-val" id="pf-count">0</span>
+                    <span class="stat-label">Positions</span>
+                  </div>
+                  <div class="stat-card compact" id="pf-day-wrap">
+                    <span class="stat-val" id="pf-day">—</span>
+                    <span class="stat-label">Day move</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <div class="manage-split">
+              <section class="panel">
+                <header class="panel-head">
+                  <h2 class="section-title">Add / update</h2>
+                </header>
+                <div class="panel-body">
+                  <form class="manage-form" id="hold-form" autocomplete="off">
+                    <label class="field">
+                      <span class="field-label">Symbol</span>
+                      <input type="text" id="hold-symbol" class="field-input" placeholder="AAPL" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">Quantity</span>
+                      <input type="number" id="hold-qty" class="field-input" placeholder="0" min="0" step="any" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">Avg cost</span>
+                      <input type="number" id="hold-cost" class="field-input" placeholder="0.00" min="0" step="any" />
+                    </label>
+                    <div class="manage-form-actions">
+                      <button type="submit" class="btn btn-primary" id="btn-save-holding">Save holding</button>
+                      <p class="field-hint muted">Set qty to 0 to remove a position.</p>
+                    </div>
+                  </form>
+                </div>
+              </section>
+
+              <section class="panel panel--flush manage-list-panel">
+                <header class="panel-head panel-head--row">
+                  <h2 class="section-title">Holdings</h2>
+                  <span class="panel-count" id="pf-list-count">0</span>
+                </header>
+                <div id="portfolio-list" class="holdings-list"></div>
+                <div class="table-wrap table-wrap--in-panel" hidden>
+                  <table class="data-table">
+                    <tbody id="portfolio-body"></tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-buylist" data-page="buylist" hidden>
+          <div class="page-stack manage-page">
+            <p class="error-banner" id="buylist-error" hidden></p>
+
+            <section class="panel summary-hero summary-hero--buy">
+              <div class="panel-body summary-hero-body">
+                <div class="summary-hero-main">
+                  <span class="summary-kicker">Buy list</span>
+                  <div class="summary-hero-value" id="buylist-count">0</div>
+                  <p class="summary-hero-sub muted">Symbols waiting to buy</p>
+                </div>
+                <div class="summary-hero-side">
+                  <div class="stat-card compact">
+                    <span class="stat-val" id="buylist-at-target">0</span>
+                    <span class="stat-label">At target</span>
+                  </div>
+                  <div class="stat-card compact">
+                    <span class="stat-val" id="buylist-bought">0</span>
+                    <span class="stat-label">Purchased</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <div class="manage-split">
+              <section class="panel">
+                <header class="panel-head"><h2 class="section-title">Add symbol</h2></header>
+                <div class="panel-body">
+                  <form class="manage-form" id="buylist-form" autocomplete="off">
+                    <label class="field">
+                      <span class="field-label">Symbol</span>
+                      <input type="text" id="buylist-symbol" class="field-input" placeholder="AAPL" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">Target price</span>
+                      <input type="number" id="buylist-target" class="field-input" placeholder="Optional $" step="any" />
+                    </label>
+                    <label class="field field--wide">
+                      <span class="field-label">Note</span>
+                      <input type="text" id="buylist-note" class="field-input" placeholder="Why buy / entry plan" />
+                    </label>
+                    <div class="manage-form-actions">
+                      <button type="submit" class="btn btn-primary" id="btn-add-buylist">Add to list</button>
+                    </div>
+                  </form>
+                </div>
+              </section>
+
+              <section class="panel manage-list-panel">
+                <header class="panel-head panel-head--row">
+                  <h2 class="section-title">Your list</h2>
+                </header>
+                <div class="panel-body">
+                  <div id="buylist-items" class="buylist-wrap"></div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-alerts" data-page="alerts" hidden>
+          <div class="page-stack manage-page">
+            <p class="error-banner" id="alerts-error" hidden></p>
+            <div class="alert-banner alert-banner--fired" id="alerts-triggered" hidden></div>
+
+            <section class="panel summary-hero summary-hero--alerts">
+              <div class="panel-body summary-hero-body">
+                <div class="summary-hero-main">
+                  <span class="summary-kicker">Price alerts</span>
+                  <div class="summary-hero-value" id="alerts-count">0</div>
+                  <p class="summary-hero-sub muted">Watching your levels</p>
+                </div>
+                <div class="summary-hero-side">
+                  <div class="stat-card compact">
+                    <span class="stat-val" id="alerts-on">0</span>
+                    <span class="stat-label">Enabled</span>
+                  </div>
+                  <div class="stat-card compact">
+                    <span class="stat-val" id="alerts-fired-count">0</span>
+                    <span class="stat-label">Triggered</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <div class="manage-split">
+              <section class="panel">
+                <header class="panel-head"><h2 class="section-title">New alert</h2></header>
+                <div class="panel-body">
+                  <form class="manage-form" id="alert-form" autocomplete="off">
+                    <label class="field">
+                      <span class="field-label">Symbol</span>
+                      <input type="text" id="alert-symbol" class="field-input" placeholder="AAPL" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">Above</span>
+                      <input type="number" id="alert-above" class="field-input" placeholder="$ breakout" step="any" />
+                    </label>
+                    <label class="field">
+                      <span class="field-label">Below</span>
+                      <input type="number" id="alert-below" class="field-input" placeholder="$ support" step="any" />
+                    </label>
+                    <label class="field field--wide">
+                      <span class="field-label">Note</span>
+                      <input type="text" id="alert-note" class="field-input" placeholder="Optional note" />
+                    </label>
+                    <div class="manage-form-actions">
+                      <button type="submit" class="btn btn-primary" id="btn-add-alert">Add alert</button>
+                      <p class="field-hint muted">Set at least one of Above / Below.</p>
+                    </div>
+                  </form>
+                </div>
+              </section>
+
+              <section class="panel manage-list-panel">
+                <header class="panel-head panel-head--row">
+                  <h2 class="section-title">Active alerts</h2>
+                  <span class="panel-count" id="alerts-list-count">0</span>
+                </header>
+                <div class="panel-body">
+                  <div class="alerts-list" id="alerts-list"></div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" id="page-ai-analysis" data-page="ai-analysis" hidden>
+          <div class="page-stack">
+            <p class="error-banner" id="ai-error" hidden></p>
+            <section class="panel">
+              <div class="panel-body ai-toolbar">
+                <div class="ai-search-wrap" id="ai-search-wrap">
+                  <label class="ai-label" for="ai-symbol-input" data-i18n="ai.symbol">Symbol</label>
+                  <input
+                    type="search"
+                    id="ai-symbol-input"
+                    class="field-input ai-symbol-input"
+                    placeholder="AAPL, MSFT…"
+                    data-i18n-attr="placeholder"
+                    data-i18n="ai.symbolPlaceholder"
+                    autocomplete="off"
+                    spellcheck="false"
+                  />
+                  <div id="ai-search-results" class="top-search-results ai-search-results" hidden></div>
+                </div>
+                <div class="ai-selected" id="ai-selected"></div>
+                <div class="ai-actions">
+                  <div class="ai-lang-switch" role="group" aria-label="Analysis language">
+                    <span class="ai-label" data-i18n="ai.outputLang">Fill language</span>
+                    <div class="ai-lang-row">
+                      <button type="button" class="ai-lang-btn is-active" id="btn-ai-lang-en" data-ai-lang="en">English</button>
+                      <button type="button" class="ai-lang-btn" id="btn-ai-lang-he" data-ai-lang="he">עברית</button>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-primary" id="btn-ai-fill" disabled data-i18n="ai.fillAll">
+                    Fill all with AI
+                  </button>
+                  <button type="button" class="btn btn-ghost" id="btn-ai-refresh" disabled data-i18n="ai.refresh">
+                    Refresh
+                  </button>
+                  <button type="button" class="btn btn-ghost" id="btn-ai-open-detail" data-i18n="ai.openDetail">
+                    Open detail
+                  </button>
+                </div>
+              </div>
+            </section>
+            <p class="muted ai-meta" id="ai-meta"></p>
+            <div class="ai-cards" id="ai-cards"></div>
+            <p class="ai-disclaimer muted" data-i18n="ai.disclaimer">
+              Not investment advice. AI can be wrong — verify before acting.
+            </p>
+          </div>
+        </section>
+
+        <section class="page" id="page-stock" data-page="stock" hidden>
+          <div class="page-stack">
+            <button type="button" class="btn btn-ghost btn-back" id="stock-back">← Back to market</button>
+            <p class="error-banner" id="stock-error" hidden></p>
+            <section class="panel stock-head-panel">
+              <header class="stock-head">
+                <div>
+                  <h2 id="stock-symbol">—</h2>
+                  <p id="stock-name" class="stock-name"></p>
+                  <span id="stock-exchange" class="badge">NASDAQ</span>
+                </div>
+                <div class="stock-price-block">
+                  <div id="stock-price" class="stock-price">—</div>
+                  <div id="stock-change" class="stock-change">—</div>
+                  <button type="button" class="btn btn-primary btn-sm" id="btn-add-wl">+ Watchlist</button>
+                  <button type="button" class="btn btn-accent btn-sm" id="btn-ai-analysis">AI Analysis</button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="btn-add-buylist">+ Buy list</button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="btn-add-portfolio">+ Portfolio</button>
+                </div>
+              </header>
+            </section>
+            <div class="card-panel hold-form stock-hold-form" id="stock-portfolio-form" hidden>
+              <span>Add to portfolio:</span>
+              <input type="number" id="stock-hold-qty" class="field-input" placeholder="Qty" min="0" step="any" />
+              <input type="number" id="stock-hold-cost" class="field-input" placeholder="Avg cost $" min="0" step="any" />
+              <button type="button" class="btn btn-primary btn-sm" id="btn-save-stock-hold">Save</button>
+            </div>
+            <div class="range-52w card-panel" id="range-52w" hidden></div>
+            <div class="analysis-strip" id="analysis-strip"></div>
+            <section class="panel">
+              <div class="panel-body">
+                <div class="chart-toolbar">
+                  <div class="chart-ranges" id="chart-ranges"></div>
+                  <div class="chart-chips">
+                    <button type="button" class="chip active" data-chart-mode="line">Line</button>
+                    <button type="button" class="chip" data-chart-mode="candle">Candles</button>
+                    <span class="chip-sep"></span>
+                    <button type="button" class="chip active" data-chart-toggle="showMA20">MA20</button>
+                    <button type="button" class="chip active" data-chart-toggle="showMA50">MA50</button>
+                    <button type="button" class="chip active" data-chart-toggle="showVolume">Vol</button>
+                  </div>
+                </div>
+                <div class="chart-wrap">
+                  <div id="chart-tooltip" class="chart-tooltip hidden"></div>
+                  <canvas id="main-chart" class="main-chart"></canvas>
+                </div>
+              </div>
+            </section>
+            <details class="data-more panel panel--details">
+              <summary>More data & fundamentals</summary>
+              <div class="stock-stats" id="stock-stats"></div>
+            </details>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../shared/parts/money.format/index.js"></script>
+    <script src="../../shared/parts/finance.ohlc/index.js"></script>
+    <script src="lib/utils.js"></script>
+    <script src="lib/market-modes.js"></script>
+    <script src="lib/analysis.js"></script>
+    <script src="lib/charts.js"></script>
+    <script src="i18n.js"></script>
+    <script src="pages/dashboard.js"></script>
+    <script src="pages/search.js"></script>
+    <script src="pages/portfolio.js"></script>
+    <script src="pages/alerts.js"></script>
+    <script src="pages/buylist.js"></script>
+    <script src="pages/stock.js"></script>
+    <script src="pages/ai-analysis.js"></script>
+    <script src="ai-chat.js"></script>
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

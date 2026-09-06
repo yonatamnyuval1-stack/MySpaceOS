@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="booting">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Space</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #0a0e14;
+        overflow: hidden;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+      }
+      html.booting .shell {
+        visibility: hidden;
+      }
+      html.boot-splash-skip .boot-splash {
+        display: none;
+      }
+      html.boot-splash-skip.booting .shell {
+        visibility: visible;
+      }
+      .boot-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.15rem;
+        background: #0a0e14;
+      }
+      .boot-splash-stage {
+        position: relative;
+        width: 112px;
+        height: 112px;
+        display: grid;
+        place-items: center;
+      }
+      .boot-splash-logo {
+        position: relative;
+        z-index: 1;
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+        opacity: 0.92;
+      }
+      .boot-splash-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          transparent 0deg,
+          transparent 250deg,
+          rgba(120, 210, 240, 0.08) 280deg,
+          rgba(140, 220, 245, 0.55) 318deg,
+          rgba(120, 210, 240, 0.1) 348deg,
+          transparent 360deg
+        );
+        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+        mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+        animation: boot-spill-spin 5s linear infinite;
+      }
+      .boot-splash-pct {
+        margin: 0;
+        min-width: 3.5ch;
+        text-align: center;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        font-variant-numeric: tabular-nums;
+        color: #8fd6ef;
+      }
+      @keyframes boot-spill-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="shell-atlas.css" />
+    <script>
+      (function () {
+        if (new URLSearchParams(location.search).get("secondary") === "1") {
+          document.documentElement.classList.add("boot-splash-skip");
+          document.documentElement.classList.remove("booting");
+          return;
+        }
+        window.__bootSplashStartedAt = performance.now();
+        window.__bootSplashReady = false;
+        function tickBootPct() {
+          var el = document.getElementById("boot-splash-pct");
+          var splash = document.getElementById("boot-splash");
+          if (!el || !splash || splash.classList.contains("is-done")) return;
+          var elapsed = performance.now() - window.__bootSplashStartedAt;
+          var pct = window.__bootSplashReady
+            ? 100
+            : elapsed >= 5000
+              ? 99
+              : (elapsed / 5000) * 99;
+          el.textContent = Math.round(pct) + "%";
+          if (pct < 100) requestAnimationFrame(tickBootPct);
+        }
+        requestAnimationFrame(tickBootPct);
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="boot-splash" id="boot-splash" aria-busy="true" aria-live="polite" role="status">
+      <div class="boot-splash-stage">
+        <div class="boot-splash-ring" aria-hidden="true"></div>
+        <img class="boot-splash-logo" src="brand/atom-white.png" alt="" width="64" height="64" />
+      </div>
+      <p class="boot-splash-pct" id="boot-splash-pct">0%</p>
+    </div>
+    <div class="shell" id="desktop">
+      <aside class="app-rail" id="app-rail" aria-label="Apps" aria-hidden="true">
+        <button type="button" class="app-rail-scroll-btn" id="app-rail-up" title="Scroll up" aria-label="Scroll up" hidden>▴</button>
+        <div class="app-rail-scroll" id="app-rail-apps">
+          <div class="app-rail-recent" id="app-rail-recent" aria-label="Recent apps"></div>
+          <div class="app-rail-divider app-rail-divider--inset" id="app-rail-recent-divider" hidden aria-hidden="true"></div>
+          <div class="app-rail-all" id="app-rail-all"></div>
+        </div>
+        <button type="button" class="app-rail-scroll-btn" id="app-rail-down" title="Scroll down" aria-label="Scroll down" hidden>▾</button>
+        <div class="app-rail-divider" aria-hidden="true"></div>
+        <div class="app-rail-scroll app-rail-scroll--services" id="app-rail-services" aria-label="Platform series"></div>
+      </aside>
+      <main class="workspace" aria-label="Desktop">
+        <section class="app-grid" id="app-grid"></section>
+
+        <section class="app-frame hidden" id="app-frame" aria-label="Application">
+          <div class="app-frame-chrome" id="app-frame-chrome">
+            <button type="button" class="frame-tool-btn frame-tool-btn--back" id="frame-back" title="Back to desktop">←</button>
+            <div class="app-tab-strip" id="app-tab-strip" role="tablist" aria-label="Open tabs"></div>
+            <button type="button" class="frame-tool-btn" id="tab-snap" title="Snap side by side">⧉</button>
+          </div>
+          <div class="app-frame-nav hidden" id="app-frame-nav">
+            <div class="frame-omnibox">
+              <input
+                type="text"
+                id="frame-url"
+                class="frame-url-input"
+                placeholder="Search apps, commands, or enter a URL"
+                spellcheck="false"
+                autocomplete="off"
+              />
+              <div class="frame-omni-suggest hidden" id="frame-omni-suggest" role="listbox"></div>
+            </div>
+            <button type="button" class="frame-tool-btn" id="frame-go" title="Go">Go</button>
+            <button type="button" class="frame-tool-btn" id="frame-refresh" title="Refresh (F5)">↻</button>
+          </div>
+          <div class="app-tab-panels" id="app-tab-panels"></div>
+        </section>
+        <div class="taskbar-peek hidden" id="taskbar-peek" aria-hidden="true">
+          <div class="taskbar-peek-card">
+            <p class="taskbar-peek-title" id="taskbar-peek-title"></p>
+            <p class="taskbar-peek-meta" id="taskbar-peek-meta"></p>
+            <div class="taskbar-peek-preview" id="taskbar-peek-preview"></div>
+          </div>
+        </div>
+
+        <section class="panel hidden" id="builtin-panel">
+          <button type="button" class="back-btn" id="back-btn">Back to desktop</button>
+          <div class="welcome-hub" id="welcome-hub">
+            <header class="welcome-hero">
+              <div class="welcome-hero-top">
+                <p class="welcome-kicker">My Space</p>
+                <button type="button" class="welcome-platform-btn" id="btn-platform-services-welcome" title="Platform services">
+                  <img src="brand/atom-white.png" alt="" width="16" height="16" />
+                  <span>Services</span>
+                </button>
+              </div>
+              <h2 id="welcome-title">Command center</h2>
+              <p id="welcome-subtitle">Your work environment for code and entrepreneurship.</p>
+            </header>
+
+            <div class="welcome-status" id="welcome-status" aria-live="polite"></div>
+
+            <div class="welcome-layout">
+              <section class="welcome-section welcome-section--apps">
+                <div class="welcome-section-head">
+                  <h3>Apps</h3>
+                  <span class="welcome-section-meta" id="welcome-apps-count"></span>
+                </div>
+                <div class="welcome-apps" id="welcome-apps"></div>
+              </section>
+
+              <div class="welcome-side">
+                <section class="welcome-section">
+                  <div class="welcome-section-head">
+                    <h3>Quick actions</h3>
+                  </div>
+                  <div class="welcome-actions" id="welcome-actions">
+                    <button type="button" class="welcome-action" data-welcome-action="desktop">Desktop</button>
+                    <button type="button" class="welcome-action" data-welcome-action="start">Start menu</button>
+                    <button type="button" class="welcome-action" data-welcome-action="add">Add program</button>
+                    <button type="button" class="welcome-action" data-welcome-action="settings">Settings</button>
+                    <button type="button" class="welcome-action" data-welcome-action="sysinfo">System Info</button>
+                  </div>
+                </section>
+
+                <section class="welcome-section">
+                  <div class="welcome-section-head">
+                    <h3>Open now</h3>
+                  </div>
+                  <div class="welcome-running" id="welcome-running"></div>
+                </section>
+
+                <section class="welcome-section">
+                  <div class="welcome-section-head">
+                    <h3>Tips</h3>
+                  </div>
+                  <ul class="welcome-tips" id="welcome-tips"></ul>
+                </section>
+
+                <section class="welcome-section">
+                  <div class="welcome-section-head">
+                    <h3>Last updates</h3>
+                  </div>
+                  <div class="welcome-changelog" id="welcome-changelog"></div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="taskbar" role="toolbar" aria-label="Taskbar">
+        <div class="taskbar-section taskbar-section--start">
+          <button type="button" class="taskbar-start" id="btn-start" title="Start — add programs">
+            <span class="taskbar-start-icon" aria-hidden="true">⊞</span>
+          </button>
+          <button type="button" class="taskbar-pin taskbar-connect" id="btn-connect" title="Connect — find services" aria-label="Open Connect">
+            <svg class="taskbar-search-icon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false">
+              <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M16.5 16.5L21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button type="button" class="taskbar-pin" id="btn-settings" title="Settings">⚙</button>
+          <button type="button" class="taskbar-pin taskbar-bell" id="btn-notifications" title="Notifications" aria-label="Notifications">
+            <span class="taskbar-bell-badge" id="notifications-badge" hidden>0</span>
+          </button>
+          <button type="button" class="taskbar-pin taskbar-ask-ai" id="btn-ask-ai" title="Mind Chat" aria-label="Mind Chat" aria-expanded="false">
+            <img class="taskbar-ask-ai-logo" src="brand/atom-rose.png" alt="" width="18" height="18" />
+          </button>
+        </div>
+        <div class="taskbar-section taskbar-section--apps">
+          <div id="taskbar-apps" class="taskbar-apps" aria-label="Open applications"></div>
+        </div>
+        <div class="taskbar-section taskbar-section--tray">
+          <button type="button" class="taskbar-platform-btn" id="btn-platform-services" title="Platform services" aria-label="Platform services">
+            <img src="brand/atom-white.png" alt="" width="16" height="16" />
+          </button>
+          <div class="taskbar-account-wrap" id="taskbar-account-wrap">
+            <button
+              type="button"
+              class="taskbar-account-btn"
+              id="btn-account"
+              title="My Space account"
+              aria-label="My Space account"
+              aria-haspopup="menu"
+              aria-expanded="false"
+            >
+              <img class="taskbar-account-avatar" id="account-avatar" src="brand/atom-white.png" alt="" width="18" height="18" />
+              <span class="taskbar-account-label" id="account-label">Guest</span>
+            </button>
+            <div class="taskbar-account-menu hidden" id="account-menu" role="menu" aria-label="Account">
+              <p class="taskbar-account-menu-head" id="account-menu-head">Not signed in</p>
+              <button type="button" class="taskbar-account-menu-item" id="account-sign-in" role="menuitem">Sign in</button>
+              <button type="button" class="taskbar-account-menu-item" id="account-create" role="menuitem">Create account</button>
+              <button type="button" class="taskbar-account-menu-item hidden" id="account-switch" role="menuitem">Switch account</button>
+              <button type="button" class="taskbar-account-menu-item taskbar-account-menu-item--danger hidden" id="account-sign-out" role="menuitem">Sign out</button>
+            </div>
+          </div>
+          <span class="taskbar-tray-title" id="taskbar-title">My Space</span>
+          <time class="taskbar-clock" id="clock" aria-live="polite"></time>
+        </div>
+      </footer>
+    </div>
+
+    <div class="os-account-sheet hidden" id="os-account-sheet" role="dialog" aria-modal="true" aria-labelledby="os-account-title">
+      <div class="os-account-backdrop" id="os-account-backdrop"></div>
+      <div class="os-account-card">
+        <h2 id="os-account-title" class="os-account-title">
+          <img class="os-account-logo" src="brand/atom-white.png" alt="" width="28" height="28" />
+          <span>My Space account</span>
+        </h2>
+        <p class="os-account-sub" id="os-account-sub">Sign in to sync desktop settings to your profile</p>
+        <div class="os-account-tabs" id="os-account-tabs">
+          <button type="button" class="os-account-tab active" id="os-account-tab-signin" data-mode="signin">Sign in</button>
+          <button type="button" class="os-account-tab" id="os-account-tab-register" data-mode="register">Create account</button>
+        </div>
+        <form class="os-account-form" id="os-account-form">
+          <label class="os-account-label" for="os-account-username">Username</label>
+          <input type="text" id="os-account-username" class="os-account-input" autocomplete="username" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9_]+" />
+          <label class="os-account-label" for="os-account-password">Password</label>
+          <input type="password" id="os-account-password" class="os-account-input" autocomplete="current-password" required minlength="6" />
+          <label class="os-account-label hidden" for="os-account-password2" id="os-account-label-password2">Confirm password</label>
+          <input type="password" id="os-account-password2" class="os-account-input hidden" autocomplete="new-password" minlength="6" />
+          <label class="os-account-check">
+            <input type="checkbox" id="os-account-remember" checked />
+            <span>Keep me signed in</span>
+          </label>
+          <p class="os-account-error hidden" id="os-account-error" role="alert"></p>
+          <button type="submit" class="os-account-submit" id="os-account-submit">Continue</button>
+          <button type="button" class="os-account-cancel" id="os-account-cancel">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="icon-utils.js"></script>
+    <script src="desktop-utils.js"></script>
+    <script src="app-rules.js"></script>
+    <script src="config-store.js"></script>
+    <script src="app-prefs.js"></script>
+    <script src="drag-layout.js"></script>
+    <script src="context-menu.js"></script>
+    <script src="shell-config.js"></script>
+    <script src="geo-country-index.js"></script>
+    <script src="shell-commands.js"></script>
+    <script src="myspace-language.js"></script>
+    <script src="shell-catalog.js"></script>
+    <script src="shell-when.js"></script>
+    <script src="shell-line.js"></script>
+    <script src="command-palette.js"></script>
+    <script src="shortcuts-help.js"></script>
+    <script src="hot-corners.js"></script>
+    <script src="focus-mode.js"></script>
+    <script src="desktop-spaces.js"></script>
+    <script src="app-menu.js"></script>
+    <script src="start-menu.js"></script>
+    <script src="modals.js"></script>
+    <script src="app-picker.js"></script>
+    <script src="workspace-view.js"></script>
+    <script src="wallpapers.js"></script>
+    <script src="wallpapers-photos.js"></script>
+    <script src="settings-page.js"></script>
+    <script src="taskbar-apps.js"></script>
+    <script src="notifications-bell.js"></script>
+    <script src="app-rail.js"></script>
+    <script src="platform-catalog.js"></script>
+    <script src="shell-atlas.js"></script>
+    <script src="msl-panel.js"></script>
+    <script src="parts-panel.js"></script>
+    <script src="link-panel.js"></script>
+    <script src="link-relay.js"></script>
+    <script src="jobs-panel.js"></script>
+    <script src="resolve-panel.js"></script>
+    <script src="updates-panel.js"></script>
+    <script src="network-panel.js"></script>
+    <script src="info-panel.js"></script>
+    <script src="backup-panel.js"></script>
+    <script src="storage-panel.js"></script>
+    <script src="themes-panel.js"></script>
+    <script src="bridge-panel.js"></script>
+    <script src="files-panel.js"></script>
+    <script src="mind-panel.js"></script>
+    <script src="browser-shim.js"></script>
+    <script src="ai-chat.js"></script>
+    <script src="renderer.js"></script>
+  </body>
+</html>

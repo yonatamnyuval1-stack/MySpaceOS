@@ -1,0 +1,155 @@
+{
+  "name": "my-space",
+  "version": "0.1.70",
+  "description": "Personal desktop space on top of Windows",
+  "main": "main.js",
+  "author": "Yonatan",
+  "scripts": {
+    "preview": "powershell -NoProfile -ExecutionPolicy Bypass -File ./serve.ps1",
+    "start": "electron .",
+    "history:build": "node scripts/build-history-cache.js",
+    "geography:build": "node scripts/build-geography-learn.js",
+    "code-lexicon:build": "node scripts/build-code-lexicon.js",
+    "icons:build": "node scripts/build-icon-library.js",
+    "smoke:shell": "electron ./scripts/smoke-shell-lang.js",
+    "space:stars": "node scripts/generate-space-stars.js",
+    "space:ocean": "node scripts/generate-space-ocean.js",
+    "space:earth": "node scripts/generate-earth-world.js",
+    "space:earth:fast": "node scripts/generate-earth-world.js --no-images",
+    "space:reports": "node scripts/build-space-reports.js",
+    "install-startup": "powershell -ExecutionPolicy Bypass -File ./install.ps1",
+    "build": "electron-builder --win",
+    "build:dir": "electron-builder --win --dir",
+    "build:mac": "electron-builder --mac",
+    "build:mac:dir": "electron-builder --mac --dir",
+    "build:linux": "electron-builder --linux",
+    "build:linux:dir": "electron-builder --linux --dir"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8",
+    "lucide-static": "^0.511.0"
+  },
+  "build": {
+    "appId": "com.myspace.desktop",
+    "productName": "My Space",
+    "copyright": "Copyright © 2026",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "main/**/*",
+      "src/**/*",
+      "apps/**/*",
+      "world-maps/**/*",
+      "!world-maps/node_modules/**",
+      "!world-maps/dist/**",
+      "!world-maps/*.bat",
+      "data/**/*",
+      "config/apps.json",
+      "config/recommended-apps.json",
+      "config/apps.example.json",
+      "config/updates.json",
+      "config/resolve-playbooks.json",
+      "config/platform-services.json",
+      "config/mail-oauth.example.json",
+      "!config/user-config.json",
+      "!**/*.md",
+      "!dist/**",
+      "!scripts/**"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "My Space"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.productivity",
+      "darkModeSupport": true,
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "dmg": {
+      "title": "My Space",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "fileAssociations": [
+      {
+        "ext": "space",
+        "name": "My Space File",
+        "description": "My Space document",
+        "role": "Editor"
+      }
+    ],
+    "protocols": [
+      {
+        "name": "My Space",
+        "schemes": [
+          "myspace"
+        ]
+      }
+    ]
+  },
+  "dependencies": {
+    "@composio/core": "^0.17.0",
+    "koffi": "^3.1.2",
+    "qrcode": "^1.5.4"
+  }
+}

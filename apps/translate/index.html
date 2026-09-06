@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Translate</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon">🌐</span>
+          <div>
+            <strong>Translate</strong>
+            <span class="brand-sub" id="brand-sub">100+ languages</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="translate"><span class="nav-icon">⇆</span> Translate</button>
+          <button type="button" class="nav-item" data-page="history"><span class="nav-icon">🕘</span> History</button>
+          <button type="button" class="nav-item" data-page="phrases"><span class="nav-icon">💬</span> Phrases</button>
+          <button type="button" class="nav-item" data-page="batch"><span class="nav-icon">📋</span> Batch</button>
+          <button type="button" class="nav-item" data-page="settings"><span class="nav-icon">⚙</span> Settings</button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p>Google + MyMemory · offline history</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Translate</h1>
+            <p class="subtitle" id="page-subtitle">100+ languages</p>
+          </div>
+        </header>
+
+        <section class="page active" id="page-translate" data-page="translate">
+          <div class="lang-bar">
+            <select id="lang-from" class="lang-select"></select>
+            <button type="button" class="btn btn-ghost swap-btn" id="btn-swap" title="Swap languages">⇄</button>
+            <select id="lang-to" class="lang-select"></select>
+            <button type="button" class="btn btn-primary" id="btn-translate">Translate</button>
+          </div>
+          <div class="recent-pairs" id="recent-pairs"></div>
+          <div class="translate-grid">
+            <div class="translate-pane">
+              <div class="pane-toolbar">
+                <span class="pane-label">Source</span>
+                <span class="pane-count muted" id="src-count">0 chars</span>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-paste">Paste</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-copy-src">Copy</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-speak-src" title="Listen">🔊</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-clear">Clear</button>
+              </div>
+              <textarea id="source-text" class="translate-text" placeholder="Enter text to translate… (Ctrl+Enter)" autofocus></textarea>
+            </div>
+            <div class="translate-pane result-pane">
+              <div class="pane-toolbar">
+                <span class="pane-label">Translation</span>
+                <button type="button" class="btn btn-ghost btn-sm fav-star" id="btn-star" title="Save favorite">☆</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-copy-res">Copy</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-speak-res" title="Listen">🔊</button>
+              </div>
+              <textarea id="result-text" class="translate-text result" readonly placeholder="Translation appears here…"></textarea>
+            </div>
+          </div>
+          <p class="translate-meta muted" id="translate-meta"></p>
+          <p class="translate-status" id="translate-status"></p>
+          <div class="alternatives" id="alternatives"></div>
+          <p class="romanization muted" id="romanization" hidden></p>
+          <div class="definitions" id="definitions"></div>
+        </section>
+
+        <section class="page" id="page-history" data-page="history" hidden>
+          <div class="history-toolbar">
+            <button type="button" class="chip active" data-filter="all">All</button>
+            <button type="button" class="chip" data-filter="recent">Recent</button>
+            <button type="button" class="chip" data-filter="favorites">★ Favorites</button>
+            <span class="spacer"></span>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-history">Clear (keep ★)</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-all">Clear all</button>
+          </div>
+          <div class="history-list" id="history-list"></div>
+        </section>
+
+        <section class="page" id="page-phrases" data-page="phrases" hidden>
+          <div class="phrases-head">
+            <label>Target language <select id="phrases-lang" class="lang-select"></select></label>
+          </div>
+          <div class="phrases-layout">
+            <nav class="phrase-cats" id="phrase-cats"></nav>
+            <div class="phrase-content" id="phrase-content"></div>
+          </div>
+        </section>
+
+        <section class="page" id="page-batch" data-page="batch" hidden>
+          <div class="lang-bar">
+            <select id="batch-from" class="lang-select"></select>
+            <span class="arrow-muted">→</span>
+            <select id="batch-to" class="lang-select"></select>
+            <button type="button" class="btn btn-primary" id="btn-batch-run">Translate all</button>
+          </div>
+          <p class="muted batch-hint">One line per row · max 100 lines</p>
+          <div class="batch-grid">
+            <div class="translate-pane">
+              <div class="pane-toolbar">
+                <span class="pane-label">Input lines</span>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-batch-paste">Paste</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-batch-clear">Clear</button>
+              </div>
+              <textarea id="batch-input" class="translate-text batch-area" placeholder="Line one&#10;Line two&#10;Line three…"></textarea>
+            </div>
+            <div class="translate-pane">
+              <div class="pane-toolbar">
+                <span class="pane-label">Output</span>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-batch-copy">Copy all</button>
+              </div>
+              <textarea id="batch-output" class="translate-text batch-area result" readonly></textarea>
+            </div>
+          </div>
+          <p class="batch-status muted" id="batch-status"></p>
+        </section>
+
+        <section class="page" id="page-settings" data-page="settings" hidden>
+          <div class="settings-grid card-panel">
+            <label>Default source <select id="set-from" class="lang-select"></select></label>
+            <label>Default target <select id="set-to" class="lang-select"></select></label>
+            <label class="check-row"><input type="checkbox" id="set-auto" checked /> Auto-translate while typing</label>
+            <label class="check-row"><input type="checkbox" id="set-history" checked /> Save translation history</label>
+            <label>Font size <input type="range" id="set-font" min="12" max="22" value="15" /></label>
+            <p class="muted">History entries: <strong id="history-count">0</strong></p>
+            <div class="settings-actions">
+              <button type="button" class="btn btn-primary" id="btn-save-settings">Save settings</button>
+              <button type="button" class="btn btn-ghost" id="btn-export">Export data</button>
+              <button type="button" class="btn btn-ghost" id="btn-import">Import from clipboard</button>
+              <span class="save-status muted" id="save-status"></span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="lib/languages.js"></script>
+    <script src="lib/utils.js"></script>
+    <script src="pages/main.js"></script>
+    <script src="pages/history.js"></script>
+    <script src="pages/phrases.js"></script>
+    <script src="pages/batch.js"></script>
+    <script src="pages/settings.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

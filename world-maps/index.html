@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: blob: https:; connect-src 'self' https://tiles.openfreemap.org https://*.openfreemap.org https://demotiles.maplibre.org https://unpkg.com; worker-src blob:; child-src blob:;"
+    />
+    <title>World Maps</title>
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+    <link rel="stylesheet" href="assets/settings-panel.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">🌍</span>
+          <div>
+            <strong>World Maps</strong>
+            <span class="brand-sub" id="brand-sub" data-i18n="brandSub">Explore the world</span>
+          </div>
+        </div>
+
+        <form class="search" id="search-form" role="search">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input
+            type="search"
+            id="search-input"
+            class="search-input"
+            data-i18n="searchPlaceholder"
+            data-i18n-attr="placeholder"
+            placeholder="Search city, country, address…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button type="submit" class="btn btn-primary btn-sm" id="search-btn" data-i18n="searchGo">Go</button>
+        </form>
+        
+                        <div class="topbar-actions">
+          <button type="button" class="btn btn-ghost btn-sm btn-settings" id="btn-settings" data-i18n="settings" data-i18n-attr="title" title="Settings">⚙️</button>
+          <button type="button" class="btn btn-ghost btn-sm btn-icon" id="btn-world" data-i18n="world" data-i18n-attr="title" title="World">🌐</button>
+        </div>
+      </header>
+
+      <div class="map-wrap">
+        <div id="map" class="map" role="application" aria-label="Interactive world map"></div>
+
+        <div class="search-results hidden" id="search-results" role="listbox"></div>
+
+        <div class="map-hint" id="map-hint" data-i18n="mapHint">
+          Drag to pan · Scroll to zoom · Double-click to zoom in · Right-click to add a note
+        </div>
+
+        <div class="map-context-menu hidden" id="map-context-menu" role="menu">
+          <button type="button" class="ctx-item" id="ctx-add-note" role="menuitem" data-i18n="ctxAddNote">📝 Add note here</button>
+          <button type="button" class="ctx-item" id="ctx-copy-coords" role="menuitem" data-i18n="ctxCopyCoords">📋 Copy coordinates</button>
+        </div>
+
+        <aside class="profiles-panel hidden" id="profiles-panel" aria-label="Country profiles">
+          <header class="profiles-panel-head">
+            <button type="button" class="btn btn-ghost btn-sm profiles-back hidden" id="profiles-back" data-i18n="back" data-i18n-attr="aria-label" aria-label="Back">←</button>
+            <h2 id="profiles-title" data-i18n="profilesTitle">Country profiles</h2>
+            <button type="button" class="btn btn-ghost btn-sm" id="profiles-panel-close" data-i18n="close" data-i18n-attr="aria-label" aria-label="Close">✕</button>
+          </header>
+          <div class="profiles-search-wrap hidden" id="profiles-search-wrap">
+            <input
+              type="search"
+              id="profiles-search"
+              class="profiles-search"
+              data-i18n="profilesSearchPlaceholder"
+              data-i18n-attr="placeholder"
+              placeholder="Search country — e.g. Pakistan, Israel, FR…"
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </div>
+          <div class="profiles-panel-body" id="profiles-body"></div>
+        </aside>
+
+        <div class="settings-overlay hidden" id="settings-overlay" aria-hidden="true">
+          <div class="settings-overlay-inner">
+            <header class="settings-overlay-head">
+              <h2 data-i18n="settings">Settings</h2>
+              <button type="button" class="btn btn-ghost btn-sm" id="settings-close" data-i18n="close" data-i18n-attr="aria-label" aria-label="Close">✕</button>
+            </header>
+            <div class="settings-overlay-body" id="settings-root"></div>
+          </div>
+        </div>
+      </div>
+
+      <dialog class="note-modal" id="note-modal">
+        <form method="dialog" class="note-modal-inner" id="note-form">
+          <header class="note-modal-head">
+            <h3 data-i18n="addNoteTitle">Add map note</h3>
+            <button type="button" class="btn btn-ghost btn-sm" id="note-modal-close" data-i18n="close" data-i18n-attr="aria-label" aria-label="Close">✕</button>
+          </header>
+          <p class="note-modal-coords" id="note-modal-coords">—</p>
+          <fieldset class="category-fieldset">
+            <legend data-i18n="categoryLegend">Category</legend>
+            <div class="category-grid" id="category-grid"></div>
+          </fieldset>
+          <label class="field-label" for="note-title" data-i18n="noteTitleLabel">Title</label>
+          <input type="text" id="note-title" class="field-input" data-i18n="noteTitlePlaceholder" data-i18n-attr="placeholder" placeholder="e.g. Sunset viewpoint" maxlength="120" required />
+          <footer class="note-modal-foot">
+            <button type="button" class="btn btn-ghost" id="note-cancel" data-i18n="cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="note-save" data-i18n="saveNote">Save note</button>
+          </footer>
+        </form>
+      </dialog>
+
+      <footer class="statusbar">
+        <span id="status-coords">—</span>
+        <span class="status-sep">·</span>
+        <span id="status-place" dir="auto" data-i18n="statusPlaceDefault">Click the map or search a place</span>
+        <span class="status-sep">·</span>
+        <span id="status-zoom">Zoom —</span>
+        <span class="status-attribution">
+          © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>
+          · <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a>
+        </span>
+      </footer>
+    </div>
+
+    <script src="countries-data.js"></script>
+    <script src="i18n.js"></script>
+    <script src="settings-ui.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    <script src="app.js"></script>
+    <script src="ai-tools.js"></script>
+    <script src="ai-chat.js"></script>
+  </body>
+</html>

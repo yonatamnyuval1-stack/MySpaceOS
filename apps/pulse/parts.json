@@ -1,0 +1,13 @@
+{
+  "note": "Pulse / Link Bus platform service",
+  "exports": [
+    {
+      "ref": "pulse.profile",
+      "note": "pulse.json normalizer"
+    },
+    {
+      "ref": "pulse.topic",
+      "note": "Topic pattern matcher"
+    }
+  ]
+}

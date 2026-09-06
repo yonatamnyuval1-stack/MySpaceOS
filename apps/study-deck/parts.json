@@ -1,0 +1,13 @@
+{
+  "note": "Study Deck — .space deck kind",
+  "exports": [
+    {
+      "ref": "cards.srs",
+      "note": "SRS scheduling"
+    },
+    {
+      "ref": "space.format",
+      "note": "Deck .space import/export"
+    }
+  ]
+}

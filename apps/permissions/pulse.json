@@ -1,0 +1,12 @@
+{
+  "name": "Permissions",
+  "description": "Platform access control: AI tools, Jobs, Bridge, alerts, external",
+  "commands": [
+    {
+      "verb": "open",
+      "summary": "Open Permissions overview or a section",
+      "args": { "page": "overview | tools | notifications | jobs | bridge | external | about" },
+      "examples": ["pulse(send permissions open)", "pulse(send permissions open page:tools)"]
+    }
+  ]
+}

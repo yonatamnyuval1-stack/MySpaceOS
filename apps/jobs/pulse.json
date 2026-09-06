@@ -1,0 +1,12 @@
+{
+  "name": "Jobs",
+  "description": "OS compute queue and capacity contract",
+  "commands": [
+    {
+      "verb": "open",
+      "summary": "Open Jobs queue, capacity, or enqueue",
+      "args": { "page": "queue | active | done | enqueue | capacity | about" },
+      "examples": ["pulse(send jobs open)", "pulse(send jobs open page:capacity)"]
+    }
+  ]
+}

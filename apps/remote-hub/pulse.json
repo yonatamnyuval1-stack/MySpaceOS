@@ -1,0 +1,110 @@
+{
+  "profile": {
+    "tagline": "Remote machines — connect, wake & scan",
+    "icon": "🖥️",
+    "color": "#7dd3fc"
+  },
+  "commands": [
+    {
+      "verb": "connect",
+      "title": "Connect",
+      "description": "Connect to a machine",
+      "delivery": "ipc",
+      "channel": "connect",
+      "input": {
+        "id": "string?",
+        "host": "string?",
+        "mode": "string?"
+      }
+    },
+    {
+      "verb": "wake",
+      "title": "Wake-on-LAN",
+      "description": "Send WoL packet",
+      "delivery": "ipc",
+      "channel": "wol.wake",
+      "input": {
+        "id": "string?",
+        "mac": "string?"
+      }
+    },
+    {
+      "verb": "scan",
+      "title": "Network scan",
+      "description": "Scan the LAN",
+      "delivery": "ipc",
+      "channel": "network.scan"
+    },
+    {
+      "verb": "check",
+      "title": "Check machines",
+      "description": "Probe saved machines",
+      "delivery": "ipc",
+      "channel": "machines.check"
+    },
+    {
+      "verb": "export",
+      "title": "Export machines",
+      "description": "Export machine list",
+      "delivery": "ipc",
+      "channel": "machines.export"
+    },
+    {
+      "verb": "import",
+      "title": "Import machines",
+      "description": "Import machine list",
+      "delivery": "ipc",
+      "channel": "machines.import",
+      "input": {
+        "json": "string?"
+      }
+    },
+    {
+      "verb": "agentProbe",
+      "title": "Agent probe",
+      "description": "Probe remote agent",
+      "delivery": "ipc",
+      "channel": "agent.probe",
+      "input": {
+        "host": "string?"
+      }
+    },
+    {
+      "verb": "screenCapture",
+      "title": "Screen capture",
+      "description": "Capture remote screen",
+      "delivery": "ipc",
+      "channel": "screen.capture",
+      "input": {
+        "host": "string?"
+      }
+    },
+    {
+      "verb": "tailscale",
+      "title": "Tailscale status",
+      "description": "Tailscale status",
+      "delivery": "ipc",
+      "channel": "tailscale.status"
+    },
+    {
+      "verb": "clipboard",
+      "title": "Copy text",
+      "description": "Copy to clipboard",
+      "delivery": "ipc",
+      "channel": "clipboard.copy",
+      "input": {
+        "text": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Remote Hub",
+      "description": "Open Remote Hub UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,9 @@
+{
+  "note": "Real Parts published from drift (code lives in shared/parts — clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "time.when",
+      "note": "Activity timestamp labels"
+    }
+  ]
+}

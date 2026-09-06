@@ -1,0 +1,13 @@
+{
+  "id": "space",
+  "name": "Space",
+  "version": "1.0.0",
+  "icon": "🌌",
+  "description": "Space exploration — stars, NASA lab, public reports & physics",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

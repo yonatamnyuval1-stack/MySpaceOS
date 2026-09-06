@@ -1,0 +1,13 @@
+{
+  "id": "world-clock",
+  "name": "Clock",
+  "version": "1.2.0",
+  "description": "World clocks, meeting planner, timer, pomodoro, and stopwatch",
+  "icon": "🕐",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

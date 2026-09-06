@@ -1,0 +1,125 @@
+{
+  "profile": {
+    "tagline": "Flashcards — decks, cards & grading",
+    "icon": "🃏",
+    "color": "#c084fc"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List decks",
+      "description": "List study decks",
+      "delivery": "ipc",
+      "channel": "decks.list"
+    },
+    {
+      "verb": "create",
+      "title": "Create deck",
+      "description": "Create a deck",
+      "delivery": "ipc",
+      "channel": "deck.create",
+      "input": {
+        "name": "string",
+        "description": "string?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get deck",
+      "description": "Fetch a deck",
+      "delivery": "ipc",
+      "channel": "deck.get",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "update",
+      "title": "Update deck",
+      "description": "Edit a deck",
+      "delivery": "ipc",
+      "channel": "deck.update",
+      "input": {
+        "id": "string",
+        "name": "string?"
+      }
+    },
+    {
+      "verb": "delete",
+      "title": "Delete deck",
+      "description": "Delete a deck",
+      "delivery": "ipc",
+      "channel": "deck.delete",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "cardAdd",
+      "title": "Add card",
+      "description": "Add a flashcard",
+      "delivery": "ipc",
+      "channel": "card.add",
+      "input": {
+        "deckId": "string",
+        "front": "string",
+        "back": "string"
+      }
+    },
+    {
+      "verb": "cardUpdate",
+      "title": "Update card",
+      "description": "Edit a card",
+      "delivery": "ipc",
+      "channel": "card.update",
+      "input": {
+        "id": "string",
+        "front": "string?",
+        "back": "string?"
+      }
+    },
+    {
+      "verb": "cardDelete",
+      "title": "Delete card",
+      "description": "Remove a card",
+      "delivery": "ipc",
+      "channel": "card.delete",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "grade",
+      "title": "Grade card",
+      "description": "Record a study grade",
+      "delivery": "ipc",
+      "channel": "card.grade",
+      "input": {
+        "id": "string",
+        "grade": "string|number"
+      }
+    },
+    {
+      "verb": "generate",
+      "title": "Generate cards",
+      "description": "AI-generate cards",
+      "delivery": "ipc",
+      "channel": "cards.generate",
+      "input": {
+        "deckId": "string",
+        "prompt": "string?"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Study Deck",
+      "description": "Open Study Deck UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?",
+        "id": "string?"
+      }
+    }
+  ],
+  "events": []
+}

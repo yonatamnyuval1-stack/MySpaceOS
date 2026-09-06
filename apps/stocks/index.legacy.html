@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stocks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.legacy.css" id="stocks-theme" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("myspace-stocks-ui-layout") !== "classic") {
+            location.replace("index.html");
+          }
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <div>
+            <strong>Stocks</strong>
+            <span class="brand-sub" id="brand-sub">v1.1 · Markets</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="dashboard">
+            <span class="nav-icon" aria-hidden="true">◆</span> <span data-i18n="nav.market">Market</span>
+          </button>
+          <button type="button" class="nav-item" data-page="portfolio">
+            <span class="nav-icon" aria-hidden="true">▣</span> <span data-i18n="nav.portfolio">Portfolio</span>
+          </button>
+          <button type="button" class="nav-item" data-page="alerts">
+            <span class="nav-icon" aria-hidden="true">◎</span> <span data-i18n="nav.alerts">Alerts</span>
+          </button>
+          <button type="button" class="nav-item" data-page="buylist">
+            <span class="nav-icon" aria-hidden="true">▤</span> <span data-i18n="nav.buylist">Buy list</span>
+          </button>
+          <button type="button" class="nav-item" data-page="ai-analysis">
+            <span class="nav-icon" aria-hidden="true">✦</span> <span data-i18n="nav.ai">AI Analysis</span>
+          </button>
+        </nav>
+        <div class="sidebar-foot">Live quotes · AI research</div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-brand">
+            <div class="topbar-text">
+              <h1 id="page-title">Market</h1>
+              <p class="subtitle" id="page-subtitle">NASDAQ watchlist</p>
+            </div>
+          </div>
+          <div class="topbar-search-wrap">
+            <input
+              type="search"
+              id="top-search"
+              class="top-search-input"
+              placeholder="Search symbols…"
+              data-i18n-attr="placeholder"
+              data-i18n="search.placeholder"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <div id="top-search-results" class="top-search-results" hidden></div>
+          </div>
+          <div class="topbar-actions" id="topbar-actions">
+            <div class="mode-switcher">
+              <button type="button" class="mode-btn" id="mode-btn" title="Switch market mode">
+                <span id="mode-btn-icon">📊</span>
+                <span id="mode-btn-label">Stocks</span>
+                <span class="mode-chevron">▾</span>
+              </button>
+              <div class="mode-menu" id="mode-menu" hidden></div>
+            </div>
+          </div>
+        </header>
+
+        <section class="page active" id="page-dashboard" data-page="dashboard">
+          <p class="error-banner" id="dash-error" hidden></p>
+          <div class="alert-banner" id="dash-alerts" hidden></div>
+          <p class="last-update muted" id="last-update"></p>
+
+          <h2 class="section-title" id="indices-section">Overview</h2>
+          <div class="indices-row" id="indices-row"></div>
+
+          <h2 class="section-title">Heatmap</h2>
+          <div class="heatmap" id="heatmap"></div>
+
+          <div class="movers-row">
+            <div class="movers-col">
+              <h3 class="movers-title up">▲ Top gainers</h3>
+              <div class="movers-list" id="gainers-list"></div>
+            </div>
+            <div class="movers-col">
+              <h3 class="movers-title down">▼ Top losers</h3>
+              <div class="movers-list" id="losers-list"></div>
+            </div>
+          </div>
+
+          <h2 class="section-title">Watchlist</h2>
+          <div class="table-wrap">
+            <table class="data-table" id="watchlist-table">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Price</th>
+                  <th>Change %</th>
+                  <th>Change</th>
+                  <th>Volume</th>
+                  <th id="col-mktcap">Market cap</th>
+                  <th>5D</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="watchlist-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="page" id="page-search" data-page="search" hidden aria-hidden="true"></section>
+
+        <section class="page" id="page-portfolio" data-page="portfolio" hidden>
+          <p class="error-banner" id="portfolio-error" hidden></p>
+          <div class="stats-row">
+            <div class="stat-card"><span class="stat-val" id="pf-value">$0</span><span class="stat-label">Total value</span></div>
+            <div class="stat-card"><span class="stat-val" id="pf-cost">$0</span><span class="stat-label">Cost basis</span></div>
+            <div class="stat-card"><span class="stat-val" id="pf-pl">$0</span><span class="stat-label">P/L</span></div>
+          </div>
+          <div class="card-panel hold-form">
+            <strong>Add / update holding</strong>
+            <div class="hold-row">
+              <input type="text" id="hold-symbol" class="field-input" placeholder="Symbol" />
+              <input type="number" id="hold-qty" class="field-input" placeholder="Qty" min="0" step="any" />
+              <input type="number" id="hold-cost" class="field-input" placeholder="Avg cost $" min="0" step="any" />
+              <button type="button" class="btn btn-primary" id="btn-save-holding">Save</button>
+            </div>
+          </div>
+          <h2 class="section-title">Holdings</h2>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Symbol</th><th>Qty</th><th>Avg cost</th><th>Price</th><th>Value</th><th>P/L</th><th>P/L %</th><th></th></tr></thead>
+              <tbody id="portfolio-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="page" id="page-buylist" data-page="buylist" hidden>
+          <p class="error-banner" id="buylist-error" hidden></p>
+          <div class="stats-row buylist-stats">
+            <div class="stat-card"><span class="stat-val" id="buylist-count">0</span><span class="stat-label">To buy</span></div>
+          </div>
+          <div class="card-panel hold-form">
+            <strong>Add to buy list</strong>
+            <div class="hold-row">
+              <input type="text" id="buylist-symbol" class="field-input" placeholder="Symbol (e.g. AAPL)" />
+              <input type="number" id="buylist-target" class="field-input" placeholder="Target price $" step="any" />
+              <input type="text" id="buylist-note" class="field-input" placeholder="Note (optional)" />
+              <button type="button" class="btn btn-primary" id="btn-add-buylist">Add</button>
+            </div>
+          </div>
+          <div id="buylist-items" class="buylist-wrap"></div>
+        </section>
+
+        <section class="page" id="page-alerts" data-page="alerts" hidden>
+          <p class="error-banner" id="alerts-error" hidden></p>
+          <div class="alert-banner" id="alerts-triggered" hidden></div>
+          <div class="card-panel hold-form">
+            <strong>New price alert</strong>
+            <div class="hold-row">
+              <input type="text" id="alert-symbol" class="field-input" placeholder="Symbol" />
+              <input type="number" id="alert-above" class="field-input" placeholder="Above $" step="any" />
+              <input type="number" id="alert-below" class="field-input" placeholder="Below $" step="any" />
+              <input type="text" id="alert-note" class="field-input" placeholder="Note (optional)" />
+              <button type="button" class="btn btn-primary" id="btn-add-alert">Add alert</button>
+            </div>
+          </div>
+          <div class="alerts-list" id="alerts-list"></div>
+        </section>
+
+        <section class="page" id="page-ai-analysis" data-page="ai-analysis" hidden>
+          <p class="error-banner" id="ai-error" hidden></p>
+          <div class="ai-toolbar card-panel">
+            <div class="ai-search-wrap" id="ai-search-wrap">
+              <label class="ai-label" for="ai-symbol-input" data-i18n="ai.symbol">Symbol</label>
+              <input
+                type="search"
+                id="ai-symbol-input"
+                class="field-input ai-symbol-input"
+                placeholder="AAPL, MSFT…"
+                data-i18n-attr="placeholder"
+                data-i18n="ai.symbolPlaceholder"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <div id="ai-search-results" class="top-search-results ai-search-results" hidden></div>
+            </div>
+            <div class="ai-selected" id="ai-selected"></div>
+            <div class="ai-actions">
+              <div class="ai-lang-switch" role="group" aria-label="Analysis language">
+                <span class="ai-label" data-i18n="ai.outputLang">Fill language</span>
+                <div class="ai-lang-row">
+                  <button type="button" class="ai-lang-btn is-active" id="btn-ai-lang-en" data-ai-lang="en">English</button>
+                  <button type="button" class="ai-lang-btn" id="btn-ai-lang-he" data-ai-lang="he">עברית</button>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" id="btn-ai-fill" disabled data-i18n="ai.fillAll">
+                Fill all with AI
+              </button>
+              <button type="button" class="btn btn-ghost" id="btn-ai-refresh" disabled data-i18n="ai.refresh">
+                Refresh
+              </button>
+              <button type="button" class="btn btn-ghost" id="btn-ai-open-detail" data-i18n="ai.openDetail">
+                Open detail
+              </button>
+            </div>
+          </div>
+          <p class="muted ai-meta" id="ai-meta"></p>
+          <div class="ai-cards" id="ai-cards"></div>
+          <p class="ai-disclaimer muted" data-i18n="ai.disclaimer">
+            Not investment advice. AI can be wrong — verify before acting.
+          </p>
+        </section>
+
+        <section class="page" id="page-stock" data-page="stock" hidden>
+          <button type="button" class="btn btn-ghost" id="stock-back">← Back to market</button>
+          <p class="error-banner" id="stock-error" hidden></p>
+          <header class="stock-head">
+            <div>
+              <h2 id="stock-symbol">—</h2>
+              <p id="stock-name" class="stock-name"></p>
+              <span id="stock-exchange" class="badge">NASDAQ</span>
+            </div>
+            <div class="stock-price-block">
+              <div id="stock-price" class="stock-price">—</div>
+              <div id="stock-change" class="stock-change">—</div>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-add-wl">+ Watchlist</button>
+              <button type="button" class="btn btn-accent btn-sm" id="btn-ai-analysis">AI Analysis</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-add-buylist">+ Buy list</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-add-portfolio">+ Portfolio</button>
+            </div>
+          </header>
+          <div class="card-panel hold-form stock-hold-form" id="stock-portfolio-form" hidden>
+            <span>Add to portfolio:</span>
+            <input type="number" id="stock-hold-qty" class="field-input" placeholder="Qty" min="0" step="any" />
+            <input type="number" id="stock-hold-cost" class="field-input" placeholder="Avg cost $" min="0" step="any" />
+            <button type="button" class="btn btn-primary btn-sm" id="btn-save-stock-hold">Save</button>
+          </div>
+          <div class="range-52w card-panel" id="range-52w" hidden></div>
+          <div class="analysis-strip" id="analysis-strip"></div>
+          <div class="chart-toolbar">
+            <div class="chart-ranges" id="chart-ranges"></div>
+            <div class="chart-chips">
+              <button type="button" class="chip active" data-chart-mode="line">Line</button>
+              <button type="button" class="chip" data-chart-mode="candle">Candles</button>
+              <span class="chip-sep"></span>
+              <button type="button" class="chip active" data-chart-toggle="showMA20">MA20</button>
+              <button type="button" class="chip active" data-chart-toggle="showMA50">MA50</button>
+              <button type="button" class="chip active" data-chart-toggle="showVolume">Vol</button>
+            </div>
+          </div>
+          <div class="chart-wrap card-panel">
+            <div id="chart-tooltip" class="chart-tooltip hidden"></div>
+            <canvas id="main-chart" class="main-chart"></canvas>
+          </div>
+          <details class="data-more">
+            <summary>More data & fundamentals</summary>
+            <div class="stock-stats" id="stock-stats"></div>
+          </details>
+        </section>
+      </main>
+    </div>
+
+    <script src="lib/utils.js"></script>
+    <script src="lib/market-modes.js"></script>
+    <script src="lib/analysis.js"></script>
+    <script src="lib/charts.js"></script>
+    <script src="i18n.js"></script>
+    <script src="pages/dashboard.js"></script>
+    <script src="pages/search.js"></script>
+    <script src="pages/portfolio.js"></script>
+    <script src="pages/alerts.js"></script>
+    <script src="pages/buylist.js"></script>
+    <script src="pages/stock.js"></script>
+    <script src="pages/ai-analysis.js"></script>
+    <script src="ai-chat.js"></script>
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,198 @@
+{
+  "disclaimer": "This hub collects publicly released U.S. government UAP documents, plus science and cultural context. Official reports investigate Unidentified Anomalous Phenomena, they do not confirm extraterrestrial visitors. Claims about aliens remain unproven unless backed by evidence.",
+  "overview": {
+    "title": "Aliens, UAP & the search for life",
+    "lead": "Three overlapping conversations often get mixed together: (1) scientific search for life beyond Earth, (2) military/government UAP reporting, and (3) popular culture about aliens. This page separates them so you can explore documents and ideas without confusing science fiction with evidence.",
+    "pillars": [
+      {
+        "title": "Astrobiology",
+        "text": "Looks for life as we know it. microbes, biosignatures in atmospheres, liquid water, organic chemistry on Mars, icy moons, and exoplanets."
+      },
+      {
+        "title": "SETI / technosignatures",
+        "text": "Searches for engineered signals or artifacts: radio/optical beacons, Dyson-like infrared excesses, or other signs of technology."
+      },
+      {
+        "title": "UAP / AARO",
+        "text": "U.S. defense & intelligence process for unidentified objects near national-security areas. Most resolved cases are balloons, aircraft, birds, drones, or satellites."
+      }
+    ]
+  },
+  "science": [
+    {
+      "id": "drake",
+      "title": "Drake equation",
+      "summary": "A framework (not a prediction) for estimating how many communicative civilizations might exist in the Milky Way. It multiplies rates of star formation, planet occurrence, life emergence, intelligence, technology, and lifetime of detectable signals.",
+      "points": [
+        "Useful for structuring unknowns. not for claiming a specific number of alien societies.",
+        "Modern exoplanet surveys tightened some factors (planets are common).",
+        "The biggest unknowns remain: how often life starts, and how long tech civilizations broadcast."
+      ]
+    },
+    {
+      "id": "fermi",
+      "title": "Fermi paradox",
+      "summary": "If intelligent life is common, why haven’t we seen clear evidence? Proposed answers range from rare intelligence, short-lived civilizations, and quiet tech, to the possibility that we simply have not looked carefully enough yet.",
+      "points": [
+        "Not a proof that aliens do not exist. a tension between expectations and observations.",
+        "Great Filter ideas ask whether hard steps lie behind us (origin of life) or ahead (self-destruction).",
+        "Zoo / dark forest hypotheses are speculative culture. not scientific consensus."
+      ]
+    },
+    {
+      "id": "habitable",
+      "title": "Habitable zones & biosignatures",
+      "summary": "A planet in the ‘habitable zone’ can host liquid water on its surface under the right atmosphere. Biosignatures are chemical clues (e.g. oxygen + methane together) that might indicate life — but geology and photochemistry can fake some signals.",
+      "points": [
+        "JWST and future telescopes hunt atmospheric spectra of exoplanets.",
+        "Mars, Europa, Enceladus, and Titan are Solar System targets for habitability research.",
+        "A single ambiguous spectrum is not a discovery. confirmation needs multiple lines of evidence."
+      ]
+    },
+    {
+      "id": "technosignatures",
+      "title": "Technosignatures",
+      "summary": "Instead of biology alone, look for technology: narrowband radio, pulsed lasers, industrial pollution in atmospheres, or waste heat. SETI programs (e.g. Breakthrough Listen) scan stars and galaxies for anomalous signals.",
+      "points": [
+        "False positives are common. satellites, Earth interference, and natural radio bursts.",
+        "No confirmed extraterrestrial technosignature has been published.",
+        "Absence of evidence so far is not evidence of absence across the whole sky."
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "year": "1947–1969",
+      "title": "Project Blue Book era",
+      "text": "U.S. Air Force investigated UFO reports. Public conclusion: no evidence of threats or extraterrestrial craft; many cases prosaic, some unexplained due to poor data."
+    },
+    {
+      "year": "2007–2012",
+      "title": "AATIP (reported)",
+      "text": "Advanced Aerospace Threat Identification Program. a DoD effort later described publicly as studying advanced aerospace threats / UAP. Much of the narrative comes from later media and congressional interest."
+    },
+    {
+      "year": "2017",
+      "title": "Navy videos go public",
+      "text": "FLIR, Gimbal, and GoFast videos circulate widely. Pentagon later confirms authenticity of the footage while not confirming exotic origin."
+    },
+    {
+      "year": "2020–2021",
+      "title": "UAPTF & ODNI assessment",
+      "text": "Unidentified Aerial Phenomena Task Force. June 2021 ODNI preliminary assessment reviews 144 reports; limited high-quality data; flight-safety and adversary concerns emphasized."
+    },
+    {
+      "year": "2022+",
+      "title": "AARO established",
+      "text": "All-domain Anomaly Resolution Office becomes the DoD lead for UAP across air, sea, space, and transmedium reports, with annual reports to Congress."
+    },
+    {
+      "year": "2023",
+      "title": "NASA independent study",
+      "text": "NASA UAP Independent Study Team urges better data, civilian reporting pathways, and scientific rigor, without finding evidence of extraterrestrial technology."
+    },
+    {
+      "year": "2024",
+      "title": "Historical Record Vol. I",
+      "text": "AARO historical review (1945–2023) reports no verifiable evidence of reverse-engineered alien tech or secret off-world programs of that kind."
+    },
+    {
+      "year": "2024–2026",
+      "title": "Annual UAP reports continue",
+      "text": "FY23–FY25 consolidated reports track hundreds of new cases yearly; resolved cases attributed to ordinary objects; some cases remain unresolved for lack of sensor data."
+    }
+  ],
+  "explanations": [
+    {
+      "label": "Airborne clutter",
+      "text": "Balloons, birds, plastic bags, drones, and debris that look anomalous on sensors."
+    },
+    {
+      "label": "Natural phenomena",
+      "text": "Weather, ice crystals, mirages, lightning, meteors, and satellite flares."
+    },
+    {
+      "label": "U.S. / industry systems",
+      "text": "Classified or commercial aircraft, drones, and test platforms observers may not recognize."
+    },
+    {
+      "label": "Foreign systems",
+      "text": "Adversary drones or aircraft. a national-security concern even when not alien."
+    },
+    {
+      "label": "Other / unknown",
+      "text": "Insufficient data. Unidentified means unresolved, not proven extraterrestrial."
+    }
+  ],
+  "cases": [
+    {
+      "name": "Roswell (1947)",
+      "tag": "Historical / cultural",
+      "status": "Official prosaic explanation (crash debris / balloon program narratives); remains a major cultural myth.",
+      "text": "A New Mexico ranch debris event became the cornerstone of modern UFO lore. Decades of claims about alien bodies are not supported by verified public evidence."
+    },
+    {
+      "name": "Betty & Barney Hill (1961)",
+      "tag": "Cultural landmark",
+      "status": "Abduction narrative not scientific confirmation.",
+      "text": "Widely retold abduction account that shaped popular alien imagery. Treated as folklore/psychology research topic, not validated contact."
+    },
+    {
+      "name": "Navy FLIR / Gimbal / GoFast",
+      "tag": "UAP footage",
+      "status": "Authentic military videos; origin of objects not established as ET.",
+      "text": "Sensor videos that sparked modern UAP interest. AARO and analysts have published prosaic explanations for some (GoFast kinematics); debate continues on others."
+    },
+    {
+      "name": "AARO case resolutions",
+      "tag": "Official",
+      "status": "Published case PDFs available in Documents.",
+      "text": "Western U.S., Atmospheric Wakes, Southeast Asia Triangles and others show AARO’s method: sensor data + modeling → usually balloons, aircraft, or optical effects."
+    },
+    {
+      "name": "‘Oumuamua (2017)",
+      "tag": "Astronomy",
+      "status": "Interstellar object; natural explanations preferred by most astronomers.",
+      "text": "First known interstellar visitor through the Solar System. Unusual acceleration prompted speculation; mainstream papers favor outgassing / natural body hypotheses."
+    }
+  ],
+  "glossary": [
+    { "term": "UAP", "def": "Unidentified Anomalous Phenomena: official U.S. term covering airborne, maritime, space, and transmedium reports." },
+    { "term": "UFO", "def": "Unidentified Flying Object: older popular term; does not mean alien craft." },
+    { "term": "AARO", "def": "All-domain Anomaly Resolution Office: DoD office coordinating UAP reporting and analysis." },
+    { "term": "ODNI", "def": "Office of the Director of National Intelligence: co-authored early public UAP assessments." },
+    { "term": "SETI", "def": "Search for Extraterrestrial Intelligence: scientific programs listening/looking for tech signals." },
+    { "term": "Biosignature", "def": "Chemical or physical hint that life may be (or was) present." },
+    { "term": "Technosignature", "def": "Observable sign of technology, intentional or incidental." },
+    { "term": "Fermi paradox", "def": "Question of why we do not see clear evidence of advanced civilizations if they are common." },
+    { "term": "Habitable zone", "def": "Orbital region where a planet might support surface liquid water." },
+    { "term": "Prosaic", "def": "Ordinary explanation (balloon, aircraft, etc.) rather than exotic technology." }
+  ],
+  "links": [
+    { "label": "AARO official site", "url": "https://www.aaro.mil/" },
+    { "label": "AARO Congressional / Press products", "url": "https://www.aaro.mil/Congressional-Press-Products/" },
+    { "label": "AARO case resolutions", "url": "https://www.aaro.mil/UAP-Cases/UAP-Case-Resolution-Reports/" },
+    { "label": "NASA UAP research page", "url": "https://science.nasa.gov/uap/" },
+    { "label": "ODNI reports & publications", "url": "https://www.dni.gov/" },
+    { "label": "SETI Institute", "url": "https://www.seti.org/" },
+    { "label": "Breakthrough Listen", "url": "https://breakthroughinitiatives.org/initiative/1" }
+  ],
+  "faq": [
+    {
+      "q": "Did the U.S. government confirm aliens?",
+      "a": "No. Public AARO and ODNI reports state that resolved cases have prosaic explanations, and Historical Record Vol. I reports no verified extraterrestrial technology programs."
+    },
+    {
+      "q": "Why keep studying UAP then?",
+      "a": "Flight safety, possible adversary drones, clutter in restricted airspace, and the need for better sensors/data — regardless of whether any case is exotic."
+    },
+    {
+      "q": "Is SETI the same as UAP?",
+      "a": "No. SETI looks for signals from other star systems. UAP programs study unidentified objects reported near Earth, often by pilots and sensors."
+    },
+    {
+      "q": "Can I trust viral alien videos?",
+      "a": "Usually not without provenance. Prefer primary documents, sensor metadata, and peer-reviewed or official case write-ups over social clips."
+    }
+  ]
+}

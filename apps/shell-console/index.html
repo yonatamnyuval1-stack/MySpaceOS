@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Console</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <img class="brand-logo" src="logo.png" width="32" height="32" alt="" />
+          <div>
+            <strong>Console</strong>
+            <span class="brand-sub" id="brand-sub">Command engine</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav" aria-label="Console">
+          <div class="nav-group">
+            <p class="nav-label">Execute</p>
+            <button type="button" class="nav-item active" data-page="runner">
+              <span class="nav-icon">›</span>
+              Run
+            </button>
+            <button type="button" class="nav-item" data-page="history">
+              <span class="nav-icon">◷</span>
+              History
+            </button>
+          </div>
+          <div class="nav-group">
+            <p class="nav-label">Automation</p>
+            <button type="button" class="nav-item" data-page="aliases">
+              <span class="nav-icon">⇢</span>
+              Aliases
+            </button>
+            <button type="button" class="nav-item" data-page="macros">
+              <span class="nav-icon">⧉</span>
+              Macros list
+            </button>
+            <button type="button" class="nav-item" data-page="when">
+              <span class="nav-icon">⚡</span>
+              When rules
+            </button>
+          </div>
+          <div class="nav-group">
+            <p class="nav-label">Help</p>
+            <button type="button" class="nav-item" data-page="reference">
+              <span class="nav-icon">?</span>
+              Reference
+            </button>
+          </div>
+        </nav>
+        <footer class="sidebar-foot">
+          <p id="sidebar-status">Synced with desktop shell</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Run</h1>
+            <p class="subtitle" id="page-subtitle">Execute shell commands on My Space</p>
+          </div>
+          <div class="topbar-actions" id="topbar-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="btn-sync" title="Pull aliases, macros & rules from desktop shell">Sync</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-export">Export</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-import">Import</button>
+            <button type="button" class="btn btn-danger btn-sm" id="btn-reset">Reset</button>
+          </div>
+        </header>
+
+        <section class="page page--scroll active" id="page-runner" data-page="runner"></section>
+        <section class="page page--scroll" id="page-aliases" data-page="aliases" hidden></section>
+        <section class="page page--scroll" id="page-macros" data-page="macros" hidden></section>
+        <section class="page page--scroll" id="page-when" data-page="when" hidden></section>
+        <section class="page page--scroll" id="page-history" data-page="history" hidden></section>
+        <section class="page page--scroll" id="page-reference" data-page="reference" hidden></section>
+      </main>
+
+      <aside class="detail-panel hidden" id="detail-panel" aria-hidden="true">
+        <header class="detail-head">
+          <h2 id="detail-title">Edit</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="detail-close">✕</button>
+        </header>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </div>
+
+    <div class="modal-backdrop hidden" id="modal-backdrop">
+      <div class="modal" role="dialog" aria-modal="true">
+        <header class="modal-head">
+          <h2 id="modal-title">Edit</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="modal-close">✕</button>
+        </header>
+        <div class="modal-body" id="modal-body"></div>
+      </div>
+    </div>
+
+    <script src="lib/utils.js"></script>
+    <script src="lib/storage.js"></script>
+    <script src="pages/runner.js"></script>
+    <script src="pages/aliases.js"></script>
+    <script src="pages/macros.js"></script>
+    <script src="pages/when.js"></script>
+    <script src="pages/history.js"></script>
+    <script src="pages/reference.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

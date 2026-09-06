@@ -1,0 +1,17 @@
+{
+  "note": "Model Flow: AI series",
+  "exports": [
+    {
+      "ref": "ai.toolcall",
+      "note": "TOOL_CALL / tool_calls parser"
+    },
+    {
+      "ref": "flow.plan",
+      "note": "Offline + normalize flow planner"
+    },
+    {
+      "ref": "space.format",
+      "note": "Flow .space export envelope"
+    }
+  ]
+}

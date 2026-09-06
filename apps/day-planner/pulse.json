@@ -1,0 +1,127 @@
+{
+  "profile": {
+    "tagline": "Today’s tasks: add, toggle, snooze & generate",
+    "icon": "📅",
+    "color": "#fb923c"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List tasks",
+      "description": "List planner tasks",
+      "delivery": "ipc",
+      "channel": "tasks.list",
+      "input": {
+        "day": "string?"
+      }
+    },
+    {
+      "verb": "add",
+      "title": "Add task",
+      "description": "Create a task",
+      "delivery": "ipc",
+      "channel": "task.add",
+      "input": {
+        "title": "string",
+        "due": "string?",
+        "notes": "string?"
+      },
+      "emit": "day-planner.taskAdded"
+    },
+    {
+      "verb": "update",
+      "title": "Update task",
+      "description": "Edit a task",
+      "delivery": "ipc",
+      "channel": "task.update",
+      "input": {
+        "id": "string",
+        "title": "string?",
+        "due": "string?",
+        "notes": "string?"
+      }
+    },
+    {
+      "verb": "delete",
+      "title": "Delete task",
+      "description": "Remove a task",
+      "delivery": "ipc",
+      "channel": "task.delete",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "toggle",
+      "title": "Toggle done",
+      "description": "Mark task done / undone",
+      "delivery": "ipc",
+      "channel": "task.toggle",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "snooze",
+      "title": "Snooze task",
+      "description": "Snooze a task",
+      "delivery": "ipc",
+      "channel": "task.snooze",
+      "input": {
+        "id": "string",
+        "minutes": "number?"
+      }
+    },
+    {
+      "verb": "clearDone",
+      "title": "Clear done",
+      "description": "Clear completed tasks",
+      "delivery": "ipc",
+      "channel": "tasks.clearDone"
+    },
+    {
+      "verb": "generate",
+      "title": "Generate tasks",
+      "description": "AI-generate tasks",
+      "delivery": "ipc",
+      "channel": "tasks.generate",
+      "input": {
+        "prompt": "string?"
+      }
+    },
+    {
+      "verb": "remindersCheck",
+      "title": "Check reminders",
+      "description": "Fire due reminders",
+      "delivery": "ipc",
+      "channel": "reminders.check"
+    },
+    {
+      "verb": "meta",
+      "title": "Meta",
+      "description": "Planner metadata",
+      "delivery": "ipc",
+      "channel": "meta"
+    },
+    {
+      "verb": "open",
+      "title": "Open Today",
+      "description": "Open Day Planner",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    }
+  ],
+  "events": [
+    {
+      "topic": "day-planner.taskAdded",
+      "title": "Task added",
+      "description": "A task was created",
+      "payload": {
+        "id": "string?",
+        "title": "string?"
+      }
+    }
+  ]
+}

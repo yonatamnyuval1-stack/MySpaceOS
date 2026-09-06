@@ -1,0 +1,13 @@
+{
+  "id": "history",
+  "name": "History",
+  "version": "1.0.0",
+  "description": "Historical figures & events: Wikidata & Wikipedia",
+  "icon": "📜",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

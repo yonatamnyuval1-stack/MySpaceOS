@@ -1,0 +1,19 @@
+{
+  "id": "pulse.topic",
+  "version": 1,
+  "kind": "util",
+  "title": "Pulse topic matcher",
+  "summary": "Match pub/sub topics with *, #, and prefix.* patterns: Link Bus subscriptions.",
+  "tags": [
+    "pulse",
+    "pubsub",
+    "topics"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { matchTopic } = require('./parts/pulse.topic');",
+  "publisher": "pulse"
+}

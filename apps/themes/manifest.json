@@ -1,0 +1,6 @@
+{
+  "id": "themes",
+  "name": "Themes",
+  "version": "1.0.0",
+  "description": "Per-app colors, light/dark modes, and button styles"
+}

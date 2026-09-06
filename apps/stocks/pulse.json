@@ -1,0 +1,182 @@
+{
+  "profile": {
+    "tagline": "Markets — quotes, watchlist, alerts & portfolio",
+    "icon": "📈",
+    "color": "#4ade80"
+  },
+  "commands": [
+    {
+      "verb": "search",
+      "title": "Search symbols",
+      "description": "Search tickers",
+      "delivery": "ipc",
+      "channel": "search",
+      "input": {
+        "q": "string"
+      }
+    },
+    {
+      "verb": "quote",
+      "title": "Get quote",
+      "description": "Fetch a live quote",
+      "delivery": "ipc",
+      "channel": "quote.get",
+      "input": {
+        "symbol": "string"
+      }
+    },
+    {
+      "verb": "chart",
+      "title": "Get chart",
+      "description": "Fetch chart data",
+      "delivery": "ipc",
+      "channel": "chart.get",
+      "input": {
+        "symbol": "string",
+        "range": "string?"
+      }
+    },
+    {
+      "verb": "catalog",
+      "title": "Symbol catalog",
+      "description": "Browse symbol catalog",
+      "delivery": "ipc",
+      "channel": "symbols.catalog",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "watchlist",
+      "title": "Watchlist",
+      "description": "Current watchlist",
+      "delivery": "ipc",
+      "channel": "market.watchlist"
+    },
+    {
+      "verb": "watchAdd",
+      "title": "Add to watchlist",
+      "description": "Pin a symbol",
+      "delivery": "ipc",
+      "channel": "watchlist.add",
+      "input": {
+        "symbol": "string"
+      }
+    },
+    {
+      "verb": "watchRemove",
+      "title": "Remove from watchlist",
+      "description": "Unpin a symbol",
+      "delivery": "ipc",
+      "channel": "watchlist.remove",
+      "input": {
+        "symbol": "string"
+      }
+    },
+    {
+      "verb": "movers",
+      "title": "Market movers",
+      "description": "Top movers",
+      "delivery": "ipc",
+      "channel": "market.movers"
+    },
+    {
+      "verb": "indices",
+      "title": "Indices",
+      "description": "Major indices",
+      "delivery": "ipc",
+      "channel": "market.indices"
+    },
+    {
+      "verb": "portfolio",
+      "title": "Portfolio",
+      "description": "Get portfolio",
+      "delivery": "ipc",
+      "channel": "portfolio.get"
+    },
+    {
+      "verb": "setPortfolio",
+      "title": "Set portfolio",
+      "description": "Replace portfolio",
+      "delivery": "ipc",
+      "channel": "portfolio.set",
+      "input": {
+        "holdings": "array?"
+      }
+    },
+    {
+      "verb": "alerts",
+      "title": "List alerts",
+      "description": "Price alerts",
+      "delivery": "ipc",
+      "channel": "alerts.list"
+    },
+    {
+      "verb": "alertAdd",
+      "title": "Add alert",
+      "description": "Create a price alert",
+      "delivery": "ipc",
+      "channel": "alerts.add",
+      "input": {
+        "symbol": "string",
+        "price": "number?",
+        "direction": "string?"
+      }
+    },
+    {
+      "verb": "alertRemove",
+      "title": "Remove alert",
+      "description": "Delete an alert",
+      "delivery": "ipc",
+      "channel": "alerts.remove",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "alertsCheck",
+      "title": "Check alerts",
+      "description": "Evaluate alerts now",
+      "delivery": "ipc",
+      "channel": "alerts.check"
+    },
+    {
+      "verb": "buylist",
+      "title": "Buy list",
+      "description": "List buy-list items",
+      "delivery": "ipc",
+      "channel": "buylist.list"
+    },
+    {
+      "verb": "analyze",
+      "title": "Analyze",
+      "description": "Generate analysis",
+      "delivery": "ipc",
+      "channel": "analysis.generate",
+      "input": {
+        "symbol": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Stocks",
+      "description": "Open Stocks UI",
+      "delivery": "ui",
+      "input": {
+        "symbol": "string?",
+        "page": "string?"
+      }
+    }
+  ],
+  "events": [
+    {
+      "topic": "stocks.alert",
+      "title": "Alert fired",
+      "description": "A price alert triggered",
+      "payload": {
+        "symbol": "string",
+        "price": "number?"
+      }
+    }
+  ]
+}

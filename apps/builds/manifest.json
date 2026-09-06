@@ -1,0 +1,13 @@
+{
+  "id": "builds",
+  "name": "Builds",
+  "version": "1.0.0",
+  "description": "Everything you've built: projects, documentation & code file trees",
+  "icon": "🏗️",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

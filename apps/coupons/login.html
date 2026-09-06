@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    />
+    <title>Coupons Sign in</title>
+    <link rel="stylesheet" href="../shared/local-auth/login.css" />
+  </head>
+  <body>
+    <div class="login-page">
+      <div class="login-bg" aria-hidden="true"></div>
+
+      <main class="login-card" id="login-card">
+        <header class="login-head">
+          <span class="login-logo" id="login-icon" aria-hidden="true">🎟️</span>
+          <h1 id="login-title">Coupons</h1>
+          <p class="login-sub" id="login-sub">Sign in to continue</p>
+        </header>
+
+        <div class="login-welcome hidden" id="login-welcome">
+          <p class="login-welcome-text">Welcome back, <strong id="welcome-user"></strong></p>
+          <button type="button" class="login-submit" id="btn-continue">Continue</button>
+          <button type="button" class="login-link login-switch-account" id="btn-switch">Sign in as someone else</button>
+        </div>
+
+        <div id="login-auth-panel">
+          <div class="login-myspace-block" id="myspace-block">
+            <button type="button" class="login-submit login-myspace-btn" id="btn-myspace">
+              <img class="login-myspace-logo" src="../shared/local-auth/myspace-mark.png" alt="" width="22" height="22" />
+              <span class="login-myspace-label" id="btn-myspace-label">Continue with My Space</span>
+            </button>
+            <p class="login-myspace-hint" id="myspace-hint">Use your My Space account across apps</p>
+            <div class="login-divider" role="presentation"><span>or use an app account</span></div>
+          </div>
+
+          <div class="login-tabs" id="login-tabs">
+            <button type="button" class="login-tab active" id="tab-signin">Sign in</button>
+            <button type="button" class="login-tab" id="tab-register">Create account</button>
+          </div>
+
+          <p class="login-first-note hidden" id="login-first-note">
+            No accounts on this PC yet. Create the first account below.
+          </p>
+
+          <form class="login-form" id="login-form" autocomplete="on">
+            <label class="login-label" for="login-username">Username</label>
+            <input
+              type="text"
+              id="login-username"
+              class="login-input"
+              autocomplete="username"
+              autocapitalize="off"
+              spellcheck="false"
+              required
+              minlength="3"
+              maxlength="32"
+              pattern="[a-zA-Z0-9_]+"
+            />
+
+            <label class="login-label" for="login-password">Password</label>
+            <input
+              type="password"
+              id="login-password"
+              class="login-input"
+              autocomplete="current-password"
+              required
+              minlength="6"
+            />
+
+            <label class="login-label hidden" for="login-password2" id="label-password2">Confirm password</label>
+            <input
+              type="password"
+              id="login-password2"
+              class="login-input hidden"
+              autocomplete="new-password"
+              minlength="6"
+            />
+
+            <label class="login-check" id="remember-wrap">
+              <input type="checkbox" id="login-remember" checked />
+              <span>Keep me signed in</span>
+            </label>
+
+            <p class="login-error hidden" id="login-error" role="alert"></p>
+
+            <button type="submit" class="login-submit login-submit--secondary" id="login-submit">Sign in</button>
+          </form>
+
+          <p class="login-switch" id="login-switch">
+            <span id="switch-text">No account?</span>
+            <button type="button" class="login-link" id="switch-mode">Create one</button>
+          </p>
+
+          <footer class="login-foot">
+            <span class="login-foot-note"
+              >Continue with My Space asks once for access · No password when already signed in</span
+            >
+          </footer>
+        </div>
+      </main>
+    </div>
+
+    <div class="os-sheet hidden" id="os-sheet" role="dialog" aria-modal="true" aria-labelledby="os-sheet-title">
+      <div class="os-sheet-backdrop" id="os-sheet-backdrop"></div>
+      <div class="os-sheet-card">
+        <h2 id="os-sheet-title" class="os-sheet-title">
+          <img class="login-myspace-logo" src="../shared/local-auth/myspace-mark.png" alt="" width="28" height="28" />
+          <span>My Space account</span>
+        </h2>
+        <p class="os-sheet-sub" id="os-sheet-sub">Sign in to continue into this app</p>
+        <div class="login-tabs" id="os-tabs">
+          <button type="button" class="login-tab active" id="os-tab-signin">Sign in</button>
+          <button type="button" class="login-tab" id="os-tab-register">Create account</button>
+        </div>
+        <form class="login-form" id="os-form">
+          <label class="login-label" for="os-username">Username</label>
+          <input type="text" id="os-username" class="login-input" autocomplete="username" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9_]+" />
+          <label class="login-label" for="os-password">Password</label>
+          <input type="password" id="os-password" class="login-input" autocomplete="current-password" required minlength="6" />
+          <label class="login-label hidden" for="os-password2" id="os-label-password2">Confirm password</label>
+          <input type="password" id="os-password2" class="login-input hidden" autocomplete="new-password" minlength="6" />
+          <label class="login-check">
+            <input type="checkbox" id="os-remember" checked />
+            <span>Keep me signed in on this PC</span>
+          </label>
+          <p class="login-error hidden" id="os-error" role="alert"></p>
+          <button type="submit" class="login-submit" id="os-submit">Continue</button>
+          <button type="button" class="login-link" id="os-cancel">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+
+    <div class="os-sheet hidden" id="consent-sheet" role="dialog" aria-modal="true" aria-labelledby="consent-title">
+      <div class="os-sheet-backdrop" id="consent-backdrop"></div>
+      <div class="os-sheet-card consent-card">
+        <h2 id="consent-title" class="os-sheet-title">
+          <img class="login-myspace-logo" src="../shared/local-auth/myspace-mark.png" alt="" width="28" height="28" />
+          <span>Allow access?</span>
+        </h2>
+        <p class="os-sheet-sub" id="consent-sub">
+          <strong id="consent-app-name">App</strong> wants to use your My Space account
+        </p>
+        <div class="consent-account">
+          <span class="consent-account-label">Signed in as</span>
+          <strong id="consent-username">—</strong>
+        </div>
+        <p class="consent-scopes-label">This app will receive:</p>
+        <ul class="consent-scopes" id="consent-scopes"></ul>
+        <p class="login-error hidden" id="consent-error" role="alert"></p>
+        <div class="consent-actions">
+          <button type="button" class="login-submit login-submit--secondary" id="consent-deny">Cancel</button>
+          <button type="button" class="login-submit login-myspace-btn" id="consent-allow">
+            <img class="login-myspace-logo" src="../shared/local-auth/myspace-mark.png" alt="" width="18" height="18" />
+            <span>Allow</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../shared/local-auth/login.js"></script>
+  </body>
+</html>

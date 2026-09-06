@@ -1,0 +1,14 @@
+{
+  "id": "world-maps",
+  "name": "World Maps",
+  "description": "Personal world map explorer — OpenStreetMap (hosted from separate world-maps project)",
+  "contentRoot": "../../world-maps",
+  "entry": "login.html",
+  "version": "1.0.6",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": true
+  }
+}

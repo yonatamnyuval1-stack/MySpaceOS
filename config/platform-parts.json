@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "note": "Parts published by platform services that are not desktop apps",
+  "services": {
+    "jobs": [
+      {
+        "ref": "jobs.capacity",
+        "note": "Compute pools + Connect boost capacity contract"
+      }
+    ],
+    "mind": [
+      {
+        "ref": "mind.tasks",
+        "note": "Quick / Everyday / Deep task catalog"
+      },
+      {
+        "ref": "mind.memory.rank",
+        "note": "Memory fact ranking for prompts"
+      }
+    ],
+    "msl": [
+      {
+        "ref": "msl.key",
+        "note": "MSL key codec"
+      },
+      {
+        "ref": "msl.context.slim",
+        "note": "Injected source slimmer"
+      }
+    ],
+    "shell": [
+      {
+        "ref": "shell.args",
+        "note": "Shell argument parser"
+      },
+      {
+        "ref": "shell.program",
+        "note": "Program AST"
+      },
+      {
+        "ref": "shell.duration",
+        "note": "Duration parse/format"
+      }
+    ],
+    "connect": [
+      {
+        "ref": "ui.omnibox",
+        "note": "Catalog search pattern"
+      }
+    ],
+    "os-bridge": [
+      {
+        "ref": "host.safe-id",
+        "note": "Safe host id"
+      }
+    ],
+    "scripts": [
+      {
+        "ref": "space.format",
+        "note": ".space document envelope"
+      },
+      {
+        "ref": "shell.program",
+        "note": "Multi-line script program AST"
+      }
+    ],
+    "flow": [
+      {
+        "ref": "ai.toolcall",
+        "note": "Tool-call parser"
+      },
+      {
+        "ref": "flow.plan",
+        "note": "Local + normalize planner"
+      },
+      {
+        "ref": "space.format",
+        "note": "Flow .space files"
+      }
+    ],
+    "browser": [
+      {
+        "ref": "browser.url",
+        "note": "URL helpers + unsafe hosts"
+      }
+    ],
+    "notifications": [
+      {
+        "ref": "notif.sender",
+        "note": "Sender blocklist keys"
+      }
+    ],
+    "search": [
+      {
+        "ref": "search.score",
+        "note": "Palette integer scoring + modes"
+      }
+    ],
+    "system-info": [
+      {
+        "ref": "netstat.parse",
+        "note": "Netstat port parser"
+      }
+    ],
+    "os": [
+      {
+        "ref": "json.store",
+        "note": "Safe atomic JSON persistence"
+      },
+      {
+        "ref": "vault.crypto",
+        "note": "scrypt + AES-GCM vault core"
+      }
+    ]
+  }
+}

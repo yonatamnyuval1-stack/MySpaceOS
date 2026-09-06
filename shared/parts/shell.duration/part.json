@@ -1,0 +1,19 @@
+{
+  "id": "shell.duration",
+  "version": 1,
+  "kind": "util",
+  "title": "Shell duration parser",
+  "summary": "Parse 50m / 1h30m / 1:30 / bare minutes into seconds and format back: timers and when-rules.",
+  "tags": [
+    "shell",
+    "duration",
+    "time"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { parseDurationToSec, formatDurationSec } = require('./parts/shell.duration');",
+  "publisher": "shell"
+}

@@ -1,0 +1,111 @@
+{
+  "profile": {
+    "tagline": "Clocks, timer, pomodoro, stopwatch & focus",
+    "icon": "🕐",
+    "color": "#fcd34d"
+  },
+  "commands": [
+    {
+      "verb": "timerStart",
+      "title": "Start timer",
+      "description": "Start a countdown timer",
+      "delivery": "ipc",
+      "channel": "timer.start",
+      "input": {
+        "seconds": "number?",
+        "duration": "string?"
+      }
+    },
+    {
+      "verb": "timerPause",
+      "title": "Pause timer",
+      "description": "Pause the timer",
+      "delivery": "ipc",
+      "channel": "timer.pause"
+    },
+    {
+      "verb": "timerStop",
+      "title": "Stop timer",
+      "description": "Stop the timer",
+      "delivery": "ipc",
+      "channel": "timer.stop"
+    },
+    {
+      "verb": "timerStatus",
+      "title": "Timer status",
+      "description": "Current timer state",
+      "delivery": "ipc",
+      "channel": "timer.status"
+    },
+    {
+      "verb": "pomodoroStart",
+      "title": "Start pomodoro",
+      "description": "Start a pomodoro session",
+      "delivery": "ipc",
+      "channel": "pomodoro.start",
+      "input": {}
+    },
+    {
+      "verb": "pomodoroPause",
+      "title": "Pause pomodoro",
+      "description": "Pause pomodoro",
+      "delivery": "ipc",
+      "channel": "pomodoro.pause"
+    },
+    {
+      "verb": "stopwatchStart",
+      "title": "Start stopwatch",
+      "description": "Start stopwatch",
+      "delivery": "ipc",
+      "channel": "stopwatch.start"
+    },
+    {
+      "verb": "focusEnter",
+      "title": "Enter focus",
+      "description": "Enter focus mode",
+      "delivery": "ipc",
+      "channel": "focus.enter",
+      "input": {
+        "minutes": "number?"
+      }
+    },
+    {
+      "verb": "focusExit",
+      "title": "Exit focus",
+      "description": "Leave focus mode",
+      "delivery": "ipc",
+      "channel": "focus.exit"
+    },
+    {
+      "verb": "calendar",
+      "title": "Open calendar URL",
+      "description": "Open a calendar link",
+      "delivery": "ipc",
+      "channel": "calendar.openUrl",
+      "input": {
+        "url": "string"
+      }
+    },
+    {
+      "verb": "notify",
+      "title": "Notify",
+      "description": "Show a clock notification",
+      "delivery": "ipc",
+      "channel": "notify",
+      "input": {
+        "title": "string?",
+        "body": "string?"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Clock",
+      "description": "Open Clock UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    }
+  ],
+  "events": []
+}

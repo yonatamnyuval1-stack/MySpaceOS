@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Builds</title>
+    <link rel="stylesheet" href="styles.css?v=3" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+    <link rel="stylesheet" href="../shared/msl-icon-picker.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">🏗️</span>
+          <div>
+            <strong>Builds</strong>
+            <span class="brand-sub" id="brand-sub">v1.0 · Projects</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="browse">
+            <span class="nav-icon">⌂</span>
+            Projects
+          </button>
+          <button type="button" class="nav-item" data-page="timeline">
+            <span class="nav-icon">📅</span>
+            Timeline
+          </button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p>Document · code trees · notes</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar" id="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Builds</h1>
+            <p class="subtitle" id="page-subtitle">Everything you've built — projects & file trees</p>
+          </div>
+          <div class="topbar-actions" id="topbar-actions">
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-import" title="Import JSON">Import</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-export" title="Export JSON">Export</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-filter-fav" title="Show favorites only">★ Favorites</button>
+            <button type="button" class="btn btn-primary" id="btn-add-project">+ New project</button>
+          </div>
+        </header>
+
+        <section class="page page--scroll active" id="page-browse" data-page="browse">
+          <div class="stats-row" id="builds-stats"></div>
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">⌕</span>
+              <input type="search" id="builds-search" class="search" placeholder="Search projects, stack, tags…" />
+            </div>
+          </div>
+          <div class="projects-grid" id="projects-grid"></div>
+        </section>
+
+        <div id="project-view" class="project-view hidden" aria-hidden="true">
+          <header class="project-view-head">
+            <button type="button" class="btn btn-ghost btn-sm" id="proj-back">← All projects</button>
+            <div class="project-view-title">
+              <span class="project-view-icon" id="proj-icon">🏗️</span>
+              <div>
+                <h2 id="proj-name">Project</h2>
+                <p class="project-view-desc" id="proj-desc"></p>
+                <div class="project-subcats hidden" id="proj-subcats"></div>
+              </div>
+            </div>
+            <div class="project-view-actions">
+              <button type="button" class="btn btn-ghost btn-sm" id="proj-manage-subcats">Sub-categories</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="proj-edit-info">Edit info</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="proj-open-code">Code folder</button>
+              <button type="button" class="project-delete-btn" id="proj-delete" title="Delete project" aria-label="Delete project">✕</button>
+            </div>
+          </header>
+
+          <div class="project-workspace">
+            <section class="proj-screen" id="proj-screen-files">
+              <div class="files-screen">
+                <div class="files-screen-toolbar">
+                  <button type="button" class="btn btn-primary" id="btn-add-attachment">+ Add file</button>
+                  <button type="button" class="btn btn-ghost" id="btn-add-folder">+ Add folder</button>
+                </div>
+                <div class="files-list" id="files-list"></div>
+                <div class="files-empty hidden" id="files-empty">
+                  <span class="files-empty-icon">📎</span>
+                  <h3>No files yet</h3>
+                  <p>Add spreadsheets, documents, notes, or any file. They'll appear here — click one to open it.</p>
+                  <button type="button" class="btn btn-primary btn-lg" id="files-empty-add">+ Add your first file</button>
+                </div>
+              </div>
+            </section>
+
+            <section class="proj-screen hidden" id="proj-screen-file">
+              <header class="file-view-head">
+                <button type="button" class="btn btn-ghost btn-sm" id="file-view-back">← Back to files</button>
+                <div class="file-view-title">
+                  <span class="preview-kind-badge" id="file-view-badge"></span>
+                  <strong id="file-view-name"></strong>
+                  <span class="preview-size muted" id="file-view-size"></span>
+                </div>
+                <div class="file-view-actions">
+                  <button type="button" class="btn btn-ghost btn-sm" id="file-view-open">Open externally</button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="file-view-copy">Copy</button>
+                </div>
+              </header>
+              <div class="file-view-body" id="file-view-body"></div>
+            </section>
+
+            <section class="proj-screen hidden" id="proj-screen-code">
+              <header class="code-screen-head">
+                <button type="button" class="btn btn-ghost btn-sm" id="code-screen-back">← Back to files</button>
+                <span class="code-screen-label">Code folder</span>
+              </header>
+              <div class="code-panel" id="code-panel">
+              <div class="folder-empty" id="folder-empty">
+                <div class="folder-empty-inner">
+                  <span class="folder-empty-icon">📁</span>
+                  <h3>Connect your project code</h3>
+                  <p>Link a folder to browse source files as a tree — separate from your project files.</p>
+                  <button type="button" class="btn btn-primary btn-lg" id="proj-pick-folder-big">Select folder…</button>
+                </div>
+              </div>
+              <div class="code-loaded hidden" id="code-loaded">
+                <div class="code-toolbar">
+                  <span class="folder-badge" id="folder-badge"></span>
+                  <span class="tree-meta" id="tree-meta"></span>
+                  <button type="button" class="btn btn-ghost btn-sm" id="proj-rescan">↻ Refresh tree</button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="proj-open-folder">Open in Explorer</button>
+                </div>
+                <div class="subcat-bar hidden" id="subcat-bar"></div>
+                <div class="subcat-command-panel hidden" id="subcat-command-panel"></div>
+                <div class="subcat-hint hidden" id="subcat-hint">
+                  <strong>Sub-categories:</strong> pick one to filter files or run its command. Use <strong>Assign files</strong> to link tree items.
+                </div>
+                <div class="subcat-assign-banner hidden" id="subcat-assign-banner"></div>
+                <div class="code-split">
+                  <div class="file-tree-panel" id="file-tree-panel"></div>
+                  <div class="file-preview-panel" id="file-preview-panel">
+                    <div class="preview-placeholder" id="preview-placeholder">
+                      <p>Click a file in the tree to view its code</p>
+                    </div>
+                    <div class="preview-content hidden" id="preview-content">
+                      <header class="preview-head">
+                        <div class="preview-head-info">
+                          <span class="preview-kind-badge preview-kind-badge--code" id="preview-badge">CODE</span>
+                          <strong id="preview-name"></strong>
+                          <span class="preview-size muted" id="preview-size"></span>
+                        </div>
+                        <div class="preview-actions">
+                          <button type="button" class="btn btn-ghost btn-sm" id="preview-open">Open</button>
+                          <button type="button" class="btn btn-ghost btn-sm" id="preview-copy">Copy</button>
+                        </div>
+                      </header>
+                      <div class="preview-viewport" id="preview-viewport"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="scanning hidden" id="scanning">
+                <div class="scanning-spinner"></div>
+                <p>Reading folder structure…</p>
+              </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <section class="page page--scroll" id="page-timeline" data-page="timeline" hidden></section>
+      </main>
+
+      <aside class="detail-panel hidden" id="detail-panel">
+        <header class="detail-head">
+          <h2 id="detail-title">Project info</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="detail-close" aria-label="Close">✕</button>
+        </header>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </div>
+
+    <div class="modal-overlay hidden" id="attachment-modal" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-labelledby="attachment-modal-title">
+        <header class="modal-head">
+          <h3 id="attachment-modal-title">Add project files</h3>
+          <button type="button" class="modal-close" id="attachment-modal-close" aria-label="Close">✕</button>
+        </header>
+        <div class="modal-body" id="attachment-modal-body"></div>
+        <footer class="modal-foot">
+          <button type="button" class="btn btn-ghost" id="attachment-modal-cancel">Cancel</button>
+          <button type="button" class="btn btn-primary" id="attachment-modal-save">Add files</button>
+        </footer>
+      </div>
+    </div>
+
+    <script src="lib/utils.js?v=4"></script>
+    <script src="lib/storage.js?v=4"></script>
+    <script src="../shared/msl-client.js"></script>
+    <script src="../shared/msl-icon-picker.js"></script>
+    <script src="pages/browse.js?v=4"></script>
+    <script src="pages/timeline.js?v=4"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js?v=3"></script>
+  </body>
+</html>

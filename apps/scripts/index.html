@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scripts</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">📜</span>
+          <div>
+            <strong>Scripts</strong>
+            <span class="brand-sub">Language runtime</span>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-new" id="btn-new">New script</button>
+        <nav class="script-list" id="script-list" aria-label="Saved scripts"></nav>
+        <footer class="sidebar-foot">
+          <p>My Space Language programs</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <input
+              type="text"
+              id="script-name"
+              class="script-name-input"
+              placeholder="Script name"
+              spellcheck="false"
+              autocomplete="off"
+            />
+            <p class="subtitle" id="script-meta">Command-line name: type it after right-click on the desktop</p>
+          </div>
+          <div class="topbar-actions">
+            <label class="check-row" title="Stop when a step fails">
+              <input type="checkbox" id="stop-on-error" checked />
+              Stop on error
+            </label>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-duplicate">Duplicate</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-delete">Delete</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-export-space">Export .space</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-save">Save</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-run">Run</button>
+          </div>
+        </header>
+
+        <div class="workspace">
+          <section class="editor-pane">
+            <label class="sr-only" for="script-body">Script body</label>
+            <textarea
+              id="script-body"
+              class="script-editor"
+              spellcheck="false"
+              autocomplete="off"
+              placeholder="# Comments start with #
+run today
+run builds
+check running
+loop 2 then refresh"
+            ></textarea>
+            <p class="editor-hint">
+              Desktop command line: type this script’s <strong>name</strong> (e.g.
+              <code>morning</code>) after right-click · One command per line ·
+              <code>#</code> comments · <code>a</code> / <code>close all</code> closes every
+              open app (including Scripts)
+            </p>
+          </section>
+
+          <section class="output-pane">
+            <div class="output-head">
+              <h2>Output</h2>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-log">Clear</button>
+            </div>
+            <div class="output-log" id="output-log" aria-live="polite">
+              <p class="output-empty">Run a script to see each step here.</p>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

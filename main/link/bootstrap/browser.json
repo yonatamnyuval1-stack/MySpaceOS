@@ -1,0 +1,49 @@
+{
+  "profile": {
+    "tagline": "In-app browsing: home & web tabs",
+    "icon": "🌐",
+    "color": "#4ade80"
+  },
+  "commands": [
+    {
+      "verb": "open",
+      "title": "Open Browser",
+      "description": "Open My Space Browser",
+      "delivery": "ui",
+      "input": {
+        "url": "string?"
+      },
+      "examples": [
+        "pulse(send browser open)"
+      ]
+    },
+    {
+      "verb": "openHome",
+      "title": "Open home",
+      "description": "Browser home",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openWeb",
+      "title": "Open web tab",
+      "description": "Open a new in-app web tab",
+      "delivery": "ui",
+      "input": {
+        "url": "string?"
+      },
+      "examples": [
+        "pulse(send browser openWeb url=https://example.com)"
+      ]
+    },
+    {
+      "verb": "navigate",
+      "title": "Navigate",
+      "description": "Open Browser at a URL",
+      "delivery": "ui",
+      "input": {
+        "url": "string"
+      }
+    }
+  ]
+}

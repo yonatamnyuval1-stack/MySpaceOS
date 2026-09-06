@@ -1,0 +1,215 @@
+{
+  "profile": {
+    "tagline": "Browse this PC — places, preview & file actions",
+    "icon": "📁",
+    "color": "#93c5fd"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List directory",
+      "description": "List files in a folder",
+      "delivery": "ipc",
+      "channel": "dir.list",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "stat",
+      "title": "File info",
+      "description": "Get metadata for a path",
+      "delivery": "ipc",
+      "channel": "file.stat",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "read",
+      "title": "Read file",
+      "description": "Read a text file",
+      "delivery": "ipc",
+      "channel": "file.read",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "preview",
+      "title": "Preview file",
+      "description": "Preview a file",
+      "delivery": "ipc",
+      "channel": "file.preview",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open path",
+      "description": "Open with the default handler",
+      "delivery": "ipc",
+      "channel": "path.open",
+      "input": {
+        "path": "string"
+      },
+      "emit": "files.opened"
+    },
+    {
+      "verb": "reveal",
+      "title": "Reveal in Explorer",
+      "description": "Show path in the system file manager",
+      "delivery": "ipc",
+      "channel": "file.reveal",
+      "input": {
+        "path": "string"
+      },
+      "emit": "files.revealed"
+    },
+    {
+      "verb": "browse",
+      "title": "Browse folder",
+      "description": "Open Files and navigate to a folder",
+      "delivery": "ui",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "mkdir",
+      "title": "Create folder",
+      "description": "Create a new directory",
+      "delivery": "ipc",
+      "channel": "dir.create",
+      "input": {
+        "path": "string?",
+        "parent": "string?",
+        "name": "string"
+      }
+    },
+    {
+      "verb": "rename",
+      "title": "Rename",
+      "description": "Rename a file or folder",
+      "delivery": "ipc",
+      "channel": "file.rename",
+      "input": {
+        "path": "string",
+        "name": "string"
+      }
+    },
+    {
+      "verb": "copy",
+      "title": "Copy",
+      "description": "Copy a file or folder",
+      "delivery": "ipc",
+      "channel": "file.copy",
+      "input": {
+        "path": "string",
+        "dest": "string"
+      }
+    },
+    {
+      "verb": "move",
+      "title": "Move",
+      "description": "Move a file or folder",
+      "delivery": "ipc",
+      "channel": "file.move",
+      "input": {
+        "path": "string",
+        "dest": "string"
+      }
+    },
+    {
+      "verb": "delete",
+      "title": "Delete",
+      "description": "Delete a path (Recycle Bin when possible)",
+      "delivery": "ipc",
+      "channel": "file.delete",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "places",
+      "title": "List places",
+      "description": "Home, Desktop, Documents, Downloads…",
+      "delivery": "ipc",
+      "channel": "places.list"
+    },
+    {
+      "verb": "drives",
+      "title": "List drives",
+      "description": "List disk drives",
+      "delivery": "ipc",
+      "channel": "drives.list"
+    },
+    {
+      "verb": "recent",
+      "title": "Recent files",
+      "description": "Recently opened paths",
+      "delivery": "ipc",
+      "channel": "recent.list"
+    },
+    {
+      "verb": "recentClear",
+      "title": "Clear recent",
+      "description": "Clear recent history",
+      "delivery": "ipc",
+      "channel": "recent.clear"
+    },
+    {
+      "verb": "favorites",
+      "title": "List favorites",
+      "description": "Pinned favorite folders",
+      "delivery": "ipc",
+      "channel": "favorites.list"
+    },
+    {
+      "verb": "favoriteAdd",
+      "title": "Add favorite",
+      "description": "Pin a folder",
+      "delivery": "ipc",
+      "channel": "favorites.add",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "favoriteRemove",
+      "title": "Remove favorite",
+      "description": "Unpin a folder",
+      "delivery": "ipc",
+      "channel": "favorites.remove",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "home",
+      "title": "Home snapshot",
+      "description": "Places + drives + status",
+      "delivery": "ipc",
+      "channel": "home"
+    }
+  ],
+  "events": [
+    {
+      "topic": "files.opened",
+      "title": "File opened",
+      "description": "A path was opened",
+      "payload": {
+        "path": "string"
+      }
+    },
+    {
+      "topic": "files.revealed",
+      "title": "File revealed",
+      "description": "A path was shown in Explorer",
+      "payload": {
+        "path": "string"
+      }
+    }
+  ]
+}

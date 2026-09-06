@@ -1,0 +1,17 @@
+{
+  "note": "Files platform service",
+  "exports": [
+    {
+      "ref": "bytes.format",
+      "note": "Human byte sizes"
+    },
+    {
+      "ref": "files.nav",
+      "note": "Breadcrumbs + text preview decode"
+    },
+    {
+      "ref": "files.kind",
+      "note": "Filename kind classifier (Builds)"
+    }
+  ]
+}

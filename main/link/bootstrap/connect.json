@@ -1,0 +1,40 @@
+{
+  "profile": {
+    "tagline": "Service catalog: mail, messaging & more",
+    "icon": "🧩",
+    "color": "#4ade80"
+  },
+  "commands": [
+    {
+      "verb": "open",
+      "title": "Open Connect",
+      "description": "Open the Connect catalog",
+      "delivery": "ui",
+      "input": {},
+      "examples": [
+        "pulse(send connect open)"
+      ]
+    },
+    {
+      "verb": "openCatalog",
+      "title": "Open catalog",
+      "description": "All Connect services",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openBrowser",
+      "title": "Open My Space Browser",
+      "description": "Connect → Browser",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openMail",
+      "title": "Open mail",
+      "description": "Jump to mail from Connect",
+      "delivery": "ui",
+      "input": {}
+    }
+  ]
+}

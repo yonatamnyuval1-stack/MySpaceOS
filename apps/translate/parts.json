@@ -1,0 +1,9 @@
+{
+  "note": "Real Parts published from translate (code lives in shared/parts — clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "lang.catalog",
+      "note": "Language list + helpers"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Today</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">📅</span>
+          <div>
+            <strong>Today</strong>
+            <span class="brand-sub">Daily agenda</span>
+          </div>
+        </div>
+        <nav class="nav" id="bucket-nav">
+          <button type="button" class="nav-item active" data-filter="today"><span class="nav-icon">◎</span> Today <em id="nav-today">0</em></button>
+          <button type="button" class="nav-item" data-filter="tomorrow"><span class="nav-icon">→</span> Tomorrow <em id="nav-tomorrow">0</em></button>
+          <button type="button" class="nav-item" data-filter="later"><span class="nav-icon">…</span> Later <em id="nav-later">0</em></button>
+          <button type="button" class="nav-item" data-filter="done"><span class="nav-icon">✓</span> Done <em id="nav-done">0</em></button>
+          <button type="button" class="nav-item" data-filter="all"><span class="nav-icon">▤</span> All</button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p>Timed agenda · reminders · snooze</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="hero">
+          <div class="hero-text">
+            <p class="hero-kicker" id="hero-date">—</p>
+            <h1 id="page-title">Today</h1>
+            <p class="subtitle" id="page-subtitle">Your day by the hour</p>
+          </div>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-ghost" id="btn-ai">✦ Break down a goal</button>
+            <button type="button" class="btn btn-ghost" id="btn-clear-done" hidden>Clear done</button>
+          </div>
+        </header>
+
+        <form class="composer" id="composer">
+          <input type="text" id="task-input" placeholder="What and when…" autocomplete="off" />
+          <select id="task-when" title="Day">
+            <option value="today">Today</option>
+            <option value="tomorrow">Tomorrow</option>
+            <option value="later">Later</option>
+          </select>
+          <input type="time" id="task-time" title="Time" value="09:00" />
+          <label class="notify-toggle" title="Notify at this time">
+            <input type="checkbox" id="task-notify" checked />
+            <span>Notify</span>
+          </label>
+          <select id="task-priority" title="Priority">
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+            <option value="low">Low</option>
+          </select>
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+
+        <section class="board" id="board"></section>
+        <div class="empty-state" id="empty" hidden>
+          <h2>Nothing scheduled</h2>
+          <p>Pick a time, add an item, and optionally turn on a reminder.</p>
+        </div>
+      </main>
+    </div>
+
+    <div class="modal hidden" id="modal" role="dialog" aria-modal="true">
+      <div class="modal-card" id="modal-card"></div>
+    </div>
+
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

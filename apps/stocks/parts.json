@@ -1,0 +1,13 @@
+{
+  "note": "Real Parts published from stocks (code lives in shared/parts — clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "finance.ohlc",
+      "note": "OHLC indicators used in analysis views"
+    },
+    {
+      "ref": "money.format",
+      "note": "Money / pct / volume formatters"
+    }
+  ]
+}

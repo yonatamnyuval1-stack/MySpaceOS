@@ -1,0 +1,124 @@
+{
+  "profile": {
+    "tagline": "Vault: secure profiles & passwords",
+    "icon": "🔐",
+    "color": "#f87171"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List vault",
+      "description": "List vault entries",
+      "delivery": "ipc",
+      "channel": "vault.list",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get entry",
+      "description": "Fetch a vault entry",
+      "delivery": "ipc",
+      "channel": "vault.get",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "save",
+      "title": "Save entry",
+      "description": "Create or update entry",
+      "delivery": "ipc",
+      "channel": "vault.save",
+      "input": {
+        "id": "string?",
+        "title": "string?",
+        "username": "string?",
+        "password": "string?"
+      }
+    },
+    {
+      "verb": "delete",
+      "title": "Delete entry",
+      "description": "Delete a vault entry",
+      "delivery": "ipc",
+      "channel": "vault.delete",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "unlock",
+      "title": "Unlock vault",
+      "description": "Unlock the vault",
+      "delivery": "ipc",
+      "channel": "vault.unlock",
+      "input": {
+        "password": "string"
+      }
+    },
+    {
+      "verb": "lock",
+      "title": "Lock vault",
+      "description": "Lock the vault",
+      "delivery": "ipc",
+      "channel": "vault.lock"
+    },
+    {
+      "verb": "status",
+      "title": "Vault status",
+      "description": "Locked / unlocked status",
+      "delivery": "ipc",
+      "channel": "vault.status"
+    },
+    {
+      "verb": "copyPassword",
+      "title": "Copy password",
+      "description": "Copy entry password",
+      "delivery": "ipc",
+      "channel": "vault.copyPassword",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "clipboard",
+      "title": "Copy text",
+      "description": "Copy arbitrary text",
+      "delivery": "ipc",
+      "channel": "clipboard.copy",
+      "input": {
+        "text": "string"
+      }
+    },
+    {
+      "verb": "export",
+      "title": "Export",
+      "description": "Export vault data",
+      "delivery": "ipc",
+      "channel": "data.export"
+    },
+    {
+      "verb": "import",
+      "title": "Import",
+      "description": "Import vault data",
+      "delivery": "ipc",
+      "channel": "data.import",
+      "input": {
+        "json": "string?"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Profiles",
+      "description": "Open Profiles UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?",
+        "id": "string?"
+      }
+    }
+  ],
+  "events": []
+}

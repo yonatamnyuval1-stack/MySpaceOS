@@ -1,0 +1,6 @@
+{
+  "id": "permissions",
+  "name": "Permissions",
+  "version": "1.0.0",
+  "description": "Control what Mind, Jobs, Bridge, alerts, and external tools are allowed to do"
+}

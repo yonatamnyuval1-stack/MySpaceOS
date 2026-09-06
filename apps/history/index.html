@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>History</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon">📜</span>
+          <div>
+            <strong>History</strong>
+            <span class="brand-sub" id="brand-sub">Figures & events</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="figures"><span class="nav-icon">👤</span> Figures</button>
+          <button type="button" class="nav-item" data-page="events"><span class="nav-icon">⚔</span> Events</button>
+          <button type="button" class="nav-item" data-page="collection"><span class="nav-icon">★</span> My collection</button>
+        </nav>
+        <p class="nav-section-label">Era</p>
+        <nav class="nav nav--cats" id="era-nav"></nav>
+        <div class="db-status" id="db-status"></div>
+        <footer class="sidebar-foot"><p>Wikidata · Wikipedia · real sources</p></footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Figures</h1>
+            <p class="subtitle" id="page-subtitle">Historical people — thousands with rich profiles</p>
+          </div>
+          <div class="topbar-actions" id="topbar-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="btn-build-db">⬇ Build database</button>
+          </div>
+        </header>
+
+        <section class="page page--scroll active" id="page-figures" data-page="figures">
+          <div class="stats-row" id="figures-stats"></div>
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">⌕</span>
+              <input type="search" id="figures-search" class="search" placeholder="Search name, occupation, country…" />
+            </div>
+            <select id="figures-sort" class="select-sm">
+              <option value="birth">Birth year</option>
+              <option value="name">Name A–Z</option>
+            </select>
+          </div>
+          <div class="loading-msg hidden" id="figures-loading"></div>
+          <div class="items-grid" id="figures-grid"></div>
+        </section>
+
+        <section class="page page--scroll" id="page-events" data-page="events" hidden>
+          <div class="stats-row" id="events-stats"></div>
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">⌕</span>
+              <input type="search" id="events-search" class="search" placeholder="Search event, location, type…" />
+            </div>
+            <select id="events-sort" class="select-sm">
+              <option value="year">Year</option>
+              <option value="name">Name A–Z</option>
+            </select>
+          </div>
+          <div class="loading-msg hidden" id="events-loading"></div>
+          <div class="items-grid" id="events-grid"></div>
+        </section>
+
+        <section class="page page--scroll" id="page-collection" data-page="collection" hidden>
+          <div class="stats-row" id="collection-stats"></div>
+          <p class="page-hint">Saved figures and events you want to revisit.</p>
+          <div class="items-grid" id="collection-grid"></div>
+        </section>
+      </main>
+
+      <aside class="detail-panel hidden" id="detail-panel">
+        <header class="detail-head">
+          <h2 id="detail-title">Detail</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="detail-close">✕</button>
+        </header>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </div>
+
+    <script src="lib/utils.js"></script>
+    <script src="lib/storage.js"></script>
+    <script src="lib/detail.js"></script>
+    <script src="pages/figures.js"></script>
+    <script src="pages/events.js"></script>
+    <script src="pages/collection.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

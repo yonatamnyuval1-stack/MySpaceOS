@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+  </head>
+  <body>
+    <div class="shell" id="shell">
+      <aside class="side" id="side" aria-label="History">
+        <div class="side-brand">
+          <img class="logo" src="logo.png" alt="" width="28" height="28" />
+          <div>
+            <strong>Chat</strong>
+            <span>Mind</span>
+          </div>
+          <button type="button" class="icon-btn" id="btn-side-close" title="Close" aria-label="Close sidebar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+        </div>
+        <button type="button" class="new" id="btn-new">New chat</button>
+        <input type="search" class="search" id="search" placeholder="Search" autocomplete="off" />
+        <nav class="list" id="list" aria-label="Chats"></nav>
+        <div class="side-bottom">
+          <button type="button" class="mode-chip" id="btn-modes" title="Chat modes">
+            <span class="mode-chip-dot" aria-hidden="true"></span>
+            <span class="mode-chip-label" id="mode-chip-label">Companion</span>
+          </button>
+          <button type="button" class="linkish" id="btn-settings">Settings</button>
+        </div>
+      </aside>
+
+      <div class="scrim" id="scrim" hidden></div>
+
+      <section class="main">
+        <header class="bar">
+          <button type="button" class="icon-btn" id="btn-side-open" title="History" aria-label="Open sidebar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <div class="bar-title">
+            <h1 id="title">New chat</h1>
+            <span class="mode-pill hidden" id="mode-pill"></span>
+          </div>
+          <div class="bar-right">
+            <select class="task" id="task" title="Mind task" aria-label="Mind task">
+              <option value="chat">Everyday</option>
+              <option value="quick">Quick</option>
+              <option value="think">Deep</option>
+            </select>
+            <div class="menu-wrap">
+              <button type="button" class="icon-btn" id="btn-menu" title="Actions" aria-label="Chat actions" disabled>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              </button>
+              <div class="menu hidden" id="menu" role="menu">
+                <button type="button" role="menuitem" data-act="pin">Pin</button>
+                <button type="button" role="menuitem" data-act="rename">Rename</button>
+                <button type="button" role="menuitem" data-act="clear">Clear messages</button>
+                <button type="button" role="menuitem" class="danger" data-act="delete">Delete</button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="body">
+          <div class="thread hidden" id="thread"></div>
+          <div class="empty" id="empty">
+            <img class="logo logo-lg" src="logo.png" alt="" width="56" height="56" />
+            <h2>Mind Chat</h2>
+            <p>Ask anything. History is in the side panel.</p>
+            <div class="starters" id="starters">
+              <button type="button" class="starter" data-prompt="Summarize this clearly:&#10;&#10;">Summarize</button>
+              <button type="button" class="starter" data-prompt="Explain this simply:&#10;&#10;">Explain</button>
+              <button type="button" class="starter" data-prompt="Give me a short plan for:&#10;&#10;">Plan</button>
+            </div>
+          </div>
+        </div>
+
+        <footer class="dock">
+          <form class="composer" id="composer" autocomplete="off">
+            <textarea id="input" rows="1" placeholder="Message Mind…" spellcheck="true"></textarea>
+            <button type="button" class="text-btn hidden" id="btn-stop">Stop</button>
+            <button type="submit" class="send" id="btn-send" aria-label="Send">Send</button>
+          </form>
+          <p class="fine" id="fine">Enter to send · Shift+Enter for a new line</p>
+        </footer>
+      </section>
+    </div>
+
+    <div class="modal hidden" id="rename-modal">
+      <form class="card" id="rename-form">
+        <h3>Rename</h3>
+        <input type="text" id="rename-input" maxlength="120" required />
+        <div class="row">
+          <button type="button" class="ghost" data-close="rename-modal">Cancel</button>
+          <button type="submit" class="primary">Save</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal hidden" id="confirm-modal">
+      <div class="card">
+        <h3 id="confirm-title">Delete?</h3>
+        <p id="confirm-copy">This cannot be undone.</p>
+        <div class="row">
+          <button type="button" class="ghost" data-close="confirm-modal">Cancel</button>
+          <button type="button" class="danger-btn" id="confirm-ok">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal hidden" id="settings-modal">
+      <div class="card card-wide">
+        <div class="card-head">
+          <div class="card-brand">
+            <img class="logo" src="logo.png" alt="" width="24" height="24" />
+            <h3>Settings</h3>
+          </div>
+          <button type="button" class="icon-btn" data-close="settings-modal" aria-label="Close">×</button>
+        </div>
+        <p class="status" id="mind-status">Mind…</p>
+        <label>Default task<select id="set-task"></select></label>
+        <label>Model override<select id="set-model"><option value="">Task default</option></select></label>
+        <div class="two">
+          <label>Context<input type="number" id="set-context" min="2" max="100" /></label>
+          <label>Temperature<input type="number" id="set-temp" min="0" max="2" step="0.1" /></label>
+        </div>
+        <label>System prompt<textarea id="set-system" rows="4"></textarea></label>
+
+        <div class="memory-section">
+          <div class="memory-head">
+            <h4>Memory</h4>
+            <label class="memory-toggle">
+              <input type="checkbox" id="set-memory-enabled" checked />
+              Use in chats
+            </label>
+          </div>
+          <p class="memory-lead">Facts Mind remembers across conversations — preferences, projects, context.</p>
+          <div class="memory-add">
+            <input type="text" id="memory-new-text" class="memory-input" placeholder="Add a fact Mind should remember…" />
+            <input type="text" id="memory-new-tags" class="memory-input memory-tags" placeholder="tags (optional)" />
+            <button type="button" class="ghost" id="memory-add-btn">Add</button>
+          </div>
+          <ul class="memory-list" id="memory-list"></ul>
+        </div>
+
+        <div class="row">
+          <button type="button" class="ghost" data-close="settings-modal">Cancel</button>
+          <button type="button" class="primary" id="settings-save">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal hidden" id="modes-modal">
+      <div class="card card-wide modes-card">
+        <div class="card-head">
+          <div class="card-brand">
+            <img class="logo" src="logo.png" alt="" width="24" height="24" />
+            <h3>Modes</h3>
+          </div>
+          <button type="button" class="icon-btn" data-close="modes-modal" aria-label="Close">×</button>
+        </div>
+        <p class="modes-lead">Each mode is a different mind — tone, rules, and how it answers.</p>
+        <div class="modes-grid" id="modes-grid"></div>
+      </div>
+    </div>
+
+    <div class="toast hidden" id="toast"></div>
+    <script src="app.js"></script>
+  </body>
+</html>

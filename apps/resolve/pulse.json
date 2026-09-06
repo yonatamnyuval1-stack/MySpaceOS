@@ -1,0 +1,101 @@
+{
+  "profile": {
+    "tagline": "App troubleshooting — report, triage & fix via Pulse",
+    "icon": "⬡",
+    "color": "#7c6fd6"
+  },
+  "commands": [
+    {
+      "verb": "report",
+      "title": "Report incident",
+      "description": "Report an app problem (creates inbox entry + resolve.incident event)",
+      "delivery": "ipc",
+      "broker": "resolve",
+      "channel": "resolve.report",
+      "input": {
+        "appId": "string",
+        "code": "string",
+        "message": "string?",
+        "severity": "string?",
+        "context": "object?"
+      },
+      "emit": "resolve.incident",
+      "examples": [
+        "pulse(send resolve report appId:notes code:LOAD_FAILED message:corrupt)"
+      ]
+    },
+    {
+      "verb": "ask",
+      "title": "Ask for fix",
+      "description": "Get playbook steps for an app error code without saving",
+      "delivery": "ipc",
+      "broker": "resolve",
+      "channel": "resolve.ask",
+      "input": {
+        "appId": "string",
+        "code": "string",
+        "message": "string?"
+      },
+      "examples": [
+        "pulse(send resolve ask appId:notes code:LOAD_FAILED)"
+      ]
+    },
+    {
+      "verb": "apply",
+      "title": "Apply fix",
+      "description": "Run playbook step for an open incident",
+      "delivery": "ipc",
+      "broker": "resolve",
+      "channel": "resolve.apply",
+      "input": {
+        "id": "string",
+        "stepId": "string?"
+      }
+    },
+    {
+      "verb": "list",
+      "title": "List incidents",
+      "description": "List inbox incidents",
+      "delivery": "ipc",
+      "broker": "resolve",
+      "channel": "resolve.list",
+      "input": {
+        "status": "string?",
+        "appId": "string?",
+        "q": "string?",
+        "limit": "number?"
+      }
+    },
+    {
+      "verb": "status",
+      "title": "Service status",
+      "description": "Open/dismissed counts and playbook catalog size",
+      "delivery": "ipc",
+      "broker": "resolve",
+      "channel": "resolve.status"
+    },
+    {
+      "verb": "open",
+      "title": "Open Resolve",
+      "description": "Open Resolve inbox in a full window",
+      "delivery": "ui",
+      "input": {
+        "page": "inbox | playbooks | about"
+      }
+    }
+  ],
+  "events": [
+    {
+      "topic": "resolve.incident",
+      "title": "Incident reported",
+      "description": "An app reported a problem to Resolve",
+      "payload": {
+        "id": "string",
+        "appId": "string",
+        "code": "string",
+        "severity": "string",
+        "message": "string?"
+      }
+    }
+  ]
+}

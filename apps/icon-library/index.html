@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Icon Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="shell" id="shell">
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true" id="brand-mark"></span>
+          <div>
+            <h1 class="brand-title">Icon Library</h1>
+            <p class="brand-sub">System icons for My Space: browse, preview, copy</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <input
+            type="search"
+            id="search"
+            class="search"
+            placeholder="Search icons…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button type="button" class="btn btn-ghost" id="btn-favorites-only" title="Show favorites only">
+            ★
+          </button>
+          <button type="button" class="btn btn-ghost" id="btn-about" title="About">?</button>
+        </div>
+      </header>
+
+      <div class="packs" id="packs" role="tablist" aria-label="Icon packs"></div>
+
+      <div class="workspace">
+        <main class="catalog" aria-label="Icon catalog">
+          <div class="meta-row">
+            <p class="count" id="count-label">0 icons</p>
+            <p class="hint" id="hint-label">Click an icon to preview</p>
+          </div>
+          <div class="grid" id="icon-grid"></div>
+          <p class="empty hidden" id="empty">No icons match.</p>
+        </main>
+
+        <aside class="preview" id="preview" aria-label="Icon preview">
+          <div class="preview-empty" id="preview-empty">
+            <p>Select an icon</p>
+          </div>
+          <div class="preview-body hidden" id="preview-body">
+            <div class="preview-stage" id="preview-stage"></div>
+            <h2 class="preview-name" id="preview-name"></h2>
+            <p class="preview-id" id="preview-id"></p>
+            <p class="preview-tags" id="preview-tags"></p>
+
+            <div class="controls">
+              <label class="ctrl">
+                <span>Size</span>
+                <input type="range" id="ctrl-size" min="16" max="96" value="48" />
+                <em id="ctrl-size-val">48</em>
+              </label>
+              <label class="ctrl">
+                <span>Stroke</span>
+                <input type="range" id="ctrl-stroke" min="1" max="3" step="0.25" value="2" />
+                <em id="ctrl-stroke-val">2</em>
+              </label>
+              <label class="ctrl ctrl-color">
+                <span>Color</span>
+                <input type="color" id="ctrl-color" value="#e8f0ea" />
+              </label>
+            </div>
+
+            <div class="preview-actions">
+              <button type="button" class="btn btn-primary" id="btn-copy-svg">Copy SVG</button>
+              <button type="button" class="btn" id="btn-copy-id">Copy ID</button>
+              <button type="button" class="btn" id="btn-download">Download</button>
+              <button type="button" class="btn" id="btn-favorite">★ Favorite</button>
+            </div>
+            <p class="toast" id="toast" hidden></p>
+          </div>
+        </aside>
+      </div>
+
+      <footer class="foot">
+        <span id="foot-count"></span>
+        <button type="button" class="btn-ai" id="btn-ai" title="Coming soon">
+          Add with AI — soon
+        </button>
+      </footer>
+    </div>
+
+    <dialog class="about" id="about-dialog">
+      <form method="dialog" class="about-card">
+        <h2>About Icon Library</h2>
+        <p>
+          A built-in catalog of stroke icons for My Space apps, projects, and future system pickers.
+        </p>
+        <p class="about-note" id="about-note"></p>
+        <p class="about-note">
+          Next upgrade: generate missing icons with AI and save them into your personal pack.
+        </p>
+        <button type="submit" class="btn btn-primary">Close</button>
+      </form>
+    </dialog>
+
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="icons-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

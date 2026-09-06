@@ -1,0 +1,13 @@
+{
+  "id": "remote-hub",
+  "name": "Remote Hub",
+  "version": "2.0.0",
+  "description": "Full remote control — RDP, SSH, WinRM, network scan, Wake-on-LAN. Built-in Windows tools.",
+  "icon": "🖥️",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

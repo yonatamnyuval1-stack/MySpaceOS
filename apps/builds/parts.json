@@ -1,0 +1,13 @@
+{
+  "note": "Real Parts published from builds (code lives in shared/parts: clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "files.kind",
+      "note": "Filename → kind classifier"
+    },
+    {
+      "ref": "path.tree",
+      "note": "Relative path tree helpers"
+    }
+  ]
+}

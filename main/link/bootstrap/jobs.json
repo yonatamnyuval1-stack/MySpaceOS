@@ -1,0 +1,130 @@
+{
+  "profile": {
+    "tagline": "OS compute queue: enqueue, cancel & capacity",
+    "icon": "⚙️",
+    "color": "#94a3b8"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List jobs",
+      "description": "List jobs in the queue",
+      "delivery": "ipc",
+      "channel": "jobs.list",
+      "broker": "jobs",
+      "input": {
+        "status": "string?",
+        "limit": "number?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get job",
+      "description": "Fetch a job by id",
+      "delivery": "ipc",
+      "channel": "jobs.get",
+      "broker": "jobs",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "enqueue",
+      "title": "Enqueue job",
+      "description": "Add work to the queue",
+      "delivery": "ipc",
+      "channel": "jobs.enqueue",
+      "broker": "jobs",
+      "input": {
+        "type": "string?",
+        "title": "string?",
+        "payload": "object?"
+      }
+    },
+    {
+      "verb": "run",
+      "title": "Run activity",
+      "description": "Run a shell/activity job",
+      "delivery": "ipc",
+      "channel": "jobs.run",
+      "broker": "jobs",
+      "input": {
+        "command": "string?",
+        "title": "string?"
+      }
+    },
+    {
+      "verb": "cancel",
+      "title": "Cancel job",
+      "description": "Cancel a running or queued job",
+      "delivery": "ipc",
+      "channel": "jobs.cancel",
+      "broker": "jobs",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "retry",
+      "title": "Retry job",
+      "description": "Retry a failed job",
+      "delivery": "ipc",
+      "channel": "jobs.retry",
+      "broker": "jobs",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "clearFinished",
+      "title": "Clear finished",
+      "description": "Remove completed jobs",
+      "delivery": "ipc",
+      "channel": "jobs.clearFinished",
+      "broker": "jobs"
+    },
+    {
+      "verb": "stats",
+      "title": "Stats",
+      "description": "Queue statistics snapshot",
+      "delivery": "ipc",
+      "channel": "jobs.stats",
+      "broker": "jobs"
+    },
+    {
+      "verb": "capacity",
+      "title": "Get capacity",
+      "description": "Read pool capacity",
+      "delivery": "ipc",
+      "channel": "jobs.capacity.get",
+      "broker": "jobs"
+    },
+    {
+      "verb": "setCapacity",
+      "title": "Set capacity",
+      "description": "Update pool capacity",
+      "delivery": "ipc",
+      "channel": "jobs.capacity.set",
+      "broker": "jobs",
+      "input": {
+        "pool": "string?",
+        "limit": "number?"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Jobs panel",
+      "description": "Open the Jobs UI",
+      "delivery": "ui",
+      "input": {}
+    }
+  ],
+  "events": [
+    {
+      "topic": "jobs.updated",
+      "title": "Jobs updated",
+      "description": "Queue state changed",
+      "payload": {}
+    }
+  ]
+}

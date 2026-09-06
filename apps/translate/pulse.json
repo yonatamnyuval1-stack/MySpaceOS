@@ -1,0 +1,145 @@
+{
+  "profile": {
+    "tagline": "Translate text, detect language & history",
+    "icon": "🌐",
+    "color": "#38bdf8"
+  },
+  "commands": [
+    {
+      "verb": "text",
+      "title": "Translate",
+      "description": "Translate text",
+      "delivery": "ipc",
+      "channel": "translate.text",
+      "input": {
+        "text": "string",
+        "to": "string",
+        "from": "string?"
+      }
+    },
+    {
+      "verb": "batch",
+      "title": "Batch translate",
+      "description": "Translate many strings",
+      "delivery": "ipc",
+      "channel": "translate.batch",
+      "input": {
+        "texts": "string[]",
+        "to": "string",
+        "from": "string?"
+      }
+    },
+    {
+      "verb": "detect",
+      "title": "Detect language",
+      "description": "Detect language of text",
+      "delivery": "ipc",
+      "channel": "detect.language",
+      "input": {
+        "text": "string"
+      }
+    },
+    {
+      "verb": "languages",
+      "title": "List languages",
+      "description": "Supported languages",
+      "delivery": "ipc",
+      "channel": "languages.list"
+    },
+    {
+      "verb": "historyAdd",
+      "title": "Save to history",
+      "description": "Add a translation to history",
+      "delivery": "ipc",
+      "channel": "history.add",
+      "input": {
+        "text": "string?",
+        "translated": "string?",
+        "from": "string?",
+        "to": "string?"
+      }
+    },
+    {
+      "verb": "historyDelete",
+      "title": "Delete history item",
+      "description": "Remove one history entry",
+      "delivery": "ipc",
+      "channel": "history.delete",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "historyClear",
+      "title": "Clear history",
+      "description": "Clear translation history",
+      "delivery": "ipc",
+      "channel": "history.clear"
+    },
+    {
+      "verb": "favorite",
+      "title": "Toggle favorite",
+      "description": "Favorite a history item",
+      "delivery": "ipc",
+      "channel": "history.toggleFavorite",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "speak",
+      "title": "Speak",
+      "description": "Text-to-speech",
+      "delivery": "ipc",
+      "channel": "speech.speak",
+      "input": {
+        "text": "string",
+        "lang": "string?"
+      }
+    },
+    {
+      "verb": "clipboardRead",
+      "title": "Read clipboard",
+      "description": "Read clipboard text",
+      "delivery": "ipc",
+      "channel": "clipboard.read"
+    },
+    {
+      "verb": "clipboardWrite",
+      "title": "Write clipboard",
+      "description": "Write clipboard text",
+      "delivery": "ipc",
+      "channel": "clipboard.write",
+      "input": {
+        "text": "string"
+      }
+    },
+    {
+      "verb": "export",
+      "title": "Export",
+      "description": "Export data",
+      "delivery": "ipc",
+      "channel": "data.export"
+    },
+    {
+      "verb": "import",
+      "title": "Import",
+      "description": "Import data",
+      "delivery": "ipc",
+      "channel": "data.import",
+      "input": {
+        "json": "string?"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Translate",
+      "description": "Open Translate UI",
+      "delivery": "ui",
+      "input": {
+        "text": "string?"
+      }
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,133 @@
+{
+  "profile": {
+    "tagline": "Ports, processes, CPU, memory & disk",
+    "icon": "📊",
+    "color": "#94a3b8"
+  },
+  "commands": [
+    {
+      "verb": "system",
+      "title": "System scan",
+      "description": "Machine overview",
+      "delivery": "ipc",
+      "channel": "system.scan"
+    },
+    {
+      "verb": "cpu",
+      "title": "CPU scan",
+      "description": "CPU info & load",
+      "delivery": "ipc",
+      "channel": "cpu.scan"
+    },
+    {
+      "verb": "memory",
+      "title": "Memory scan",
+      "description": "RAM usage",
+      "delivery": "ipc",
+      "channel": "memory.scan"
+    },
+    {
+      "verb": "storage",
+      "title": "Storage scan",
+      "description": "Disk volumes",
+      "delivery": "ipc",
+      "channel": "storage.scan"
+    },
+    {
+      "verb": "network",
+      "title": "Network scan",
+      "description": "Network interfaces",
+      "delivery": "ipc",
+      "channel": "network.scan"
+    },
+    {
+      "verb": "ports",
+      "title": "Ports scan",
+      "description": "Listening ports",
+      "delivery": "ipc",
+      "channel": "ports.scan"
+    },
+    {
+      "verb": "processes",
+      "title": "Processes scan",
+      "description": "Running processes",
+      "delivery": "ipc",
+      "channel": "processes.scan"
+    },
+    {
+      "verb": "environment",
+      "title": "Environment",
+      "description": "Env variables summary",
+      "delivery": "ipc",
+      "channel": "environment.scan"
+    },
+    {
+      "verb": "diskRoots",
+      "title": "Disk roots",
+      "description": "List disk roots",
+      "delivery": "ipc",
+      "channel": "disk.roots"
+    },
+    {
+      "verb": "diskScan",
+      "title": "Disk tree scan",
+      "description": "Scan a folder tree",
+      "delivery": "ipc",
+      "channel": "disk.scan",
+      "input": {
+        "path": "string?"
+      }
+    },
+    {
+      "verb": "diskLarge",
+      "title": "Large files",
+      "description": "Find large files",
+      "delivery": "ipc",
+      "channel": "disk.largeFiles",
+      "input": {
+        "path": "string?"
+      }
+    },
+    {
+      "verb": "diskCancel",
+      "title": "Cancel disk scan",
+      "description": "Cancel an in-flight disk scan",
+      "delivery": "ipc",
+      "channel": "disk.cancel"
+    },
+    {
+      "verb": "metricsSample",
+      "title": "Sample metrics",
+      "description": "Take a live metrics sample",
+      "delivery": "ipc",
+      "channel": "metrics.sample"
+    },
+    {
+      "verb": "metricsHistory",
+      "title": "Metrics history",
+      "description": "Recent metrics samples",
+      "delivery": "ipc",
+      "channel": "metrics.history"
+    },
+    {
+      "verb": "metricsClear",
+      "title": "Clear metrics",
+      "description": "Clear metrics history",
+      "delivery": "ipc",
+      "channel": "metrics.clear"
+    },
+    {
+      "verb": "open",
+      "title": "Open System Info",
+      "description": "Open System Info panel",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      },
+      "examples": [
+        "pulse(send system-info open page=ports)"
+      ]
+    }
+  ],
+  "events": []
+}

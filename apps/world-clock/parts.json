@@ -1,0 +1,13 @@
+{
+  "note": "Real Parts published from world-clock (code lives in shared/parts — clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "clock.tz",
+      "note": "Timezone formatting & civil time parts"
+    },
+    {
+      "ref": "clock.meeting",
+      "note": "Meeting slot scoring engine"
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-buttons="default" data-theme-base="light" class="theme-light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Files</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-logo" aria-hidden="true">📁</span>
+          <div>
+            <strong>Files</strong>
+            <span class="brand-sub" id="brand-sub">This PC</span>
+          </div>
+        </div>
+
+        <div class="side-scroll">
+          <p class="nav-label">Places</p>
+          <nav class="nav" id="places-nav" aria-label="Places"></nav>
+
+          <p class="nav-label">Drives</p>
+          <nav class="nav" id="drives-nav" aria-label="Drives"></nav>
+
+          <div class="nav-label-row">
+            <p class="nav-label">Favorites</p>
+            <button type="button" class="btn-icon" id="btn-add-fav" title="Add favorite folder">+</button>
+          </div>
+          <nav class="nav" id="fav-nav" aria-label="Favorites"></nav>
+
+          <div class="nav-label-row">
+            <p class="nav-label">Recent</p>
+            <button type="button" class="btn-text" id="btn-clear-recent" title="Clear recent">Clear</button>
+          </div>
+          <nav class="nav nav--recent" id="recent-nav" aria-label="Recent"></nav>
+        </div>
+
+        <footer class="sidebar-foot">
+          <p>files(…) · Del → Recycle Bin</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="nav-btns">
+            <button type="button" class="btn-icon" id="btn-back" title="Back" disabled>←</button>
+            <button type="button" class="btn-icon" id="btn-up" title="Up" disabled>↑</button>
+            <button type="button" class="btn-icon" id="btn-refresh" title="Refresh">↻</button>
+          </div>
+          <div class="crumbs" id="crumbs" aria-label="Path"></div>
+          <form class="goto" id="goto-form" autocomplete="off">
+            <input type="text" id="goto-input" class="goto-input" placeholder="Go to path…" spellcheck="false" />
+          </form>
+          <div class="topbar-actions">
+            <button type="button" class="btn" id="btn-new-folder" title="New folder">+ Folder</button>
+            <button type="button" class="btn" id="btn-open-ext" title="Open in Explorer">Explorer</button>
+          </div>
+        </header>
+
+        <div class="toolbar">
+          <div class="search-wrap">
+            <span class="search-icon">⌕</span>
+            <input type="search" id="filter-input" class="search" placeholder="Filter in folder…" autocomplete="off" />
+          </div>
+          <select id="sort-select" class="field-select" title="Sort">
+            <option value="name">Name</option>
+            <option value="mtime">Modified</option>
+            <option value="size">Size</option>
+          </select>
+          <span class="status-line" id="status-line">—</span>
+        </div>
+
+        <div class="browser">
+          <div class="list-pane">
+            <div class="list-head">
+              <span class="col-name">Name</span>
+              <span class="col-size">Size</span>
+              <span class="col-date">Modified</span>
+            </div>
+            <div class="file-list" id="file-list" role="list"></div>
+            <div class="empty-state hidden" id="empty-list">
+              <h3>Empty folder</h3>
+              <p>Nothing to show here.</p>
+            </div>
+          </div>
+
+          <aside class="preview-pane" id="preview-pane" aria-label="Preview">
+            <div class="preview-empty" id="preview-empty">
+              <div class="preview-mark" aria-hidden="true">📁</div>
+              <h2>Select a file</h2>
+              <p>Preview text and images here. Double-click to open.</p>
+            </div>
+            <div class="preview-body hidden" id="preview-body">
+              <header class="preview-head">
+                <div>
+                  <h2 id="preview-name">—</h2>
+                  <p id="preview-meta" class="preview-meta">—</p>
+                </div>
+                <span class="badge" id="preview-badge">FILE</span>
+              </header>
+              <div class="preview-actions">
+                <button type="button" class="btn btn-primary" id="btn-open">Open</button>
+                <button type="button" class="btn" id="btn-reveal">Reveal</button>
+                <button type="button" class="btn" id="btn-copy-path">Copy path</button>
+                <button type="button" class="btn" id="btn-rename">Rename</button>
+                <button type="button" class="btn btn-danger" id="btn-delete">Delete</button>
+              </div>
+              <div class="preview-viewport" id="preview-viewport"></div>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+
+    <dialog class="modal" id="prompt-modal">
+      <form method="dialog" id="prompt-form" class="modal-card">
+        <h3 id="prompt-title">Name</h3>
+        <label>
+          <span id="prompt-label">Name</span>
+          <input type="text" id="prompt-input" required maxlength="200" autocomplete="off" spellcheck="false" />
+        </label>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary" value="ok">OK</button>
+          <button type="button" class="btn" id="prompt-cancel">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal" id="confirm-modal">
+      <form method="dialog" id="confirm-form" class="modal-card">
+        <h3 id="confirm-title">Delete?</h3>
+        <p class="modal-copy" id="confirm-copy">Move to Recycle Bin?</p>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-danger" id="confirm-ok" value="ok">Delete</button>
+          <button type="button" class="btn" id="confirm-cancel">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+    <script src="app.js"></script>
+  </body>
+</html>

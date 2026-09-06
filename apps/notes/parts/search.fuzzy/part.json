@@ -1,0 +1,21 @@
+{
+  "id": "search.fuzzy",
+  "version": 1,
+  "kind": "util",
+  "title": "Fuzzy match",
+  "summary": "Score and rank strings for search boxes. No host dependencies.",
+  "tags": [
+    "search",
+    "util"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {
+    "score": "score(query, text) → number",
+    "rank": "rank(query, items, getText?) → items sorted"
+  },
+  "usage": "const { score, rank } = require('./parts/search.fuzzy');",
+  "adoptedAt": "2026-08-23T14:53:35.188Z"
+}

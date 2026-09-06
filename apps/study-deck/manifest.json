@@ -1,0 +1,13 @@
+{
+  "id": "study-deck",
+  "name": "Study Deck",
+  "version": "1.0.0",
+  "description": "Flashcard decks — create, study, and generate cards with AI",
+  "icon": "🃏",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "apod": {
+    "date": "1995-06-01",
+    "title": "Pillars of Creation",
+    "explanation": "One of the most iconic space images — towering columns of interstellar gas and dust in the Eagle Nebula (M16), photographed by the Hubble Space Telescope. New stars are forming within these dense structures. This bundled image is shown when the NASA APOD API is temporarily unavailable.",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Pillars_of_creation_2014_HST_WFC3-UVIS_full-res_denoised.jpg/1280px-Pillars_of_creation_2014_HST_WFC3-UVIS_full-res_denoised.jpg",
+    "hdurl": "https://upload.wikimedia.org/wikipedia/commons/6/68/Pillars_of_creation_2014_HST_WFC3-UVIS_full-res_denoised.jpg",
+    "mediaType": "image",
+    "copyright": "NASA, ESA, Hubble Heritage Team"
+  }
+}

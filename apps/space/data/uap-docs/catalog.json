@@ -1,0 +1,126 @@
+{
+  "title": "U.S. public UAP / UFO documents",
+  "note": "Unclassified documents only. Official U.S. releases (local copies). These investigate UAP — they do not confirm extraterrestrial visitors.",
+  "folder": "apps/space/data/uap-docs",
+  "officialPortals": [
+    "https://www.aaro.mil/Congressional-Press-Products/",
+    "https://www.aaro.mil/UAP-Cases/UAP-Case-Resolution-Reports/",
+    "https://www.dni.gov/"
+  ],
+  "documents": [
+    {
+      "id": "odni-2021-prelim",
+      "file": "ODNI-Preliminary-Assessment-UAP-2021.pdf",
+      "title": "Preliminary Assessment: Unidentified Aerial Phenomena",
+      "issuer": "ODNI",
+      "date": "2021-06-25",
+      "kind": "assessment",
+      "summary": "First major public ODNI assessment: 144 UAP reports (2004–2021), limited high-quality data, five explanation bins, flight-safety & national-security framing.",
+      "officialUrl": "https://www.dni.gov/files/ODNI/documents/assessments/Prelimary-Assessment-UAP-20210625.pdf"
+    },
+    {
+      "id": "fy23-annual",
+      "file": "FY23-AARO-Consolidated-Annual-Report-UAP.pdf",
+      "title": "FY 2023 Consolidated Annual Report on UAP",
+      "issuer": "ODNI / DoD (AARO)",
+      "date": "2023-10",
+      "kind": "annual-report",
+      "summary": "Joint annual report covering Aug 2022–Apr 2023 reporting; hundreds of new cases; early AARO methodology and domain breakdown.",
+      "officialUrl": "https://www.aaro.mil/Congressional-Press-Products/"
+    },
+    {
+      "id": "fy24-annual",
+      "file": "FY24-AARO-Consolidated-Annual-Report-UAP.pdf",
+      "title": "FY 2024 Consolidated Annual Report on UAP",
+      "issuer": "DoD AARO",
+      "date": "2024-11",
+      "kind": "annual-report",
+      "summary": "757 reports received in the period (including backlog); case closures to prosaic objects; public website & reporting mechanism updates.",
+      "officialUrl": "https://www.dni.gov/files/ODNI/documents/assessments/DOD-AARO-Consolidated-Annual-Report-on-UAP-Nov2024.pdf"
+    },
+    {
+      "id": "fy25-annual",
+      "file": "FY25-AARO-Consolidated-Annual-Report-UAP.pdf",
+      "title": "FY 2025 Consolidated Annual Report on UAP",
+      "issuer": "DoD AARO",
+      "date": "2026-07",
+      "kind": "annual-report",
+      "summary": "319 new reports (Jun 2024–May 2025 window + backfill); satellite-flare analysis; Navy maritime swarm case noted as under investigation.",
+      "officialUrl": "https://www.aaro.mil/Congressional-Press-Products/"
+    },
+    {
+      "id": "historical-vol1",
+      "file": "AARO-Historical-Record-Report-Vol1-2024.pdf",
+      "title": "Historical Record of U.S. Government Involvement with UAP — Volume I",
+      "issuer": "DoD AARO",
+      "date": "2024-02",
+      "kind": "historical",
+      "summary": "Review of USG UAP history since 1945. Reports no verifiable evidence of reverse-engineered extraterrestrial technology or secret ET crash-retrieval programs.",
+      "officialUrl": "https://www.aaro.mil/Portals/136/PDFs/AARO_Historical_Record_Report_Vol_1_2024.pdf"
+    },
+    {
+      "id": "nasa-ist-2023",
+      "file": "NASA-UAP-Independent-Study-Team-Report.pdf",
+      "title": "NASA UAP Independent Study Team Final Report",
+      "issuer": "NASA",
+      "date": "2023-09",
+      "kind": "study",
+      "summary": "Civilian science perspective: better data, stigma reduction, and rigorous methods. No evidence found of extraterrestrial technology.",
+      "officialUrl": "https://science.nasa.gov/wp-content/uploads/2023/09/uap-independent-study-team-final-report.pdf"
+    },
+    {
+      "id": "dodig-uap-eval",
+      "file": "DoD-IG-Evaluation-UAP.pdf",
+      "title": "DoD Inspector General evaluation related to UAP",
+      "issuer": "DoD IG",
+      "date": "2024",
+      "kind": "oversight",
+      "summary": "Oversight evaluation of DoD policies, coordination, and reporting practices around UAP.",
+      "officialUrl": "https://www.aaro.mil/"
+    },
+    {
+      "id": "case-western-us",
+      "file": "AARO-Case-Western-United-States.pdf",
+      "title": "Case Resolution: Western United States",
+      "issuer": "AARO",
+      "kind": "case-resolution",
+      "summary": "Published AARO resolution showing how a reported UAP near restricted airspace was analyzed with sensors and kinematics.",
+      "officialUrl": "https://www.aaro.mil/UAP-Cases/UAP-Case-Resolution-Reports/"
+    },
+    {
+      "id": "case-atmospheric-wakes",
+      "file": "AARO-Case-Atmospheric-Wakes.pdf",
+      "title": "Case Resolution: Atmospheric Wakes",
+      "issuer": "AARO",
+      "kind": "case-resolution",
+      "summary": "Multi-mission Middle East / Mediterranean reports involving apparent propulsion signatures — AARO case write-up.",
+      "officialUrl": "https://www.aaro.mil/UAP-Cases/UAP-Case-Resolution-Reports/"
+    },
+    {
+      "id": "case-se-asia-triangles",
+      "file": "AARO-Case-Southeast-Asia-Triangles.pdf",
+      "title": "Case Resolution: Southeast Asia Triangles",
+      "issuer": "AARO",
+      "kind": "case-resolution",
+      "summary": "Triangle-shaped UAP reports from Southeast Asia — official resolution package.",
+      "officialUrl": "https://www.aaro.mil/UAP-Cases/UAP-Case-Resolution-Reports/"
+    },
+    {
+      "id": "ornl-specimen-supplement",
+      "file": "AARO-Supplement-ORNL-Metallic-Specimen.pdf",
+      "title": "AARO Supplement to ORNL Analysis of a Metallic Specimen",
+      "issuer": "AARO / ORNL",
+      "date": "2024",
+      "kind": "materials",
+      "summary": "AARO comments on Oak Ridge analysis of a metallic specimen claimed by some to be anomalous — materials science, not alien confirmation.",
+      "officialUrl": "https://www.aaro.mil/"
+    }
+  ],
+  "externalOnly": [
+    {
+      "title": "ODNI 2022 Annual Report on UAP",
+      "summary": "Second statutory annual UAP report (not stored locally here). Open the official PDF from ODNI.",
+      "officialUrl": "https://www.dni.gov/files/ODNI/documents/assessments/Unclassified-2022-Annual-Report-UAP.pdf"
+    }
+  ]
+}

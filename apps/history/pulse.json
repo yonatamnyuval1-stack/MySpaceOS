@@ -1,0 +1,75 @@
+{
+  "profile": {
+    "tagline": "Figures & events: search and open entities",
+    "icon": "📜",
+    "color": "#d6b48c"
+  },
+  "commands": [
+    {
+      "verb": "figures",
+      "title": "List figures",
+      "description": "Search historical figures",
+      "delivery": "ipc",
+      "channel": "figures.list",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "events",
+      "title": "List events",
+      "description": "Search historical events",
+      "delivery": "ipc",
+      "channel": "events.list",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get entity",
+      "description": "Fetch figure or event",
+      "delivery": "ipc",
+      "channel": "entity.get",
+      "input": {
+        "id": "string",
+        "type": "string?"
+      }
+    },
+    {
+      "verb": "cacheStatus",
+      "title": "Cache status",
+      "description": "History cache status",
+      "delivery": "ipc",
+      "channel": "cache.status"
+    },
+    {
+      "verb": "cacheBuild",
+      "title": "Build cache",
+      "description": "Rebuild history cache",
+      "delivery": "ipc",
+      "channel": "cache.build"
+    },
+    {
+      "verb": "linkOpen",
+      "title": "Open link",
+      "description": "Open external link",
+      "delivery": "ipc",
+      "channel": "link.open",
+      "input": {
+        "url": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open History",
+      "description": "Open History UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?",
+        "id": "string?"
+      }
+    }
+  ],
+  "events": []
+}

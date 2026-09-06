@@ -1,0 +1,19 @@
+{
+  "id": "files.nav",
+  "version": 1,
+  "kind": "util",
+  "title": "Files navigation helpers",
+  "summary": "Breadcrumbs, parent dir, text decode (UTF-8/16 + BOM), and binary sniff for file browsers.",
+  "tags": [
+    "files",
+    "preview",
+    "path"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { crumbsFor, decodeTextBuffer, looksLikeBinary } = require('./parts/files.nav');",
+  "publisher": "files"
+}

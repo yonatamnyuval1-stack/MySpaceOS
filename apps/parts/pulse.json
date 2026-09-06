@@ -1,0 +1,18 @@
+{
+  "name": "Parts",
+  "description": "Embeddable module catalog: GitHub between apps",
+  "commands": [
+    {
+      "verb": "open",
+      "summary": "Open Parts explore or a part detail",
+      "args": { "page": "explore | about", "id": "optional part id" },
+      "examples": ["pulse(send parts open)", "pulse(send parts open id:search.fuzzy)"]
+    },
+    {
+      "verb": "list",
+      "summary": "List parts in the catalog",
+      "args": { "q": "optional filter" },
+      "examples": ["pulse(send parts list q:search)"]
+    }
+  ]
+}

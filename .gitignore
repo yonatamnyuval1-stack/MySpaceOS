@@ -1,0 +1,145 @@
+# --- Dependencies & package manager ---
+node_modules/
+.npm/
+.yarn/
+.pnpm-store/
+package-lock.json.bak
+
+# --- Packaged / build outputs ---
+dist/
+release/
+out/
+*.exe
+*.dmg
+*.AppImage
+*.blockmap
+*.snap
+!build/icon.png
+!build/*.plist
+
+# Electron builder leftovers
+*.nsis.7z
+builder-debug.yml
+builder-effective-config.yaml
+
+# --- Local / personal My Space config (never publish) ---
+config/user-config.json
+config/mail-oauth.json
+config/mind-bootstrap.local.json
+config/*-local.json
+config/*.local.json
+config/secrets.json
+config/private/
+
+# Keep committed templates / shared catalogs:
+# config/apps.json, config/apps.example.json, config/mail-oauth.example.json (placeholders only)
+# config/updates.json, config/recommended-apps.json, platform catalogs, etc.
+
+# --- Environment & credentials ---
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.pfx
+*.key
+!*.key.example
+id_rsa
+id_rsa.*
+*.keystore
+credentials.json
+service-account*.json
+*-credentials.json
+*-service-account.json
+
+# Encrypted token / vault blobs if ever written in-repo
+*.enc
+!*.enc.example
+vault.json
+profiles.json
+mail-tokens.enc
+hub-secrets.enc
+mind-secrets.json
+composio-secrets.json
+model-flow-secrets.json
+
+# --- Runtime userData-style dumps accidentally left in the repo ---
+.tmp-*/
+.tmp-ud/
+.tmp-theme-smoke/
+userData/
+userdata/
+workspace/
+mail-cache/
+offline_heartbeats.bdb
+*.bdb
+
+# Common install-wide service dumps (if copied into the project tree)
+files-service.json
+jobs-platform.json
+scheduler-platform.json
+mind-platform.json
+mind-memory.json
+chat-app.json
+mail-accounts.json
+hub-connections.json
+composio-platform.json
+notifications.json
+permissions-platform.json
+app-settings.json
+themes-state.json
+notifications-prefs.json
+shell-engine.json
+updates-state.json
+backup-state.json
+backup-restore-pending.json
+.backup-restore-staging/
+
+# --- Hackatime / WakaTime local ---
+.wakatime
+.wakatime-project
+.wakatime.cfg
+wakatime.log
+wakatime-internal.cfg
+
+# --- Logs, caches, OS junk ---
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+
+# --- Editors / IDEs (local) ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+.idea/
+*.swp
+*.swo
+*~
+
+# --- Cursor local (keep rules if you want; ignore caches) ---
+.cursor/cache/
+.cursor/projects/
+.cursor/*.log
+
+# --- Test / coverage / temp ---
+coverage/
+.nyc_output/
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+
+# --- Optional local notes ---
+TODO.local.md
+NOTES.local.md
+secrets.md

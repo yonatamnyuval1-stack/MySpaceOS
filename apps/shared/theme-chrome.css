@@ -1,0 +1,148 @@
+html[data-theme-base="dark"][data-theme="light"],
+html[data-theme-base="dark"].theme-light {
+  --bg: #eef1f6;
+  --bg-deep: #eef1f6;
+  --bg-panel: #f7f8fb;
+  --bg-elevated: #ffffff;
+  --bg-hover: #e4e8f0;
+  --bg-0: #eef1f6;
+  --bg-1: #ffffff;
+  --bg-2: #f7f8fb;
+  --panel: #ffffff;
+  --panel-soft: #f0f2f6;
+  --side: #f7f8fb;
+  --elevated: #ffffff;
+  --border: rgba(20, 30, 50, 0.1);
+  --border-strong: rgba(20, 30, 50, 0.18);
+  --line: rgba(20, 30, 50, 0.1);
+  --line-strong: rgba(20, 30, 50, 0.2);
+  --text: #161b26;
+  --text-muted: #5c667a;
+  --muted: #5c667a;
+  --mute: #5c667a;
+  --ink: #161b26;
+  --ink-dim: rgba(22, 27, 38, 0.65);
+  --ink-faint: rgba(22, 27, 38, 0.4);
+  --paper: #fffcf7;
+  --accent-dim: rgba(59, 125, 216, 0.14);
+  --accent-soft: rgba(59, 125, 216, 0.14);
+  --shadow: 0 12px 28px rgba(20, 30, 50, 0.12);
+  color-scheme: light;
+}
+
+html[data-theme-base="light"][data-theme="dark"] {
+  --bg: #0e1116;
+  --bg-deep: #0e1116;
+  --bg-panel: #151a22;
+  --bg-elevated: #1c2330;
+  --bg-hover: #262f3f;
+  --bg-0: #0e1116;
+  --bg-1: #151a22;
+  --bg-2: #1c2330;
+  --panel: #151a22;
+  --panel-soft: #1c2330;
+  --side: #151a22;
+  --elevated: #1c2330;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --text: #e8ecf4;
+  --text-muted: #9aa3b5;
+  --muted: #9aa3b5;
+  --mute: #9aa3b5;
+  --ink: #e8ecf4;
+  --gmail-bg: #1a1d21;
+  --gmail-white: #292a2d;
+  --gmail-border: #3c4043;
+  --gmail-border-light: #3c4043;
+  --gmail-text: #e8eaed;
+  --gmail-muted: #9aa0a6;
+  --gmail-hover: #2d3136;
+  --gmail-active: #394457;
+  --gmail-active-text: #8ab4f8;
+  color-scheme: dark;
+}
+
+html[data-buttons="soft"] .app-shell .btn,
+html[data-buttons="soft"] .app-shell button.btn {
+  border-radius: 999px;
+  border-color: transparent;
+  background: var(--accent-dim, var(--accent-soft));
+  background-image: none;
+  box-shadow: none;
+}
+
+html[data-buttons="soft"] .app-shell .btn-primary,
+html[data-buttons="soft"] .app-shell button.btn-primary {
+  border-radius: 999px;
+  background: var(--accent-dim, var(--accent-soft));
+  background-image: none;
+  border-color: transparent;
+  color: var(--accent);
+  box-shadow: none;
+}
+
+html[data-buttons="soft"] .app-shell .btn-ghost,
+html[data-buttons="soft"] .app-shell button.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-muted, var(--muted, var(--mute)));
+}
+
+html[data-buttons="solid"] .app-shell .btn,
+html[data-buttons="solid"] .app-shell button.btn {
+  border-radius: 6px;
+  border-color: transparent;
+  background: var(--bg-hover, var(--elevated, var(--panel-soft)));
+  background-image: none;
+  box-shadow: none;
+}
+
+html[data-buttons="solid"] .app-shell .btn-primary,
+html[data-buttons="solid"] .app-shell button.btn-primary {
+  border-radius: 6px;
+  background: var(--accent);
+  background-image: none;
+  border-color: transparent;
+  color: #0b1220;
+  box-shadow: none;
+}
+
+html[data-theme="light"][data-buttons="solid"] .app-shell .btn-primary,
+html[data-theme="light"][data-buttons="solid"] .app-shell button.btn-primary {
+  color: #ffffff;
+}
+
+html[data-buttons="solid"] .app-shell .btn-ghost,
+html[data-buttons="solid"] .app-shell button.btn-ghost {
+  background: var(--bg-elevated, var(--elevated, var(--panel)));
+  border-color: transparent;
+  color: var(--text, var(--ink));
+}
+
+html[data-buttons="outline"] .app-shell .btn,
+html[data-buttons="outline"] .app-shell button.btn {
+  border-radius: 10px;
+  border-color: var(--border-strong, var(--line-strong, var(--border, var(--line))));
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
+}
+
+html[data-buttons="outline"] .app-shell .btn-primary,
+html[data-buttons="outline"] .app-shell button.btn-primary {
+  border-radius: 10px;
+  background: transparent;
+  background-image: none;
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: none;
+}
+
+html[data-buttons="outline"] .app-shell .btn-ghost,
+html[data-buttons="outline"] .app-shell button.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-muted, var(--muted, var(--mute)));
+}

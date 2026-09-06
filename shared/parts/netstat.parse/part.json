@@ -1,0 +1,19 @@
+{
+  "id": "netstat.parse",
+  "version": 1,
+  "kind": "util",
+  "title": "Netstat line parser",
+  "summary": "Parse netstat -ano TCP/UDP rows into structured ports; label All interfaces / Localhost; summarize.",
+  "tags": [
+    "system-info",
+    "ports",
+    "netstat"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { parseNetstatLine, summarizePorts } = require('./parts/netstat.parse');",
+  "publisher": "system-info"
+}

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Info</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <img class="brand-logo" src="logo.png" width="32" height="32" alt="" />
+          <div>
+            <strong>System Info</strong>
+            <span class="brand-sub" id="brand-sub">System</span>
+          </div>
+        </div>
+        <nav class="nav nav--scroll" id="main-nav" aria-label="Sections">
+          <div class="nav-group">
+            <p class="nav-label">Overview</p>
+            <button type="button" class="nav-item active" data-page="system">
+              <span class="nav-icon">◆</span>
+              System
+            </button>
+          </div>
+          <div class="nav-group">
+            <p class="nav-label">Hardware</p>
+            <button type="button" class="nav-item" data-page="cpu">
+              <span class="nav-icon">⬢</span>
+              CPU
+            </button>
+            <button type="button" class="nav-item" data-page="memory">
+              <span class="nav-icon">▣</span>
+              Memory
+            </button>
+            <button type="button" class="nav-item" data-page="storage">
+              <span class="nav-icon">▤</span>
+              Storage
+            </button>
+            <button type="button" class="nav-item" data-page="disk">
+              <span class="nav-icon">▧</span>
+              Disk Explorer
+            </button>
+          </div>
+          <div class="nav-group">
+            <p class="nav-label">Activity</p>
+            <button type="button" class="nav-item" data-page="performance">
+              <span class="nav-icon">▥</span>
+              Performance
+            </button>
+            <button type="button" class="nav-item" data-page="processes">
+              <span class="nav-icon">◎</span>
+              Processes
+            </button>
+          </div>
+          <div class="nav-group">
+            <p class="nav-label">Network</p>
+            <button type="button" class="nav-item" data-page="network">
+              <span class="nav-icon">⬡</span>
+              Network
+            </button>
+            <button type="button" class="nav-item" data-page="ports">
+              <span class="nav-icon">◎</span>
+              Ports
+            </button>
+          </div>
+          <div class="nav-group">
+            <p class="nav-label">Config</p>
+            <button type="button" class="nav-item" data-page="environment">
+              <span class="nav-icon">⬚</span>
+              Environment
+            </button>
+          </div>
+        </nav>
+        <footer class="sidebar-foot">
+          <p>Platform service · black series</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">System</h1>
+            <p class="subtitle" id="page-subtitle">OS, hardware, uptime, and computer identity</p>
+          </div>
+          <div class="topbar-actions">
+            <label class="refresh-field" title="How often this page reloads data">
+              <span class="refresh-label">Refresh every</span>
+              <select id="refresh-interval" class="select" aria-label="Refresh interval">
+                <option value="0">Off</option>
+                <option value="15000">15 seconds</option>
+                <option value="30000" selected>30 seconds</option>
+                <option value="60000">1 minute</option>
+                <option value="120000">2 minutes</option>
+              </select>
+            </label>
+            <span class="refresh-meta" id="refresh-meta" aria-live="polite">Every 30s</span>
+            <button type="button" class="btn btn-primary" id="btn-refresh">
+              <span class="btn-icon" aria-hidden="true">↻</span>
+              Refresh now
+            </button>
+          </div>
+        </header>
+
+        <!-- System -->
+        <section class="page page--scroll active" id="page-system" data-page="system">
+          <section class="stats" id="system-stats"></section>
+          <div class="info-grid" id="system-grid"></div>
+          <footer class="table-foot table-foot--solo">
+            <span id="system-last-scan">—</span>
+          </footer>
+        </section>
+
+        <!-- CPU -->
+        <section class="page page--scroll" id="page-cpu" data-page="cpu" hidden>
+          <section class="stats" id="cpu-stats"></section>
+          <div id="cpu-hero" class="cpu-hero"></div>
+          <h2 class="section-heading">Per-core usage</h2>
+          <div class="core-grid" id="cpu-cores"></div>
+          <h2 class="section-heading">Top CPU time (processes)</h2>
+          <section class="table-wrap table-wrap--scroll">
+            <div class="table-scroll">
+              <table class="data-table" id="cpu-table">
+                <thead>
+                  <tr>
+                    <th data-sort="name">Process</th>
+                    <th data-sort="pid">PID</th>
+                    <th data-sort="cpuSeconds">CPU (s)</th>
+                  </tr>
+                </thead>
+                <tbody id="cpu-body">
+                  <tr><td colspan="3" class="loading-cell">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="table-foot">
+              <span id="cpu-last-scan">—</span>
+            </footer>
+          </section>
+        </section>
+
+        <!-- Ports -->
+        <section class="page" id="page-ports" data-page="ports" hidden>
+          <section class="stats" id="ports-stats"></section>
+          <section class="toolbar page-toolbar">
+            <div class="search-wrap">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input type="search" id="ports-search" class="search" placeholder="Search port, process, PID, state…" />
+            </div>
+            <select id="ports-filter-state" class="select">
+              <option value="all">All states</option>
+              <option value="LISTENING">Listening</option>
+              <option value="ESTABLISHED">Established</option>
+              <option value="TIME_WAIT">Time wait</option>
+            </select>
+            <select id="ports-filter-protocol" class="select">
+              <option value="all">TCP + UDP</option>
+              <option value="TCP">TCP only</option>
+              <option value="UDP">UDP only</option>
+            </select>
+          </section>
+          <section class="table-wrap">
+            <div class="table-scroll">
+              <table class="data-table" id="ports-table">
+                <thead>
+                  <tr>
+                    <th data-sort="localPort">Port</th>
+                    <th data-sort="protocol">Proto</th>
+                    <th data-sort="state">State</th>
+                    <th data-sort="processName">Process</th>
+                    <th data-sort="pid">PID</th>
+                    <th data-sort="localAddress">Local</th>
+                    <th data-sort="remoteAddress">Remote</th>
+                  </tr>
+                </thead>
+                <tbody id="ports-body">
+                  <tr><td colspan="7" class="loading-cell">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="table-foot">
+              <span id="ports-row-count">—</span>
+              <span id="ports-last-scan">—</span>
+            </footer>
+          </section>
+        </section>
+
+        <!-- Disk Explorer -->
+        <section class="page page--scroll" id="page-disk" data-page="disk" hidden>
+          <section class="stats" id="disk-stats"></section>
+          <section class="toolbar page-toolbar disk-toolbar">
+            <select id="disk-drive-select" class="select" title="Drive"></select>
+            <input type="text" id="disk-path-input" class="search disk-path-input" value="C:\" spellcheck="false" />
+            <select id="disk-depth-select" class="select" title="Scan depth">
+              <option value="1">Depth 1</option>
+              <option value="2" selected>Depth 2</option>
+              <option value="3">Depth 3</option>
+            </select>
+            <button type="button" class="btn btn-primary" id="disk-scan-btn">Scan</button>
+            <button type="button" class="btn" id="disk-cancel-btn" disabled>Cancel</button>
+          </section>
+          <nav class="disk-breadcrumb" id="disk-breadcrumb" aria-label="Path"></nav>
+          <h2 class="section-heading">Usage map</h2>
+          <p class="section-hint">Click a segment or folder row to drill down</p>
+          <div class="treemap-wrap" id="disk-treemap"></div>
+          <h2 class="section-heading">Folders &amp; files at this level</h2>
+          <section class="table-wrap table-wrap--disk">
+            <div class="table-scroll">
+              <table class="data-table" id="disk-folder-table">
+                <thead>
+                  <tr>
+                    <th data-sort="type">Type</th>
+                    <th data-sort="name">Name</th>
+                    <th data-sort="sizeBytes">Size</th>
+                    <th>% of scan</th>
+                  </tr>
+                </thead>
+                <tbody id="disk-folder-body">
+                  <tr><td colspan="4" class="loading-cell">Choose a path and scan</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <h2 class="section-heading">Largest files</h2>
+          <section class="table-wrap table-wrap--disk">
+            <div class="table-scroll">
+              <table class="data-table" id="disk-files-table">
+                <thead>
+                  <tr>
+                    <th data-sort="name">File</th>
+                    <th data-sort="sizeBytes">Size</th>
+                    <th data-sort="modified">Modified</th>
+                    <th>Path</th>
+                  </tr>
+                </thead>
+                <tbody id="disk-files-body">
+                  <tr><td colspan="4" class="loading-cell">—</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="table-foot">
+              <span id="disk-last-scan">—</span>
+            </footer>
+          </section>
+        </section>
+
+        <!-- Performance Lab -->
+        <section class="page page--scroll" id="page-performance" data-page="performance" hidden>
+          <section class="stats" id="performance-stats"></section>
+          <section class="toolbar page-toolbar">
+            <label class="toolbar-label">
+              History range
+              <select id="performance-range" class="select">
+                <option value="15m">Last 15 min</option>
+                <option value="1h" selected>Last 1 hour</option>
+                <option value="6h">Last 6 hours</option>
+                <option value="24h">Last 24 hours</option>
+              </select>
+            </label>
+            <button type="button" class="btn btn-ghost" id="performance-clear-btn">Clear history</button>
+          </section>
+          <p class="section-hint">Charts build from scheduled refresh (default every 30s). History is kept locally for up to 24 hours.</p>
+          <div class="charts-grid">
+            <article class="chart-card">
+              <h3 class="chart-title">CPU usage</h3>
+              <canvas id="chart-cpu" class="chart-canvas" height="160"></canvas>
+            </article>
+            <article class="chart-card">
+              <h3 class="chart-title">Memory usage</h3>
+              <canvas id="chart-memory" class="chart-canvas" height="160"></canvas>
+            </article>
+            <article class="chart-card">
+              <h3 class="chart-title">Disk capacity used</h3>
+              <canvas id="chart-disk" class="chart-canvas" height="160"></canvas>
+            </article>
+          </div>
+          <footer class="table-foot table-foot--solo">
+            <span id="performance-last-scan">—</span>
+          </footer>
+        </section>
+
+        <!-- Processes -->
+        <section class="page" id="page-processes" data-page="processes" hidden>
+          <section class="stats" id="processes-stats"></section>
+          <section class="toolbar page-toolbar">
+            <div class="search-wrap">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input type="search" id="processes-search" class="search" placeholder="Search name, PID, path…" />
+            </div>
+            <select id="processes-filter" class="select">
+              <option value="all">All processes</option>
+              <option value="responding">Responding only</option>
+              <option value="heavy">High memory (&gt;100 MB)</option>
+            </select>
+          </section>
+          <section class="table-wrap">
+            <div class="table-scroll">
+              <table class="data-table" id="processes-table">
+                <thead>
+                  <tr>
+                    <th data-sort="name">Process</th>
+                    <th data-sort="pid">PID</th>
+                    <th data-sort="memoryBytes">Memory</th>
+                    <th data-sort="cpuSeconds">CPU (s)</th>
+                    <th data-sort="threads">Threads</th>
+                    <th data-sort="responding">Status</th>
+                    <th data-sort="startTime">Started</th>
+                  </tr>
+                </thead>
+                <tbody id="processes-body">
+                  <tr><td colspan="7" class="loading-cell">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="table-foot">
+              <span id="processes-row-count">—</span>
+              <span id="processes-last-scan">—</span>
+            </footer>
+          </section>
+        </section>
+
+        <!-- Memory -->
+        <section class="page page--scroll" id="page-memory" data-page="memory" hidden>
+          <section class="stats" id="memory-stats"></section>
+          <div class="memory-panels" id="memory-panels">
+            <article class="gauge-card" id="memory-physical-card"></article>
+            <article class="gauge-card" id="memory-virtual-card"></article>
+          </div>
+          <h2 class="section-heading">Top memory consumers</h2>
+          <p class="section-hint">Scroll this page to see the full process list</p>
+          <section class="table-wrap table-wrap--memory">
+            <div class="table-scroll">
+              <table class="data-table" id="memory-table">
+                <thead>
+                  <tr>
+                    <th data-sort="name">Process</th>
+                    <th data-sort="pid">PID</th>
+                    <th data-sort="memoryBytes">Memory</th>
+                    <th data-sort="percentOfTotal">% of RAM</th>
+                  </tr>
+                </thead>
+                <tbody id="memory-body">
+                  <tr><td colspan="4" class="loading-cell">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="table-foot">
+              <span id="memory-last-scan">—</span>
+            </footer>
+          </section>
+        </section>
+
+        <!-- Storage -->
+        <section class="page page--scroll" id="page-storage" data-page="storage" hidden>
+          <section class="stats" id="storage-stats"></section>
+          <div class="drive-grid" id="drive-grid"></div>
+          <h2 class="section-heading">All volumes</h2>
+          <p class="section-hint">Click a drive card or table row for full details</p>
+          <section class="table-wrap table-wrap--storage">
+            <div class="table-scroll">
+              <table class="data-table" id="storage-table">
+                <thead>
+                  <tr>
+                    <th data-sort="id">Drive</th>
+                    <th data-sort="name">Volume</th>
+                    <th data-sort="fileSystem">FS</th>
+                    <th data-sort="driveTypeLabel">Type</th>
+                    <th data-sort="sizeBytes">Capacity</th>
+                    <th data-sort="usedBytes">Used</th>
+                    <th data-sort="freeBytes">Free</th>
+                    <th data-sort="usagePercent">Used %</th>
+                  </tr>
+                </thead>
+                <tbody id="storage-body">
+                  <tr><td colspan="8" class="loading-cell">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="table-foot">
+              <span id="storage-row-count">—</span>
+              <span id="storage-last-scan">—</span>
+            </footer>
+          </section>
+        </section>
+
+        <!-- Network -->
+        <section class="page page--scroll" id="page-network" data-page="network" hidden>
+          <section class="stats" id="network-stats"></section>
+          <div class="adapter-grid" id="network-cards"></div>
+          <h2 class="section-heading">All adapters</h2>
+          <p class="section-hint">Click a card or row for full details</p>
+          <section class="toolbar page-toolbar">
+            <div class="search-wrap">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input type="search" id="network-search" class="search" placeholder="Search adapter, IP, MAC, DNS…" />
+            </div>
+            <select id="network-filter" class="select">
+              <option value="all">All adapters</option>
+              <option value="up">Connected only</option>
+              <option value="down">Disconnected</option>
+            </select>
+          </section>
+          <section class="table-wrap table-wrap--scroll">
+            <div class="table-scroll">
+              <table class="data-table" id="network-table">
+                <thead>
+                  <tr>
+                    <th data-sort="name">Adapter</th>
+                    <th data-sort="status">Status</th>
+                    <th data-sort="ipv4Primary">IPv4</th>
+                    <th data-sort="gateway4">Gateway</th>
+                    <th data-sort="dnsPrimary">DNS</th>
+                    <th data-sort="linkSpeed">Speed</th>
+                  </tr>
+                </thead>
+                <tbody id="network-body">
+                  <tr><td colspan="6" class="loading-cell">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="table-foot">
+              <span id="network-row-count">—</span>
+              <span id="network-last-scan">—</span>
+            </footer>
+          </section>
+        </section>
+
+        <!-- Environment -->
+        <section class="page page--scroll" id="page-environment" data-page="environment" hidden>
+          <section class="stats" id="environment-stats"></section>
+          <h2 class="section-heading">PATH entries</h2>
+          <p class="section-hint">Directories searched when running programs</p>
+          <div class="path-list" id="environment-path-list"></div>
+          <h2 class="section-heading">All variables</h2>
+          <section class="toolbar page-toolbar">
+            <div class="search-wrap">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input type="search" id="environment-search" class="search" placeholder="Search variable name or value…" />
+            </div>
+            <select id="environment-filter" class="select">
+              <option value="all">All variables</option>
+              <option value="path">PATH only</option>
+              <option value="user">User / profile</option>
+            </select>
+          </section>
+          <section class="table-wrap table-wrap--scroll">
+            <div class="table-scroll">
+              <table class="data-table" id="environment-table">
+                <thead>
+                  <tr>
+                    <th data-sort="name">Name</th>
+                    <th data-sort="value">Value</th>
+                    <th data-sort="length">Length</th>
+                  </tr>
+                </thead>
+                <tbody id="environment-body">
+                  <tr><td colspan="3" class="loading-cell">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="table-foot">
+              <span id="environment-row-count">—</span>
+              <span id="environment-last-scan">—</span>
+            </footer>
+          </section>
+        </section>
+      </main>
+
+      <aside class="detail-panel hidden" id="detail-panel">
+        <header class="detail-header">
+          <h2 id="detail-title">Details</h2>
+          <button type="button" class="btn-icon-only" id="detail-close" aria-label="Close">×</button>
+        </header>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </div>
+
+    <script src="lib/utils.js"></script>
+    <script src="lib/charts.js"></script>
+    <script src="pages/system.js"></script>
+    <script src="pages/cpu.js"></script>
+    <script src="pages/memory.js"></script>
+    <script src="pages/storage.js"></script>
+    <script src="pages/disk.js"></script>
+    <script src="pages/performance.js"></script>
+    <script src="pages/processes.js"></script>
+    <script src="pages/network.js"></script>
+    <script src="pages/ports.js"></script>
+    <script src="pages/environment.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

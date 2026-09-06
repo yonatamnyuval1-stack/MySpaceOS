@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon">🌌</span>
+          <div>
+            <strong>Space</strong>
+            <span class="brand-sub" id="brand-sub">Navigate the cosmos</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="navigate"><span class="nav-icon">🪐</span> Navigate</button>
+          <button type="button" class="nav-item" data-page="catalog"><span class="nav-icon">✦</span> Catalog</button>
+          <button type="button" class="nav-item" data-page="nasa"><span class="nav-icon">🚀</span> NASA Lab</button>
+          <button type="button" class="nav-item" data-page="reports"><span class="nav-icon">📄</span> Reports</button>
+          <button type="button" class="nav-item" data-page="aliens"><span class="nav-icon">🛸</span> Aliens</button>
+        </nav>
+        <p class="nav-section-label hidden" id="cat-section-label">Category</p>
+        <nav class="nav nav--cats hidden" id="cat-nav"></nav>
+        <footer class="sidebar-foot"><p>NASA APIs · NTRS · Star map</p></footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar topbar--nav" id="nav-topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Navigate</h1>
+            <p class="subtitle" id="page-subtitle">Explore stars, solar system & deep space</p>
+          </div>
+          <div class="topbar-actions hidden" id="topbar-actions"></div>
+        </header>
+
+        <section class="page page--nav active" id="page-navigate" data-page="navigate">
+          <div class="nav-toolbar">
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-reset-view">⌂ Reset view</button>
+            <button type="button" class="btn btn-primary btn-sm hidden" id="btn-jump-solar" hidden aria-hidden="true">☀ Solar system</button>
+            <button type="button" class="btn btn-ghost btn-sm hidden" id="btn-back-galaxy" hidden aria-hidden="true">← Back to stars</button>
+            <button type="button" class="btn btn-ghost btn-sm nav-zoom-btn" id="btn-zoom-out" title="Zoom out">−</button>
+            <input type="range" id="zoom-slider" class="zoom-slider" min="-2" max="9" step="0.05" value="0" title="Zoom" />
+            <button type="button" class="btn btn-ghost btn-sm nav-zoom-btn" id="btn-zoom-in" title="Zoom in">+</button>
+            <span class="zoom-label" id="zoom-label">Zoom</span>
+            <label class="toggle-label"><input type="checkbox" id="toggle-labels" /> <span id="toggle-labels-text">Labels</span></label>
+            <select id="cosmos-layer-jump" class="select-sm cosmos-only" title="Jump to distance layer">
+              <option value="">Distance layer…</option>
+            </select>
+          </div>
+          <p class="nav-hint" id="nav-hint">Space: drag to move · scroll or slider to zoom · click stars</p>
+          <div id="nav-selection" class="nav-selection hidden" aria-live="polite"></div>
+          <div class="starfield-wrap">
+            <canvas id="starfield-canvas" aria-label="Interactive star field" tabindex="0"></canvas>
+          </div>
+        </section>
+
+        <section class="page page--scroll" id="page-catalog" data-page="catalog" hidden>
+          <div class="stats-row" id="catalog-stats"></div>
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">⌕</span>
+              <input type="search" id="catalog-search" class="search" placeholder="Search objects, missions, nebulae…" />
+            </div>
+            <select id="catalog-sort" class="select-sm">
+              <option value="order">Solar order</option>
+              <option value="name">Name A–Z</option>
+            </select>
+          </div>
+          <div class="items-grid" id="catalog-grid"></div>
+        </section>
+
+        <section class="page page--scroll page--nasa" id="page-nasa" data-page="nasa" hidden>
+          <div class="hub-tabs" id="nasa-tabs">
+            <button type="button" class="hub-tab active" data-nasa-tab="apod">APOD</button>
+            <button type="button" class="hub-tab" data-nasa-tab="missions">Missions</button>
+            <button type="button" class="hub-tab" data-nasa-tab="images">Image Library</button>
+            <button type="button" class="hub-tab" data-nasa-tab="neo">NEO Watch</button>
+            <button type="button" class="hub-tab" data-nasa-tab="mars">Mars Rovers</button>
+          </div>
+          <div id="nasa-panel-apod" class="nasa-panel">
+            <div class="toolbar">
+              <button type="button" class="btn btn-primary btn-sm" id="btn-apod-refresh">↻ Refresh today</button>
+            </div>
+            <div id="nasa-apod-content"></div>
+          </div>
+          <div id="nasa-panel-missions" class="nasa-panel" hidden>
+            <div class="stats-row" id="nasa-missions-stats"></div>
+            <div class="toolbar">
+              <div class="search-wrap">
+                <span class="search-icon">⌕</span>
+                <input type="search" id="nasa-mission-search" class="search" placeholder="Search missions…" />
+              </div>
+              <select id="nasa-mission-status" class="select-sm">
+                <option value="all">All status</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+                <option value="development">In development</option>
+              </select>
+            </div>
+            <div class="items-grid" id="nasa-missions-grid"></div>
+          </div>
+          <div id="nasa-panel-images" class="nasa-panel" hidden>
+            <div class="toolbar">
+              <div class="search-wrap">
+                <span class="search-icon">⌕</span>
+                <input type="search" id="nasa-image-search" class="search" placeholder="Search NASA images (e.g. Pillars, Mars, JWST)…" value="nebula" />
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-nasa-images">Search</button>
+            </div>
+            <div class="nasa-images-grid" id="nasa-images-grid"></div>
+          </div>
+          <div id="nasa-panel-neo" class="nasa-panel" hidden>
+            <p class="page-hint">Near-Earth asteroid close approaches from NASA JPL.</p>
+            <div id="nasa-neo-table-wrap"></div>
+          </div>
+          <div id="nasa-panel-mars" class="nasa-panel" hidden>
+            <div class="toolbar">
+              <select id="nasa-mars-rover" class="select-sm">
+                <option value="curiosity">Curiosity</option>
+                <option value="perseverance">Perseverance</option>
+                <option value="opportunity">Opportunity</option>
+                <option value="spirit">Spirit</option>
+              </select>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-nasa-mars">Load latest photos</button>
+            </div>
+            <div class="nasa-images-grid" id="nasa-mars-grid"></div>
+          </div>
+        </section>
+
+        <section class="page page--scroll" id="page-reports" data-page="reports" hidden>
+          <div class="stats-row" id="reports-stats"></div>
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">⌕</span>
+              <input type="search" id="reports-search" class="search" placeholder="Search reports, Apollo, JWST, decadal…" />
+            </div>
+            <select id="reports-category" class="select-sm">
+              <option value="all">All categories</option>
+              <option value="human-spaceflight">Human spaceflight</option>
+              <option value="planetary">Planetary</option>
+              <option value="science">Science</option>
+              <option value="earth-science">Earth science</option>
+              <option value="planetary-defense">Planetary defense</option>
+              <option value="policy">Policy & decadal</option>
+              <option value="technology">Technology</option>
+              <option value="reference">Reference</option>
+            </select>
+          </div>
+          <div class="reports-grid" id="reports-grid"></div>
+        </section>
+
+        <section class="page page--scroll page--aliens" id="page-aliens" data-page="aliens" hidden>
+          <div class="hub-tabs" id="aliens-tabs">
+            <button type="button" class="hub-tab active" data-aliens-tab="docs">Documents</button>
+            <button type="button" class="hub-tab" data-aliens-tab="overview">Overview</button>
+            <button type="button" class="hub-tab" data-aliens-tab="science">Science & SETI</button>
+            <button type="button" class="hub-tab" data-aliens-tab="timeline">Timeline</button>
+            <button type="button" class="hub-tab" data-aliens-tab="cases">Cases & lore</button>
+            <button type="button" class="hub-tab" data-aliens-tab="glossary">Glossary</button>
+          </div>
+          <div id="aliens-toast" class="aliens-toast hidden" role="status"></div>
+
+          <div id="aliens-panel-docs" class="aliens-panel">
+            <p class="page-hint" id="aliens-docs-note">Public unclassified UAP PDFs: open, download a copy to Downloads, or visit the official source.</p>
+            <div class="stats-row" id="aliens-docs-stats"></div>
+            <div class="toolbar">
+              <div class="search-wrap">
+                <span class="search-icon">⌕</span>
+                <input type="search" id="aliens-doc-search" class="search" placeholder="Search documents…" />
+              </div>
+              <select id="aliens-doc-filter" class="select-sm">
+                <option value="all">All types</option>
+                <option value="assessment">Assessments</option>
+                <option value="annual-report">Annual reports</option>
+                <option value="historical">Historical</option>
+                <option value="study">Studies</option>
+                <option value="case-resolution">Case resolutions</option>
+                <option value="oversight">Oversight</option>
+                <option value="materials">Materials</option>
+              </select>
+            </div>
+            <div class="aliens-docs-grid" id="aliens-docs-grid"></div>
+            <div id="aliens-docs-external" class="aliens-docs-external"></div>
+          </div>
+
+          <div id="aliens-panel-overview" class="aliens-panel" hidden>
+            <div id="aliens-overview-body"></div>
+          </div>
+          <div id="aliens-panel-science" class="aliens-panel" hidden>
+            <div id="aliens-science-body"></div>
+          </div>
+          <div id="aliens-panel-timeline" class="aliens-panel" hidden>
+            <div id="aliens-timeline-body"></div>
+          </div>
+          <div id="aliens-panel-cases" class="aliens-panel" hidden>
+            <div id="aliens-cases-body"></div>
+          </div>
+          <div id="aliens-panel-glossary" class="aliens-panel" hidden>
+            <div class="toolbar">
+              <div class="search-wrap">
+                <span class="search-icon">⌕</span>
+                <input type="search" id="aliens-glossary-search" class="search" placeholder="Search terms…" />
+              </div>
+            </div>
+            <div id="aliens-glossary-body"></div>
+          </div>
+        </section>
+      </main>
+
+      <aside class="detail-panel hidden" id="detail-panel">
+        <header class="detail-head">
+          <h2 id="detail-title">Detail</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="detail-close">✕</button>
+        </header>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </div>
+
+    <script src="lib/utils.js"></script>
+    <script src="../../shared/parts/astro.physics/index.js"></script>
+    <script src="lib/storage.js"></script>
+    <script src="lib/pan-drag.js"></script>
+    <script src="lib/starfield.js"></script>
+    <script src="lib/earthfield.js"></script>
+    <script src="lib/oceanfield.js"></script>
+    <script src="lib/detail.js"></script>
+    <script src="pages/navigate.js"></script>
+    <script src="pages/catalog.js"></script>
+    <script src="pages/nasa.js"></script>
+    <script src="pages/reports.js"></script>
+    <script src="pages/aliens.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

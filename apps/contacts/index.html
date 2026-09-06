@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contacts</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon">👥</span>
+          <div>
+            <strong>Contacts</strong>
+            <span class="brand-sub" id="brand-sub">People & reminders</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="browse"><span class="nav-icon">📇</span> All contacts</button>
+          <button type="button" class="nav-item" data-page="reminders"><span class="nav-icon">🔔</span> Reminders</button>
+          <button type="button" class="nav-item" data-page="groups"><span class="nav-icon">▤</span> Groups</button>
+        </nav>
+        <p class="nav-section-label">Filter</p>
+        <nav class="nav nav--cats" id="group-nav"></nav>
+        <footer class="sidebar-foot"><p>Profiles · notifications · call & email</p></footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Contacts</h1>
+            <p class="subtitle" id="page-subtitle">People — profiles, phone, email & reminders</p>
+          </div>
+          <div class="topbar-actions" id="topbar-actions">
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-import">Import</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-export">Export</button>
+            <button type="button" class="btn btn-primary" id="btn-add-contact">+ New contact</button>
+          </div>
+        </header>
+
+        <section class="page page--scroll active" id="page-browse" data-page="browse">
+          <div class="stats-row" id="contacts-stats"></div>
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">⌕</span>
+              <input type="search" id="contacts-search" class="search" placeholder="Search name, phone, email…" />
+            </div>
+          </div>
+          <div class="contacts-grid" id="contacts-grid"></div>
+        </section>
+
+        <section class="page page--scroll" id="page-reminders" data-page="reminders" hidden>
+          <div class="rem-toolbar">
+            <button type="button" class="btn btn-primary btn-sm" id="btn-check-rem">↻ Check now</button>
+          </div>
+          <div class="settings-panel card-panel" id="rem-settings">
+            <label>Birthday notification time <input type="time" id="set-bday-time" value="09:00" /></label>
+            <label class="check-row"><input type="checkbox" id="set-bday-on" checked /> Birthday reminders</label>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-save-settings">Save settings</button>
+          </div>
+          <div class="alert-banner" id="rem-triggered" hidden></div>
+          <div id="rem-list"></div>
+        </section>
+
+        <section class="page page--scroll" id="page-groups" data-page="groups" hidden></section>
+      </main>
+
+      <aside class="detail-panel hidden" id="detail-panel">
+        <header class="detail-head">
+          <h2 id="detail-title">Contact</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="detail-close">✕</button>
+        </header>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </div>
+
+    <script src="lib/utils.js"></script>
+    <script src="lib/storage.js"></script>
+    <script src="pages/browse.js"></script>
+    <script src="pages/reminders.js"></script>
+    <script src="pages/groups.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

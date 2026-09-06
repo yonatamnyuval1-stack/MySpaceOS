@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Studies</title>
+    <link rel="stylesheet" href="styles.css?v=20260825b" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">📄</span>
+          <div>
+            <strong>Studies</strong>
+            <span class="brand-sub" id="brand-sub">Documents</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav" aria-label="Main">
+          <button type="button" class="nav-item active" data-page="home">
+            <span class="nav-icon">⌂</span>
+            Documents
+          </button>
+          <button type="button" class="nav-item" data-page="templates">
+            <span class="nav-icon">▦</span>
+            Templates
+          </button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p>Auto-save · Formal DOCX · Visual PDF</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar" id="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Documents</h1>
+            <p class="subtitle" id="page-subtitle">Create a blank page or start from a template</p>
+          </div>
+          <div class="topbar-actions" id="topbar-actions">
+            <button type="button" class="btn btn-ghost" id="btn-new-blank">+ Blank</button>
+            <button type="button" class="btn btn-ghost formal-only" id="btn-new-formal">+ Formal</button>
+            <div class="topbar-new-wrap">
+              <button type="button" class="btn btn-primary" id="btn-new-menu">+ New</button>
+              <div class="home-new-menu" id="home-new-menu" hidden></div>
+            </div>
+          </div>
+        </header>
+
+        <div class="content" id="content">
+          <section class="page active" id="page-home" data-page="home">
+            <div class="home-toolbar">
+              <input type="search" id="home-search" class="home-search" placeholder="Search documents…" />
+            </div>
+            <div class="doc-grid" id="doc-grid"></div>
+          </section>
+
+          <section class="page" id="page-templates" data-page="templates" hidden>
+            <div class="templates-grid" id="templates-grid"></div>
+          </section>
+
+          <section class="page page--editor" id="page-editor" data-page="editor" hidden>
+            <div class="ed-layout">
+              <aside class="ed-sidebar" id="ed-sidebar">
+                <div class="ed-sidebar-head">
+                  <button type="button" class="btn btn-ghost ed-back" id="ed-back">← Documents</button>
+                  <div class="ed-doc-toolbar">
+                    <input type="search" id="ed-doc-search" class="ed-doc-search" placeholder="Search…" />
+                    <button type="button" class="btn btn-primary btn-sm" id="ed-new-doc">+ New</button>
+                  </div>
+                  <div class="ed-template-menu" id="ed-template-menu" hidden></div>
+                </div>
+                <div class="ed-doc-list" id="ed-doc-list"></div>
+              </aside>
+
+              <div class="ed-editor-wrap">
+                <div class="editor-chrome">
+                  <div class="editor-title-row">
+                    <button type="button" class="btn btn-ghost btn-sm ed-toggle-sidebar" id="ed-toggle-sidebar" title="Toggle docs (Ctrl+\)">☰ Docs</button>
+                    <input type="text" id="editor-title" class="editor-title" placeholder="Document title" />
+                    <div class="editor-title-actions">
+                      <button type="button" class="btn btn-ghost btn-sm" id="ed-focus-mode" title="Focus mode (Ctrl+Shift+F)">Focus</button>
+                      <button type="button" class="btn btn-ghost btn-sm" id="ed-pin-doc">Pin</button>
+                      <button type="button" class="btn btn-ghost btn-sm" id="ed-copy" title="Copy for Word">Copy</button>
+                      <button type="button" class="btn btn-ghost btn-sm" id="ed-export-html">.html</button>
+                      <button type="button" class="btn btn-ghost btn-sm" id="ed-export-rtf">.rtf</button>
+                      <button type="button" class="btn btn-ghost btn-sm" id="ed-export-docx" title="Save Word DOCX">.docx</button>
+                      <button type="button" class="btn btn-ghost btn-sm" id="ed-export-pdf" title="Save PDF to your computer">.pdf</button>
+                      <button type="button" class="btn btn-ghost btn-sm btn-danger-text" id="ed-delete-doc">Delete</button>
+                    </div>
+                  </div>
+                  <div class="editor-toolbar" id="editor-toolbar">
+                    <button type="button" data-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+                    <button type="button" data-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+                    <button type="button" data-cmd="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+                    <button type="button" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+                    <span class="toolbar-sep"></span>
+                    <select data-cmd-select="formatBlock" title="Heading">
+                      <option value="p">Normal</option>
+                      <option value="h1">Heading 1</option>
+                      <option value="h2">Heading 2</option>
+                      <option value="h3">Heading 3</option>
+                    </select>
+                    <select id="editor-font-size" class="toolbar-select visual-only" title="Font size">
+                      <option value="14">14</option>
+                      <option value="16" selected>16</option>
+                      <option value="18">18</option>
+                      <option value="20">20</option>
+                      <option value="22">22</option>
+                    </select>
+                    <select id="editor-line-height" class="toolbar-select visual-only" title="Line spacing">
+                      <option value="1.5">1.5</option>
+                      <option value="1.65" selected>1.65</option>
+                      <option value="1.85">1.85</option>
+                      <option value="2">2.0</option>
+                    </select>
+                    <select id="editor-formal-style" class="toolbar-select formal-toolbar-only" title="Formal style" hidden>
+                      <option value="academic">Academic</option>
+                      <option value="business">Business</option>
+                      <option value="proposal">Proposal</option>
+                      <option value="letter">Letter</option>
+                    </select>
+                    <span class="toolbar-sep"></span>
+                    <button type="button" data-cmd="justifyLeft" title="Align left">⇤</button>
+                    <button type="button" data-cmd="justifyCenter" title="Align center">≡</button>
+                    <button type="button" data-cmd="justifyRight" title="Align right">⇥</button>
+                    <button type="button" data-cmd="justifyFull" title="Justify">≣</button>
+                    <span class="toolbar-sep"></span>
+                    <button type="button" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
+                    <button type="button" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+                    <button type="button" data-cmd="formatBlock" data-val="blockquote" title="Quote">❝</button>
+                    <span class="toolbar-sep"></span>
+                    <button type="button" data-cmd="insertHorizontalRule" title="Line">—</button>
+                    <button type="button" data-cmd="createLink" title="Link">🔗</button>
+                    <button type="button" data-cmd="removeFormat" title="Clear format">⌫</button>
+                    <span class="toolbar-sep"></span>
+                    <button type="button" data-cmd="undo" title="Undo (Ctrl+Z)">↶</button>
+                    <button type="button" data-cmd="redo" title="Redo (Ctrl+Y)">↷</button>
+                    <span class="toolbar-sep visual-only"></span>
+                    <button type="button" id="ed-insert-layout" class="toolbar-action visual-only" title="Insert layout block into current page">＋ Block</button>
+                    <button type="button" id="ed-add-page" class="toolbar-action toolbar-action--page visual-only" title="Add another page">＋ Page</button>
+                    <button type="button" id="ed-ai-fill" class="toolbar-action toolbar-action--ai visual-only" title="Ask AI to fill template slots">✦ AI Fill</button>
+                    <button type="button" id="ed-fact-check" class="toolbar-action toolbar-action--check" title="Check whether the document facts look accurate">✓ Check facts</button>
+                  </div>
+                  <div class="ed-layout-menu" id="ed-layout-menu" hidden></div>
+                  <div class="ed-add-page-menu" id="ed-add-page-menu" hidden></div>
+                  <div class="editor-status">
+                    <span id="editor-save-status">Ready</span>
+                    <span id="editor-pagecount">1 page</span>
+                    <span id="editor-wordcount">0 words</span>
+                    <span id="editor-reading-time"></span>
+                  </div>
+                </div>
+                <div class="editor-canvas" id="editor-canvas">
+                  <div class="editor-sheets" id="editor-sheets"></div>
+                  <div class="editor-add-page-bar">
+                    <button type="button" class="btn btn-primary" id="ed-add-page-bottom">＋ Add page</button>
+                    <span class="editor-add-page-hint">Blank page or another template layout</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="lib/utils.js?v=20260804a"></script>
+    <script src="lib/templates.js?v=20260804a"></script>
+    <script src="lib/slots.js?v=20260804a"></script>
+    <script src="lib/formal.js?v=20260804a"></script>
+    <script src="lib/docx-export.js?v=20260804a"></script>
+    <script src="lib/editor.js?v=20260804a"></script>
+    <script src="lib/storage.js?v=20260804a"></script>
+    <script src="pages/home.js?v=20260804a"></script>
+    <script src="pages/templates.js?v=20260804a"></script>
+    <script src="pages/editor.js?v=20260804a"></script>
+    <script src="../shared/settings-definitions.js?v=20260804a"></script>
+    <script src="../shared/settings-boot.js?v=20260804a"></script>
+    <script src="../shared/app-settings-runtime.js?v=20260804a"></script>
+    <script src="../shared/msl-key.js?v=20260806a"></script>
+    <script src="../shared/msl-client.js?v=20260806a"></script>
+    <script src="app.js?v=20260804a"></script>
+    <script src="ai-chat.js?v=20260804a"></script>
+  </body>
+</html>

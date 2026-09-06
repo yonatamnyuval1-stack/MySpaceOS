@@ -1,0 +1,8 @@
+{
+  "note": "Permissions platform service: white atom series",
+  "exports": [
+    { "ref": "notif.sender", "note": "Sender blocklist keys surfaced in Notifications tab" },
+    { "ref": "jobs.capacity", "note": "Jobs capacity gates edited here" },
+    { "ref": "ai.toolcall", "note": "Related agent tool-call parsing (Flow)" }
+  ]
+}

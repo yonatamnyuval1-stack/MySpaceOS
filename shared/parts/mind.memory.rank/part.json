@@ -1,0 +1,19 @@
+{
+  "id": "mind.memory.rank",
+  "version": 1,
+  "kind": "util",
+  "title": "Mind memory ranking",
+  "summary": "Score and select relevant memory facts for a user message; format a prompt memory block.",
+  "tags": [
+    "mind",
+    "memory",
+    "rag"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { scoreFact, selectRelevantFacts, formatMemoryBlock } = require('./parts/mind.memory.rank');",
+  "publisher": "mind"
+}

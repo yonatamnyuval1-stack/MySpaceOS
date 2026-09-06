@@ -1,0 +1,19 @@
+{
+  "id": "shell.args",
+  "version": 1,
+  "kind": "util",
+  "title": "Shell argument parser",
+  "summary": "Parse shell-style arg lists into key:value map + positional args: shared by Console and CLIs.",
+  "tags": [
+    "shell",
+    "args",
+    "parser"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { parseArgStructure } = require('./parts/shell.args');",
+  "publisher": "shell"
+}

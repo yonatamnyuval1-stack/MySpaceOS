@@ -1,0 +1,25 @@
+{
+  "updatedAt": "2026-05-29",
+  "elementCount": 5,
+  "nearEarthObjects": {
+    "2026-05-29": [
+      {
+        "id": "fallback_1",
+        "name": "(Sample) 2024 ON",
+        "nasa_jpl_url": "https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html",
+        "is_potentially_hazardous_asteroid": false,
+        "close_approach_data": [
+          {
+            "close_approach_date": "2026-05-29",
+            "relative_velocity": { "kilometers_per_second": "12.4" },
+            "miss_distance": { "lunar": "8.2", "kilometers": "3150000" }
+          }
+        ],
+        "estimated_diameter": {
+          "meters": { "estimated_diameter_min": 45, "estimated_diameter_max": 100 }
+        }
+      }
+    ]
+  },
+  "note": "Bundled sample when NASA NEO API is unavailable. Live data loads when online."
+}

@@ -1,0 +1,157 @@
+{
+  "profile": {
+    "tagline": "Projects: create, link folders & scan trees",
+    "icon": "🏗️",
+    "color": "#f472b6"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List projects",
+      "description": "List builds projects",
+      "delivery": "ipc",
+      "channel": "projects.list",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get project",
+      "description": "Project details",
+      "delivery": "ipc",
+      "channel": "projects.get",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "create",
+      "title": "Create project",
+      "description": "Create a project",
+      "delivery": "ipc",
+      "channel": "projects.create",
+      "input": {
+        "name": "string",
+        "description": "string?"
+      }
+    },
+    {
+      "verb": "update",
+      "title": "Update project",
+      "description": "Update project fields",
+      "delivery": "ipc",
+      "channel": "projects.update",
+      "input": {
+        "id": "string",
+        "name": "string?",
+        "description": "string?"
+      }
+    },
+    {
+      "verb": "delete",
+      "title": "Delete project",
+      "description": "Delete a project",
+      "delivery": "ipc",
+      "channel": "projects.delete",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "duplicate",
+      "title": "Duplicate project",
+      "description": "Clone a project",
+      "delivery": "ipc",
+      "channel": "projects.duplicate",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "linkFolder",
+      "title": "Link folder",
+      "description": "Attach a folder to a project",
+      "delivery": "ipc",
+      "channel": "projects.linkFolder",
+      "input": {
+        "id": "string",
+        "path": "string"
+      }
+    },
+    {
+      "verb": "rescan",
+      "title": "Rescan project",
+      "description": "Rescan linked folders",
+      "delivery": "ipc",
+      "channel": "projects.rescan",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "addLink",
+      "title": "Add link",
+      "description": "Add a URL link",
+      "delivery": "ipc",
+      "channel": "projects.addLink",
+      "input": {
+        "id": "string",
+        "url": "string",
+        "title": "string?"
+      }
+    },
+    {
+      "verb": "removeLink",
+      "title": "Remove link",
+      "description": "Remove a URL link",
+      "delivery": "ipc",
+      "channel": "projects.removeLink",
+      "input": {
+        "id": "string",
+        "linkId": "string"
+      }
+    },
+    {
+      "verb": "folderOpen",
+      "title": "Open folder",
+      "description": "Open a folder path",
+      "delivery": "ipc",
+      "channel": "folder.open",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "fileOpen",
+      "title": "Open file",
+      "description": "Open a file path",
+      "delivery": "ipc",
+      "channel": "file.open",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "treeScan",
+      "title": "Scan tree",
+      "description": "Scan a folder tree",
+      "delivery": "ipc",
+      "channel": "tree.scan",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Builds",
+      "description": "Open Builds UI",
+      "delivery": "ui",
+      "input": {
+        "id": "string?",
+        "page": "string?"
+      }
+    }
+  ],
+  "events": []
+}

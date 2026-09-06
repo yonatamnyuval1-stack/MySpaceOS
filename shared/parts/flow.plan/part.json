@@ -1,0 +1,20 @@
+{
+  "id": "flow.plan",
+  "version": 1,
+  "kind": "util",
+  "title": "Model Flow planner",
+  "summary": "Offline localPlan, LLM JSON → normalizeFlow, email/sheets intent guards, URL extract: Flow beyond tool-call parsing.",
+  "tags": [
+    "flow",
+    "ai",
+    "planner",
+    "automation"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { localPlan, normalizeFlow } = require('./parts/flow.plan');",
+  "publisher": "flow"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "space.format",
+  "version": 1,
+  "kind": "data",
+  "title": ".space document format",
+  "summary": "Portable myspace.space envelope for scripts, flows, notes, and decks. parse/build with secret stripping.",
+  "tags": [
+    "space",
+    "export",
+    "import",
+    "scripts",
+    "flow"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {
+    "parseDocument": "parseDocument(raw)",
+    "buildDocument": "buildDocument({ kind, title, payload })"
+  },
+  "usage": "const { parseDocument, buildDocument } = require('./parts/space.format');",
+  "publisher": "scripts"
+}

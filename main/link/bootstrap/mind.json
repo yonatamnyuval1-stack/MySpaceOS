@@ -1,0 +1,167 @@
+{
+  "profile": {
+    "tagline": "OS AI runtime: ask, chat, memory & models",
+    "icon": "✦",
+    "color": "#fb7185"
+  },
+  "commands": [
+    {
+      "verb": "status",
+      "title": "Status",
+      "description": "Mind runtime status",
+      "delivery": "ipc",
+      "channel": "mind.status",
+      "broker": "mind"
+    },
+    {
+      "verb": "providers",
+      "title": "List providers",
+      "description": "Available AI providers",
+      "delivery": "ipc",
+      "channel": "mind.providers",
+      "broker": "mind"
+    },
+    {
+      "verb": "ask",
+      "title": "Ask",
+      "description": "One-shot completion",
+      "delivery": "ipc",
+      "channel": "mind.ask",
+      "broker": "mind",
+      "input": {
+        "prompt": "string",
+        "provider": "string?"
+      },
+      "examples": [
+        "pulse(send mind ask prompt=What is Focus mode?)"
+      ]
+    },
+    {
+      "verb": "chat",
+      "title": "Chat",
+      "description": "Multi-turn chat",
+      "delivery": "ipc",
+      "channel": "mind.chat",
+      "broker": "mind",
+      "input": {
+        "messages": "array?",
+        "prompt": "string?",
+        "provider": "string?"
+      }
+    },
+    {
+      "verb": "test",
+      "title": "Test provider",
+      "description": "Ping a provider",
+      "delivery": "ipc",
+      "channel": "mind.test",
+      "broker": "mind",
+      "input": {
+        "provider": "string?"
+      }
+    },
+    {
+      "verb": "setSettings",
+      "title": "Set settings",
+      "description": "Update Mind settings",
+      "delivery": "ipc",
+      "channel": "mind.settings.set",
+      "broker": "mind",
+      "input": {
+        "provider": "string?",
+        "model": "string?"
+      }
+    },
+    {
+      "verb": "setKey",
+      "title": "Set API key",
+      "description": "Store a provider API key",
+      "delivery": "ipc",
+      "channel": "mind.key.set",
+      "broker": "mind",
+      "input": {
+        "provider": "string?",
+        "key": "string"
+      }
+    },
+    {
+      "verb": "clearKey",
+      "title": "Clear API key",
+      "description": "Remove a stored key",
+      "delivery": "ipc",
+      "channel": "mind.key.clear",
+      "broker": "mind",
+      "input": {
+        "provider": "string?"
+      }
+    },
+    {
+      "verb": "memoryList",
+      "title": "List memory",
+      "description": "List long-term memory facts",
+      "delivery": "ipc",
+      "channel": "mind.memory.list",
+      "broker": "mind"
+    },
+    {
+      "verb": "memoryAdd",
+      "title": "Add memory",
+      "description": "Remember a fact",
+      "delivery": "ipc",
+      "channel": "mind.memory.add",
+      "broker": "mind",
+      "input": {
+        "text": "string",
+        "tags": "string[]?"
+      }
+    },
+    {
+      "verb": "memoryUpdate",
+      "title": "Update memory",
+      "description": "Edit a memory item",
+      "delivery": "ipc",
+      "channel": "mind.memory.update",
+      "broker": "mind",
+      "input": {
+        "id": "string",
+        "text": "string?"
+      }
+    },
+    {
+      "verb": "memoryDelete",
+      "title": "Delete memory",
+      "description": "Forget a memory item",
+      "delivery": "ipc",
+      "channel": "mind.memory.delete",
+      "broker": "mind",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "memoryClear",
+      "title": "Clear memory",
+      "description": "Clear all memory",
+      "delivery": "ipc",
+      "channel": "mind.memory.clear",
+      "broker": "mind"
+    },
+    {
+      "verb": "open",
+      "title": "Open Mind",
+      "description": "Open Mind UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    }
+  ],
+  "events": [
+    {
+      "topic": "mind.updated",
+      "title": "Mind updated",
+      "description": "Mind settings or memory changed",
+      "payload": {}
+    }
+  ]
+}

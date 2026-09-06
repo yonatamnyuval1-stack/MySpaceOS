@@ -1,0 +1,492 @@
+{
+  "updates": [
+    {
+      "id": "0.1.1",
+      "version": "0.1.1",
+      "major": true,
+      "title": "Update ready: My Space 0.1.1",
+      "body": "Rotating wallpapers, quieter notifications, and this update alert. Click Restart & Update to apply and relaunch.",
+      "date": "2026-08-08"
+    },
+    {
+      "id": "0.1.2-welcome-black",
+      "version": "0.1.2",
+      "major": true,
+      "title": "Update ready: Welcome black background",
+      "body": "The Welcome app now uses a solid black background instead of the desktop wallpaper. Click Restart & Update to apply.",
+      "date": "2026-08-08"
+    },
+    {
+      "id": "0.1.3-scripts-app",
+      "version": "0.1.3",
+      "major": true,
+      "title": "Update ready: Scripts app",
+      "body": "New Scripts app for long multi-step My Space shell commands. Save scripts, run them line by line, and open with run scripts(name). Click Restart & Update to apply.",
+      "date": "2026-08-09"
+    },
+    {
+      "id": "0.1.4-scripts-run-match",
+      "version": "0.1.4",
+      "major": true,
+      "title": "Update ready: Scripts name matching",
+      "body": "run Pi digit and similar partial app names now resolve correctly; Study Deck aliases improved; Scripts warns that a / close all closes every app. Click Restart & Update to apply.",
+      "date": "2026-08-09"
+    },
+    {
+      "id": "0.1.5-clock-shell",
+      "version": "0.1.5",
+      "major": true,
+      "title": "Update ready: Clock shell commands",
+      "body": "New shell verbs: timer 25m, pomodoro start, stopwatch, wait 5s / wait until HH:MM, and run clock(timer:25m). Click Restart & Update to apply.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.6-app-command-protocol",
+      "version": "0.1.6",
+      "major": true,
+      "title": "Update ready: App command protocol",
+      "body": "Unified shell form: app(verb args). Prefer clock(timer 25m) and clock(pomodoro start). Bare timer/pomodoro still work as aliases. Click Restart & Update to apply.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.7-today-commands",
+      "version": "0.1.7",
+      "major": true,
+      "title": "Update ready: Today shell commands",
+      "body": "today(add …), today(done …), today(list), today(snooze …), today(clear done), and page opens like today(tomorrow). Click Restart & Update to apply.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.8-stocks-commands",
+      "version": "0.1.8",
+      "major": true,
+      "title": "Update ready: Stocks shell commands",
+      "body": "stocks(AAPL), stocks(watch TSLA), stocks(quote NVDA), stocks(alert AAPL > 200), stocks(mode crypto), stocks(list), stocks(hold …). Click Restart & Update to apply.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.9-builds-vault-commands",
+      "version": "0.1.9",
+      "major": true,
+      "title": "Update ready: Builds & Vault commands",
+      "body": "builds(list/open/new/folder/rescan) and vault(list/search/open/add/copy/lock/status). Vault mutations require unlock in the app first. Click Restart & Update to apply.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.10-silent-app-commands",
+      "version": "0.1.10",
+      "major": true,
+      "title": "Update ready: Precise app commands",
+      "body": "Action commands (add, list, watch, quote…) no longer force-open apps. Only open/page verbs launch windows; if the app is already open, the UI refreshes quietly.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.11-drift-decks-commands",
+      "version": "0.1.11",
+      "major": true,
+      "title": "Update ready: Drift & Study Deck commands",
+      "body": "drift(scan/list/zones/insights/pause) and decks(list/new/add|front|back)/studydeck(open/study). Actions stay silent unless you open/navigate.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.12-contacts-translate-sysinfo",
+      "version": "0.1.12",
+      "major": true,
+      "title": "Update ready: Contacts, Translate & SysInfo commands",
+      "body": "contacts(list/search/add/email), translate(hello to:he) / detect / languages, and sysinfo(cpu/memory/scan). Actions stay silent; use open to launch.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.13-translate-fix-remote",
+      "version": "0.1.13",
+      "major": true,
+      "title": "Update ready: Translate fix & Remote Hub",
+      "body": "Translate: smarter he↔en defaults, language names, hello -> en, history from shell. New remote(list/check/connect/wake/scan/open). Click Restart & Update to apply.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.14-studies-geo-flags-history-space",
+      "version": "0.1.14",
+      "major": true,
+      "title": "Update ready: Studies, Geo, Flags, History & Space",
+      "body": "studies(list/open), geo(search/get/learn), flags(scores/quiz), history(list/search/get), space(apod/search/missions). Actions stay silent unless you open. Click Restart & Update.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.15-contracts-msl-lexicon-flow-console",
+      "version": "0.1.15",
+      "major": true,
+      "title": "Update ready: Contracts, MSL, Lexicon, Flow & Console",
+      "body": "contracts(list/upcoming), msl(list/keys), lexicon(search/get/daily), flow(plan/meta), console(aliases/macros). Click Restart & Update to apply.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.16-docs-app",
+      "version": "0.1.16",
+      "major": true,
+      "title": "Update ready: Docs handbook",
+      "body": "New Docs app: categorized handbook for shell, commands, apps, MSL, automation, recipes. Try docs · docs(search timer) · docs(cmd-protocol). Click Restart & Update.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.17-docs-deep",
+      "version": "0.1.17",
+      "major": true,
+      "title": "Update ready: Docs expanded",
+      "body": "Docs keeps the same look with much deeper articles: mental model, chaining, errors, MSL providers, syncIfOpen, backups, troubleshooting, and fuller command reference. Restart & Update.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.18-docs-complete",
+      "version": "0.1.18",
+      "major": true,
+      "title": "Update ready: Complete Docs handbook",
+      "body": "Docs is now a full beginner-to-deep handbook: reading path, per-app pages with verb tables (Clock, Today, Stocks, Vault…), command index, settings catalog, and complete shell flow. Try docs(open how-to-read-docs) · docs(open command-index). Restart & Update.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.19-docs-everything",
+      "version": "0.1.19",
+      "major": true,
+      "title": "Update ready: Docs: truly everything",
+      "body": "Exhaustive Docs layer: every settings key, all 51 MSL capabilities, architecture, IPC map, mySpace bridge, userData file map, desktop config, updates system. Try docs(open settings-complete) · docs(open msl-capabilities) · docs(open architecture). Restart & Update.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.20-scripts-maps-help",
+      "version": "0.1.20",
+      "major": true,
+      "title": "Update ready: Scripts, Maps & live help",
+      "body": "scripts(list/run/open/new/…) and maps(geocode/notes/routes/…) join the unified protocol. help now auto-lists every commands:true app from the registry. Try scripts(list) · maps(geocode Tel Aviv) · help. Restart & Update.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.21-shell-lang",
+      "version": "0.1.21",
+      "major": true,
+      "title": "Update ready: Shell variables & functions",
+      "body": "Write real shell programs: let x = today(list), $x / $x.ok, fn greet(name) { … }, greet(Yonatan). Scripts run as one scoped program. Try help lang · docs(open shell-vars). Restart & Update.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.22-backup-rituals",
+      "version": "0.1.22",
+      "major": true,
+      "title": "Update ready: Backup & starter rituals",
+      "body": "Full userData backup: backup(export/import/path/status) and Settings → Maintenance. Starter scripts morning · focus · eod · remote (merged by name, never overwrites your edits). Try backup(status) · scripts(run morning) · docs(open backups). Restart & Update.",
+      "date": "2026-08-11"
+    },
+    {
+      "id": "0.1.23-stability",
+      "version": "0.1.23",
+      "major": true,
+      "title": "Update ready: Shell stability",
+      "body": "let a = 1; let b = 2 chains correctly. Empty fn bodies are ok. Fns cannot silently shadow apps (today/clock/…). Wallpaper rotation no longer flashes black. Smoke: npx electron ./scripts/smoke-shell-lang.js. Try help lang · docs(open shell-vars). Restart & Update.",
+      "date": "2026-08-12"
+    },
+    {
+      "id": "0.1.24-model-flow",
+      "version": "0.1.24",
+      "major": true,
+      "title": "Update ready: Model Flow studio",
+      "body": "Model Flow is a real studio: History, Live vs Staged tools, Lab Connection (set/clear key), and editable steps before Approve. flow(plan …) paints an open studio. Try run flow · docs(open app-flow). Restart & Update.",
+      "date": "2026-08-12"
+    },
+    {
+      "id": "0.1.25-flow-polish",
+      "version": "0.1.25",
+      "major": true,
+      "title": "Update ready: Model Flow polish",
+      "body": "Clearer studio hierarchy: Task → Plan → Review → Run rail, collapsible side dock, sticky approve bar, tool-specific fields, and compact history. Try run flow. Restart & Update.",
+      "date": "2026-08-12"
+    },
+    {
+      "id": "0.1.26-flow-lab-tools",
+      "version": "0.1.26",
+      "major": true,
+      "title": "Update ready: Model Flow Lab tools",
+      "body": "Model Flow now syncs tools from your Model Lab plan (GitHub, Reddit, Search, Google Super, …) instead of a fixed list. Open Flow → Tools after connecting a key. Restart & Update.",
+      "date": "2026-08-12"
+    },
+    {
+      "id": "0.1.27-flow-run-timeout",
+      "version": "0.1.27",
+      "major": true,
+      "title": "Update ready: Model Flow run reliability",
+      "body": "Approve & run no longer hangs on Lab toolkit discovery. Lab calls have timeouts; reply parsing fixed for multi-part Lab responses. Restart & Update.",
+      "date": "2026-08-12"
+    },
+    {
+      "id": "0.1.28-flow-real-output",
+      "version": "0.1.28",
+      "major": true,
+      "title": "Update ready: Model Flow real run output",
+      "body": "Approve & run keeps the run log on failure, reads Lab multi-part replies correctly, and requires a saved Lab key for real execution (no fake “understood” stubs). Restart & Update.",
+      "date": "2026-08-12"
+    },
+    {
+      "id": "0.1.29-persist-guard",
+      "version": "0.1.29",
+      "major": true,
+      "title": "Update ready: Data persistence guard",
+      "body": "Stops accidental wipes of Builds / Geography / Scripts / Today / Study Deck / Contacts. Migrates leftover files from the old Electron profile. Model Flow uses the built-in Lab key again. Restart & Update.",
+      "date": "2026-08-12"
+    },
+    {
+      "id": "0.1.30-scripts-load",
+      "version": "0.1.30",
+      "major": true,
+      "title": "Update ready: Scripts load fix",
+      "body": "Fixes “Could not load scripts” — storage.load and settings.patch were missing from the Scripts IPC bridge. Restart & Update.",
+      "date": "2026-08-12"
+    },
+    {
+      "id": "0.1.36-independence-theme",
+      "version": "0.1.36",
+      "major": true,
+      "title": "Update ready: Countries: Independence",
+      "body": "Learning Games → Countries now has an Independence theme: independent country, territory, or other. Also includes recent Notes, Model Flow studio depth, and Flow live tools. Restart & Update.",
+      "date": "2026-08-15"
+    },
+    {
+      "id": "0.1.37-vault-abc",
+      "version": "0.1.37",
+      "major": true,
+      "title": "Update ready: Vault A–Z sort",
+      "body": "Vault entries are listed alphabetically by name instead of creation date. Existing secrets are unchanged. Click Restart & Update to apply.",
+      "date": "2026-08-18"
+    },
+    {
+      "id": "0.1.38-space-files",
+      "version": "0.1.38",
+      "major": true,
+      "title": "Update ready: .space files",
+      "body": "My Space documents you can save, send, and double-click. Export a script or flow as .space; pack(open …) imports it. Restart & Update.",
+      "date": "2026-08-19"
+    },
+    {
+      "id": "0.1.39-mac-linux-builds",
+      "version": "0.1.39",
+      "major": true,
+      "title": "Update ready: macOS & Linux builds",
+      "body": "My Space now supports building/running official Electron builds on macOS and Linux (dmgs/AppImages). UI/commands stay consistent; some deep OS features are platform-specific (e.g. Windows window embedding). Also includes improved update-notification dedupe and better missing .space hints. Restart & Update.",
+      "date": "2026-08-19"
+    },
+    {
+      "id": "0.1.40-mail-gmail",
+      "version": "0.1.40",
+      "major": true,
+      "title": "Update ready: Mail & Gmail",
+      "body": "New Mail app: connect Gmail with OAuth (config/mail-oauth.json), read inbox, and get bell alerts for new unread mail. Tokens stay encrypted on this PC. Setup: Google Cloud → Desktop OAuth client → copy credentials → Mail → Connect Gmail. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.41-mail-client",
+      "version": "0.1.41",
+      "major": true,
+      "title": "Update ready: Gmail-style Mail",
+      "body": "Mail opens full-screen like Gmail: folders (Inbox, All Mail, Sent…), 100 messages per page with Load more, HTML reading pane, and search. Bell mail settings moved behind ⚙. Mail alerts + sender blocklist. OAuth opens in your browser. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.42-mail-cache-fast",
+      "version": "0.1.42",
+      "major": true,
+      "title": "Update ready: Fast Mail cache",
+      "body": "Mail is much faster: local disk cache, Gmail batch fetch (1 request for many messages), correct From headers, and instant open from the list. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.43-connect-hub",
+      "version": "0.1.43",
+      "major": true,
+      "title": "Update ready: Connect hub",
+      "body": "Mail is now Connect: a catalog of Gmail, WhatsApp, Telegram, Discord, Slack, Outlook and more. Pick an app, connect with the details it needs (tokens encrypted on this PC), or open Gmail as before. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.44-myspace-browser",
+      "version": "0.1.44",
+      "major": true,
+      "title": "Update ready: My Space Browser & mail Block",
+      "body": "New My Space Browser in Connect: search apps, Connect services, My Space content, and the web from one home page (stays in-app). Mail notification cards include Block sender. Docs cover Connect and Notifications. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.45-msl-platform",
+      "version": "0.1.45",
+      "major": true,
+      "title": "Update ready: MSL is a platform service",
+      "body": "MSL is no longer a desktop app. Open Platform → MSL (or msl(panel)) for the system panel: capabilities, keys, mint, and inject. Shell msl(…) still works. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.46-jobs-platform",
+      "version": "0.1.46",
+      "major": true,
+      "title": "Update ready: Jobs compute platform",
+      "body": "New major platform service: Jobs — background queue with a capacity contract (concurrency, Focus pause, daily budget). Open Platform → Jobs, jobs(panel), or Ctrl+K. Enqueue shell/script jobs; MSL exposes jobs.enqueue / jobs.list / jobs.stats. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.47-jobs-os-runtime",
+      "version": "0.1.47",
+      "major": true,
+      "title": "Update ready: Jobs is the OS runtime",
+      "body": "Jobs now runs the system: every app launch, shell command, and script/program is a job under the Capacity contract. No jobs(run …) wrapper needed — open Platform → Jobs to inspect activity and tune limits. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.48-jobs-pools",
+      "version": "0.1.48",
+      "major": true,
+      "title": "Update ready: Jobs capacity pools",
+      "body": "Jobs Capacity now uses three pools (Interactive / Shell / Background) plus short exceptions. Interactive work is never blocked by Focus or a full queue. Tune pools in Platform → Jobs → Capacity. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.49-jobs-connect-boost",
+      "version": "0.1.49",
+      "major": true,
+      "title": "Update ready: Jobs Connect boost",
+      "body": "Connect (mail, messaging, browsers) now has its own high-capacity Jobs pool (default 10) and opens through the Jobs runtime with high priority. Tune Connect max in Jobs → Capacity. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.50-mind-platform",
+      "version": "0.1.50",
+      "major": true,
+      "title": "Update ready: Mind AI platform",
+      "body": "New major platform service: Mind — OS AI runtime with Gemini (cloud) and optional Ollama (local). Open Platform → Mind, mind(panel), or mind(ask …). Keys stay in this PC’s userData. MSL: mind.ask / mind.status. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.51-mind-tasks",
+      "version": "0.1.51",
+      "major": true,
+      "title": "Update ready: Mind by task",
+      "body": "Mind is simpler: Ask with Quick (cheap), Everyday, or Deep (Pro). One key; pick models per task in Setup. Shell: mind(quick …) · mind(think …). Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.52-chat-app",
+      "version": "0.1.52",
+      "major": true,
+      "title": "Update ready: Chat app",
+      "body": "New Chat app: ChatGPT-style AI conversations powered by Mind — history sidebar, model/context settings. Ask AI (side assistant) unchanged. Open with run chat or chat(new). Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.53-chat-polish",
+      "version": "0.1.53",
+      "major": true,
+      "title": "Update ready: Chat polish",
+      "body": "Chat UI upgraded: pin/rename/clear, copy & regenerate, task chips (Quick/Everyday/Deep), typing state, and cleaner layout. Restart & Update.",
+      "date": "2026-08-20"
+    },
+    {
+      "id": "0.1.54-os-bridge",
+      "version": "0.1.54",
+      "major": true,
+      "title": "Update ready: OS Bridge",
+      "body": "New OS Bridge app (separate from Remote Hub): pair your phone on Wi‑Fi for files & clipboard, host folders/USB, share actions, and Windows shortcuts. Open OS Bridge or bridge(open). Platform → OS Bridge. Restart & Update.",
+      "date": "2026-08-21"
+    },
+    {
+      "id": "0.1.55-mind-modes-jobs",
+      "version": "0.1.55",
+      "major": true,
+      "title": "Update ready: Mind modes & snappier OS",
+      "body": "Mind Chat modes (Companion + Cynical) from the sidebar catalog. Ask AI stays usable inside Mind Chat. App opens skip Jobs except under extreme load; stuck Jobs recover. OS Bridge pairing: smarter Wi‑Fi URL, local QR, code in the link. Restart & Update.",
+      "date": "2026-08-21"
+    },
+    {
+      "id": "0.1.60-platform-polish",
+      "version": "0.1.60",
+      "major": true,
+      "title": "Update ready: Platform polish",
+      "body": "Platform catalog layout and series grouping, Resolve/Fault noise fixes for first-party apps, Mind Chat persistence into Chat history, and quieter update handling. Open Platform for OS services.",
+      "date": "2026-08-24"
+    },
+    {
+      "id": "0.1.61-updates-service",
+      "version": "0.1.61",
+      "major": true,
+      "title": "Update ready: Updates platform service",
+      "body": "New Platform → Updates: current build with My Space logo and notes, new releases listed on this page (not the bell), History, and Apply / Skip. Shell: updates(open) · updates(status).",
+      "date": "2026-08-24"
+    },
+    {
+      "id": "0.1.62-network-service",
+      "version": "0.1.62",
+      "major": true,
+      "title": "Update ready: Network platform service",
+      "body": "New Platform → Network: host status, reachability probes (DNS / internet / Gemini / GitHub), adapters, listening ports, and Windows Network settings. Shell: network(open) · network(status) · network(check).",
+      "date": "2026-08-24"
+    },
+    {
+      "id": "0.1.63-info-service",
+      "version": "0.1.63",
+      "major": true,
+      "title": "Update ready — Info platform service",
+      "body": "Info is now a white Platform service: full encyclopedia of every app and every platform service (not a desktop tile). Filter All · Services · Apps · External. Shell: info(open) · info(services).",
+      "date": "2026-08-24"
+    },
+    {
+      "id": "0.1.64-backup-service",
+      "version": "0.1.64",
+      "major": true,
+      "title": "Update ready: Backup platform service",
+      "body": "New Platform → Backup: export userData to zip, restore with restart, history of exports/restores, and open data folder. Shell: backup(open) · backup(export) · backup(status) · backup(history).",
+      "date": "2026-08-24"
+    },
+    {
+      "id": "0.1.70-themes-safe-fix",
+      "version": "0.1.70",
+      "major": true,
+      "title": "Update ready: Themes safety fix",
+      "body": "Emergency fix: Themes no longer force global !important chrome, no longer themes the shell or other apps by mistake, and theme preload failures can no longer block myApp. Restart & Update, then close and reopen open app tabs.",
+      "date": "2026-08-25"
+    },
+    {
+      "id": "0.1.69-themes-complete",
+      "version": "0.1.69",
+      "major": true,
+      "title": "Update ready: Themes for every app",
+      "body": "Themes now includes Today, Docs, Learning Games, Scripts, Mind, Console, Model Flow, and platform services (Files, Pulse, Connect, Jobs, Resolve, Updates, Network, Backup, Storage, Permissions, Parts, MSL, Info, OS Bridge, System Info). Light-default apps get a Dark mode; dark apps get Light. Live apply. Shell: themes(today light) · themes(files dark) · themes(list). Restart & Update; reopen tabs once.",
+      "date": "2026-08-25"
+    },
+    {
+      "id": "0.1.68-themes-rollout",
+      "version": "0.1.68",
+      "major": true,
+      "title": "Update ready: Themes for all desktop apps",
+      "body": "Themes now covers Notes, Tasks, Contacts, Translate, Coupons, Vault, History, Geography, Builds, Stocks, Contracts, Space, Code Lexicon, Drift, Remote Hub, Icon Library, Study Deck, Pi Digits — plus Studies & Clock. Light/Dark and Soft/Solid/Outline buttons switch live. Shell: themes(notes light) · themes(tasks soft) · themes(list). Restart & Update; reopen themed tabs once.",
+      "date": "2026-08-25"
+    },
+    {
+      "id": "0.1.67-themes-service",
+      "version": "0.1.67",
+      "major": true,
+      "title": "Update ready: Themes platform service",
+      "body": "New Platform → Themes: per-app light/dark and button styles (soft / solid / outline). First pair: Studies + Clock. Defaults keep today’s look. Shell: themes(open) · themes(studies light) · themes(clock soft). Restart & Update.",
+      "date": "2026-08-25"
+    },
+    {
+      "id": "0.1.66-storage-service",
+      "version": "0.1.66",
+      "major": true,
+      "title": "Update ready: Storage platform service",
+      "body": "New Platform → Storage: disk & userData overview, per-app breakdown, large files, safe cleanup (tmp, stale backups, learn cache), and About. Shell: storage(status|apps|large|cleanup|open). Platform catalog + legacy storage-panel shim. Restart & Update.",
+      "date": "2026-08-24"
+    },
+    {
+      "id": "0.1.65-tasks-app",
+      "version": "0.1.65",
+      "major": true,
+      "title": "Update ready: Tasks app",
+      "body": "New Tasks app: GTD Inbox / Next / Waiting / Someday, projects & lists, soft due dates, checklists, flags, and Send to Today. Shell: tasks(…) · gtd(…) · todo(…). Timed day agenda stays today(…). Restart & Update.",
+      "date": "2026-08-24"
+    }
+  ]
+}

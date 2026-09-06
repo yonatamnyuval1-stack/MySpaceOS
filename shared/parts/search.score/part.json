@@ -1,0 +1,19 @@
+{
+  "id": "search.score",
+  "version": 1,
+  "kind": "util",
+  "title": "Palette search scoring",
+  "summary": "Integer ranking (exact/prefix/includes/tokens/subsequence) plus ?/ask AI and > shell query modes — distinct from search.fuzzy.",
+  "tags": [
+    "search",
+    "palette",
+    "rank"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { score, isAiQuery, isShellQuery } = require('./parts/search.score');",
+  "publisher": "search"
+}

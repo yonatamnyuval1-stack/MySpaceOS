@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Contracts</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-seal">⚖</span>
+          <div>
+            <strong>Digital Contracts</strong>
+            <span class="brand-sub" id="brand-sub">Official</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="library">
+            <span class="nav-icon">§</span> Library
+          </button>
+          <button type="button" class="nav-item" data-page="expiring">
+            <span class="nav-icon">⏱</span> Expiry alerts
+          </button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p>Formal templates · fillable fields · signatures · expiry notifications</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Contract Library</h1>
+            <p class="subtitle" id="page-subtitle">Formal agreements</p>
+          </div>
+        </header>
+
+        <section class="page active" id="page-library" data-page="library">
+          <p class="error-banner" id="library-error" hidden></p>
+          <div class="alert-banner" id="library-expiry-banner" hidden></div>
+          <h2 class="section-title">Your contracts</h2>
+          <div id="contract-list" class="contract-list"></div>
+          <h2 class="section-title">New from template</h2>
+          <p class="template-intro muted">Use <strong>General Record</strong> or <strong>Open Memorandum</strong> to document what happened in your own words — with signatures and optional reminder dates.</p>
+          <div id="template-picker" class="template-grid"></div>
+        </section>
+
+        <section class="page" id="page-editor" data-page="editor" hidden>
+          <button type="button" class="btn btn-ghost" id="editor-back">← Back to library</button>
+          <p class="error-banner" id="editor-error" hidden></p>
+          <p class="saved-toast" id="editor-saved" hidden>Saved.</p>
+          <div class="editor-panel card-panel">
+            <label class="field-block">
+              <span>Document title</span>
+              <input type="text" id="editor-title-input" class="field-input field-input-lg" />
+            </label>
+            <div id="editor-fields" class="editor-fields"></div>
+            <div class="editor-actions">
+              <button type="button" class="btn btn-primary" id="btn-save-contract">Save draft</button>
+              <button type="button" class="btn btn-ghost" id="btn-preview-contract">Preview & sign →</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="page page-document" id="page-document" data-page="document" hidden>
+          <button type="button" class="btn btn-ghost doc-back" id="document-back">← Back to library</button>
+          <p class="error-banner" id="document-error" hidden></p>
+          <article class="legal-document" id="legal-document">
+            <div class="legal-watermark">OFFICIAL DOCUMENT</div>
+            <header class="legal-header">
+              <div class="legal-seal">⚖</div>
+              <h1 id="doc-title">Agreement</h1>
+              <p class="legal-meta" id="doc-meta"></p>
+              <span class="status-pill" id="doc-status">Draft</span>
+            </header>
+            <div class="legal-body" id="doc-clauses"></div>
+            <footer class="legal-footer">
+              <p>IN WITNESS WHEREOF, the parties have executed this Agreement as of the dates set forth below.</p>
+              <div id="doc-signatures" class="signatures-grid"></div>
+            </footer>
+          </article>
+        </section>
+
+        <section class="page" id="page-expiring" data-page="expiring" hidden>
+          <p class="error-banner" id="expiring-error" hidden></p>
+          <div class="alert-banner" id="expiring-triggered" hidden></div>
+          <button type="button" class="btn btn-primary" id="btn-check-expiry">Check expiry now</button>
+          <p class="muted expiry-hint">Desktop notifications run automatically every minute while My Space is open.</p>
+          <h2 class="section-title">Next 30 days</h2>
+          <div id="expiring-list" class="contract-list"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="lib/templates.js"></script>
+    <script src="lib/utils.js"></script>
+    <script src="pages/library.js"></script>
+    <script src="pages/editor.js"></script>
+    <script src="pages/document.js"></script>
+    <script src="pages/expiring.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

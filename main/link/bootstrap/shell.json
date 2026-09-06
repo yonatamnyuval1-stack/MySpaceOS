@@ -1,0 +1,76 @@
+{
+  "profile": {
+    "tagline": "Command language: run commands & open Console",
+    "icon": "⌨️",
+    "color": "#22d3ee"
+  },
+  "commands": [
+    {
+      "verb": "run",
+      "title": "Run command",
+      "description": "Run a My Space shell command on the desktop",
+      "delivery": "ui",
+      "input": {
+        "command": "string"
+      },
+      "examples": [
+        "pulse(send shell run command=msl(list))"
+      ]
+    },
+    {
+      "verb": "open",
+      "title": "Open Console",
+      "description": "Open the Shell Console app",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    },
+    {
+      "verb": "openScripts",
+      "title": "Open Scripts",
+      "description": "Open saved Scripts",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openAliases",
+      "title": "Open aliases",
+      "description": "Open Console aliases page",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openHistory",
+      "title": "Open history",
+      "description": "Open Console history page",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openMacros",
+      "title": "Open macros",
+      "description": "Open Console macros page",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openWhen",
+      "title": "Open when-rules",
+      "description": "Open Console when-rules page",
+      "delivery": "ui",
+      "input": {}
+    }
+  ],
+  "events": [
+    {
+      "topic": "shell.ran",
+      "title": "Command ran",
+      "description": "A shell command finished",
+      "payload": {
+        "command": "string?",
+        "ok": "boolean?"
+      }
+    }
+  ]
+}

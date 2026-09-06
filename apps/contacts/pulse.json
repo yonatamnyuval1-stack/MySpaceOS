@@ -1,0 +1,169 @@
+{
+  "profile": {
+    "tagline": "People: phone, email, birthdays & reminders",
+    "icon": "👥",
+    "color": "#f9a8d4"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List contacts",
+      "description": "Load contacts and groups (optional search)",
+      "delivery": "ipc",
+      "channel": "storage.load",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "add",
+      "title": "Add contact",
+      "description": "Create a contact",
+      "delivery": "ipc",
+      "channel": "contact.add",
+      "input": {
+        "firstName": "string?",
+        "lastName": "string?",
+        "name": "string?",
+        "email": "string?",
+        "phone": "string?",
+        "company": "string?",
+        "groupId": "string?"
+      },
+      "emit": "contacts.added"
+    },
+    {
+      "verb": "delete",
+      "title": "Delete contact",
+      "description": "Remove a contact by id",
+      "delivery": "ipc",
+      "channel": "contact.delete",
+      "input": {
+        "id": "string"
+      },
+      "emit": "contacts.deleted"
+    },
+    {
+      "verb": "open",
+      "title": "Open contact",
+      "description": "Open Contacts and show a person",
+      "delivery": "ui",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "email",
+      "title": "Open email",
+      "description": "Compose email to a contact address",
+      "delivery": "ipc",
+      "channel": "email.open",
+      "input": {
+        "email": "string?",
+        "id": "string?"
+      }
+    },
+    {
+      "verb": "phone",
+      "title": "Open phone",
+      "description": "Start a phone call / tel: link",
+      "delivery": "ipc",
+      "channel": "phone.open",
+      "input": {
+        "phone": "string?",
+        "id": "string?"
+      }
+    },
+    {
+      "verb": "sms",
+      "title": "Open SMS",
+      "description": "Open SMS to a number",
+      "delivery": "ipc",
+      "channel": "sms.open",
+      "input": {
+        "phone": "string?",
+        "id": "string?"
+      }
+    },
+    {
+      "verb": "copy",
+      "title": "Copy text",
+      "description": "Copy text to the clipboard",
+      "delivery": "ipc",
+      "channel": "clipboard.copy",
+      "input": {
+        "text": "string"
+      }
+    },
+    {
+      "verb": "reminders",
+      "title": "Upcoming reminders",
+      "description": "List upcoming contact reminders",
+      "delivery": "ipc",
+      "channel": "reminders.upcoming"
+    },
+    {
+      "verb": "remindersCheck",
+      "title": "Check reminders",
+      "description": "Fire due reminders now",
+      "delivery": "ipc",
+      "channel": "reminders.check"
+    },
+    {
+      "verb": "export",
+      "title": "Export contacts",
+      "description": "Export contacts JSON",
+      "delivery": "ipc",
+      "channel": "data.export"
+    },
+    {
+      "verb": "import",
+      "title": "Import contacts",
+      "description": "Import contacts from JSON",
+      "delivery": "ipc",
+      "channel": "data.import",
+      "input": {
+        "json": "string?",
+        "data": "object?"
+      }
+    },
+    {
+      "verb": "notifyTest",
+      "title": "Test notification",
+      "description": "Show a test OS notification",
+      "delivery": "ipc",
+      "channel": "notify.test",
+      "input": {
+        "title": "string?",
+        "body": "string?"
+      }
+    }
+  ],
+  "events": [
+    {
+      "topic": "contacts.selected",
+      "title": "Contact selected",
+      "description": "User selected a contact",
+      "payload": {
+        "id": "string",
+        "name": "string?"
+      }
+    },
+    {
+      "topic": "contacts.added",
+      "title": "Contact added",
+      "description": "A contact was created",
+      "payload": {
+        "id": "string"
+      }
+    },
+    {
+      "topic": "contacts.deleted",
+      "title": "Contact deleted",
+      "description": "A contact was removed",
+      "payload": {
+        "id": "string"
+      }
+    }
+  ]
+}

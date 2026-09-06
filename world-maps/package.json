@@ -1,0 +1,65 @@
+{
+  "name": "world-maps",
+  "version": "1.0.6",
+  "description": "Personal world map explorer: OpenStreetMap",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "build:dir": "electron-builder --win --dir"
+  },
+  "devDependencies": {
+    "electron": "35.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.worldmaps.desktop",
+    "productName": "World Maps",
+    "copyright": "Copyright © 2026",
+    "artifactName": "WorldMapsSetup-${version}.${ext}",
+    "publish": null,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!dist/**",
+      "!node_modules/**",
+      "!*.bat",
+      "!INSTALL.txt"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "WorldMapsPortable-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "World Maps",
+      "runAfterFinish": true,
+      "include": "build/installer.nsh",
+      "installerLanguages": ["en-US", "he-IL"],
+      "language": "1033",
+      "displayLanguageSelector": false,
+      "installerSidebar": null,
+      "uninstallDisplayName": "World Maps"
+    }
+  }
+}

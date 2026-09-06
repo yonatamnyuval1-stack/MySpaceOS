@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Model Flow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+  </head>
+  <body>
+    <div class="shell" id="shell">
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <div>
+            <h1 class="brand-title">Model Flow</h1>
+          </div>
+        </div>
+
+        <ol class="phase-rail" id="phase-rail" aria-label="Studio progress">
+          <li class="phase is-active" data-phase="task"><span>1</span> Task</li>
+          <li class="phase" data-phase="plan"><span>2</span> Plan</li>
+          <li class="phase" data-phase="review"><span>3</span> Review</li>
+          <li class="phase" data-phase="run"><span>4</span> Run</li>
+        </ol>
+
+        <button type="button" class="pill pill-btn" id="ai-status" title="Connection settings">
+          Disconnected
+        </button>
+      </header>
+
+      <div class="workspace">
+        <main class="studio" id="studio">
+          <section class="compose" id="compose">
+            <div class="compose-inner">
+              <label class="compose-label" for="task-input">What should this flow do?</label>
+              <div class="compose-row">
+                <textarea
+                  id="task-input"
+                  rows="2"
+                  placeholder="e.g. Email Alex a short summary of today’s stock movers"
+                  autocomplete="off"
+                  spellcheck="true"
+                ></textarea>
+                <button type="button" class="btn btn-primary" id="btn-plan" title="Plan flow">
+                  Plan
+                </button>
+              </div>
+              <div class="compose-foot">
+                <p class="compose-hint" id="compose-hint">Describe a task, plan steps, review, then approve.</p>
+                <div class="example-chips" id="example-chips" aria-label="Example tasks">
+                  <button type="button" class="example-chip" data-example="Send a brief email update to the team">
+                    Email update
+                  </button>
+                  <button type="button" class="example-chip" data-example="Notify me when the flow finishes">
+                    Notify me
+                  </button>
+                  <button type="button" class="example-chip" data-example="Append a row to my weekly tracker sheet">
+                    Sheet row
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="canvas" id="stage" aria-live="polite">
+            <div class="stage-empty" id="stage-empty">
+              <div class="stage-empty-mark" aria-hidden="true"></div>
+              <h2>Start with a task</h2>
+              <p>Plan above, open a saved flow, or build steps yourself. Nothing runs until you approve.</p>
+              <div class="empty-actions">
+                <button type="button" class="btn btn-primary" id="btn-blank">Blank flow</button>
+              </div>
+              <div class="template-grid" id="template-grid" aria-label="Starter flows"></div>
+            </div>
+
+            <div class="flow hidden" id="flow-panel">
+              <header class="flow-head">
+                <div class="flow-head-main">
+                  <input class="flow-title-input" id="flow-title" value="Untitled" aria-label="Flow title" />
+                  <p class="flow-summary" id="flow-summary"></p>
+                </div>
+                <span class="flow-status" id="flow-status">Review</span>
+              </header>
+
+              <ol class="flow-track" id="flow-track"></ol>
+              <div class="add-step-bar hidden" id="add-step-bar">
+                <span>Add step</span>
+                <div class="add-step-tools" id="add-step-tools"></div>
+              </div>
+
+              <div class="flow-log hidden" id="flow-log" aria-label="Run log"></div>
+            </div>
+          </section>
+
+          <footer class="approve-bar hidden" id="approve-bar">
+            <p class="approve-note" id="approve-note">Side effects run only after you approve.</p>
+            <div class="approve-actions">
+              <button type="button" class="btn btn-ghost" id="btn-export-space" title="Export as a .space file">
+                Export .space
+              </button>
+              <button type="button" class="btn btn-ghost" id="btn-save-library" title="Save to Flow library">
+                Save flow
+              </button>
+              <button type="button" class="btn btn-ghost" id="btn-save-script" title="Save plan as Scripts body">
+                Save as script
+              </button>
+              <button type="button" class="btn btn-ghost hidden" id="btn-retry-failed" title="Retry from the failed step">
+                Retry from failed
+              </button>
+              <button type="button" class="btn btn-reject" id="btn-reject" title="Cancel flow">
+                Cancel
+              </button>
+              <button type="button" class="btn btn-approve" id="btn-approve" title="Approve and run">
+                Approve &amp; run
+              </button>
+            </div>
+          </footer>
+
+          <footer class="post-run-bar hidden" id="post-run-bar">
+            <p class="approve-note" id="post-run-note">Crystallize this run into Scripts for daily macros.</p>
+            <div class="approve-actions">
+              <button type="button" class="btn btn-ghost" id="btn-export-space-done" title="Export as a .space file">
+                Export .space
+              </button>
+              <button type="button" class="btn btn-ghost" id="btn-save-library-done" title="Save to Flow library">
+                Save flow
+              </button>
+              <button type="button" class="btn btn-approve" id="btn-save-script-done" title="Save run as Scripts body">
+                Save as script
+              </button>
+            </div>
+          </footer>
+        </main>
+
+        <aside class="dock" id="dock">
+          <nav class="dock-nav" aria-label="Side panels">
+            <button type="button" class="dock-btn is-active" data-panel="history" id="tab-history" title="History">
+              <span aria-hidden="true">◷</span>
+              <span class="dock-label">History</span>
+            </button>
+            <button type="button" class="dock-btn" data-panel="library" id="tab-library" title="Saved flows">
+              <span aria-hidden="true">☆</span>
+              <span class="dock-label">Saved</span>
+            </button>
+            <button type="button" class="dock-btn" data-panel="tools" id="tab-tools" title="Tools">
+              <span aria-hidden="true">▣</span>
+              <span class="dock-label">Tools</span>
+            </button>
+            <button type="button" class="dock-btn" data-panel="connection" id="tab-connection" title="Connection">
+              <span aria-hidden="true">◎</span>
+              <span class="dock-label">Key</span>
+            </button>
+          </nav>
+
+          <div class="dock-panel" id="dock-panel">
+            <div class="side-pane is-active" data-pane="history" id="pane-history">
+              <div class="side-head">
+                <h2>History</h2>
+              </div>
+              <div class="side-search">
+                <input type="search" id="history-search" placeholder="Search runs…" autocomplete="off" />
+              </div>
+              <div class="side-body" id="history-list">
+                <p class="side-empty" id="history-empty">No runs yet.</p>
+              </div>
+            </div>
+
+            <div class="side-pane" data-pane="library" id="pane-library" hidden>
+              <div class="side-head">
+                <h2>Saved</h2>
+              </div>
+              <div class="side-body" id="library-list">
+                <p class="side-empty">No saved flows yet.</p>
+              </div>
+            </div>
+
+            <div class="side-pane" data-pane="tools" id="pane-tools" hidden>
+              <div class="side-head">
+                <h2>Tools</h2>
+              </div>
+              <div class="side-body" id="tools-list"></div>
+            </div>
+
+            <div class="side-pane" data-pane="connection" id="pane-connection" hidden>
+              <div class="side-head">
+                <h2>Connection</h2>
+              </div>
+              <div class="side-body connection-body">
+                <dl class="meta-grid" id="meta-grid">
+                  <div><dt>Status</dt><dd id="meta-status">—</dd></div>
+                  <div><dt>Model</dt><dd id="meta-model">—</dd></div>
+                </dl>
+                <label class="field-label" for="api-key-input">Lab API key</label>
+                <input
+                  type="password"
+                  id="api-key-input"
+                  class="field-input"
+                  placeholder="Paste key…"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+                <div class="connection-actions">
+                  <button type="button" class="btn btn-primary btn-sm" id="btn-save-key">Save</button>
+                  <button type="button" class="btn btn-sm" id="btn-clear-key">Clear</button>
+                </div>
+                <p class="side-note" id="connection-note"></p>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "id": "coupons",
+  "name": "Coupons",
+  "version": "1.0.0",
+  "description": "Encrypted wallet for gift codes, vouchers & promo codes",
+  "icon": "🎟️",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

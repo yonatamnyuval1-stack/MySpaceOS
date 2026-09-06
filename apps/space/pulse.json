@@ -1,0 +1,136 @@
+{
+  "profile": {
+    "tagline": "Bodies, NASA, stars & reports",
+    "icon": "🌌",
+    "color": "#818cf8"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List catalog",
+      "description": "Search space bodies",
+      "delivery": "ipc",
+      "channel": "catalog.list",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get body",
+      "description": "Fetch a catalog body",
+      "delivery": "ipc",
+      "channel": "catalog.get",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "solar",
+      "title": "Solar system",
+      "description": "Solar system bodies",
+      "delivery": "ipc",
+      "channel": "catalog.solar"
+    },
+    {
+      "verb": "wiki",
+      "title": "Wiki",
+      "description": "Wikipedia for a title",
+      "delivery": "ipc",
+      "channel": "wiki.get",
+      "input": {
+        "title": "string"
+      }
+    },
+    {
+      "verb": "apod",
+      "title": "APOD today",
+      "description": "Astronomy Picture of the Day",
+      "delivery": "ipc",
+      "channel": "apod.today"
+    },
+    {
+      "verb": "nasaSearch",
+      "title": "NASA image search",
+      "description": "Search NASA images",
+      "delivery": "ipc",
+      "channel": "nasa.images.search",
+      "input": {
+        "q": "string"
+      }
+    },
+    {
+      "verb": "missions",
+      "title": "List missions",
+      "description": "NASA missions",
+      "delivery": "ipc",
+      "channel": "nasa.missions.list",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "missionGet",
+      "title": "Get mission",
+      "description": "Mission details",
+      "delivery": "ipc",
+      "channel": "nasa.missions.get",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "reports",
+      "title": "List reports",
+      "description": "Space reports",
+      "delivery": "ipc",
+      "channel": "nasa.reports.list"
+    },
+    {
+      "verb": "reportGet",
+      "title": "Get report",
+      "description": "Report details",
+      "delivery": "ipc",
+      "channel": "nasa.reports.get",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "neo",
+      "title": "Near-Earth objects",
+      "description": "NEO feed",
+      "delivery": "ipc",
+      "channel": "nasa.neo.feed"
+    },
+    {
+      "verb": "mars",
+      "title": "Mars photos",
+      "description": "Mars rover photos",
+      "delivery": "ipc",
+      "channel": "nasa.mars.photos",
+      "input": {
+        "sol": "number?",
+        "camera": "string?"
+      }
+    },
+    {
+      "verb": "stars",
+      "title": "Stars field",
+      "description": "Stars dataset",
+      "delivery": "ipc",
+      "channel": "stars.field"
+    },
+    {
+      "verb": "open",
+      "title": "Open Space",
+      "description": "Open Space UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?",
+        "id": "string?"
+      }
+    }
+  ],
+  "events": []
+}

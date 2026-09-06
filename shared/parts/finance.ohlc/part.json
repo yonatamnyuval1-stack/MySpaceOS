@@ -1,0 +1,23 @@
+{
+  "id": "finance.ohlc",
+  "version": 1,
+  "kind": "util",
+  "title": "OHLC indicators",
+  "summary": "SMA, RSI, volatility, period return, volume averages, and analyze() for OHLC candle arrays. Build charting / portfolio UIs without reinventing indicators.",
+  "tags": [
+    "finance",
+    "stocks",
+    "charts",
+    "rsi"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {
+    "sma": "sma(points, period) → (number|null)[]",
+    "rsi": "rsi(points, period=14) → number|null",
+    "analyze": "analyze(points, quote?) → summary object"
+  },
+  "usage": "const { analyze, rsi, sma } = require('./parts/finance.ohlc');"
+}

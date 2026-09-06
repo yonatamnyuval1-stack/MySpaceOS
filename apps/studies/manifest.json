@@ -1,0 +1,13 @@
+{
+  "id": "studies",
+  "name": "Studies",
+  "version": "2.0.0",
+  "description": "Docs-like documents and templates with a dedicated Gemini chat",
+  "icon": "📚",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

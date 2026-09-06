@@ -1,0 +1,6 @@
+{
+  "id": "shell-console",
+  "name": "Console",
+  "version": "1.0.0",
+  "description": "Command engine: run, configure aliases, macros, when rules & history"
+}

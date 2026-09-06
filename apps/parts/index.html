@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-buttons="default" data-theme-base="light" class="theme-light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parts</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <img class="brand-logo" src="logo.png" width="32" height="32" alt="" />
+          <div>
+            <strong>Parts</strong>
+            <span class="brand-sub">GitHub between apps</span>
+          </div>
+        </div>
+
+        <nav class="nav" id="main-nav" aria-label="Parts">
+          <button type="button" class="nav-item is-active" data-page="explore">
+            <span class="nav-ico" aria-hidden="true">⌂</span>
+            Explore
+          </button>
+          <button type="button" class="nav-item" data-page="publish">
+            <span class="nav-ico" aria-hidden="true">↑</span>
+            Publish
+          </button>
+          <button type="button" class="nav-item" data-page="about">
+            <span class="nav-ico" aria-hidden="true">ⓘ</span>
+            About
+          </button>
+        </nav>
+
+        <div class="sidebar-filters" id="kind-filters" aria-label="Kinds">
+          <p class="filter-label">Kind</p>
+          <button type="button" class="filter-chip is-active" data-kind="">All</button>
+          <button type="button" class="filter-chip" data-kind="util">Util</button>
+          <button type="button" class="filter-chip" data-kind="ui">UI</button>
+          <button type="button" class="filter-chip" data-kind="data">Data</button>
+        </div>
+
+        <footer class="sidebar-foot">
+          <p id="sidebar-blurb">Reusable code modules — adopt into any app without host coupling.</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <!-- Explore list -->
+        <section class="view view-explore" id="view-explore">
+          <header class="page-head">
+            <div>
+              <h1>Explore</h1>
+              <p class="lede">Catalog of embeddable modules shared across My Space apps.</p>
+            </div>
+            <div class="page-actions">
+              <button type="button" class="btn" id="btn-reload" title="Refresh catalog">Refresh</button>
+            </div>
+          </header>
+
+          <div class="search-bar">
+            <span class="search-ico" aria-hidden="true">⌕</span>
+            <input
+              type="search"
+              id="search-input"
+              class="search"
+              placeholder="Find a part…"
+              spellcheck="false"
+              autocomplete="off"
+            />
+            <span class="search-meta" id="search-meta"></span>
+          </div>
+
+          <div class="repo-table" role="table" aria-label="Parts catalog">
+            <div class="repo-table-head" role="row">
+              <span role="columnheader">Repository</span>
+              <span role="columnheader">Kind</span>
+              <span role="columnheader">Publishers</span>
+            </div>
+            <div class="repo-list" id="repo-list" role="rowgroup"></div>
+          </div>
+
+          <div class="empty hidden" id="explore-empty">
+            <strong>No parts match</strong>
+            <p>Try another filter, or add <code>shared/parts/&lt;id&gt;/part.json</code>.</p>
+          </div>
+        </section>
+
+        <!-- Repo / part detail -->
+        <section class="view view-repo hidden" id="view-repo" aria-label="Part detail">
+          <header class="repo-head">
+            <button type="button" class="btn btn-ghost" id="btn-back">← Explore</button>
+            <div class="repo-title-block">
+              <div class="repo-path">
+                <span class="repo-org" id="repo-org">parts</span>
+                <span class="repo-slash">/</span>
+                <h1 id="repo-name">part</h1>
+              </div>
+              <p class="repo-desc" id="repo-desc"></p>
+              <div class="repo-tags" id="repo-tags"></div>
+            </div>
+            <div class="repo-head-actions">
+              <label class="adopt-field">
+                <span>Adopt into</span>
+                <select id="adopt-target"></select>
+              </label>
+              <button type="button" class="btn btn-primary" id="btn-adopt">Adopt</button>
+              <button type="button" class="btn" id="btn-copy-usage">Copy usage</button>
+            </div>
+          </header>
+
+          <div class="repo-tabs" role="tablist">
+            <button type="button" class="repo-tab is-active" data-tab="code" role="tab">
+              <span aria-hidden="true">&lt;/&gt;</span> Code
+            </button>
+            <button type="button" class="repo-tab" data-tab="readme" role="tab">
+              <span aria-hidden="true">☰</span> README
+            </button>
+          </div>
+
+          <div class="repo-body" id="repo-code-panel">
+            <aside class="file-tree" id="file-tree" aria-label="Files"></aside>
+            <div class="file-pane">
+              <div class="file-bar">
+                <span class="file-path" id="file-path">Select a file</span>
+                <button type="button" class="btn btn-sm hidden" id="btn-copy-file">Copy</button>
+              </div>
+              <pre class="file-code" id="file-code"><code></code></pre>
+            </div>
+          </div>
+
+          <div class="repo-body repo-readme hidden" id="repo-readme-panel">
+            <article class="readme" id="readme-body"></article>
+          </div>
+
+          <p class="toast-line" id="status-line" role="status"></p>
+        </section>
+
+        <!-- About -->
+        <section class="view view-about hidden" id="view-about">
+          <header class="page-head">
+            <div>
+              <h1>About Parts</h1>
+              <p class="lede">A forge for clean, reusable modules — GitHub between apps.</p>
+            </div>
+          </header>
+          <div class="about-grid">
+            <article class="about-block">
+              <h2>What it is</h2>
+              <p>
+                Parts is a forge of <strong>real reusable modules</strong> extracted from My Space apps —
+                OHLC analytics, SRS scheduling, timezone meeting slots, file classifiers, and more.
+                Adopt them to build new apps without rewriting the same engines.
+              </p>
+            </article>
+            <article class="about-block">
+              <h2>Clean by design</h2>
+              <p>
+                Canonical code lives in <code>shared/parts/</code>. Source stays free of host-app
+                identifiers. Publisher credit is catalog metadata only.
+              </p>
+            </article>
+            <article class="about-block">
+              <h2>Link series</h2>
+              <ul>
+                <li><strong>MSL</strong> — live capability calls</li>
+                <li><strong>Parts</strong> — reusable code modules</li>
+                <li><strong>Pulse</strong> — cross-app messages</li>
+              </ul>
+            </article>
+            <article class="about-block">
+              <h2>Layout</h2>
+              <ul>
+                <li>Shared forge: <code>shared/parts/&lt;id&gt;/</code></li>
+                <li>Publish from any app: <code>apps/&lt;app&gt;/parts/&lt;id&gt;/</code></li>
+                <li>Adopt dest: <code>apps/&lt;target&gt;/parts/&lt;id&gt;/</code></li>
+              </ul>
+            </article>
+            <article class="about-block about-wide">
+              <h2>Shell</h2>
+              <pre class="shell-ex">parts(list)
+parts(get finance.ohlc)
+parts(adopt cards.srs into notes)
+parts(publish)
+parts(panel)</pre>
+            </article>
+          </div>
+        </section>
+
+        <!-- Publish / upload for any app -->
+        <section class="view view-publish hidden" id="view-publish">
+          <header class="page-head">
+            <div>
+              <h1>Publish</h1>
+              <p class="lede">Upload a clean module under any app — it appears in Explore for others to adopt.</p>
+            </div>
+          </header>
+
+          <div class="publish-layout">
+            <div class="publish-form-card">
+              <label class="field">
+                <span>Publisher app</span>
+                <select id="publish-app"></select>
+              </label>
+              <div class="field-row">
+                <label class="field">
+                  <span>Part id</span>
+                  <input id="publish-id" type="text" placeholder="notes.helpers" spellcheck="false" autocomplete="off" />
+                </label>
+                <label class="field">
+                  <span>Kind</span>
+                  <select id="publish-kind">
+                    <option value="util">util</option>
+                    <option value="ui">ui</option>
+                    <option value="data">data</option>
+                    <option value="adapter">adapter</option>
+                  </select>
+                </label>
+              </div>
+              <label class="field">
+                <span>Title</span>
+                <input id="publish-title" type="text" placeholder="Short title" autocomplete="off" />
+              </label>
+              <label class="field">
+                <span>Summary</span>
+                <input id="publish-summary" type="text" placeholder="What this part does (no app-specific wording needed)" autocomplete="off" />
+              </label>
+              <label class="field">
+                <span>Tags</span>
+                <input id="publish-tags" type="text" placeholder="search, util" autocomplete="off" />
+              </label>
+              <label class="field">
+                <span>Usage hint</span>
+                <input id="publish-usage" type="text" placeholder="const { … } = require('./parts/…');" spellcheck="false" autocomplete="off" />
+              </label>
+              <label class="field">
+                <span>Entry file</span>
+                <input id="publish-entry" type="text" value="index.js" spellcheck="false" autocomplete="off" />
+              </label>
+              <label class="field">
+                <span>File contents</span>
+                <textarea id="publish-body" rows="14" spellcheck="false" placeholder="/** Portable helper — no host-app imports */&#10;&#10;function hello() {&#10;  return 'ok';&#10;}&#10;&#10;module.exports = { hello };&#10;"></textarea>
+              </label>
+              <label class="check">
+                <input type="checkbox" id="publish-shared" />
+                Also copy into shared/parts (global forge)
+              </label>
+              <div class="publish-actions">
+                <button type="button" class="btn btn-primary" id="btn-publish">Publish to app</button>
+                <span class="publish-status" id="publish-status" role="status"></span>
+              </div>
+            </div>
+
+            <aside class="publish-side">
+              <header class="publish-side-head">
+                <h2>This app’s uploads</h2>
+                <button type="button" class="btn btn-sm" id="btn-refresh-published">Refresh</button>
+              </header>
+              <div class="published-list" id="published-list"></div>
+              <p class="publish-hint">
+                Files land in <code>apps/&lt;app&gt;/parts/&lt;id&gt;/</code> without host-app identifiers inside the source.
+              </p>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

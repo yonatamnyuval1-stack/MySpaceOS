@@ -1,0 +1,9 @@
+{
+  "note": "Real Parts published from space (code lives in shared/parts. clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "astro.physics",
+      "note": "Orbital / astrophysics SI calculators"
+    }
+  ]
+}

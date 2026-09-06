@@ -1,0 +1,12 @@
+{
+  "name": "MSL",
+  "description": "My Space Link: capability bus",
+  "commands": [
+    {
+      "verb": "open",
+      "summary": "Open MSL capabilities, keys, mint, or inject",
+      "args": { "page": "caps | keys | mint | inject | about" },
+      "examples": ["pulse(send msl-protocol open)", "pulse(send msl-protocol open page:mint)"]
+    }
+  ]
+}

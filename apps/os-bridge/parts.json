@@ -1,0 +1,9 @@
+{
+  "note": "OS Bridge platform service",
+  "exports": [
+    {
+      "ref": "host.safe-id",
+      "note": "Safe device/folder id slug"
+    }
+  ]
+}

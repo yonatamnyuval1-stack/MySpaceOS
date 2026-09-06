@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-buttons="default" data-theme-base="light" class="theme-light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Storage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <img class="brand-logo" src="../../src/brand/atom-slate.png" width="32" height="32" alt="" />
+          <div>
+            <strong>Storage</strong>
+            <span class="brand-sub">Disk &amp; My Space data</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav" aria-label="Storage">
+          <button type="button" class="nav-item is-active" data-page="status">
+            <span class="nav-ico" aria-hidden="true">◆</span>
+            Status
+          </button>
+          <button type="button" class="nav-item" data-page="apps">
+            <span class="nav-ico" aria-hidden="true">▤</span>
+            Apps
+            <span class="nav-badge hidden" id="nav-app-count">0</span>
+          </button>
+          <button type="button" class="nav-item" data-page="large-files">
+            <span class="nav-ico" aria-hidden="true">▧</span>
+            Large files
+          </button>
+          <button type="button" class="nav-item" data-page="cleanup">
+            <span class="nav-ico" aria-hidden="true">⌫</span>
+            Cleanup
+            <span class="nav-badge hidden" id="nav-cleanup-count">0</span>
+          </button>
+          <button type="button" class="nav-item" data-page="about">
+            <span class="nav-ico" aria-hidden="true">ⓘ</span>
+            About
+          </button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p id="sidebar-meta">—</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <section class="view" id="view-status">
+          <header class="page-head">
+            <div>
+              <h1>Status</h1>
+              <p class="page-sub">Host drives and My Space userData footprint</p>
+            </div>
+            <div class="page-actions">
+              <button type="button" class="btn btn-ghost" id="btn-folder">Open data folder</button>
+              <button type="button" class="btn btn-ghost" id="btn-win-settings">Windows Storage</button>
+              <button type="button" class="btn btn-ghost" id="btn-refresh">Refresh</button>
+            </div>
+          </header>
+
+          <article class="status-hero" id="status-hero">
+            <div class="status-logo-wrap">
+              <img class="status-logo" src="../../src/brand/atom-slate.png" width="72" height="72" alt="" />
+            </div>
+            <div class="status-body">
+              <p class="status-eyebrow" id="status-eyebrow">My Space data</p>
+              <h2 class="status-title" id="status-title">Loading…</h2>
+              <p class="status-version" id="status-primary">—</p>
+              <p class="status-desc" id="status-desc">—</p>
+              <div class="status-meta-row" id="status-meta-row"></div>
+            </div>
+          </article>
+
+          <div class="section-head">
+            <h2>Drives</h2>
+            <p class="page-sub">Local disks on this PC</p>
+          </div>
+          <div class="drive-list" id="drive-list"></div>
+          <p class="empty-msg hidden" id="drives-empty">No drives detected.</p>
+        </section>
+
+        <section class="view hidden" id="view-apps">
+          <header class="page-head">
+            <div>
+              <h1>Apps</h1>
+              <p class="page-sub">How much each app uses in userData</p>
+            </div>
+            <div class="page-actions">
+              <button type="button" class="btn btn-ghost" id="btn-refresh-apps">Refresh</button>
+            </div>
+          </header>
+          <div class="stat-row" id="apps-stats"></div>
+          <div class="app-list" id="app-list"></div>
+          <p class="empty-msg hidden" id="apps-empty">No app data found.</p>
+        </section>
+
+        <section class="view hidden" id="view-large-files">
+          <header class="page-head">
+            <div>
+              <h1>Large files</h1>
+              <p class="page-sub">Biggest files on a drive (may take a minute)</p>
+            </div>
+            <div class="page-actions">
+              <select id="large-drive" class="select">
+                <option value="C:\\">C:\</option>
+              </select>
+              <button type="button" class="btn btn-ghost" id="btn-cancel-scan">Cancel</button>
+              <button type="button" class="btn btn-primary" id="btn-scan-large">Scan</button>
+            </div>
+          </header>
+          <p class="table-foot muted tiny" id="large-scan-note">Pick a drive and scan to find large files.</p>
+          <div class="table-wrap">
+            <table class="data-table" id="large-table">
+              <thead>
+                <tr>
+                  <th>Size</th>
+                  <th>File</th>
+                  <th>Path</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="large-body">
+                <tr><td colspan="4" class="muted">Not scanned yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="view hidden" id="view-cleanup">
+          <header class="page-head">
+            <div>
+              <h1>Cleanup</h1>
+              <p class="page-sub">Safe candidates inside My Space userData only</p>
+            </div>
+            <div class="page-actions">
+              <button type="button" class="btn btn-ghost" id="btn-refresh-cleanup">Refresh</button>
+            </div>
+          </header>
+          <div class="banner" id="cleanup-banner" role="status">
+            <strong>Safe cleanup only</strong>
+            <span>Removes temp files, corrupt quarantine copies, and caches — never live app JSON.</span>
+          </div>
+          <div class="stat-row" id="cleanup-stats"></div>
+          <div class="cleanup-list" id="cleanup-list"></div>
+          <p class="empty-msg hidden" id="cleanup-empty">Nothing to clean — userData looks tidy.</p>
+          <div class="section-head">
+            <h2>Recent cleanup</h2>
+          </div>
+          <div class="activity-list" id="cleanup-history"></div>
+          <p class="empty-msg hidden" id="cleanup-history-empty">No cleanup actions yet.</p>
+        </section>
+
+        <section class="view hidden" id="view-about">
+          <header class="page-head">
+            <div>
+              <h1>About</h1>
+              <p class="page-sub">How Storage fits in My Space</p>
+            </div>
+          </header>
+          <div class="about-page">
+            <p class="about-lead">
+              Storage is a platform service for disk usage and My Space data hygiene — not a desktop tile
+              and not a full file manager. Use <strong>Files</strong> to browse; use <strong>Backup</strong>
+              to export/restore; use <strong>System Info</strong> for deep diagnostics.
+            </p>
+            <h2>Status</h2>
+            <p>Drive summary from Windows plus total userData size and path.</p>
+            <h2>Apps</h2>
+            <p>Per-app breakdown mapped from known JSON files and data folders.</p>
+            <h2>Large files</h2>
+            <p>Scans a drive for the biggest files (host-wide, read-only).</p>
+            <h2>Cleanup</h2>
+            <p>Lists safe items inside userData: temp export folders, .tmp, corrupt quarantine, .json.bak when live file exists, metrics cache.</p>
+            <h2>Shell</h2>
+            <p>
+              <code>storage(open)</code> · <code>storage(status)</code> · <code>storage(apps)</code> ·
+              <code>storage(large C:)</code> · <code>storage(cleanup)</code> · <code>storage(path)</code> ·
+              <code>storage(help)</code>
+            </p>
+            <p class="muted about-path" id="about-meta"></p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

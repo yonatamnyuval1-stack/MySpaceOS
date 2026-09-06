@@ -1,0 +1,30 @@
+{
+  "profile": {
+    "tagline": "System-wide find & command palette",
+    "icon": "🔍",
+    "color": "#e2e8f0"
+  },
+  "commands": [
+    {
+      "verb": "open",
+      "title": "Open Search",
+      "description": "Open the command palette",
+      "delivery": "ui",
+      "input": {
+        "q": "string?"
+      },
+      "examples": [
+        "pulse(send search open)"
+      ]
+    },
+    {
+      "verb": "query",
+      "title": "Search query",
+      "description": "Open palette with a query",
+      "delivery": "ui",
+      "input": {
+        "q": "string"
+      }
+    }
+  ]
+}

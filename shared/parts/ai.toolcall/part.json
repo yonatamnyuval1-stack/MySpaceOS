@@ -1,0 +1,20 @@
+{
+  "id": "ai.toolcall",
+  "version": 1,
+  "kind": "util",
+  "title": "Agent tool-call parser",
+  "summary": "Parse TOOL_CALL JSON blocks and OpenAI-style tool_calls; strip calls from assistant text.",
+  "tags": [
+    "ai",
+    "tools",
+    "agent",
+    "flow"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { parseToolCall, stripToolCall } = require('./parts/ai.toolcall');",
+  "publisher": "flow"
+}

@@ -1,0 +1,9 @@
+{
+  "note": "Real Parts published from contracts (code lives in shared/parts — clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "tpl.mustache",
+      "note": "{{field}} template fill"
+    }
+  ]
+}

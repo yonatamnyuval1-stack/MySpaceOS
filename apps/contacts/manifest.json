@@ -1,0 +1,13 @@
+{
+  "id": "contacts",
+  "name": "Contacts",
+  "version": "1.0.0",
+  "description": "Contact profiles: phone, email, birthdays & desktop notifications",
+  "icon": "👥",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

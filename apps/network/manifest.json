@@ -1,0 +1,6 @@
+{
+  "id": "network",
+  "name": "Network",
+  "version": "1.0.0",
+  "description": "My Space connectivity: status, adapters, ports, and reachability checks"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "json.store",
+  "version": 1,
+  "kind": "util",
+  "title": "Safe JSON store",
+  "summary": "Atomic JSON writes, corrupt quarantine, .bak recovery, refuse empty-list overwrite: shared app persistence.",
+  "tags": [
+    "json",
+    "persistence",
+    "fs"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { loadJsonFile, saveJsonFile } = require('./parts/json.store');",
+  "publisher": "os"
+}

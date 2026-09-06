@@ -1,0 +1,37 @@
+World Maps — Install guide (Windows)
+=====================================
+
+Send ONE of these files:
+
+  WorldMapsSetup-1.0.6.exe     — installer (recommended)
+  WorldMapsPortable-1.0.6.exe  — no install, double-click and run
+
+
+OPTION A — Installer (recommended)
+----------------------------------
+1. Double-click:  WorldMapsSetup-1.0.6.exe
+2. If Windows says "Windows protected your PC":
+   More info → Run anyway
+3. Click Next → Install → Finish
+4. Open "World Maps" from Desktop or Start menu
+
+
+OPTION B — Portable (if installer fails)
+--------------------------------------
+1. Double-click:  WorldMapsPortable-1.0.6.exe
+2. More info → Run anyway if needed
+3. App opens directly — no install step
+
+
+If the app won't open after install
+-----------------------------------
+1. Press Windows key, type: World Maps
+2. Or open:  %LOCALAPPDATA%\Programs\world-maps
+3. Right-click World Maps.exe → Properties → Unblock → OK
+
+
+First time
+----------
+1. Create account (username + password, 6+ characters)
+2. Settings → Language → Hebrew for full Hebrew UI
+3. Profiles → Add by address, or right-click map for a note

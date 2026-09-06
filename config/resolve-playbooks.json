@@ -1,0 +1,197 @@
+{
+  "version": 2,
+  "playbooks": {
+    "*.LOAD_FAILED": {
+      "title": "App data could not be loaded",
+      "category": "data",
+      "kind": "LOAD_FAILED",
+      "steps": [
+        {
+          "id": "recover-app-data",
+          "label": "Restore this app's data file from .bak backup",
+          "action": "safe-json.recover-for-app",
+          "args": {}
+        }
+      ]
+    },
+    "*.SAVE_FAILED": {
+      "title": "App data could not be saved",
+      "category": "data",
+      "kind": "SAVE_FAILED",
+      "steps": [
+        {
+          "id": "advise-disk",
+          "label": "Check disk space and file permissions, then retry save",
+          "action": "advise",
+          "args": {
+            "message": "Save failed — free disk space, check that My Space can write to userData, then try again."
+          }
+        }
+      ]
+    },
+    "*.DATA_CORRUPT": {
+      "title": "App data file is corrupt",
+      "category": "data",
+      "kind": "DATA_CORRUPT",
+      "steps": [
+        {
+          "id": "recover-corrupt",
+          "label": "Restore from .bak backup (corrupt file was quarantined)",
+          "action": "safe-json.recover-for-app",
+          "args": {}
+        }
+      ]
+    },
+    "*.NETWORK": {
+      "title": "Network failure",
+      "category": "network",
+      "kind": "NETWORK",
+      "steps": [
+        {
+          "id": "advise-network",
+          "label": "Check connection and retry",
+          "action": "advise",
+          "args": {
+            "message": "Network request failed — check internet / VPN / firewall, then retry the action."
+          }
+        }
+      ]
+    },
+    "*.PERMISSION": {
+      "title": "Permission denied",
+      "category": "permission",
+      "kind": "PERMISSION",
+      "steps": [
+        {
+          "id": "advise-permission",
+          "label": "Review app / OS permissions",
+          "action": "advise",
+          "args": {
+            "message": "Access was denied — check Permissions service and OS file/folder access for this app."
+          }
+        }
+      ]
+    },
+    "*.RUNTIME": {
+      "title": "Runtime failure",
+      "category": "runtime",
+      "kind": "RUNTIME",
+      "steps": [
+        {
+          "id": "advise-runtime",
+          "label": "Reload the app; if it repeats, restart My Space",
+          "action": "advise",
+          "args": {
+            "message": "A script or process error occurred — reload the app tab, or restart My Space if it keeps happening."
+          }
+        }
+      ]
+    },
+    "*.PAGE_LOAD": {
+      "title": "Page failed to load",
+      "category": "runtime",
+      "kind": "PAGE_LOAD",
+      "steps": [
+        {
+          "id": "advise-page",
+          "label": "Reload the page / check the URL",
+          "action": "advise",
+          "args": {
+            "message": "The page or renderer failed to load — reload the tab; for URL apps check the address and network."
+          }
+        }
+      ]
+    },
+    "notes.LOAD_FAILED": {
+      "title": "Notes data could not be loaded",
+      "category": "data",
+      "kind": "LOAD_FAILED",
+      "steps": [
+        {
+          "id": "recover-backup",
+          "label": "Restore notes.json from .bak backup",
+          "action": "safe-json.recover",
+          "args": { "file": "notes.json" }
+        }
+      ]
+    },
+    "scripts.LOAD_FAILED": {
+      "title": "Scripts data could not be loaded",
+      "category": "data",
+      "kind": "LOAD_FAILED",
+      "steps": [
+        {
+          "id": "recover-backup",
+          "label": "Restore scripts.json from .bak backup",
+          "action": "safe-json.recover",
+          "args": { "file": "scripts.json" }
+        }
+      ]
+    },
+    "geography.LOAD_FAILED": {
+      "title": "Geography data could not be loaded",
+      "category": "data",
+      "kind": "LOAD_FAILED",
+      "steps": [
+        {
+          "id": "recover-backup",
+          "label": "Restore geography.json from .bak backup",
+          "action": "safe-json.recover",
+          "args": { "file": "geography.json" }
+        }
+      ]
+    },
+    "chat.LOAD_FAILED": {
+      "title": "Chat data could not be loaded",
+      "category": "data",
+      "kind": "LOAD_FAILED",
+      "steps": [
+        {
+          "id": "recover-backup",
+          "label": "Restore chat-app.json from .bak backup",
+          "action": "safe-json.recover",
+          "args": { "file": "chat-app.json" }
+        }
+      ]
+    },
+    "builds.LOAD_FAILED": {
+      "title": "Builds data could not be loaded",
+      "category": "data",
+      "kind": "LOAD_FAILED",
+      "steps": [
+        {
+          "id": "recover-backup",
+          "label": "Restore builds.json from .bak backup",
+          "action": "safe-json.recover",
+          "args": { "file": "builds.json" }
+        }
+      ]
+    },
+    "study-deck.LOAD_FAILED": {
+      "title": "Study Deck data could not be loaded",
+      "category": "data",
+      "kind": "LOAD_FAILED",
+      "steps": [
+        {
+          "id": "recover-backup",
+          "label": "Restore study-deck.json from .bak backup",
+          "action": "safe-json.recover",
+          "args": { "file": "study-deck.json" }
+        }
+      ]
+    },
+    "day-planner.LOAD_FAILED": {
+      "title": "Today data could not be loaded",
+      "category": "data",
+      "kind": "LOAD_FAILED",
+      "steps": [
+        {
+          "id": "recover-backup",
+          "label": "Restore day-planner.json from .bak backup",
+          "action": "safe-json.recover",
+          "args": { "file": "day-planner.json" }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "drift",
+  "name": "Drift",
+  "version": "1.0.0",
+  "description": "Local activity timeline — what changed on your computer",
+  "icon": "📈",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

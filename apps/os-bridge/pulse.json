@@ -1,0 +1,137 @@
+{
+  "profile": {
+    "tagline": "Phone pairing, host places & share",
+    "icon": "🔗",
+    "color": "#94a3b8"
+  },
+  "commands": [
+    {
+      "verb": "places",
+      "title": "List places",
+      "description": "Host folder places",
+      "delivery": "ipc",
+      "channel": "places.list"
+    },
+    {
+      "verb": "placesAdd",
+      "title": "Add place",
+      "description": "Add a host place",
+      "delivery": "ipc",
+      "channel": "places.add",
+      "input": {
+        "path": "string",
+        "label": "string?"
+      }
+    },
+    {
+      "verb": "placesOpen",
+      "title": "Open place",
+      "description": "Open a place",
+      "delivery": "ipc",
+      "channel": "places.open",
+      "input": {
+        "id": "string?",
+        "path": "string?"
+      }
+    },
+    {
+      "verb": "placesReveal",
+      "title": "Reveal place",
+      "description": "Reveal in Explorer",
+      "delivery": "ipc",
+      "channel": "places.reveal",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "pairStart",
+      "title": "Start pairing",
+      "description": "Start phone pair server",
+      "delivery": "ipc",
+      "channel": "pair.start"
+    },
+    {
+      "verb": "pairStop",
+      "title": "Stop pairing",
+      "description": "Stop pair server",
+      "delivery": "ipc",
+      "channel": "pair.stop"
+    },
+    {
+      "verb": "pairSend",
+      "title": "Send file to phone",
+      "description": "Send a file",
+      "delivery": "ipc",
+      "channel": "pair.sendFile",
+      "input": {
+        "path": "string"
+      }
+    },
+    {
+      "verb": "clipboardToPhone",
+      "title": "Clipboard to phone",
+      "description": "Send clipboard to phone",
+      "delivery": "ipc",
+      "channel": "clipboard.sendToPhone"
+    },
+    {
+      "verb": "clipboardRead",
+      "title": "Read clipboard",
+      "description": "Read host clipboard",
+      "delivery": "ipc",
+      "channel": "clipboard.read"
+    },
+    {
+      "verb": "clipboardWrite",
+      "title": "Write clipboard",
+      "description": "Write host clipboard",
+      "delivery": "ipc",
+      "channel": "clipboard.write",
+      "input": {
+        "text": "string"
+      }
+    },
+    {
+      "verb": "inbox",
+      "title": "Inbox list",
+      "description": "Phone upload inbox",
+      "delivery": "ipc",
+      "channel": "inbox.list"
+    },
+    {
+      "verb": "outbox",
+      "title": "Outbox list",
+      "description": "Outgoing files",
+      "delivery": "ipc",
+      "channel": "outbox.list"
+    },
+    {
+      "verb": "drives",
+      "title": "List drives",
+      "description": "Host drives",
+      "delivery": "ipc",
+      "channel": "drives.list"
+    },
+    {
+      "verb": "hostOpen",
+      "title": "Host open",
+      "description": "Open a Windows settings / host action",
+      "delivery": "ipc",
+      "channel": "host.open",
+      "input": {
+        "action": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Bridge",
+      "description": "Open OS Bridge UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-buttons="default" data-theme-base="light" class="theme-light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resolve</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <img class="brand-logo" src="../../src/brand/atom-violet.png" width="32" height="32" alt="" />
+          <div>
+            <strong>Resolve</strong>
+            <span class="brand-sub">App troubleshooting</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav" aria-label="Resolve">
+          <button type="button" class="nav-item is-active" data-page="inbox">
+            <span class="nav-ico" aria-hidden="true">▣</span>
+            Inbox
+            <span class="nav-badge hidden" id="nav-open-count">0</span>
+          </button>
+          <button type="button" class="nav-item" data-page="playbooks">
+            <span class="nav-ico" aria-hidden="true">◎</span>
+            Playbooks
+          </button>
+          <button type="button" class="nav-item" data-page="about">
+            <span class="nav-ico" aria-hidden="true">ⓘ</span>
+            About
+          </button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p id="sidebar-blurb">Apps report here via Pulse.</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <section class="view" id="view-inbox">
+          <header class="page-head">
+            <div>
+              <h1>Inbox</h1>
+              <p class="page-sub">Open incidents from apps — triage and apply playbooks</p>
+            </div>
+            <div class="page-actions">
+              <input type="search" id="inbox-search" class="search" placeholder="Search app, code, message…" />
+              <select id="inbox-filter" class="select">
+                <option value="open">Open</option>
+                <option value="">All</option>
+                <option value="resolved">Resolved</option>
+                <option value="dismissed">Dismissed</option>
+              </select>
+              <button type="button" class="btn btn-ghost" id="btn-refresh">Refresh</button>
+            </div>
+          </header>
+          <div class="stat-row" id="stat-row"></div>
+          <div class="incident-list" id="incident-list"></div>
+          <p class="empty-msg hidden" id="inbox-empty">No incidents — apps report problems via Pulse.</p>
+        </section>
+
+        <section class="view hidden" id="view-playbooks">
+          <header class="page-head">
+            <div>
+              <h1>Playbooks</h1>
+              <p class="page-sub">Known fixes per app + error code</p>
+            </div>
+          </header>
+          <div class="playbook-list" id="playbook-list"></div>
+        </section>
+
+        <section class="view hidden" id="view-about">
+          <header class="page-head">
+            <div>
+              <h1>About</h1>
+              <p class="page-sub">Resolve — OS troubleshooting for My Space apps</p>
+            </div>
+          </header>
+          <div class="about-card">
+            <p>
+              <strong>Fault</strong> watches process / IPC / renderer boundaries and maps failures onto universal
+              kinds (<code>LOAD_FAILED</code>, <code>SAVE_FAILED</code>, <code>NETWORK</code>,
+              <code>RUNTIME</code>…). Resolve matches a playbook (<code>app.KIND</code> or
+              <code>*.KIND</code>) and lets you apply safe fixes (e.g. restore from <code>.bak</code>).
+            </p>
+            <ul>
+              <li><strong>Fault</strong> — automatic capture + kind detection</li>
+              <li><strong>Report</strong> — incident + Pulse event + bell on errors</li>
+              <li><strong>Ask</strong> — sync playbook lookup without inbox noise</li>
+              <li><strong>Apply</strong> — run a playbook step on an open incident</li>
+            </ul>
+            <p class="muted tiny" id="about-paths"></p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

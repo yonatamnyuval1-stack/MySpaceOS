@@ -1,0 +1,99 @@
+{
+  "profile": {
+    "tagline": "Countries: list, learn packs & maps",
+    "icon": "🌍",
+    "color": "#34d399"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List countries",
+      "description": "Search / list countries",
+      "delivery": "ipc",
+      "channel": "countries.list",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get country",
+      "description": "Country details by code",
+      "delivery": "ipc",
+      "channel": "countries.get",
+      "input": {
+        "code": "string"
+      }
+    },
+    {
+      "verb": "wiki",
+      "title": "Country wiki",
+      "description": "Wikipedia summary",
+      "delivery": "ipc",
+      "channel": "countries.wiki",
+      "input": {
+        "code": "string?",
+        "title": "string?"
+      }
+    },
+    {
+      "verb": "learnGet",
+      "title": "Get learn pack",
+      "description": "Fetch a learn pack",
+      "delivery": "ipc",
+      "channel": "learn.get",
+      "input": {
+        "code": "string?"
+      }
+    },
+    {
+      "verb": "learnBuild",
+      "title": "Build learn pack",
+      "description": "Build learn content",
+      "delivery": "ipc",
+      "channel": "learn.build",
+      "input": {
+        "code": "string?"
+      }
+    },
+    {
+      "verb": "learnStatus",
+      "title": "Learn status",
+      "description": "Learn pack status",
+      "delivery": "ipc",
+      "channel": "learn.status"
+    },
+    {
+      "verb": "mapsOpen",
+      "title": "Open maps",
+      "description": "Open maps for a place",
+      "delivery": "ipc",
+      "channel": "maps.open",
+      "input": {
+        "q": "string?",
+        "code": "string?"
+      }
+    },
+    {
+      "verb": "linkOpen",
+      "title": "Open link",
+      "description": "Open an external link",
+      "delivery": "ipc",
+      "channel": "link.open",
+      "input": {
+        "url": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Geography",
+      "description": "Open Geography UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?",
+        "code": "string?"
+      }
+    }
+  ],
+  "events": []
+}

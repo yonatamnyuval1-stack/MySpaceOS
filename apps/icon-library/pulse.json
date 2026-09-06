@@ -1,0 +1,77 @@
+{
+  "profile": {
+    "tagline": "Icon: browse, favorites & recent",
+    "icon": "🎨",
+    "color": "#f9a8d4"
+  },
+  "commands": [
+    {
+      "verb": "state",
+      "title": "Library state",
+      "description": "Favorites, recent & filters",
+      "delivery": "ipc",
+      "channel": "library.getState"
+    },
+    {
+      "verb": "favoritesSet",
+      "title": "Set favorites",
+      "description": "Update favorite icons",
+      "delivery": "ipc",
+      "channel": "favorites.set",
+      "input": {
+        "ids": "array?"
+      }
+    },
+    {
+      "verb": "recentAdd",
+      "title": "Add recent",
+      "description": "Mark an icon as recent",
+      "delivery": "ipc",
+      "channel": "recent.add",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "screenPublish",
+      "title": "Publish screen",
+      "description": "Publish library screen",
+      "delivery": "ipc",
+      "channel": "screen.publish",
+      "input": {
+        "state": "object?"
+      }
+    },
+    {
+      "verb": "screenGet",
+      "title": "Get screen",
+      "description": "Read screen state",
+      "delivery": "ipc",
+      "channel": "screen.get"
+    },
+    {
+      "verb": "open",
+      "title": "Open Icon Library",
+      "description": "Open Icon Library",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    },
+    {
+      "verb": "openFavorites",
+      "title": "Open favorites",
+      "description": "Open favorites view",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openRecent",
+      "title": "Open recent",
+      "description": "Open recent icons",
+      "delivery": "ui",
+      "input": {}
+    }
+  ],
+  "events": []
+}

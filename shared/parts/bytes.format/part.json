@@ -1,0 +1,18 @@
+{
+  "id": "bytes.format",
+  "version": 1,
+  "kind": "util",
+  "title": "Human byte sizes",
+  "summary": "Format byte counts as B / KB / MB / GB / TB for file browsers and system panels.",
+  "tags": [
+    "files",
+    "bytes",
+    "format"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { formatBytes } = require('./parts/bytes.format');"
+}

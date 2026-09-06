@@ -1,0 +1,18 @@
+{
+  "id": "astro.physics",
+  "version": 1,
+  "kind": "util",
+  "title": "Orbital & astrophysics (SI)",
+  "summary": "Orbital/escape velocity, rocket Δv, light time, Schwarzschild radius, Kepler period, Hohmann transfer: SI units with body constants.",
+  "tags": [
+    "space",
+    "physics",
+    "astronomy"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { orbitalVelocity, hohmannDeltaV, BODIES } = require('./parts/astro.physics');"
+}

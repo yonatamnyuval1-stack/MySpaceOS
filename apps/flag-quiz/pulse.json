@@ -1,0 +1,82 @@
+{
+  "profile": {
+    "tagline": "Flag quiz: scores & practice screen",
+    "icon": "🚩",
+    "color": "#fca5a5"
+  },
+  "commands": [
+    {
+      "verb": "scores",
+      "title": "List scores",
+      "description": "High scores",
+      "delivery": "ipc",
+      "channel": "scores.list"
+    },
+    {
+      "verb": "scoreAdd",
+      "title": "Add score",
+      "description": "Record a score",
+      "delivery": "ipc",
+      "channel": "scores.add",
+      "input": {
+        "score": "number?",
+        "name": "string?"
+      }
+    },
+    {
+      "verb": "scoresClear",
+      "title": "Clear scores",
+      "description": "Reset the scoreboard",
+      "delivery": "ipc",
+      "channel": "scores.clear"
+    },
+    {
+      "verb": "screenPublish",
+      "title": "Publish screen",
+      "description": "Publish current quiz screen state",
+      "delivery": "ipc",
+      "channel": "screen.publish",
+      "input": {
+        "state": "object?"
+      }
+    },
+    {
+      "verb": "screenGet",
+      "title": "Get screen",
+      "description": "Read published screen state",
+      "delivery": "ipc",
+      "channel": "screen.get"
+    },
+    {
+      "verb": "meta",
+      "title": "Meta",
+      "description": "Quiz metadata",
+      "delivery": "ipc",
+      "channel": "meta"
+    },
+    {
+      "verb": "open",
+      "title": "Open Flag Quiz",
+      "description": "Open Flag Quiz",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    },
+    {
+      "verb": "openPractice",
+      "title": "Open practice",
+      "description": "Open practice mode",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openScores",
+      "title": "Open scores",
+      "description": "Open scores screen",
+      "delivery": "ui",
+      "input": {}
+    }
+  ],
+  "events": []
+}

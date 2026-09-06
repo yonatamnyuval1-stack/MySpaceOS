@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Games</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell" data-game="name" data-category="countries">
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text" hidden>
+            <h1 id="page-title">Learning Games</h1>
+            <p class="subtitle" id="page-subtitle"></p>
+          </div>
+        </header>
+
+        <section class="page page-landing active" id="page-home" data-page="home">
+          <div class="flag-wall" id="flag-wall" aria-hidden="true"></div>
+          <div class="landing-veil"></div>
+
+          <div class="category-switch-wrap" id="category-switch-wrap" hidden>
+            <button type="button" class="category-switch-btn" id="btn-category-switch" title="Switch category">
+              <span class="category-switch-ico" id="category-current-ico" aria-hidden="true">🌍</span>
+              <span class="category-switch-label" id="category-current-name">Countries</span>
+            </button>
+            <div class="category-picker hidden" id="category-picker" role="menu"></div>
+          </div>
+
+          <div class="theme-switch-wrap" id="theme-switch-wrap">
+            <button type="button" class="theme-switch-btn" id="btn-theme-switch" title="Switch theme">
+              <span class="theme-switch-ico" id="theme-current-ico" aria-hidden="true">🏳️</span>
+              <span class="theme-switch-label" id="theme-current-name">Flags</span>
+            </button>
+            <div class="theme-picker hidden" id="theme-picker" role="menu"></div>
+          </div>
+
+          <div class="game-switch-wrap">
+            <button type="button" class="game-switch-btn" id="btn-game-switch" title="Switch game">
+              <span class="game-switch-ico" aria-hidden="true">⇄</span>
+              <span class="game-switch-label" id="game-current-name">Name the Flag</span>
+            </button>
+            <div class="game-picker hidden" id="game-picker" role="menu"></div>
+          </div>
+
+          <div class="landing-center">
+            <p class="game-blurb" id="game-current-blurb"></p>
+            <button type="button" class="btn-start-quiz btn-level" data-level="1" data-i18n="home.level1">Level 1</button>
+            <button type="button" class="btn-start-quiz btn-level" data-level="2" data-i18n="home.level2">Level 2</button>
+            <button type="button" class="btn-start-quiz btn-level" data-level="3" data-i18n="home.level3">Level 3</button>
+            <button type="button" class="btn-start-quiz btn-level" data-level="4" data-i18n="home.level4">Level 4</button>
+            <button type="button" class="btn-start-quiz btn-level" data-level="5" data-i18n="home.level5">Level 5</button>
+            <button
+              type="button"
+              class="btn-start-quiz btn-level btn-level-timed hidden"
+              data-level="timed"
+              id="btn-hard50-timed"
+              hidden
+            >
+              Hard · 2 min
+            </button>
+            <button type="button" class="btn-start-quiz btn-random" id="btn-start" data-i18n="home.start">
+              Random quiz
+            </button>
+          </div>
+        </section>
+
+        <section class="page page-quiz" id="page-quiz" data-page="quiz" hidden>
+          <div class="quiz-progress">
+            <div class="quiz-progress-meta">
+              <div class="quiz-progress-stats">
+                <span id="quiz-step">Question 1 / 20</span>
+                <span id="quiz-timer" class="quiz-timer hidden" aria-live="polite"></span>
+                <span id="quiz-score-live">Score 0</span>
+              </div>
+              <button
+                type="button"
+                class="quiz-quit-btn"
+                id="btn-quit"
+                data-i18n="quiz.quit"
+                data-i18n-attr="title"
+                title="Quit game"
+                aria-label="Quit game"
+              >
+                ✕
+              </button>
+            </div>
+            <div class="quiz-bar" aria-hidden="true">
+              <div class="quiz-bar-fill" id="quiz-bar-fill"></div>
+            </div>
+          </div>
+
+          <div class="quiz-stage" id="quiz-stage">
+            <div class="flag-frame" id="flag-frame">
+              <div class="media-stage">
+                <img id="quiz-flag" class="flag-img" alt="Flag to identify" draggable="false" />
+                <div class="element-symbol-tile" id="element-symbol-tile" hidden>
+                  <span class="element-z" id="element-z"></span>
+                  <span class="element-sym" id="element-sym"></span>
+                </div>
+                <div class="model-card" id="model-card" hidden>
+                  <span class="model-card-provider" id="model-card-provider"></span>
+                  <span class="model-card-name" id="model-card-name"></span>
+                  <span class="model-card-id" id="model-card-id"></span>
+                  <span class="model-card-unit" data-i18n="quiz.models.unit">$ / 1M tokens</span>
+                </div>
+                <div class="animal-fallback" id="animal-fallback" hidden>
+                  <span class="animal-fallback-ico" aria-hidden="true">🐾</span>
+                  <strong id="animal-fallback-name"></strong>
+                </div>
+              </div>
+              <p class="animal-caption" id="animal-caption" hidden></p>
+            </div>
+            <p class="quiz-prompt" id="quiz-prompt" data-i18n="quiz.prompt">Which country is this?</p>
+            <div class="answers" id="quiz-answers" role="group" aria-label="Answer choices"></div>
+            <p class="quiz-feedback" id="quiz-feedback" aria-live="polite"></p>
+            <button type="button" class="btn btn-primary" id="btn-next" hidden>Next</button>
+          </div>
+
+          <div class="results" id="quiz-results" hidden>
+            <h2 id="results-title">Quiz complete</h2>
+            <p class="results-score" id="results-score"></p>
+            <p class="results-msg" id="results-msg"></p>
+            <div class="results-actions">
+              <button type="button" class="btn btn-primary" id="btn-again" data-i18n="results.again">Play again</button>
+              <button type="button" class="btn" id="btn-home" data-i18n="results.home">Back</button>
+            </div>
+            <div class="review" id="results-review"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="countries.js"></script>
+    <script src="animal-thumbs.js"></script>
+    <script src="national-animals.js"></script>
+    <script src="outline-svgs.js"></script>
+    <script src="country-outlines.js"></script>
+    <script src="country-continents.js"></script>
+    <script src="country-status.js"></script>
+    <script src="capitals-data.js"></script>
+    <script src="country-capitals.js"></script>
+    <script src="airports-data.js"></script>
+    <script src="country-airports.js"></script>
+    <script src="similar-flags.js"></script>
+    <script src="games.js"></script>
+    <script src="elements-data.js"></script>
+    <script src="elements-games.js"></script>
+    <script src="models-data.js"></script>
+    <script src="models-games.js"></script>
+    <script src="categories.js"></script>
+    <script src="i18n.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

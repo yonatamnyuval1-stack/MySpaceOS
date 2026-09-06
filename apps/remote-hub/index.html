@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Remote Hub</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">⬡</span>
+          <div>
+            <strong>Remote Hub</strong>
+            <span class="brand-sub" id="brand-sub">v2.0 · Machines</span>
+          </div>
+        </div>
+        <nav class="nav" id="main-nav">
+          <button type="button" class="nav-item active" data-page="machines">
+            <span class="nav-icon">◈</span>
+            Machines
+          </button>
+          <button type="button" class="nav-item" data-page="quick">
+            <span class="nav-icon">⚡</span>
+            Quick connect
+          </button>
+          <button type="button" class="nav-item" data-page="network">
+            <span class="nav-icon">◎</span>
+            Network scan
+          </button>
+          <button type="button" class="nav-item" data-page="enable">
+            <span class="nav-icon">⬚</span>
+            Enable access
+          </button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p>Built-in Windows · Agent · RDP · SSH · WinRM</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Machines</h1>
+            <p class="subtitle" id="page-subtitle">All your PCs — connect with one click</p>
+          </div>
+          <div class="topbar-actions" id="topbar-actions">
+            <label class="toggle">
+              <input type="checkbox" id="auto-refresh" checked />
+              <span>Auto-check</span>
+            </label>
+            <select id="refresh-interval" class="select" title="Check interval">
+              <option value="10000">10s</option>
+              <option value="15000" selected>15s</option>
+              <option value="30000">30s</option>
+              <option value="60000">60s</option>
+            </select>
+            <button type="button" class="btn btn-primary" id="btn-refresh">
+              <span class="btn-icon">↻</span>
+              Refresh
+            </button>
+            <button type="button" class="btn" id="btn-add-machine">+ Add</button>
+          </div>
+        </header>
+
+        <section class="page page--scroll active" id="page-machines" data-page="machines">
+          <section class="stats" id="machines-stats"></section>
+          <section class="toolbar page-toolbar">
+            <div class="search-wrap">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input type="search" id="machines-search" class="search" placeholder="Search name, host, group…" />
+            </div>
+            <select id="machines-group-filter" class="select">
+              <option value="all">All groups</option>
+            </select>
+            <label class="toggle toggle--inline">
+              <input type="checkbox" id="machines-favorites-only" />
+              <span>Favorites only</span>
+            </label>
+          </section>
+          <div class="machines-grid" id="machines-grid"></div>
+          <h2 class="section-heading">All machines</h2>
+          <section class="table-wrap">
+            <div class="table-scroll">
+              <table class="data-table" id="machines-table">
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>Name</th>
+                    <th>Group</th>
+                    <th>Type</th>
+                    <th>Address</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="machines-body">
+                  <tr><td colspan="6" class="loading-cell">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="table-foot table-foot--solo">
+              <span id="machines-last-scan">—</span>
+            </footer>
+          </section>
+        </section>
+
+        <section class="page page--scroll" id="page-quick" data-page="quick" hidden>
+          <div class="quick-hero">
+            <h2>Connect instantly</h2>
+            <p>Uses <strong>mstsc</strong>, <strong>ssh</strong>, and <strong>PowerShell</strong> already on Windows — nothing to install on the remote PC if RDP/SSH is enabled.</p>
+          </div>
+          <div class="quick-tools-row" id="quick-tools"></div>
+          <div class="quick-form card-panel">
+            <label class="quick-host-label">
+              <span>IP or computer name</span>
+              <input type="text" id="qc-host" class="quick-host-input" placeholder="192.168.1.50 or MY-PC" autofocus />
+            </label>
+            <div class="quick-options">
+              <label><span>RDP user</span><input type="text" id="qc-rdp-user" placeholder="optional" /></label>
+              <label><span>RDP port</span><input type="number" id="qc-rdp-port" value="3389" min="1" max="65535" /></label>
+              <label><span>SSH user</span><input type="text" id="qc-ssh-user" placeholder="Administrator" /></label>
+              <label><span>SSH port</span><input type="number" id="qc-ssh-port" value="22" min="1" max="65535" /></label>
+            </div>
+            <div class="quick-connect-btns">
+              <button type="button" class="btn btn-primary btn-lg" id="qc-connect-rdp">🖥 Remote Desktop</button>
+              <button type="button" class="btn btn-lg" id="qc-connect-ssh">⌨ SSH terminal</button>
+              <button type="button" class="btn btn-lg" id="qc-connect-ps">⚡ PowerShell</button>
+              <button type="button" class="btn btn-lg" id="qc-connect-explorer">📁 File share</button>
+              <button type="button" class="btn btn-primary btn-lg" id="qc-control">🎮 Control</button>
+              <button type="button" class="btn btn-lg" id="qc-live-view">👁 Live view</button>
+            </div>
+          </div>
+          <div class="quick-recent card-panel">
+            <h3>Recent hosts</h3>
+            <div id="quick-recent" class="chip-row"></div>
+          </div>
+        </section>
+
+        <section class="page page--scroll" id="page-network" data-page="network" hidden>
+          <div class="network-hero">
+            <h2>Discover PCs on your network</h2>
+            <p>Scans your LAN for open ports <strong>3389</strong> (RDP), <strong>22</strong> (SSH), <strong>5985</strong> (WinRM). No agent needed on other PCs.</p>
+            <button type="button" class="btn btn-primary" id="net-scan">Scan now</button>
+          </div>
+          <p class="net-summary muted" id="net-summary">Click Scan to search your local network.</p>
+          <div class="net-results-grid" id="net-results"></div>
+        </section>
+
+        <section class="page page--scroll" id="page-enable" data-page="enable" hidden>
+          <div class="setup-hero">
+            <h2>Enable remote access on the target PC</h2>
+            <p>
+              Run <strong>one script once</strong> on each PC you want to control (as Administrator).
+              This turns on built-in Windows features — <strong>no RustDesk, no extra apps required</strong>.
+            </p>
+          </div>
+          <div class="enable-steps">
+            <article class="step-card">
+              <span class="step-num">1</span>
+              <div>
+                <strong>Copy a script below</strong>
+                <p>Paste into PowerShell on the target PC → Run as Administrator</p>
+              </div>
+            </article>
+            <article class="step-card">
+              <span class="step-num">2</span>
+              <div>
+                <strong>Add the PC in Machines</strong>
+                <p>Use its LAN IP, or use Network scan to find it automatically</p>
+              </div>
+            </article>
+            <article class="step-card">
+              <span class="step-num">3</span>
+              <div>
+                <strong>Connect from here</strong>
+                <p><strong>Control</strong> for mouse & keyboard (Agent) · RDP for full desktop · Live view via WinRM</p>
+              </div>
+            </article>
+          </div>
+          <div class="enable-agent-row card-panel">
+            <h3>Remote Agent files</h3>
+            <p class="muted">Copy this folder to the target PC, then run <code>install.ps1</code> as Administrator for full mouse & keyboard control.</p>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-open-agent-folder">Open agent folder</button>
+          </div>
+          <div class="script-grid" id="enable-scripts"></div>
+          <div class="card-panel tailscale-panel">
+            <h3>Tailscale (optional — for access outside your home)</h3>
+            <p class="muted">Only needed when PCs are not on the same network. Gives each PC a stable <code>100.x</code> IP.</p>
+            <div id="tailscale-box"></div>
+          </div>
+        </section>
+      </main>
+
+      <aside class="detail-panel hidden" id="detail-panel">
+        <header class="detail-header">
+          <h2 id="detail-title">Machine</h2>
+          <button type="button" class="btn-icon-only" id="detail-close" aria-label="Close">×</button>
+        </header>
+        <div class="detail-body" id="detail-body"></div>
+      </aside>
+    </div>
+
+    <div id="holo-overlay" class="holo-overlay hidden" aria-hidden="true">
+      <div class="holo-backdrop"></div>
+      <div class="holo-core">
+        <canvas id="holo-canvas" aria-hidden="true"></canvas>
+        <div class="holo-ring holo-ring--1"></div>
+        <div class="holo-ring holo-ring--2"></div>
+        <p class="holo-caption" id="holo-caption">Processing…</p>
+      </div>
+    </div>
+
+    <div class="control-modal hidden" id="control-modal" role="dialog" aria-modal="true" aria-labelledby="control-modal-title">
+      <div class="control-modal-backdrop" id="control-modal-backdrop"></div>
+      <div class="control-modal-panel">
+        <header class="control-modal-head">
+          <h2 id="control-modal-title">Control</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="control-modal-close" aria-label="Close">✕</button>
+        </header>
+        <div class="control-modal-toolbar">
+          <button type="button" class="btn btn-primary" id="control-connect">Connect</button>
+          <button type="button" class="btn" id="control-disconnect" disabled>Disconnect</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="control-rdp" title="Full desktop via RDP">RDP</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="control-view-only" title="View only via WinRM">View only</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="control-agent-folder" title="Open agent folder to copy to target PC">Agent folder</button>
+          <div class="control-status muted" id="control-status"></div>
+          <p class="control-hint muted" id="control-hint"></p>
+        </div>
+        <div class="control-screen" id="control-screen" tabindex="0" aria-label="Remote screen — click to type">
+          <img id="control-img" class="control-img" alt="Remote screen" draggable="false" />
+          <div class="control-overlay" id="control-overlay">Click Connect — then click here to control mouse & keyboard</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view-modal hidden" id="view-modal" role="dialog" aria-modal="true" aria-labelledby="view-modal-title">
+      <div class="view-modal-backdrop" id="view-modal-backdrop"></div>
+      <div class="view-modal-panel">
+        <header class="view-modal-head">
+          <h2 id="view-modal-title">Live view</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="view-modal-close" aria-label="Close">✕</button>
+        </header>
+        <div class="view-modal-controls">
+          <label><span>Windows user</span>
+            <input type="text" id="view-user" class="view-input" placeholder="e.g. DESKTOP\Admin" autocomplete="username" />
+          </label>
+          <label><span>Password</span>
+            <input type="password" id="view-password" class="view-input" placeholder="Target PC password" autocomplete="current-password" />
+          </label>
+          <label><span>Refresh</span>
+            <select id="view-interval">
+              <option value="800">0.8s</option>
+              <option value="1200">1.2s</option>
+              <option value="1500" selected>1.5s</option>
+              <option value="2500">2.5s</option>
+              <option value="4000">4s</option>
+            </select>
+          </label>
+          <label><span>Max width</span>
+            <select id="view-maxw">
+              <option value="960">960</option>
+              <option value="1280" selected>1280</option>
+              <option value="1600">1600</option>
+              <option value="1920">1920</option>
+            </select>
+          </label>
+          <label><span>Quality</span>
+            <select id="view-quality">
+              <option value="55">55</option>
+              <option value="70" selected>70</option>
+              <option value="80">80</option>
+              <option value="90">90</option>
+            </select>
+          </label>
+          <div class="view-btns">
+            <button type="button" class="btn btn-primary" id="view-start">Start</button>
+            <button type="button" class="btn" id="view-stop" disabled>Stop</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="view-enable" title="Open Enable access scripts">Enable WinRM</button>
+          </div>
+          <div class="view-status muted" id="view-status"></div>
+          <p class="view-hint muted" id="view-hint"></p>
+        </div>
+        <div class="view-modal-body">
+          <img id="view-img" class="view-img" alt="Remote screen" />
+        </div>
+      </div>
+    </div>
+
+    <script src="lib/utils.js"></script>
+    <script src="lib/hologram.js"></script>
+    <script src="lib/control.js"></script>
+    <script src="lib/viewer.js"></script>
+    <script src="pages/machines.js"></script>
+    <script src="pages/quick.js"></script>
+    <script src="pages/network.js"></script>
+    <script src="pages/enable.js"></script>
+        <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

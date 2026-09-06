@@ -1,0 +1,46 @@
+{
+  "profile": {
+    "tagline": "My Space handbook: open docs pages",
+    "icon": "📖",
+    "color": "#cbd5e1"
+  },
+  "commands": [
+    {
+      "verb": "openPage",
+      "title": "Open page",
+      "description": "Open a docs page by id",
+      "delivery": "ipc",
+      "channel": "page.open",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "bookmark",
+      "title": "Toggle bookmark",
+      "description": "Bookmark a docs page",
+      "delivery": "ipc",
+      "channel": "bookmarks.toggle",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "meta",
+      "title": "Meta",
+      "description": "Docs metadata",
+      "delivery": "ipc",
+      "channel": "meta"
+    },
+    {
+      "verb": "open",
+      "title": "Open Docs",
+      "description": "Open Docs UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    }
+  ],
+  "events": []
+}

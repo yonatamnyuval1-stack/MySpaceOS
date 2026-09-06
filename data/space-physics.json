@@ -1,0 +1,95 @@
+{
+  "constants": {
+    "G": { "value": 6.6743e-11, "unit": "m³ kg⁻¹ s⁻²", "label": "Gravitational constant" },
+    "c": { "value": 299792458, "unit": "m/s", "label": "Speed of light" },
+    "AU": { "value": 1.495978707e11, "unit": "m", "label": "Astronomical unit" },
+    "ly_m": { "value": 9.4607e15, "unit": "m", "label": "Light-year" },
+    "M_sun": { "value": 1.98847e30, "unit": "kg", "label": "Solar mass" },
+    "R_sun": { "value": 6.957e8, "unit": "m", "label": "Solar radius" },
+    "M_earth": { "value": 5.9722e24, "unit": "kg", "label": "Earth mass" },
+    "R_earth": { "value": 6.371e6, "unit": "m", "label": "Earth radius" },
+    "g0": { "value": 9.80665, "unit": "m/s²", "label": "Standard gravity" },
+    "h": { "value": 6.62607015e-34, "unit": "J·s", "label": "Planck constant" },
+    "k_B": { "value": 1.380649e-23, "unit": "J/K", "label": "Boltzmann constant" },
+    "sigma": { "value": 5.670374419e-8, "unit": "W m⁻² K⁻⁴", "label": "Stefan–Boltzmann constant" }
+  },
+  "topics": [
+    {
+      "id": "orbital-velocity",
+      "title": "Circular orbital velocity",
+      "formula": "v = √(GM / r)",
+      "explain": "For a stable circular orbit, centripetal acceleration equals gravitational acceleration. Use total mass M of the central body and orbital radius r from its center.",
+      "example": "Low Earth orbit (~400 km altitude): r ≈ 6.77×10⁶ m, M = M⊕ → v ≈ 7.67 km/s."
+    },
+    {
+      "id": "escape-velocity",
+      "title": "Escape velocity",
+      "formula": "v_esc = √(2GM / r)",
+      "explain": "Minimum speed to reach infinity from distance r with no further thrust. Exactly √2 times circular orbital speed at the same radius.",
+      "example": "From Earth's surface: v_esc ≈ 11.2 km/s."
+    },
+    {
+      "id": "rocket-equation",
+      "title": "Tsiolkovsky rocket equation",
+      "formula": "Δv = I_sp · g₀ · ln(m₀ / m_f)",
+      "explain": "Relates change in velocity to specific impulse I_sp (seconds), initial mass m₀, and final mass m_f after burning propellant. Foundation of staging and fuel budgets.",
+      "example": "I_sp = 450 s, mass ratio 10:1 → Δv ≈ 9.8 km/s."
+    },
+    {
+      "id": "kepler-third",
+      "title": "Kepler's third law",
+      "formula": "T² ∝ a³ / M",
+      "explain": "Orbital period T scales with semi-major axis a; for solar system bodies a in AU and T in years: T² = a³ when M is solar mass.",
+      "example": "Mars at a ≈ 1.52 AU → T ≈ 1.88 years."
+    },
+    {
+      "id": "hohmann",
+      "title": "Hohmann transfer (approx.)",
+      "formula": "Δv₁ + Δv₂ ≈ v₁(√(2r₂/(r₁+r₂)) − 1) + v₂(1 − √(2r₁/(r₁+r₂)))",
+      "explain": "Most fuel-efficient coplanar transfer between two circular orbits r₁ and r₂ around the same body. Used for interplanetary mission planning.",
+      "example": "Earth to Mars Hohmann takes ~259 days flight time."
+    },
+    {
+      "id": "light-time",
+      "title": "Light travel time",
+      "formula": "t = d / c",
+      "explain": "Time for light (or radio) to cross distance d. One astronomical unit ≈ 499 s (~8.3 min) from Sun to Earth.",
+      "example": "Moon: ~1.3 light-seconds. Pluto: ~5.5 light-hours."
+    },
+    {
+      "id": "schwarzschild",
+      "title": "Schwarzschild radius",
+      "formula": "R_s = 2GM / c²",
+      "explain": "Characteristic radius of a non-rotating black hole. Not a physical surface — defines the event horizon in classical GR.",
+      "example": "Solar-mass black hole: R_s ≈ 2.95 km."
+    },
+    {
+      "id": "stefan-boltzmann",
+      "title": "Stefan–Boltzmann luminosity",
+      "formula": "L = 4πR²σT⁴",
+      "explain": "Power radiated by a blackbody sphere of radius R and effective temperature T. Explains why hot stars are vastly more luminous.",
+      "example": "Doubling temperature increases luminosity 16×."
+    },
+    {
+      "id": "redshift",
+      "title": "Cosmological redshift (concept)",
+      "formula": "z = Δλ / λ ≈ v / c (low z)",
+      "explain": "Stretching of wavelength as space expands. High-z galaxies probe early universe; JWST targets z > 10.",
+      "example": "z = 1 means wavelength doubled; look-back ~7.7 Gyr."
+    },
+    {
+      "id": "hill-sphere",
+      "title": "Hill sphere (approx.)",
+      "formula": "r_H ≈ a · (m / 3M)^(1/3)",
+      "explain": "Region where a satellite's gravity dominates the tidal pull of a larger body. Moon orbits inside Earth's Hill sphere around the Sun.",
+      "example": "Earth's Hill sphere extends ~1.5 million km."
+    }
+  ],
+  "bodies": [
+    { "id": "sun", "name": "Sun", "massKg": 1.98847e30, "radiusM": 6.957e8 },
+    { "id": "earth", "name": "Earth", "massKg": 5.9722e24, "radiusM": 6.371e6 },
+    { "id": "moon", "name": "Moon", "massKg": 7.342e22, "radiusM": 1.737e6 },
+    { "id": "mars", "name": "Mars", "massKg": 6.4171e23, "radiusM": 3.390e6 },
+    { "id": "jupiter", "name": "Jupiter", "massKg": 1.8982e27, "radiusM": 6.9911e7 }
+  ]
+}

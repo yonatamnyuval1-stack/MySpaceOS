@@ -1,0 +1,15 @@
+{
+  "id": "geo.codes",
+  "version": 1,
+  "kind": "data",
+  "title": "Country codes",
+  "summary": "Resolve country name or ISO code to alpha-2. Pass your own maps or use built-in helpers.",
+  "tags": ["geo", "data"],
+  "entry": "index.js",
+  "files": ["index.js"],
+  "api": {
+    "createIndex": "createIndex({ byCode, byName })",
+    "resolve": "resolve(ref, index) → alpha-2 | null"
+  },
+  "usage": "const { createIndex, resolve } = require('./parts/geo.codes');"
+}

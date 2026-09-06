@@ -1,0 +1,13 @@
+{
+  "id": "flag-quiz",
+  "name": "Learning Games",
+  "version": "2.0.0",
+  "description": "Light learning quizzes by category: countries first, more to come",
+  "icon": "🎮",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

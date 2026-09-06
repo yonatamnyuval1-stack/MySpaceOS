@@ -1,0 +1,104 @@
+{
+  "profile": {
+    "tagline": "Maps — geocode, notes, routes & sync",
+    "icon": "🗺️",
+    "color": "#4ade80"
+  },
+  "commands": [
+    {
+      "verb": "geocode",
+      "title": "Geocode",
+      "description": "Forward geocode a query",
+      "delivery": "ipc",
+      "channel": "geocode",
+      "input": {
+        "q": "string"
+      }
+    },
+    {
+      "verb": "reverse",
+      "title": "Reverse geocode",
+      "description": "Reverse geocode coordinates",
+      "delivery": "ipc",
+      "channel": "reverse-geocode",
+      "input": {
+        "lat": "number",
+        "lon": "number"
+      }
+    },
+    {
+      "verb": "reverseCountry",
+      "title": "Reverse country",
+      "description": "Country for coordinates",
+      "delivery": "ipc",
+      "channel": "reverse-geocode-country",
+      "input": {
+        "lat": "number",
+        "lon": "number"
+      }
+    },
+    {
+      "verb": "notesLoad",
+      "title": "Load map notes",
+      "description": "Load saved map notes",
+      "delivery": "ipc",
+      "channel": "notes-load"
+    },
+    {
+      "verb": "notesSave",
+      "title": "Save map notes",
+      "description": "Save map notes",
+      "delivery": "ipc",
+      "channel": "notes-save-all",
+      "input": {
+        "notes": "array?"
+      }
+    },
+    {
+      "verb": "routesLoad",
+      "title": "Load routes",
+      "description": "Load saved routes",
+      "delivery": "ipc",
+      "channel": "routes-load"
+    },
+    {
+      "verb": "routesSave",
+      "title": "Save routes",
+      "description": "Save routes",
+      "delivery": "ipc",
+      "channel": "routes-save-all",
+      "input": {
+        "routes": "array?"
+      }
+    },
+    {
+      "verb": "settings",
+      "title": "Load settings",
+      "description": "Map settings",
+      "delivery": "ipc",
+      "channel": "settings-load"
+    },
+    {
+      "verb": "syncStatus",
+      "title": "Sync status",
+      "description": "Cloud/folder sync status",
+      "delivery": "ipc",
+      "channel": "sync-status"
+    },
+    {
+      "verb": "authStatus",
+      "title": "Auth status",
+      "description": "Login status",
+      "delivery": "ipc",
+      "channel": "auth-status"
+    },
+    {
+      "verb": "open",
+      "title": "Open Maps",
+      "description": "Open World Maps UI",
+      "delivery": "ui",
+      "input": {}
+    }
+  ],
+  "events": []
+}

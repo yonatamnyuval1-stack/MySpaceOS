@@ -1,0 +1,13 @@
+{
+  "note": "Real Parts published from geography (code lives in shared/parts: clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "geo.codes",
+      "note": "Country name / ISO resolve"
+    },
+    {
+      "ref": "search.fuzzy",
+      "note": "Country list filtering"
+    }
+  ]
+}

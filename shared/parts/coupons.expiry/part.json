@@ -1,0 +1,18 @@
+{
+  "id": "coupons.expiry",
+  "version": 1,
+  "kind": "util",
+  "title": "Expiry urgency",
+  "summary": "Classify ISO expiry dates as ok / soon / expired for wallets and reminders.",
+  "tags": [
+    "date",
+    "coupons",
+    "expiry"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { expiryState } = require('./parts/coupons.expiry');"
+}

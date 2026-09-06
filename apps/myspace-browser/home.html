@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Space Browser</title>
+    <link rel="stylesheet" href="home.css" />
+  </head>
+  <body>
+    <main class="msb-home">
+      <header class="msb-brand">
+        <div class="msb-mark" aria-hidden="true">
+          <img src="logo.png" alt="" width="52" height="52" />
+        </div>
+        <h1>My Space</h1>
+        <p>Search apps, Connect, and everything in your Space, or browse the web.</p>
+      </header>
+
+      <form class="msb-search" id="msb-form" autocomplete="off">
+        <input
+          id="msb-input"
+          type="search"
+          placeholder="Apps, contacts, Connect, websites…"
+          spellcheck="false"
+          autofocus
+        />
+        <button type="submit" class="msb-go">Search</button>
+      </form>
+
+      <div class="msb-chips" id="msb-chips">
+        <button type="button" data-q="Today">Today</button>
+        <button type="button" data-q="Gmail">Gmail</button>
+        <button type="button" data-q="Contacts">Contacts</button>
+        <button type="button" data-q="ChatGPT">ChatGPT</button>
+        <button type="button" data-q="Stocks">Stocks</button>
+      </div>
+
+      <section class="msb-results" id="msb-results" hidden>
+        <div class="msb-group" data-group="apps" hidden>
+          <h2>Apps</h2>
+          <div class="msb-list"></div>
+        </div>
+        <div class="msb-group" data-group="connect" hidden>
+          <h2>Connect</h2>
+          <div class="msb-list"></div>
+        </div>
+        <div class="msb-group" data-group="content" hidden>
+          <h2>In My Space</h2>
+          <div class="msb-list"></div>
+        </div>
+        <div class="msb-group" data-group="web" hidden>
+          <h2>Web</h2>
+          <div class="msb-list"></div>
+        </div>
+        <p class="msb-empty" id="msb-empty" hidden>No matches</p>
+      </section>
+    </main>
+    <script src="home.js"></script>
+  </body>
+</html>

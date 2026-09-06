@@ -1,0 +1,189 @@
+{
+  "profile": {
+    "tagline": "Quick capture: notebooks, tags, pin & archive",
+    "icon": "📝",
+    "color": "#7dd3fc"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List notes",
+      "description": "List notes (optional notebook / archived filter)",
+      "delivery": "ipc",
+      "channel": "notes.list",
+      "input": {
+        "notebookId": "string?",
+        "archived": "boolean?",
+        "pinned": "boolean?"
+      }
+    },
+    {
+      "verb": "search",
+      "title": "Search notes",
+      "description": "Search notes by text",
+      "delivery": "ipc",
+      "channel": "notes.search",
+      "input": {
+        "q": "string"
+      },
+      "examples": [
+        "pulse(send notes search q=todo)"
+      ]
+    },
+    {
+      "verb": "get",
+      "title": "Get note",
+      "description": "Fetch a note by id or title",
+      "delivery": "ipc",
+      "channel": "note.get",
+      "input": {
+        "id": "string?",
+        "title": "string?",
+        "ref": "string?"
+      }
+    },
+    {
+      "verb": "create",
+      "title": "Create note",
+      "description": "Add a new note",
+      "delivery": "ipc",
+      "channel": "note.add",
+      "input": {
+        "title": "string?",
+        "body": "string?",
+        "text": "string?",
+        "tags": "string[]?",
+        "notebookId": "string?"
+      },
+      "emit": "notes.created",
+      "examples": [
+        "pulse(send notes create title=Hello body=World)"
+      ]
+    },
+    {
+      "verb": "update",
+      "title": "Update note",
+      "description": "Change title, body, or tags",
+      "delivery": "ipc",
+      "channel": "note.update",
+      "input": {
+        "id": "string",
+        "title": "string?",
+        "body": "string?",
+        "tags": "string[]?",
+        "notebookId": "string?"
+      },
+      "emit": "notes.updated"
+    },
+    {
+      "verb": "delete",
+      "title": "Delete note",
+      "description": "Permanently delete a note",
+      "delivery": "ipc",
+      "channel": "note.delete",
+      "input": {
+        "id": "string"
+      },
+      "emit": "notes.deleted"
+    },
+    {
+      "verb": "pin",
+      "title": "Pin note",
+      "description": "Pin or unpin a note",
+      "delivery": "ipc",
+      "channel": "note.pin",
+      "input": {
+        "id": "string",
+        "pinned": "boolean?"
+      }
+    },
+    {
+      "verb": "archive",
+      "title": "Archive note",
+      "description": "Archive or restore a note",
+      "delivery": "ipc",
+      "channel": "note.archive",
+      "input": {
+        "id": "string",
+        "archived": "boolean?"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open note",
+      "description": "Open Notes and select a note",
+      "delivery": "ui",
+      "input": {
+        "id": "string?",
+        "title": "string?",
+        "ref": "string?"
+      }
+    },
+    {
+      "verb": "notebooks",
+      "title": "List notebooks",
+      "description": "List all notebooks",
+      "delivery": "ipc",
+      "channel": "notebooks.list"
+    },
+    {
+      "verb": "notebookCreate",
+      "title": "Create notebook",
+      "description": "Add a notebook",
+      "delivery": "ipc",
+      "channel": "notebook.add",
+      "input": {
+        "name": "string",
+        "icon": "string?"
+      }
+    },
+    {
+      "verb": "notebookRename",
+      "title": "Rename notebook",
+      "description": "Rename a notebook",
+      "delivery": "ipc",
+      "channel": "notebook.rename",
+      "input": {
+        "id": "string",
+        "name": "string"
+      }
+    },
+    {
+      "verb": "notebookDelete",
+      "title": "Delete notebook",
+      "description": "Delete a notebook (notes move to Inbox)",
+      "delivery": "ipc",
+      "channel": "notebook.delete",
+      "input": {
+        "id": "string"
+      }
+    }
+  ],
+  "events": [
+    {
+      "topic": "notes.created",
+      "title": "Note created",
+      "description": "A note was added",
+      "payload": {
+        "id": "string",
+        "title": "string?"
+      }
+    },
+    {
+      "topic": "notes.updated",
+      "title": "Note updated",
+      "description": "A note changed",
+      "payload": {
+        "id": "string"
+      }
+    },
+    {
+      "topic": "notes.deleted",
+      "title": "Note deleted",
+      "description": "A note was removed",
+      "payload": {
+        "id": "string"
+      }
+    }
+  ]
+}

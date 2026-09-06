@@ -1,0 +1,23 @@
+{
+  "id": "money.format",
+  "version": 1,
+  "kind": "util",
+  "title": "Money & market formatters",
+  "summary": "Currency, percent, volume (K/M/B), and market-cap compact formatters used by trading UIs.",
+  "tags": [
+    "finance",
+    "money",
+    "format"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {
+    "formatMoney": "formatMoney(n, currency?)",
+    "formatPct": "formatPct(n)",
+    "formatVol": "formatVol(n)",
+    "formatCap": "formatCap(n)"
+  },
+  "usage": "const { formatMoney, formatPct, formatVol, formatCap } = require('./parts/money.format');"
+}

@@ -1,0 +1,35 @@
+{
+  "title": "My Space",
+  "subtitle": "Your personal space",
+  "apps": [
+    {
+      "id": "google",
+      "name": "Google",
+      "type": "url",
+      "url": "https://www.google.com",
+      "description": "Logo loads automatically from the website"
+    },
+    {
+      "id": "spotify",
+      "name": "Spotify",
+      "type": "url",
+      "url": "https://open.spotify.com",
+      "iconUrl": "https://www.google.com/s2/favicons?domain=spotify.com&sz=128"
+    },
+    {
+      "id": "vscode",
+      "name": "VS Code",
+      "type": "external",
+      "path": "C:\\Users\\YOUR_NAME\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+      "iconPath": "icons/vscode.png",
+      "description": "Put a PNG in icons/ or omit iconPath to use the .exe icon"
+    },
+    {
+      "id": "minecraft",
+      "name": "Minecraft",
+      "type": "external",
+      "path": "C:\\Path\\To\\Minecraft.exe",
+      "description": "Windows pulls the icon from the .exe in desktop mode"
+    }
+  ]
+}

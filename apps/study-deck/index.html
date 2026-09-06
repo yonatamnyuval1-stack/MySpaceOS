@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Deck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">🃏</span>
+          <div>
+            <strong>Study Deck</strong>
+            <span class="brand-sub">Flashcards</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <button type="button" class="nav-item active" data-page="home">
+            <span class="nav-icon">⌂</span> Decks
+          </button>
+                      <button type="button" class="nav-item" data-page="study" id="nav-study" disabled>
+            <span class="nav-icon">▶</span> Play
+          </button>
+        </nav>
+        <footer class="sidebar-foot">
+          <p>Create decks · flip cards · AI generate</p>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="page-title">Decks</h1>
+            <p class="subtitle" id="page-subtitle">Build flashcard decks and practice what matters</p>
+          </div>
+          <div class="topbar-actions" id="topbar-home">
+            <button type="button" class="btn btn-primary" id="btn-new-deck">+ New deck</button>
+          </div>
+          <div class="topbar-actions hidden" id="topbar-deck">
+            <button type="button" class="btn btn-ghost" id="btn-back-home">← Decks</button>
+            <button type="button" class="btn btn-ghost" id="btn-ai-gen">✦ AI generate</button>
+            <button type="button" class="btn btn-ghost" id="btn-add-card">+ Card</button>
+            <button type="button" class="btn btn-primary" id="btn-start-study">Play</button>
+          </div>
+        </header>
+
+        <section class="page active" id="page-home" data-page="home">
+          <div class="stats-row" id="home-stats"></div>
+          <div class="deck-grid" id="deck-grid"></div>
+          <div class="empty-state" id="home-empty" hidden>
+            <h2>No decks yet</h2>
+            <p>Create a deck for a subject, then add cards — or let AI draft the first set.</p>
+            <button type="button" class="btn btn-primary" id="btn-empty-new">+ New deck</button>
+          </div>
+        </section>
+
+        <section class="page" id="page-deck" data-page="deck" hidden>
+          <div class="deck-meta" id="deck-meta"></div>
+          <div class="card-list" id="card-list"></div>
+          <div class="empty-state" id="deck-empty" hidden>
+            <h2>Empty deck</h2>
+            <p>Add cards manually or generate a set with AI.</p>
+          </div>
+        </section>
+
+        <section class="page page-study" id="page-study" data-page="study" hidden>
+          <div class="study-progress">
+            <span id="study-step">Card 1 / 1</span>
+            <span id="study-remaining">0 left</span>
+          </div>
+          <div class="study-type-badge" id="study-type-badge">Flashcard</div>
+          <button type="button" class="flashcard" id="flashcard" aria-live="polite">
+            <div class="flashcard-face" id="flashcard-face">
+              <span class="flashcard-hint" id="flashcard-hint">Front · click to flip</span>
+              <div class="flashcard-text" id="flashcard-text"></div>
+            </div>
+          </button>
+          <div class="quiz-choices" id="quiz-choices" hidden></div>
+          <p class="study-feedback" id="study-feedback" hidden></p>
+          <div class="study-grades" id="study-grades" hidden>
+            <button type="button" class="grade grade-again" data-grade="again">Again</button>
+            <button type="button" class="grade grade-hard" data-grade="hard">Hard</button>
+            <button type="button" class="grade grade-good" data-grade="good">Good</button>
+            <button type="button" class="grade grade-easy" data-grade="easy">Easy</button>
+          </div>
+          <div class="study-done" id="study-done" hidden>
+            <h2>Session complete</h2>
+            <p id="study-done-msg"></p>
+            <div class="study-done-actions">
+              <button type="button" class="btn btn-primary" id="btn-study-again">Play again</button>
+              <button type="button" class="btn btn-ghost" id="btn-study-back">Back to deck</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal hidden" id="modal" role="dialog" aria-modal="true">
+      <div class="modal-card" id="modal-card"></div>
+    </div>
+
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

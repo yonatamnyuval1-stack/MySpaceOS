@@ -1,0 +1,20 @@
+{
+  "id": "shell.program",
+  "version": 1,
+  "kind": "util",
+  "title": "Shell program AST",
+  "summary": "Parse multi-line shell programs: # comments, fn name(a){…}, semicolon/pipe chains: complements shell.args.",
+  "tags": [
+    "shell",
+    "scripts",
+    "parser",
+    "ast"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { parseProgram, splitCommandChain } = require('./parts/shell.program');",
+  "publisher": "shell"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "geography",
+  "name": "Geography",
+  "version": "1.0.0",
+  "description": "World countries: rich data, images & travel log",
+  "icon": "🌍",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

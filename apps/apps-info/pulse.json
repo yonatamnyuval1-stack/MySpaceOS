@@ -1,0 +1,51 @@
+{
+  "profile": {
+    "tagline": "App catalog: logos, profiles & activity",
+    "icon": "ℹ️",
+    "color": "#93c5fd"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List catalog",
+      "description": "List all apps in the Info catalog",
+      "delivery": "ipc",
+      "channel": "catalog.list",
+      "examples": [
+        "pulse(send apps-info list)"
+      ]
+    },
+    {
+      "verb": "detail",
+      "title": "App detail",
+      "description": "Full record for one app",
+      "delivery": "ipc",
+      "channel": "catalog.detail",
+      "input": {
+        "id": "string"
+      },
+      "examples": [
+        "pulse(send apps-info detail id=notes)"
+      ]
+    },
+    {
+      "verb": "open",
+      "title": "Open Info",
+      "description": "Open the Info app",
+      "delivery": "ui",
+      "input": {
+        "id": "string?"
+      }
+    },
+    {
+      "verb": "openApp",
+      "title": "Open app detail",
+      "description": "Open Info focused on an app",
+      "delivery": "ui",
+      "input": {
+        "id": "string"
+      }
+    }
+  ],
+  "events": []
+}

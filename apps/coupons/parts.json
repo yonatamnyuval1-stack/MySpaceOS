@@ -1,0 +1,9 @@
+{
+  "note": "Real Parts published from coupons (code lives in shared/parts.).",
+  "exports": [
+    {
+      "ref": "coupons.expiry",
+      "note": "Expiry urgency classifier"
+    }
+  ]
+}

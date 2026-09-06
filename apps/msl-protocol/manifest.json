@@ -1,0 +1,6 @@
+{
+  "id": "msl-protocol",
+  "name": "MSL",
+  "version": "2.0.0",
+  "description": "My Space Link: capability bus, mint keys, inject into AI apps"
+}

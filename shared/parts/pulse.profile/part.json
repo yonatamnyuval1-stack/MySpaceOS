@@ -1,0 +1,19 @@
+{
+  "id": "pulse.profile",
+  "version": 1,
+  "kind": "util",
+  "title": "Pulse profile normalizer",
+  "summary": "Normalize pulse.json commands/events/profiles: validate Link Bus manifests without Electron.",
+  "tags": [
+    "pulse",
+    "link",
+    "schema"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { normalizeProfile } = require('./parts/pulse.profile');",
+  "publisher": "pulse"
+}

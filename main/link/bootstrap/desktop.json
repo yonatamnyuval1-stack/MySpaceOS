@@ -1,0 +1,134 @@
+{
+  "profile": {
+    "tagline": "My Space shell: toasts, launch & focus",
+    "icon": "🖥️",
+    "color": "#a78bfa"
+  },
+  "commands": [
+    {
+      "verb": "toast",
+      "title": "Show toast",
+      "description": "Display a short desktop toast",
+      "delivery": "ui",
+      "input": {
+        "message": "string"
+      },
+      "examples": [
+        "pulse(send desktop toast message=Saved)"
+      ],
+      "callers": [
+        "desktop",
+        "shell",
+        "jobs",
+        "mind",
+        "pulse"
+      ]
+    },
+    {
+      "verb": "launch",
+      "title": "Launch app",
+      "description": "Open a My Space app by id",
+      "delivery": "ui",
+      "input": {
+        "appId": "string",
+        "page": "string?"
+      },
+      "callers": [
+        "desktop",
+        "shell",
+        "jobs",
+        "mind",
+        "pulse"
+      ]
+    },
+    {
+      "verb": "showDesktop",
+      "title": "Show desktop",
+      "description": "Focus the desktop / hide workspace",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openSettings",
+      "title": "Open settings",
+      "description": "Open My Space settings",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openSearch",
+      "title": "Open search",
+      "description": "Open the command palette",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openNotifications",
+      "title": "Open notifications",
+      "description": "Open the bell inbox",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openPlatform",
+      "title": "Open Platform",
+      "description": "Open the platform services catalog",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openPulse",
+      "title": "Open Pulse",
+      "description": "Open the Pulse directory",
+      "delivery": "ui",
+      "input": {
+        "moduleId": "string?"
+      }
+    },
+    {
+      "verb": "openMsl",
+      "title": "Open MSL",
+      "description": "Open the MSL capability panel",
+      "delivery": "ui",
+      "input": {
+        "tab": "string?"
+      }
+    },
+    {
+      "verb": "openJobs",
+      "title": "Open Jobs",
+      "description": "Open the Jobs panel",
+      "delivery": "ui",
+      "input": {}
+    },
+    {
+      "verb": "openMind",
+      "title": "Open Mind",
+      "description": "Open Mind chat / setup",
+      "delivery": "ui",
+      "input": {
+        "page": "string?"
+      }
+    },
+    {
+      "verb": "openFiles",
+      "title": "Open Files",
+      "description": "Open the Files service",
+      "delivery": "ui",
+      "input": {
+        "page": "string?",
+        "path": "string?"
+      }
+    }
+  ],
+  "events": [
+    {
+      "topic": "desktop.focus",
+      "title": "Focus changed",
+      "description": "Desktop / app focus changed",
+      "payload": {
+        "appId": "string?"
+      }
+    }
+  ]
+}

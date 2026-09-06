@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pi Digits</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <main class="main">
+        <!-- HOME -->
+        <section class="page active" id="page-home" data-page="home">
+          <div class="home-center">
+            <p class="kicker">Pi Digits</p>
+            <div class="pi-hero" id="pi-hero" aria-live="polite"></div>
+            <p class="home-line" id="home-line">Ready when you are</p>
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-fill" id="home-bar"></div>
+            </div>
+            <p class="session-plan" id="session-plan"></p>
+
+            <button type="button" class="btn btn-hero" id="btn-learn">Start lesson</button>
+
+            <div class="home-links">
+              <button type="button" class="link-btn" id="btn-recite" hidden>Recite recent</button>
+              <button type="button" class="link-btn" id="btn-recite-start" hidden>Recite from the start</button>
+              <button type="button" class="link-btn" id="btn-early" hidden>Practice early digits</button>
+              <button type="button" class="link-btn" id="btn-review" hidden>Review weak spot</button>
+            </div>
+            <p class="recite-record" id="recite-record" hidden></p>
+          </div>
+        </section>
+
+        <!-- GUIDED LESSON -->
+        <section class="page" id="page-learn" data-page="learn" hidden>
+          <button type="button" class="back-btn" id="btn-learn-back" aria-label="Back">←</button>
+
+          <div class="learn-wrap">
+            <div class="phase-dots" id="phase-dots" aria-hidden="true"></div>
+            <p class="step-label" id="learn-step">Study</p>
+
+            <div class="prefix-row" id="prefix-row" hidden></div>
+            <div class="chips" id="chips" aria-live="polite"></div>
+
+            <p class="story" id="story" hidden></p>
+            <p class="coach" id="coach"></p>
+            <p class="feedback" id="feedback" hidden></p>
+
+            <div class="digit-pad" id="digit-pad" hidden></div>
+            <input
+              id="digit-input"
+              class="sr-only"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Type digits"
+            />
+
+            <div class="learn-actions">
+              <button type="button" class="btn btn-primary" id="btn-primary">Continue</button>
+              <button type="button" class="btn btn-ghost" id="btn-hear">Hear it</button>
+              <button type="button" class="btn btn-ghost" id="btn-skip-warm" hidden>Skip warm-up</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- QUICK RECITE -->
+        <section class="page" id="page-recite" data-page="recite" hidden>
+          <button type="button" class="back-btn" id="btn-recite-back" aria-label="Back">←</button>
+          <div class="learn-wrap">
+            <p class="step-label" id="recite-label">Recite</p>
+            <p class="coach" id="recite-coach">Type from here — stop when it feels shaky.</p>
+            <p class="recite-stats" id="recite-stats" hidden></p>
+            <div class="prefix-row" id="recite-prefix"></div>
+            <div class="chips" id="recite-chips"></div>
+            <div class="digit-pad" id="recite-pad"></div>
+            <p class="feedback" id="recite-feedback" hidden></p>
+            <div class="learn-actions">
+              <button type="button" class="btn btn-ghost" id="btn-recite-done">Finish</button>
+              <button type="button" class="btn btn-ghost" id="btn-recite-mode">From the start</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- DONE -->
+        <section class="page" id="page-done" data-page="done" hidden>
+          <div class="home-center">
+            <p class="kicker">Locked in</p>
+            <h1 class="done-title" id="done-title">Chunk learned</h1>
+            <p class="home-line" id="done-line"></p>
+            <div class="chips done-chips" id="done-chips"></div>
+            <button type="button" class="btn btn-hero" id="btn-done-next">Next lesson</button>
+            <div class="home-links">
+              <button type="button" class="link-btn" id="btn-done-home">Home</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
+    <script src="pi-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

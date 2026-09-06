@@ -1,0 +1,145 @@
+{
+  "profile": {
+    "tagline": "AI chat threads: send, modes & memory",
+    "icon": "✦",
+    "color": "#fb7185"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List chats",
+      "description": "List chat threads",
+      "delivery": "ipc",
+      "channel": "chat.list"
+    },
+    {
+      "verb": "get",
+      "title": "Get chat",
+      "description": "Fetch a thread",
+      "delivery": "ipc",
+      "channel": "chat.get",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "create",
+      "title": "Create chat",
+      "description": "Start a new thread",
+      "delivery": "ipc",
+      "channel": "chat.create",
+      "input": {
+        "title": "string?",
+        "mode": "string?"
+      }
+    },
+    {
+      "verb": "delete",
+      "title": "Delete chat",
+      "description": "Delete a thread",
+      "delivery": "ipc",
+      "channel": "chat.delete",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "rename",
+      "title": "Rename chat",
+      "description": "Rename a thread",
+      "delivery": "ipc",
+      "channel": "chat.rename",
+      "input": {
+        "id": "string",
+        "title": "string"
+      }
+    },
+    {
+      "verb": "pin",
+      "title": "Pin chat",
+      "description": "Pin / unpin a thread",
+      "delivery": "ipc",
+      "channel": "chat.pin",
+      "input": {
+        "id": "string",
+        "pinned": "boolean?"
+      }
+    },
+    {
+      "verb": "clear",
+      "title": "Clear chat",
+      "description": "Clear messages in a thread",
+      "delivery": "ipc",
+      "channel": "chat.clear",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "send",
+      "title": "Send message",
+      "description": "Send a chat message",
+      "delivery": "ipc",
+      "channel": "chat.send",
+      "input": {
+        "id": "string?",
+        "text": "string",
+        "mode": "string?"
+      }
+    },
+    {
+      "verb": "regenerate",
+      "title": "Regenerate",
+      "description": "Regenerate last reply",
+      "delivery": "ipc",
+      "channel": "chat.regenerate",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "modes",
+      "title": "List modes",
+      "description": "Available chat modes",
+      "delivery": "ipc",
+      "channel": "chat.modes.list"
+    },
+    {
+      "verb": "setMode",
+      "title": "Set mode",
+      "description": "Set active mode",
+      "delivery": "ipc",
+      "channel": "chat.mode.set",
+      "input": {
+        "mode": "string"
+      }
+    },
+    {
+      "verb": "memoryList",
+      "title": "List memory",
+      "description": "Chat memory facts",
+      "delivery": "ipc",
+      "channel": "chat.memory.list"
+    },
+    {
+      "verb": "memoryAdd",
+      "title": "Add memory",
+      "description": "Add a memory fact",
+      "delivery": "ipc",
+      "channel": "chat.memory.add",
+      "input": {
+        "text": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Chat",
+      "description": "Open Chat UI",
+      "delivery": "ui",
+      "input": {
+        "id": "string?"
+      }
+    }
+  ],
+  "events": []
+}

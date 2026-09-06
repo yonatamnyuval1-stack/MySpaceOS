@@ -1,0 +1,13 @@
+{
+  "id": "icon-library",
+  "name": "Icon Library",
+  "version": "1.0.0",
+  "description": "Browse, preview, copy, and favorite system icons for My Space apps",
+  "icon": "✦",
+  "auth": {
+    "type": "local",
+    "entry": "login.html",
+    "appEntry": "index.html",
+    "sharedAccounts": false
+  }
+}

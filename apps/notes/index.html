@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-buttons="default" data-theme-base="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+  </head>
+  <body>
+    <div class="app-shell" id="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">📝</span>
+          <div>
+            <strong>Notes</strong>
+            <span class="brand-sub">Quick capture</span>
+          </div>
+        </div>
+
+        <nav class="nav" id="rail-nav" aria-label="Views">
+          <button type="button" class="nav-item active" data-view="all">
+            <span class="nav-icon">▤</span> All notes <em id="count-all">0</em>
+          </button>
+          <button type="button" class="nav-item" data-view="pinned">
+            <span class="nav-icon">●</span> Pinned <em id="count-pinned">0</em>
+          </button>
+          <button type="button" class="nav-item" data-view="archive">
+            <span class="nav-icon">⬚</span> Archive <em id="count-archive">0</em>
+          </button>
+        </nav>
+
+        <p class="nav-section-label">Notebooks</p>
+        <div class="nav-section-head">
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-add-notebook" title="New notebook">+ New</button>
+        </div>
+        <nav class="nav nav--cats" id="notebook-list" aria-label="Notebooks"></nav>
+
+        <p class="nav-section-label">Tags</p>
+        <div class="tag-cloud" id="tag-cloud"></div>
+
+        <footer class="sidebar-foot">
+          <p>notes(add …) · Del to delete</p>
+          <button type="button" class="btn btn-ghost btn-sm btn-sign-out hidden" id="btn-sign-out">Sign out</button>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-text">
+            <h1 id="list-title">All notes</h1>
+            <p class="subtitle" id="list-sub">Capture anything, pin what matters</p>
+          </div>
+          <div class="topbar-actions">
+            <button type="button" class="btn btn-primary" id="btn-new" title="New note (Ctrl+N)">+ New note</button>
+          </div>
+        </header>
+
+        <div class="main-body">
+          <form class="capture" id="capture-form" autocomplete="off">
+            <input
+              type="text"
+              id="capture-input"
+              class="capture-input"
+              placeholder="Quick capture — Title | body  ·  #tags welcome"
+              spellcheck="true"
+            />
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">⌕</span>
+              <input type="search" id="search-input" class="search" placeholder="Search notes…" autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="note-list" id="note-list" role="list"></div>
+          <div class="empty-state hidden" id="empty-list">
+            <h3>No notes here</h3>
+            <p>Use quick capture above, or press Ctrl+N.</p>
+          </div>
+        </div>
+      </main>
+
+      <aside class="detail-panel" id="editor-pane" aria-label="Editor">
+        <div class="editor-empty" id="editor-empty">
+          <div class="editor-empty-mark" aria-hidden="true">📝</div>
+          <h2>Select a note</h2>
+          <p>Or capture something new.</p>
+        </div>
+
+        <div class="editor hidden" id="editor">
+          <header class="detail-head">
+            <select id="note-notebook" class="field-select" title="Notebook"></select>
+            <div class="detail-actions-inline">
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-pin" title="Pin (Ctrl+P)">Pin</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-duplicate" title="Duplicate">Duplicate</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-archive" title="Archive">Archive</button>
+              <button type="button" class="btn btn-danger btn-sm" id="btn-delete" title="Delete (Del)">Delete</button>
+            </div>
+            <span class="save-status" id="save-status" aria-live="polite"></span>
+          </header>
+          <div class="detail-body editor-body">
+            <input
+              type="text"
+              id="note-title"
+              class="note-title"
+              placeholder="Title"
+              autocomplete="off"
+              spellcheck="true"
+            />
+            <input
+              type="text"
+              id="note-tags"
+              class="note-tags"
+              placeholder="Tags — comma or #hash"
+              autocomplete="off"
+            />
+            <textarea
+              id="note-body"
+              class="note-body"
+              placeholder="Write freely…"
+              spellcheck="true"
+            ></textarea>
+            <footer class="editor-meta" id="editor-meta"></footer>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+
+    <dialog class="modal" id="confirm-modal">
+      <form method="dialog" id="confirm-form" class="modal-card">
+        <h3 id="confirm-title">Delete note?</h3>
+        <p class="modal-copy" id="confirm-copy">This cannot be undone.</p>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-danger" id="confirm-ok" value="ok">Delete</button>
+          <button type="button" class="btn btn-ghost" id="confirm-cancel">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal" id="notebook-modal">
+      <form method="dialog" id="notebook-form" class="modal-card">
+        <h3>New notebook</h3>
+        <label>
+          <span>Name</span>
+          <input type="text" id="notebook-name" required maxlength="60" placeholder="e.g. Work" />
+        </label>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary" value="ok">Create</button>
+          <button type="button" class="btn btn-ghost" id="notebook-cancel">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "id": "model-flow",
+  "name": "Model Flow",
+  "version": "0.1.1",
+  "entry": "index.html",
+  "description": "AI series: plan tool flows, approve, run",
+  "icon": "logo.png"
+}

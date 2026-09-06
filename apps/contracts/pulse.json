@@ -1,0 +1,93 @@
+{
+  "profile": {
+    "tagline": "Contracts — library, templates & expiry",
+    "icon": "⚖️",
+    "color": "#a3a3a3"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List contracts",
+      "description": "List contracts",
+      "delivery": "ipc",
+      "channel": "contracts.list",
+      "input": {
+        "q": "string?"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get contract",
+      "description": "Fetch a contract",
+      "delivery": "ipc",
+      "channel": "contracts.get",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "save",
+      "title": "Save contract",
+      "description": "Create or update a contract",
+      "delivery": "ipc",
+      "channel": "contracts.save",
+      "input": {
+        "id": "string?",
+        "title": "string?",
+        "body": "string?"
+      }
+    },
+    {
+      "verb": "delete",
+      "title": "Delete contract",
+      "description": "Delete a contract",
+      "delivery": "ipc",
+      "channel": "contracts.delete",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "templates",
+      "title": "List templates",
+      "description": "Contract templates",
+      "delivery": "ipc",
+      "channel": "templates.list"
+    },
+    {
+      "verb": "templateGet",
+      "title": "Get template",
+      "description": "Fetch a template",
+      "delivery": "ipc",
+      "channel": "templates.get",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "expiryCheck",
+      "title": "Check expiry",
+      "description": "Run expiry check",
+      "delivery": "ipc",
+      "channel": "expiry.check"
+    },
+    {
+      "verb": "upcoming",
+      "title": "Upcoming expiry",
+      "description": "Contracts nearing expiry",
+      "delivery": "ipc",
+      "channel": "expiry.upcoming"
+    },
+    {
+      "verb": "open",
+      "title": "Open Contracts",
+      "description": "Open Contracts UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?",
+        "id": "string?"
+      }
+    }
+  ],
+  "events": []
+}

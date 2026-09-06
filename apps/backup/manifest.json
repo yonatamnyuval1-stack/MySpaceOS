@@ -1,0 +1,6 @@
+{
+  "id": "backup",
+  "name": "Backup",
+  "version": "1.0.0",
+  "description": "Export and restore My Space user data"
+}

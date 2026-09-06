@@ -1,0 +1,19 @@
+{
+  "id": "msl.context.slim",
+  "version": 1,
+  "kind": "util",
+  "title": "MSL / AI context slimmer",
+  "summary": "Trim nested capability results for AI grounding prompts, prefer useful keys, cap depth and size.",
+  "tags": [
+    "msl",
+    "ai",
+    "context"
+  ],
+  "entry": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "api": {},
+  "usage": "const { slimValue, formatSourceBlock } = require('./parts/msl.context.slim');",
+  "publisher": "msl"
+}

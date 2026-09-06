@@ -1,0 +1,13 @@
+{
+  "note": "Real Parts published from icon-library (code lives in shared/parts: clean, no host coupling).",
+  "exports": [
+    {
+      "ref": "search.fuzzy",
+      "note": "Icon search ranking"
+    },
+    {
+      "ref": "ui.omnibox",
+      "note": "Search field pattern"
+    }
+  ]
+}

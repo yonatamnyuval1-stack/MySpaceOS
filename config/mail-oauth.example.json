@@ -1,0 +1,10 @@
+{
+  "gmail": {
+    "clientId": "YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com",
+    "clientSecret": "YOUR_GOOGLE_OAUTH_CLIENT_SECRET"
+  },
+  "microsoft": {
+    "clientId": "YOUR_AZURE_APP_CLIENT_ID",
+    "clientSecret": "YOUR_AZURE_CLIENT_SECRET"
+  }
+}

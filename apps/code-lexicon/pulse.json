@@ -1,0 +1,91 @@
+{
+  "profile": {
+    "tagline": "Code terms: search, daily & related",
+    "icon": "📖",
+    "color": "#a5b4fc"
+  },
+  "commands": [
+    {
+      "verb": "list",
+      "title": "List terms",
+      "description": "List lexicon terms",
+      "delivery": "ipc",
+      "channel": "terms.list",
+      "input": {
+        "category": "string?"
+      }
+    },
+    {
+      "verb": "search",
+      "title": "Search terms",
+      "description": "Search the lexicon",
+      "delivery": "ipc",
+      "channel": "terms.search",
+      "input": {
+        "q": "string"
+      }
+    },
+    {
+      "verb": "get",
+      "title": "Get term",
+      "description": "Fetch a term",
+      "delivery": "ipc",
+      "channel": "terms.get",
+      "input": {
+        "id": "string?",
+        "slug": "string?"
+      }
+    },
+    {
+      "verb": "related",
+      "title": "Related terms",
+      "description": "Related terms",
+      "delivery": "ipc",
+      "channel": "terms.related",
+      "input": {
+        "id": "string"
+      }
+    },
+    {
+      "verb": "daily",
+      "title": "Daily term",
+      "description": "Term of the day",
+      "delivery": "ipc",
+      "channel": "terms.daily"
+    },
+    {
+      "verb": "categories",
+      "title": "Categories",
+      "description": "List categories",
+      "delivery": "ipc",
+      "channel": "categories.list"
+    },
+    {
+      "verb": "stats",
+      "title": "Stats",
+      "description": "Lexicon stats",
+      "delivery": "ipc",
+      "channel": "stats.get"
+    },
+    {
+      "verb": "linkOpen",
+      "title": "Open link",
+      "description": "Open external link",
+      "delivery": "ipc",
+      "channel": "link.open",
+      "input": {
+        "url": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Lexicon",
+      "description": "Open Code Lexicon UI",
+      "delivery": "ui",
+      "input": {
+        "id": "string?"
+      }
+    }
+  ],
+  "events": []
+}

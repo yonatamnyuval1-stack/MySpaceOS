@@ -1,0 +1,93 @@
+{
+  "profile": {
+    "tagline": "Study docs — export & Gemini helpers",
+    "icon": "📚",
+    "color": "#c4b5fd"
+  },
+  "commands": [
+    {
+      "verb": "exportFile",
+      "title": "Export file",
+      "description": "Export a study document",
+      "delivery": "ipc",
+      "channel": "export.file",
+      "input": {
+        "id": "string?",
+        "format": "string?"
+      }
+    },
+    {
+      "verb": "exportPdf",
+      "title": "Export PDF",
+      "description": "Export as PDF",
+      "delivery": "ipc",
+      "channel": "export.pdf",
+      "input": {
+        "id": "string?"
+      }
+    },
+    {
+      "verb": "exportDocx",
+      "title": "Export DOCX",
+      "description": "Export as Word",
+      "delivery": "ipc",
+      "channel": "export.docx",
+      "input": {
+        "id": "string?"
+      }
+    },
+    {
+      "verb": "gemini",
+      "title": "Gemini generate",
+      "description": "Generate with Gemini",
+      "delivery": "ipc",
+      "channel": "gemini-generate",
+      "input": {
+        "prompt": "string"
+      }
+    },
+    {
+      "verb": "geminiChat",
+      "title": "Gemini chat",
+      "description": "Chat with Gemini",
+      "delivery": "ipc",
+      "channel": "gemini-chat",
+      "input": {
+        "messages": "array?",
+        "prompt": "string?"
+      }
+    },
+    {
+      "verb": "fillSlots",
+      "title": "Fill slots",
+      "description": "Fill template slots",
+      "delivery": "ipc",
+      "channel": "gemini-fill-slots",
+      "input": {
+        "template": "string?",
+        "prompt": "string?"
+      }
+    },
+    {
+      "verb": "factCheck",
+      "title": "Fact check",
+      "description": "Fact-check text",
+      "delivery": "ipc",
+      "channel": "gemini-fact-check",
+      "input": {
+        "text": "string"
+      }
+    },
+    {
+      "verb": "open",
+      "title": "Open Studies",
+      "description": "Open Studies UI",
+      "delivery": "ui",
+      "input": {
+        "page": "string?",
+        "id": "string?"
+      }
+    }
+  ],
+  "events": []
+}

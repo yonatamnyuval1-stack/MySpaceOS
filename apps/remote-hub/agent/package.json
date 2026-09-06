@@ -1,0 +1,13 @@
+{
+  "name": "myspace-remote-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "My Space Remote Hub agent — screen + input on target PC",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
