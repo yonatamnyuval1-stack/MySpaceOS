@@ -40,6 +40,11 @@ function metaPath() {
 }
 
 let session = null;
+
+function lockForProfileSwitch() {
+  session = null;
+  return { ok: true };
+}
 let expiryTimer = null;
 const firedThisMinute = new Set();
 
@@ -486,4 +491,4 @@ async function handleCouponsInvoke(channel, args = {}) {
   }
 }
 
-module.exports = { handleCouponsInvoke, startCouponsExpiryService, checkExpiry };
+module.exports = { handleCouponsInvoke, startCouponsExpiryService, checkExpiry, lockForProfileSwitch };

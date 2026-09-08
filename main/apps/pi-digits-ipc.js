@@ -23,7 +23,7 @@ function signedInGuard() {
 
 
 function dataPath() {
-  return path.join(app.getPath("userData"), "pi-digits.json");
+  return DATA_FILE();
 }
 
 function defaultProgress() {

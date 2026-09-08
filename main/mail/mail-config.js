@@ -7,8 +7,8 @@ function projectConfigPath() {
 
 function userConfigPath() {
   try {
-    const { app } = require("electron");
-    return path.join(app.getPath("userData"), "mail-oauth.json");
+    const profile = require("../myspace-profile");
+    return profile.installWidePath("mail-oauth.json");
   } catch {
     return null;
   }

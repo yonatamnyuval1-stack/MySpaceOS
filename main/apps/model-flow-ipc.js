@@ -167,15 +167,18 @@ const LAB_REPLY_RULES = [
 ].join(" ");
 
 function secretsPath() {
-  return path.join(app.getPath("userData"), "model-flow-secrets.json");
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("model-flow-secrets.json");
 }
 
 function historyPath() {
-  return path.join(app.getPath("userData"), "model-flow-history.json");
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("model-flow-history.json");
 }
 
 function libraryPath() {
-  return path.join(app.getPath("userData"), "model-flow-library.json");
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("model-flow-library.json");
 }
 
 function loadSecrets() {
@@ -699,7 +702,7 @@ function localPlan(task) {
     },
   });
 
-  let summary = "Local planner draft — model Lab builds richer flows when available.";
+  let summary = "Local planner draft: model Lab builds richer flows when available.";
   if (wantsEmailRead && wantsSheets) summary = "Read inbox → create Google Sheet → share link.";
   else if (wantsEmailRead) summary = "Read inbox → summarize → answer (not send).";
   else if (wantsSheets) summary = "Create Google Sheet → share link.";
@@ -1536,7 +1539,7 @@ function flowStepsToScriptBody(flow) {
       const sec = Number(c.seconds || c.sec || 2) || 2;
       lines.push(`# wait ${sec}s`);
     } else {
-      lines.push(`# skip ${tool || "tool"} (Lab/local — not a shell line)`);
+      lines.push(`# skip ${tool || "tool"} (Lab/local: not a shell line)`);
     }
     lines.push("");
   }
@@ -1856,7 +1859,7 @@ async function handleModelFlowInvoke(channel, args = {}) {
       const flow = {
         id: uid("flow"),
         title: "Untitled flow",
-        summary: "Blank studio — add steps, then approve.",
+        summary: "Blank studio: add steps, then approve.",
         task: String(args.task || "").trim(),
         source: "blank",
         steps: [

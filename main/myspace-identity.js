@@ -201,12 +201,12 @@ async function register(usernameRaw, password, remember = true) {
 async function login(usernameRaw, password, remember = false) {
   const username = normalizeUsername(usernameRaw);
   if (!username || !password) {
-    return { ok: false, error: "Username and password required" };
+    return { ok: false, error: "Password and username required" };
   }
   const store = await loadUsersStore();
   const user = store.users.find((u) => u.username === username);
   if (!user || !verifyPassword(password, user.salt, user.hash)) {
-    return { ok: false, error: "Wrong username or password" };
+    return { ok: false, error: "Wrong password or username" };
   }
   session = {
     userId: user.id,

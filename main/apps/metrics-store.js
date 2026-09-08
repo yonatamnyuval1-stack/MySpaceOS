@@ -8,7 +8,8 @@ const MAX_AGE_MS = 24 * 60 * 60 * 1000;
 const MAX_POINTS = 3000;
 
 function metricsPath() {
-  return path.join(app.getPath("userData"), "system-info-metrics.json");
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("system-info-metrics.json");
 }
 
 async function loadSamples() {

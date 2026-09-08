@@ -548,7 +548,7 @@
 
   async function removeApp(id) {
     if (PROTECTED_IDS.has(id)) {
-      return { ok: false, error: "This app cannot be removed." };
+      return { ok: false, error: "This app can't be removed." };
     }
     const before = state.apps.length;
     state.apps = state.apps.filter((a) => a.id !== id);
@@ -581,7 +581,7 @@
 
   function moveAppToTop(id) {
     if (PROTECTED_IDS.has(id)) {
-      return { ok: false, error: "This app cannot be moved." };
+      return { ok: false, error: "This app can't be moved." };
     }
     const idx = state.apps.findIndex((a) => a.id === id);
     if (idx === -1) return { ok: false, error: "App not found." };
@@ -594,7 +594,7 @@
 
   function moveAppToBottom(id) {
     if (PROTECTED_IDS.has(id)) {
-      return { ok: false, error: "This app cannot be moved." };
+      return { ok: false, error: "This app can't be moved." };
     }
     const idx = state.apps.findIndex((a) => a.id === id);
     if (idx === -1) return { ok: false, error: "App not found." };
@@ -608,7 +608,7 @@
     const source = state.apps.find((a) => a.id === id);
     if (!source) return { ok: false, error: "App not found." };
     if (PROTECTED_IDS.has(id)) {
-      return { ok: false, error: "This app cannot be duplicated." };
+      return { ok: false, error: "This app can't be duplicated." };
     }
     const copy = normalizeApp(clone(source));
     copy.id = uniqueId(`${source.name}-copy`, state.apps);

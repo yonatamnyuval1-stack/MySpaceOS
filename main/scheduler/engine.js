@@ -496,9 +496,17 @@ function stopSchedulerService() {
   timer = null;
 }
 
+function reloadForProfileSwitch() {
+  firing.clear();
+  state = store.load();
+  broadcast();
+  return { ok: true, schedules: (state.schedules || []).length };
+}
+
 module.exports = {
   startSchedulerService,
   stopSchedulerService,
+  reloadForProfileSwitch,
   snapshot,
   list,
   get,

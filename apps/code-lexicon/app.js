@@ -2,7 +2,7 @@
   const PAGE_META = {
     browse: {
       title: "Search",
-      subtitle: "Browse 4000+ programming concepts with clear explanations",
+      subtitle: "Browse 4500+ programming concepts with clear explanations",
     },
     categories: {
       title: "Categories",

@@ -4,7 +4,8 @@ const { app } = require("electron");
 const { loadJsonFile, saveJsonFile } = require("./safe-json-store");
 
 function userAppsRoot() {
-  return path.join(app.getPath("userData"), "user-apps");
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("user-apps");
 }
 
 function userAppDir(moduleId) {
@@ -12,7 +13,8 @@ function userAppDir(moduleId) {
 }
 
 function dataPath(moduleId) {
-  return path.join(app.getPath("userData"), "user-apps-data", `${moduleId}.json`);
+  const profile = require("../myspace-profile");
+  return path.join(profile.profileScopedPath("user-apps-data"), `${moduleId}.json`);
 }
 
 function isUserAppModule(moduleId) {

@@ -29,7 +29,7 @@ const WM_ROOT = path.join(__dirname, "..", "..", "world-maps");
 const { geminiGenerate } = require(path.join(WM_ROOT, "gemini-ipc.js"));
 
 function dataPath() {
-  return path.join(app.getPath("userData"), "study-deck.json");
+  return DATA_FILE();
 }
 
 function uid(prefix) {

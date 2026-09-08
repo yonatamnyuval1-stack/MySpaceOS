@@ -1,7 +1,7 @@
 1: improve the following Apps: Studies, contacts, remote hub, Icon library, tasks, Pi digits, study deck, digital contracts.
 change a little details for the rest in need. 
 2: data security for my secrets and the users. 
-3: Myspace for many accounts and not only one.
+3: Myspace for many accounts and not only one -- done
 4: continue with Myspace -- done
 5: improve mindchat and the others AI platforms.
 6: improve the following services: Jobs, schedular, Updates, Network, shell, MSL,parts, pulse, scripts, and more.  improve the change workspace button.

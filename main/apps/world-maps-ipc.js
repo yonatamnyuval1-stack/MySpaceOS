@@ -23,7 +23,8 @@ const SETTINGS_DEFAULTS = {
 };
 
 function localRoot() {
-  return path.join(app.getPath("userData"), "world-maps");
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("world-maps");
 }
 
 function syncConfigPath() {

@@ -386,7 +386,6 @@ function syncMindSideChat(args = {}) {
 async function regenerate(args = {}) {
   const conv = getConversation(args.id || args.conversationId);
   if (!conv) return { ok: false, error: "Chat not found" };
-  // Drop trailing assistant/error messages until last user
   while (conv.messages.length && conv.messages[conv.messages.length - 1].role !== "user") {
     conv.messages.pop();
   }
@@ -679,4 +678,8 @@ module.exports = {
   handleChatInvoke,
   createMindSideChat,
   syncMindSideChat,
+  reloadForProfileSwitch() {
+    state = null;
+    return { ok: true };
+  },
 };

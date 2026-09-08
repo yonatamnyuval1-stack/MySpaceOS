@@ -23,7 +23,7 @@ function signedInGuard() {
 
 
 function dataPath() {
-  return path.join(app.getPath("userData"), "icon-library.json");
+  return DATA_FILE();
 }
 
 function defaultState() {

@@ -13,20 +13,25 @@ const CODE_TTL_MS = 15 * 60 * 1000;
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 const FILE_OFFER_TTL_MS = 2 * 60 * 60 * 1000;
 
+function bridgeRoot() {
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("os-bridge");
+}
+
 function inboxDir() {
-  const dir = path.join(app.getPath("userData"), "os-bridge", "inbox");
+  const dir = path.join(bridgeRoot(), "inbox");
   fs.mkdirSync(dir, { recursive: true });
   return dir;
 }
 
 function outboxDir() {
-  const dir = path.join(app.getPath("userData"), "os-bridge", "outbox");
+  const dir = path.join(bridgeRoot(), "outbox");
   fs.mkdirSync(dir, { recursive: true });
   return dir;
 }
 
 function clipHistoryDir() {
-  const dir = path.join(app.getPath("userData"), "os-bridge", "clipboard");
+  const dir = path.join(bridgeRoot(), "clipboard");
   fs.mkdirSync(dir, { recursive: true });
   return dir;
 }

@@ -31,7 +31,7 @@ let reminderTimer = null;
 const firedThisMinute = new Set();
 
 function dataPath() {
-  return path.join(app.getPath("userData"), "day-planner.json");
+  return DATA_FILE();
 }
 
 function uid(prefix) {
@@ -292,7 +292,7 @@ async function generateTasks({ goal, language, count }) {
 
   const today = todayISO();
   const langRule =
-    lang === "he" ? "Write task titles (and optional notes) in Hebrew." : "Write task titles in English.";
+    lang === "he" ? "Write task titles in Hebrew." : "Write task titles in English.";
 
   const prompt =
     `Break this goal into actionable day-planner agenda items with times.\n` +
@@ -304,7 +304,7 @@ async function generateTasks({ goal, language, count }) {
     `Rules:\n` +
     `- Exactly ${n} tasks.\n` +
     `- dueOffsetDays: 0=today, 1=tomorrow, 2+=later (max 14).\n` +
-    `- dueTime in 24h HH:MM, spread through the day (e.g. 09:00–18:00).\n` +
+    `- dueTime in 24h HH:MM, spread through the day.\n` +
     `- notify true for timed items.\n` +
     `- Concrete verbs, no fluff.`;
 

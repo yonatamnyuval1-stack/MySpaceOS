@@ -4,7 +4,8 @@ const { app } = require("electron");
 const MslKey = require("../../apps/shared/msl-key");
 
 function dataPath() {
-  return path.join(app.getPath("userData"), "msl-protocol.json");
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("msl-protocol.json");
 }
 
 function uid(prefix) {

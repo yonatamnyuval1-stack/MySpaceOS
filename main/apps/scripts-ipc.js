@@ -5,7 +5,8 @@ const { loadJsonFile, saveJsonFile } = require("./safe-json-store");
 const { reportLoadFailure, reportSaveFailure } = require("../resolve/report-helper");
 
 function dataPath() {
-  return path.join(app.getPath("userData"), "scripts.json");
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("scripts.json");
 }
 
 function uid() {

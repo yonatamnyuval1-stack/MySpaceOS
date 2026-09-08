@@ -3,6 +3,15 @@ const path = require("path");
 const { app } = require("electron");
 const identity = require("./myspace-identity");
 
+const INSTALL_WIDE_FILES = [
+  "mail-oauth.json", 
+  "updates-state.json", 
+];
+
+const INSTALL_WIDE_DIRS = [
+  "myspace-identity", 
+];
+
 const PROFILE_FILES = [
   "user-config.json",
   "app-settings.json",
@@ -10,7 +19,6 @@ const PROFILE_FILES = [
   "notifications-prefs.json",
   "shell-engine.json",
 ];
-
 
 const SERVICE_FILES = [
   "files-service.json",
@@ -30,9 +38,56 @@ const SERVICE_FILES = [
   "composio-secrets.json",
   "notifications.json",
   "permissions-platform.json",
+  "scripts.json",
+  "model-flow-secrets.json",
+  "model-flow-history.json",
+  "model-flow-library.json",
+  "studies-image-cache.json",
+  "ai-tool-prefs.json",
+  "resolve-incidents.json",
+  "msl-protocol.json",
+  "system-info-metrics.json",
+  "os-bridge.json",
+  "user-apps-registry.json",
+  "storage-state.json",
+  "backup-state.json",
 ];
 
-const SERVICE_DIRS = ["workspace", "mail-cache"];
+const SERVICE_DIRS = [
+  "workspace",
+  "mail-cache",
+  "os-bridge",
+  "user-apps",
+  "user-apps-data",
+  "exports",
+  "world-maps",
+];
+
+const LOCAL_AUTH_APP_DIRS = [
+  "notes",
+  "tasks",
+  "builds",
+  "stocks",
+  "studies",
+  "contacts",
+  "translate",
+  "contracts",
+  "world-clock",
+  "code-lexicon",
+  "drift",
+  "remote-hub",
+  "coupons",
+  "geography",
+  "history",
+  "space",
+  "day-planner",
+  "study-deck",
+  "docs",
+  "icon-library",
+  "pi-digits",
+  "flag-quiz",
+  "world-maps",
+];
 
 function profilesRoot() {
   return path.join(app.getPath("userData"), "profiles");
@@ -57,6 +112,17 @@ function profileScopedPath(fileName, userId = null) {
   return path.join(app.getPath("userData"), name);
 }
 
+function installWidePath(fileName) {
+  const name = String(fileName || "").trim();
+  if (!name) throw new Error("fileName required");
+  return path.join(app.getPath("userData"), name);
+}
+
+function isInstallWideName(name) {
+  const n = String(name || "").trim();
+  return INSTALL_WIDE_FILES.includes(n) || INSTALL_WIDE_DIRS.includes(n);
+}
+
 function migrateMarkerPath() {
   return path.join(profilesRoot(), "MIGRATED.json");
 }
@@ -75,24 +141,39 @@ async function ensureProfileDir(userId) {
 }
 
 async function copyIfMissing(src, dest) {
-  if (!fs.existsSync(src) || fs.existsSync(dest)) return false;
-  await fs.promises.mkdir(path.dirname(dest), { recursive: true });
-  await fs.promises.copyFile(src, dest);
-  return true;
+  try {
+    await fs.promises.mkdir(path.dirname(dest), { recursive: true });
+    await fs.promises.copyFile(src, dest, fs.constants.COPYFILE_EXCL);
+    return true;
+  } catch (err) {
+    if (err.code === "EEXIST" || err.code === "ENOENT") {
+      return false;
+    }
+    throw err;
+  }
 }
 
 async function copyDirIfMissing(src, dest) {
-  if (!fs.existsSync(src) || fs.existsSync(dest)) return false;
-  await fs.promises.mkdir(dest, { recursive: true });
-  await fs.promises.cp(src, dest, { recursive: true, force: false, errorOnExist: false });
-  return true;
+  try {
+    await fs.promises.stat(src);
+  } catch {
+    return false;
+  }
+
+  try {
+    await fs.promises.access(dest);
+    return false;
+  } catch {
+    await fs.promises.mkdir(dest, { recursive: true });
+    await fs.promises.cp(src, dest, { recursive: true, force: false, errorOnExist: true });
+    return true;
+  }
 }
 
 async function readMigrateMarker() {
   try {
     return JSON.parse(await fs.promises.readFile(migrateMarkerPath(), "utf8"));
-  }
-   catch {
+  } catch {
     return { migratedProfiles: [], servicesMigratedTo: null };
   }
 }
@@ -106,11 +187,9 @@ async function writeMigrateMarker(markerData) {
 async function migrateInstallDataToProfile(userId) {
   const id = String(userId || "").trim();
   if (!id) return { ok: false, error: "No user id" };
-
   const dir = await ensureProfileDir(id);
   const markerData = await readMigrateMarker();
   if (!Array.isArray(markerData.migratedProfiles)) markerData.migratedProfiles = [];
-
   const already = markerData.migratedProfiles.includes(id);
   const copied = [];
   const root = app.getPath("userData");
@@ -120,7 +199,7 @@ async function migrateInstallDataToProfile(userId) {
       const dest = path.join(dir, "user-config.json");
       if (await copyIfMissing(candidate, dest)) {
         copied.push("user-config.json");
-       break;
+        break;
       }
     }
 
@@ -141,7 +220,8 @@ async function migrateInstallDataToProfile(userId) {
       const dest = path.join(dir, name);
       if (await copyIfMissing(src, dest)) copied.push(name);
     }
-    for (const name of SERVICE_DIRS) {
+    const dirs = [...new Set([...SERVICE_DIRS, ...LOCAL_AUTH_APP_DIRS])];
+    for (const name of dirs) {
       const src = path.join(root, name);
       const dest = path.join(dir, name);
       if (await copyDirIfMissing(src, dest)) copied.push(`${name}/`);
@@ -170,31 +250,43 @@ async function onIdentitySignedIn(user) {
 
 function notifyProfileSwitched() {
   const hooks = [];
-  try {
-    const profilesIpc = require("./apps/profiles-ipc");
-    if (typeof profilesIpc.lockVaultForProfileSwitch === "function") {
-      hooks.push(profilesIpc.lockVaultForProfileSwitch());
+  const tryHook = (loader, method) => {
+    try {
+      const mod = loader();
+      if (typeof mod?.[method] === "function") {
+        hooks.push(Promise.resolve(mod[method]()));
+      }
+    } catch (err) {
+      console.error(`Failed to load or execute hook for method ${method}.`, err);
     }
-  } catch {
-  }
-  try {
-    const jobsEngine = require("./jobs/engine");
-    if (typeof jobsEngine.reloadForProfileSwitch === "function") {
-      hooks.push(Promise.resolve(jobsEngine.reloadForProfileSwitch()));
-    }
-  } catch {
-  }
-  return Promise.all(hooks.map((h) => Promise.resolve(h).catch(() => null)));
+  };
+
+  tryHook(() => require("./apps/profiles-ipc"), "lockVaultForProfileSwitch");
+  tryHook(() => require("./jobs/engine"), "reloadForProfileSwitch");
+  tryHook(() => require("./scheduler/engine"), "reloadForProfileSwitch");
+  tryHook(() => require("./apps/chat-ipc"), "reloadForProfileSwitch");
+  tryHook(() => require("./apps/coupons-ipc"), "lockForProfileSwitch");
+  tryHook(() => require("./apps/local-auth"), "clearAllSessionsMemory");
+  tryHook(() => require("./apps/studies-images"), "clearMemoryCache");
+  return Promise.all(hooks.map((h) => Promise.resolve(h).catch((err) => {
+    console.error("Hook execution error:", err);
+    return null;
+  })));
 }
 
 module.exports = {
+  INSTALL_WIDE_FILES,
+  INSTALL_WIDE_DIRS,
   PROFILE_FILES,
   SERVICE_FILES,
   SERVICE_DIRS,
+  LOCAL_AUTH_APP_DIRS,
   profilesRoot,
   profileDir,
   activeProfileDir,
   profileScopedPath,
+  installWidePath,
+  isInstallWideName,
   ensureProfileDir,
   migrateInstallDataToProfile,
   onIdentitySignedIn,

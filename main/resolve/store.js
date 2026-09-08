@@ -5,7 +5,8 @@ const { app } = require("electron");
 const MAX_INCIDENTS = 200;
 
 function storePath() {
-  return path.join(app.getPath("userData"), "resolve-incidents.json");
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("resolve-incidents.json");
 }
 
 function defaultState() {
@@ -118,6 +119,7 @@ function clearIncidents(args = {}) {
 }
 
 module.exports = {
+  storePath,
   loadState,
   saveState,
   addIncident,

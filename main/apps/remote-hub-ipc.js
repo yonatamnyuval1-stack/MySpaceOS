@@ -62,12 +62,12 @@ const TAILSCALE_PATHS = [
 const WINRS_PATH = path.join(process.env.WINDIR || "C:\\Windows", "System32", "winrs.exe");
 
 const ENABLE_SCRIPTS = {
-  rdp: `# Run once on TARGET PC as Administrator — enables Remote Desktop (no extra app install)
+  rdp: `# Run once on TARGET PC as Administrator: enables Remote Desktop (no extra app install)
 Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -Value 0
 Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'
 Write-Host 'RDP enabled. Note: Windows Home cannot accept incoming RDP.'`,
 
-  winrm: `# Run on TARGET PC as Administrator (required for Live View)
+  winrm: `# Run on TARGET PC as Administrator
 Enable-PSRemoting -Force -SkipNetworkProfileCheck
 Set-Item WSMan:\\localhost\\Service\\Auth\\Basic -Value $true -Force
 Set-Item WSMan:\\localhost\\Service\\AllowUnencrypted -Value $true -Force
@@ -77,14 +77,14 @@ Start-Service WinRM
 Set-Service WinRM -StartupType Automatic
 Write-Host 'WinRM ready on port 5985'`,
 
-  ssh: `# Run once on TARGET PC as Administrator — installs OpenSSH Server (Windows optional feature)
+  ssh: `# Run once on TARGET PC as Administrator: installs OpenSSH Server
 Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 Start-Service sshd
 Set-Service -Name sshd -StartupType Automatic
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 Write-Host 'SSH server running on port 22'`,
 
-  client: `# Run on THIS PC (your My Space computer) as Administrator: allows connecting to other PCs
+  client: `# Run on THIS PC as Administrator: allows connecting to other PCs
 Set-Item WSMan:\\localhost\\Client\\TrustedHosts -Value '*' -Force
 Write-Host 'This PC can now connect via WinRM to other machines on your network.'`,
 
@@ -349,7 +349,8 @@ async function connectRdp(machine) {
   const target = port === 3389 ? host : `${host}:${port}`;
 
   if (machine.rdpUser) {
-    const rdpPath = path.join(app.getPath("userData"), "remote-hub-last.rdp");
+    const profile = require("../myspace-profile");
+    const rdpPath = profile.profileScopedPath("remote-hub-last.rdp");
     const lines = [
       "screen mode id:i:2",
       "use multimon:i:0",
@@ -414,7 +415,7 @@ async function connectRustDesk(machine) {
   if (!exe) {
     return {
       ok: false,
-      error: "RustDesk not installed on THIS PC (optional). Use RDP or SSH: built into Windows.",
+      error: "RustDesk not installed on THIS PC. Use RDP or SSH: built into Windows.",
     };
   }
   await spawnDetached(exe, [`--connect`, id]);
@@ -543,7 +544,7 @@ function parseMac(mac) {
 async function wakeOnLan(args) {
   const mac = args?.mac || args?.macAddress;
   const buf = parseMac(mac);
-  if (!buf) return { ok: false, error: "Invalid MAC address (use AA:BB:CC:DD:EE:FF)" };
+  if (!buf) return { ok: false, error: "Invalid MAC address" };
 
   const loaded = await loadStorage();
   const port = args?.port || loaded.data?.settings?.wolPort || 9;
@@ -841,7 +842,7 @@ function parseWinRsError(raw) {
     return {
       code: "trusted_hosts",
       message:
-        'On THIS PC run Enable access → "Client (this PC)" script as Administrator, then try again.',
+        'On THIS PC run Enable access → "Client" script as Administrator, then try again.',
     };
   }
   return { code: "unknown", message: msg.slice(0, 400) || "WinRM command failed" };

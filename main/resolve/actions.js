@@ -8,7 +8,8 @@ async function recoverJsonFile(file) {
   if (!name || name.includes("..") || name.includes("/") || name.includes("\\")) {
     return { ok: false, error: "Invalid data file" };
   }
-  const filePath = path.join(app.getPath("userData"), name);
+  const profile = require("../myspace-profile");
+  const filePath = profile.profileScopedPath(name);
   const bakPath = `${filePath}.bak`;
   if (!fs.existsSync(bakPath)) {
     return { ok: false, error: `No backup found (${name}.bak)` };

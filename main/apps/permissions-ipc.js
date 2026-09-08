@@ -60,7 +60,8 @@ function getRequireAiConfirm() {
 
 function loadBridgeState() {
   try {
-    const file = path.join(app.getPath("userData"), "os-bridge.json");
+    const profile = require("../myspace-profile");
+    const file = profile.profileScopedPath("os-bridge.json");
     if (!fs.existsSync(file)) return { trustedDevices: {} };
     const raw = JSON.parse(fs.readFileSync(file, "utf8"));
     return {
@@ -89,7 +90,8 @@ function safeComposioHasKey() {
 }
 
 function saveBridgeTrusted(trustedDevices) {
-  const file = path.join(app.getPath("userData"), "os-bridge.json");
+  const profile = require("../myspace-profile");
+  const file = profile.profileScopedPath("os-bridge.json");
   let raw = {};
   try {
     if (fs.existsSync(file)) raw = JSON.parse(fs.readFileSync(file, "utf8")) || {};

@@ -16,7 +16,8 @@ function userDataDir() {
 }
 
 function statePath() {
-  return path.join(userDataDir(), STATE_FILE);
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath(STATE_FILE);
 }
 
 function pendingPath() {
@@ -337,7 +338,7 @@ async function importBackup(event) {
       relaunch: true,
       path: zipPath,
       message:
-        "Restore staged — My Space will restart and apply the backup. Quit other copies first if any.",
+        "Restore staged. My Space will restart and apply the backup.",
     };
   } catch (err) {
     try {

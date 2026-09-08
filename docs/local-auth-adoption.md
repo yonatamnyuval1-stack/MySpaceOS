@@ -17,44 +17,27 @@ Storage layout:
 
 ```
 {userData}/
-  myspace-identity/
-    users.json              # OS accounts (ms_* ids)
-    session.json            # remembered OS session (30 days)
-  profiles/{myspaceUserId}/
-    user-config.json        # desktop, pins, wallpaper, spaces
-    app-settings.json
-    themes-state.json
-    notifications-prefs.json
-    shell-engine.json
-    # System services (per OS account):
-    files-service.json
-    workspace/              # Files app workspace
-    jobs-platform.json
-    scheduler-platform.json
-    mind-platform.json
-    mind-secrets.json
-    mind-memory.json
-    chat-app.json
-    profiles.json           # Vault categories / people (app Profiles)
-    vault.json              # Vault ciphertext + per-account master auth
-    mail-accounts.json
-    mail-tokens.enc
-    mail-cache/
-    hub-connections.json    # Connect Hub
-    hub-secrets.enc
-    composio-platform.json
-    composio-secrets.json
-    notifications.json
-    permissions-platform.json
-  {appId}/
-    users.json              # local-only app accounts (u_*)
-    session.json
-    users/{userId}/...      # userId = ms_* (Continue) OR u_* (local)
+  myspace-identity/           # INSTALL-WIDE: OS accounts + session
+  mail-oauth.json             # INSTALL-WIDE: OAuth client credentials (not user tokens)
+  updates-state.json          # INSTALL-WIDE: applied install patches
+  profiles/
+    MIGRATED.json
+    {myspaceUserId}/
+      user-config.json
+      app-settings.json
+      themes-state.json
+      …system services (mail, vault, jobs, mind, …)
+      {appId}/                # local-auth app trees (notes, tasks, …)
+        users.json
+        session.json
+        users/{userId}/…
 ```
+
+**Rule:** When signed in, all per-user data must live under `profiles/{userId}/` via `profileScopedPath()`. Only `myspace-identity`, `mail-oauth.json`, and `updates-state.json` stay at the install root.
 
 OS user ids use the `ms_…` prefix so app folders never collide with legacy `u_…` local accounts.
 
-**Migration:** The first My Space account that signs in inherits install-wide service files once (`profiles/MIGRATED.json` → `servicesMigratedTo`). Later OS accounts start with empty Mail/Vault/Files/etc. and set them up themselves.
+**Migration:** The first My Space account that signs in inherits install-wide service files and app trees once (`profiles/MIGRATED.json` → `servicesMigratedTo`). Later OS accounts start empty and set things up themselves.
 
 **Vault:** Each My Space account creates its own master password on first Vault unlock (no shared install-wide master when signed in).
 

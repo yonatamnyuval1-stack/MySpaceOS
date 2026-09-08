@@ -22,7 +22,7 @@ function signedInGuard() {
 
 
 function dataPath() {
-  return path.join(app.getPath("userData"), "docs.json");
+  return DATA_FILE();
 }
 
 function defaultData() {

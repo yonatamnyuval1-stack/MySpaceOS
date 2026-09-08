@@ -38,7 +38,8 @@ const PROTECTED_PATHS = new Set([
 ]);
 
 function statePath() {
-  return path.join(userDataDir(), STATE_FILE);
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath(STATE_FILE);
 }
 
 function loadState() {

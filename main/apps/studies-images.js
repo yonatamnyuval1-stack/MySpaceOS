@@ -16,10 +16,16 @@ let memoryCache = new Map();
 
 function cachePath() {
   try {
-    return path.join(app.getPath("userData"), "studies-image-cache.json");
+    const profile = require("../myspace-profile");
+    return profile.profileScopedPath("studies-image-cache.json");
   } catch {
     return path.join(require("os").tmpdir(), "myspace-studies-image-cache.json");
   }
+}
+
+function clearMemoryCache() {
+  memoryCache = new Map();
+  return { ok: true };
 }
 
 function loadDiskCache() {
@@ -605,4 +611,5 @@ module.exports = {
   enrichImageValue,
   enrichFillsImages,
   enrichPagesImages,
+  clearMemoryCache,
 };

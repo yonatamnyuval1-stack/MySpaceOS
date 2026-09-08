@@ -10,7 +10,10 @@ const { nativeImage } = require("electron");
 const MAX_CLIP_HISTORY = 50;
 
 const execAsync = promisify(exec);
-const STORE = () => path.join(app.getPath("userData"), "os-bridge.json");
+const STORE = () => {
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("os-bridge.json");
+};
 
 function readStore() {
   try {

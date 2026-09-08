@@ -5,7 +5,8 @@ const { app } = require("electron");
 function prefsPath() {
   try {
     if (app?.isReady?.() || app?.getPath) {
-      return path.join(app.getPath("userData"), "ai-tool-prefs.json");
+      const profile = require("../myspace-profile");
+      return profile.profileScopedPath("ai-tool-prefs.json");
     }
   } catch {
   }

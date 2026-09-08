@@ -9,7 +9,10 @@ const { userAppsRoot, userAppDir, isUserAppModule } = require("./user-app-ipc");
 
 const execFileAsync = promisify(execFile);
 
-const REGISTRY_FILE = () => path.join(app.getPath("userData"), "user-apps-registry.json");
+const REGISTRY_FILE = () => {
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath("user-apps-registry.json");
+};
 const ID_RE = /^[a-z][a-z0-9-]{1,31}$/;
 
 function assertAppBuildAllowed() {
@@ -45,6 +48,11 @@ function writeRegistry(data) {
 }
 
 function getUserConfigPath() {
+  const profile = require("../myspace-profile");
+  const identity = require("../myspace-identity");
+  if (identity.getCurrentUser()?.id) {
+    return profile.profileScopedPath("user-config.json");
+  }
   if (app.isPackaged) {
     return path.join(app.getPath("userData"), "user-config.json");
   }
@@ -444,7 +452,8 @@ async function buildAppPack(args = {}) {
   }
 
   const srcDir = userAppDir(id);
-  const exportsDir = path.join(app.getPath("userData"), "exports");
+  const profile = require("../myspace-profile");
+  const exportsDir = profile.profileScopedPath("exports");
   fs.mkdirSync(exportsDir, { recursive: true });
   const zipPath = path.join(exportsDir, `${id}.myapp.zip`);
 

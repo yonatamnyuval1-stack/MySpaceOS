@@ -263,7 +263,7 @@ function status() {
     total: state.incidents.length,
     playbooks: playbooks.listPlaybooks().length,
     catalogPath: path.join(app.getAppPath(), "config", "resolve-playbooks.json"),
-    storePath: path.join(app.getPath("userData"), "resolve-incidents.json"),
+    storePath: require("./store").storePath(),
     updatedAt: state.updatedAt,
   };
 }

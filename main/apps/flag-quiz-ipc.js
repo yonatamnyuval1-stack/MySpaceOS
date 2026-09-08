@@ -23,7 +23,7 @@ const path = require("path");
 const { publishScreenFacts, getScreenFacts } = require("../ai/screen-facts-store");
 
 function scoresPath() {
-  return path.join(app.getPath("userData"), "flag-quiz-scores.json");
+  return DATA_FILE();
 }
 
 function loadScores() {

@@ -78,7 +78,8 @@ async function writeJson(filePath, data) {
 }
 
 function localRoot(appId) {
-  return path.join(app.getPath("userData"), appId);
+  const profile = require("../myspace-profile");
+  return profile.profileScopedPath(String(appId || "").trim());
 }
 
 function getAccountsRoot(appId) {
@@ -174,7 +175,6 @@ async function tryRestoreSession(appId) {
     return null;
   }
 
-  // My Space-linked sessions are not stored in the app users.json registry.
   if (String(saved.userId).startsWith("ms_")) {
     await fs.promises.mkdir(userDir(accountsRoot, saved.userId), { recursive: true });
     sessions.set(appId, {
@@ -288,9 +288,6 @@ async function logout(appId) {
   return { ok: true };
 }
 
-/**
- * Bind an app session to a My Space OS user (no password). Used by Continue with My Space.
- */
 async function bindMyspaceSession(appId, { userId, username, remember = true } = {}) {
   const id = String(userId || "").trim();
   const name = normalizeUsername(username) || id;
@@ -363,6 +360,11 @@ function isLocalAuthChannel(channel) {
   return LOCAL_AUTH_CHANNELS.has(String(channel || "").trim());
 }
 
+function clearAllSessionsMemory() {
+  sessions.clear();
+  return { ok: true };
+}
+
 module.exports = {
   createLocalAuth,
   getLocalAuth,
@@ -370,6 +372,7 @@ module.exports = {
   setSessionRoot,
   setAccountsRoot,
   isLocalAuthChannel,
+  clearAllSessionsMemory,
   authStatus,
   register,
   login,
