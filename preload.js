@@ -34,6 +34,24 @@ contextBridge.exposeInMainWorld("mySpace", {
       return () => ipcRenderer.removeListener("myspace-identity-changed", handler);
     },
   },
+  uiLanguage: {
+    get: () => ipcRenderer.invoke("os-ui-language"),
+    getSync: () => {
+      try {
+        const res = ipcRenderer.sendSync("os-ui-language-sync");
+        return res?.language || "en";
+      } catch {
+        return "en";
+      }
+    },
+    notifyChanged: (language) =>
+      ipcRenderer.invoke("os-ui-language-broadcast", { language }),
+    onChanged: (callback) => {
+      const handler = (_event, data) => callback(data);
+      ipcRenderer.on("myspace-language-changed", handler);
+      return () => ipcRenderer.removeListener("myspace-language-changed", handler);
+    },
+  },
   shellEngine: {
     load: () => ipcRenderer.invoke("shell-engine", "load"),
     save: (data) => ipcRenderer.invoke("shell-engine", "save", data),

@@ -9,6 +9,20 @@
   let detail = null;
   let adoptTarget = "";
 
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    const fb = fallback || key;
+    const withVars = (s) => {
+      if (!vars) return s;
+      return String(s).replace(/\{(\w+)\}/g, (_, k) =>
+        vars[k] != null ? String(vars[k]) : `{${k}}`
+      );
+    };
+    if (!I?.t) return withVars(fb);
+    const v = I.t(key, vars);
+    return v === key ? withVars(fb) : v;
+  }
+
   function escapeHtml(s) {
     return String(s ?? "")
       .replace(/&/g, "&amp;")
@@ -46,7 +60,7 @@
     if (search) {
       search.classList.toggle("is-hidden", tab !== "catalog");
       search.value = filter;
-      search.placeholder = "Filter parts…";
+      search.placeholder = tt("service.parts.filter", "Filter parts…");
     }
   }
 
@@ -54,10 +68,10 @@
     const list = root.querySelector("#parts-panel-list");
     const meta = root.querySelector("#parts-panel-meta");
     if (!list) return;
-    if (meta) meta.textContent = `${parts.length} parts`;
+    if (meta) meta.textContent = tt("service.parts.count", "{count} parts", { count: parts.length });
 
     if (!parts.length) {
-      list.innerHTML = `<p class="parts-panel-empty">No parts yet. Add shared/parts/*/part.json or apps/*/parts.json.</p>`;
+      list.innerHTML = `<p class="parts-panel-empty">${escapeHtml(tt("service.parts.empty", "No parts yet. Add shared/parts/*/part.json or apps/*/parts.json."))}</p>`;
       return;
     }
 
@@ -73,7 +87,7 @@
             <div class="parts-tags"><em>${escapeHtml(p.kind)}</em>${tags}</div>
           </div>
           <div class="parts-panel-row-actions">
-            <button type="button" data-open="${escapeHtml(p.id)}">Open</button>
+            <button type="button" data-open="${escapeHtml(p.id)}">${escapeHtml(tt("service.common.open", "Open"))}</button>
           </div>
         </article>`;
       })
@@ -102,7 +116,7 @@
     if (!list) return;
     const p = detail?.part;
     if (!p) {
-      list.innerHTML = `<p class="parts-panel-empty">Select a part from Catalog.</p>`;
+      list.innerHTML = `<p class="parts-panel-empty">${escapeHtml(tt("service.parts.selectPart", "Select a part from Catalog."))}</p>`;
       if (meta) meta.textContent = "";
       return;
     }
@@ -121,7 +135,7 @@
               )}</pre></details>`
           )
           .join("")
-      : `<p class="parts-panel-empty">No files readable.</p>`;
+      : `<p class="parts-panel-empty">${escapeHtml(tt("service.parts.noFiles", "No files readable."))}</p>`;
 
     const targetOpts = targets
       .map(
@@ -130,6 +144,7 @@
       )
       .join("");
 
+    const credit = p.publishedBy || p.origin || "shared";
     list.innerHTML = `
       <div class="parts-detail">
         <header class="parts-detail-head">
@@ -138,19 +153,17 @@
             <p class="parts-contract">${escapeHtml(p.contract)} · ${escapeHtml(p.kind)}</p>
             <p>${escapeHtml(p.summary || "")}</p>
           </div>
-          <button type="button" data-back>← Catalog</button>
+          <button type="button" data-back>${escapeHtml(tt("service.parts.backCatalog", "← Catalog"))}</button>
         </header>
-        <p class="parts-note">Code is written to drop into other apps without host-app identifiers. Credit (${escapeHtml(
-          p.publishedBy || p.origin || "shared"
-        )}) is optional.</p>
-        ${p.usage ? `<p class="parts-usage"><strong>Usage</strong> <code>${escapeHtml(p.usage)}</code></p>` : ""}
+        <p class="parts-note">${escapeHtml(tt("service.parts.creditNote", "Code is written to drop into other apps without host-app identifiers. Credit ({credit}) is optional.", { credit }))}</p>
+        ${p.usage ? `<p class="parts-usage"><strong>${escapeHtml(tt("service.common.usage", "Usage"))}</strong> <code>${escapeHtml(p.usage)}</code></p>` : ""}
         ${apiRows ? `<ul class="parts-api">${apiRows}</ul>` : ""}
         <div class="parts-adopt">
-          <label>Adopt into app
+          <label>${escapeHtml(tt("service.parts.adoptInto", "Adopt into app"))}
             <select id="parts-adopt-target">${targetOpts}</select>
           </label>
-          <button type="button" class="parts-adopt-btn" data-adopt>Copy files</button>
-          <button type="button" data-copy-usage>Copy usage</button>
+          <button type="button" class="parts-adopt-btn" data-adopt>${escapeHtml(tt("service.parts.copyFiles", "Copy files"))}</button>
+          <button type="button" data-copy-usage>${escapeHtml(tt("service.parts.copyUsage", "Copy usage"))}</button>
         </div>
         <div class="parts-files">${filesHtml}</div>
       </div>`;
@@ -168,17 +181,17 @@
       const target = adoptTarget || list.querySelector("#parts-adopt-target")?.value;
       const res = await window.mySpace?.parts?.adopt?.({ id: p.id, target });
       if (!res?.ok) {
-        toast(res?.error || "Adopt failed");
+        toast(res?.error || tt("service.parts.adoptFailed", "Adopt failed"));
         return;
       }
-      toast(`Adopted into ${res.dest}`);
+      toast(tt("service.parts.adoptedInto", "Adopted into {dest}", { dest: res.dest }));
     });
     list.querySelector("[data-copy-usage]")?.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(p.usage || p.contract);
-        toast("Copied");
+        toast(tt("service.common.copied", "Copied"));
       } catch {
-        toast("Copy failed");
+        toast(tt("service.common.copyFailed", "Copy failed"));
       }
     });
   }
@@ -186,19 +199,48 @@
   function paintAbout() {
     const list = root.querySelector("#parts-panel-list");
     const meta = root.querySelector("#parts-panel-meta");
-    if (meta) meta.textContent = "Link series";
+    if (meta) meta.textContent = tt("service.parts.linkSeries", "Link series");
     if (!list) return;
     list.innerHTML = `
       <div class="parts-about">
-        <p><strong>Parts</strong> is a catalog of embeddable modules: search helpers, UI fragments, data utilities, that apps can publish and others can copy in.</p>
-        <p>Unlike <strong>MSL</strong> (live capability calls) and <strong>Pulse</strong> (messages), Parts is about <em>reusable code</em> written without host-app coupling so it drops cleanly into new or existing apps.</p>
+        <p>${escapeHtml(tt("service.parts.aboutP1", "Parts is a catalog of embeddable modules: search helpers, UI fragments, data utilities, that apps can publish and others can copy in."))}</p>
+        <p>${escapeHtml(tt("service.parts.aboutP2", "Unlike MSL (live capability calls) and Pulse (messages), Parts is about reusable code written without host-app coupling so it drops cleanly into new or existing apps."))}</p>
         <ul>
-          <li>Shared library: <code>shared/parts/&lt;id&gt;/</code></li>
-          <li>App credit (optional): <code>apps/&lt;app&gt;/parts.json</code></li>
-          <li>Adopt copies files to <code>apps/&lt;target&gt;/parts/&lt;id&gt;/</code></li>
-          <li>Shell: <code>parts(list)</code> · <code>parts(get search.fuzzy)</code> · <code>parts(adopt search.fuzzy into notes)</code></li>
+          <li><code>${escapeHtml(tt("service.parts.aboutLi1", "Shared library: shared/parts/<id>/"))}</code></li>
+          <li><code>${escapeHtml(tt("service.parts.aboutLi2", "App credit (optional): apps/<app>/parts.json"))}</code></li>
+          <li><code>${escapeHtml(tt("service.parts.aboutLi3", "Adopt copies files to apps/<target>/parts/<id>/"))}</code></li>
+          <li><code>${escapeHtml(tt("service.parts.aboutLi4", "Shell: parts(list) · parts(get search.fuzzy) · parts(adopt search.fuzzy into notes)"))}</code></li>
         </ul>
       </div>`;
+  }
+
+  function repaintChrome() {
+    if (!root) return;
+    root.setAttribute("aria-label", tt("platform.parts.name", "Parts"));
+    const brand = root.querySelector(".parts-panel-brand div");
+    if (brand) {
+      const h2 = brand.querySelector("h2");
+      const p = brand.querySelector("p");
+      if (h2) h2.textContent = tt("platform.parts.name", "Parts");
+      if (p) p.textContent = tt("platform.parts.tagline", "Link — embeddable modules for other apps");
+    }
+    root.querySelector(".parts-panel-close")?.setAttribute("aria-label", tt("service.common.close", "Close"));
+    const expandBtn = root.querySelector("#parts-panel-expand");
+    if (expandBtn) {
+      const expanded = root.querySelector(".parts-panel-shell")?.classList.contains("is-expanded");
+      expandBtn.title = expanded
+        ? tt("service.common.restore", "Restore panel size")
+        : tt("service.common.expand", "Expand panel");
+      expandBtn.setAttribute("aria-label", expandBtn.title);
+    }
+    const catalogBtn = root.querySelector('[data-parts-tab="catalog"]');
+    const aboutBtn = root.querySelector('[data-parts-tab="about"]');
+    if (catalogBtn) catalogBtn.textContent = tt("service.parts.catalog", "Catalog");
+    if (aboutBtn) aboutBtn.textContent = tt("service.common.about", "About");
+    const search = root.querySelector("#parts-panel-search");
+    if (search) search.placeholder = tt("service.parts.filter", "Filter parts…");
+    const foot = root.querySelector(".parts-panel-foot span");
+    if (foot) foot.textContent = tt("service.parts.shellHint", "Shell: parts(panel) · parts(list) · parts(adopt … into <app>)");
   }
 
   function paint() {
@@ -215,31 +257,31 @@
     root.className = "parts-panel hidden";
     root.setAttribute("role", "dialog");
     root.setAttribute("aria-modal", "true");
-    root.setAttribute("aria-label", "Parts");
+    root.setAttribute("aria-label", tt("platform.parts.name", "Parts"));
     root.innerHTML = `
       <div class="parts-panel-shell">
         <header class="parts-panel-head">
           <div class="parts-panel-brand">
             <img src="brand/atom-violet.png" alt="" width="28" height="28" />
             <div>
-              <h2>Parts</h2>
-              <p>Link — embeddable modules for other apps</p>
+              <h2>${escapeHtml(tt("platform.parts.name", "Parts"))}</h2>
+              <p>${escapeHtml(tt("platform.parts.tagline", "Link — embeddable modules for other apps"))}</p>
             </div>
           </div>
-          <button type="button" class="parts-panel-expand" id="parts-panel-expand" title="Expand panel" aria-label="Expand">⤢</button>
-          <button type="button" class="parts-panel-close" aria-label="Close">×</button>
+          <button type="button" class="parts-panel-expand" id="parts-panel-expand" title="${escapeHtml(tt("service.common.expand", "Expand panel"))}" aria-label="${escapeHtml(tt("service.common.expand", "Expand panel"))}">⤢</button>
+          <button type="button" class="parts-panel-close" aria-label="${escapeHtml(tt("service.common.close", "Close"))}">×</button>
         </header>
         <div class="parts-panel-toolbar">
           <div class="parts-panel-tabs">
-            <button type="button" data-parts-tab="catalog" class="is-active">Catalog</button>
-            <button type="button" data-parts-tab="about">About</button>
+            <button type="button" data-parts-tab="catalog" class="is-active">${escapeHtml(tt("service.parts.catalog", "Catalog"))}</button>
+            <button type="button" data-parts-tab="about">${escapeHtml(tt("service.common.about", "About"))}</button>
           </div>
-          <input id="parts-panel-search" type="search" placeholder="Filter parts…" spellcheck="false" />
+          <input id="parts-panel-search" type="search" placeholder="${escapeHtml(tt("service.parts.filter", "Filter parts…"))}" spellcheck="false" />
           <span id="parts-panel-meta" class="parts-panel-meta"></span>
         </div>
         <div class="parts-panel-list" id="parts-panel-list"></div>
         <footer class="parts-panel-foot">
-          <span>Shell: parts(panel) · parts(list) · parts(adopt … into &lt;app&gt;)</span>
+          <span>${escapeHtml(tt("service.parts.shellHint", "Shell: parts(panel) · parts(list) · parts(adopt … into <app>)"))}</span>
         </footer>
       </div>`;
 
@@ -249,7 +291,8 @@
       const btn = root.querySelector("#parts-panel-expand");
       const on = shell?.classList.toggle("is-expanded");
       if (btn) {
-        btn.title = on ? "Restore panel size" : "Expand panel";
+        btn.title = on ? tt("service.common.restore", "Restore panel size") : tt("service.common.expand", "Expand panel");
+        btn.setAttribute("aria-label", btn.title);
         btn.textContent = on ? "⤡" : "⤢";
       }
     });
@@ -313,6 +356,12 @@
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && open) hide();
+  });
+
+  window.addEventListener("myspace-i18n-applied", () => {
+    if (!open || !root) return;
+    repaintChrome();
+    paint();
   });
 
   window.MySpacePartsPanel = {

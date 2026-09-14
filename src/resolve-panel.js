@@ -1,4 +1,11 @@
 (function () {
+  function tt(key, fallback) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key);
+    return v === key ? (fallback || key) : v;
+  }
+
   async function show(initialPage) {
     const page = ["inbox", "playbooks", "about"].includes(initialPage) ? initialPage : "inbox";
     if (window.MySpaceResolve?.open) {
@@ -10,7 +17,7 @@
       "platform"
     );
     if (res && res.ok === false) {
-      window.showMySpaceToast?.(res.error || "Could not open Resolve");
+      window.showMySpaceToast?.(res.error || tt("service.resolve.openFailed", "Could not open Resolve"));
     }
   }
 
@@ -22,6 +29,10 @@
     return false;
   }
   function refresh() {}
+
+  window.addEventListener("myspace-i18n-applied", () => {
+    if (isOpen()) refresh();
+  });
 
   window.MySpaceResolvePanel = { show, hide, toggle, isOpen, refresh };
 })();

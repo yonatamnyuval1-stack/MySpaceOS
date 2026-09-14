@@ -35,7 +35,13 @@
 
   function formatSelectLabel(item, value) {
     if (item.key === "vaultLockMinutes" && value === 0) return "Never";
-    if (item.key === "language") return value === "he" ? "עברית" : "English";
+    if (item.key === "language") {
+      if (value === "he") {
+        const ui = window.MySpaceI18n?.getLanguage?.() || "en";
+        return ui === "he" ? "עברית" : "Hebrew";
+      }
+      return "English";
+    }
     if (item.key.endsWith("Minutes") || item.key.endsWith("Minutes")) {
       return value === 1 ? "1 min" : `${value} min`;
     }

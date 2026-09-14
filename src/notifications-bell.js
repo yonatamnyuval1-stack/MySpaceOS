@@ -1,4 +1,15 @@
 (function () {
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    const fill = (s) => {
+      if (!vars || typeof s !== "string") return s;
+      return s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] != null ? String(vars[k]) : `{${k}}`));
+    };
+    if (!I?.t) return fill(fallback || key);
+    const v = I.t(key, vars);
+    return v === key ? fill(fallback || key) : v;
+  }
+
   const APP_LABELS = {
     "day-planner": "Today",
     contacts: "Contacts",
@@ -163,7 +174,7 @@
     if (!blockList) return;
     const blocked = Array.isArray(mailPrefs.blockedSenders) ? mailPrefs.blockedSenders : [];
     if (!blocked.length) {
-      blockList.innerHTML = '<p class="notif-settings-empty">No blocked senders</p>';
+      blockList.innerHTML = `<p class="notif-settings-empty">${escapeHtml(tt("shell.notifications.noBlocked", "No blocked senders"))}</p>`;
       return;
     }
     blockList.innerHTML = blocked
@@ -171,7 +182,7 @@
         (email) => `
         <div class="notif-block-row">
           <span class="notif-block-email">${escapeHtml(email)}</span>
-          <button type="button" class="notif-btn notif-btn-quiet notif-block-remove" data-email="${escapeHtml(email)}">Remove</button>
+          <button type="button" class="notif-btn notif-btn-quiet notif-block-remove" data-email="${escapeHtml(email)}">${escapeHtml(tt("shell.notifications.remove", "Remove"))}</button>
         </div>`
       )
       .join("");
@@ -206,7 +217,11 @@
 
     if (count) {
       count.textContent =
-        unread > 0 ? `${unread} unread` : items.length ? `${items.length} total` : "Inbox empty";
+        unread > 0
+          ? tt("shell.notifications.unread", "{n} unread", { n: unread })
+          : items.length
+            ? tt("shell.notifications.count", "{n} notifications", { n: items.length })
+            : tt("shell.notifications.empty", "No notifications");
     }
 
     empty.hidden = items.length > 0;
@@ -217,25 +232,28 @@
         const update = isUpdateNotification(n);
         const mail = isMailNotification(n);
         const senderKey = mail ? senderKeyFromNotification(n) : "";
-        const actionLabel = update ? "Restart & Update" : "Open";
+        const actionLabel = update
+          ? tt("shell.notifications.restartUpdate", "Restart & Update")
+          : tt("shell.notifications.open", "Open");
+        const blockTitle = senderKey
+          ? tt("shell.notifications.blockFrom", "Block alerts from {email}", { email: senderKey })
+          : tt("shell.notifications.blockSender", "Block this sender");
         return `
         <article class="notif-card ${n.read ? "is-read" : "is-unread"}${update ? " is-update" : ""}" data-id="${escapeHtml(n.id)}">
           <div class="notif-card-main">
             <div class="notif-card-meta">
-              <span class="notif-card-app">${escapeHtml(update ? "Update" : app)}</span>
+              <span class="notif-card-app">${escapeHtml(update ? tt("shell.notifications.update", "Update") : app)}</span>
               <span class="notif-card-time">${escapeHtml(formatWhen(n.createdAt))}</span>
             </div>
             <h3 class="notif-card-title">${escapeHtml(n.title)}</h3>
             ${n.body ? `<p class="notif-card-body">${escapeHtml(n.body)}</p>` : ""}
           </div>
           <div class="notif-card-actions">
-            <button type="button" class="notif-btn${update ? " notif-btn-update" : ""}" data-open="${escapeHtml(n.id)}" data-app="${escapeHtml(n.appId)}">${actionLabel}</button>
-            <button type="button" class="notif-btn notif-btn-quiet" data-dismiss="${escapeHtml(n.id)}">Dismiss</button>
+            <button type="button" class="notif-btn${update ? " notif-btn-update" : ""}" data-open="${escapeHtml(n.id)}" data-app="${escapeHtml(n.appId)}">${escapeHtml(actionLabel)}</button>
+            <button type="button" class="notif-btn notif-btn-quiet" data-dismiss="${escapeHtml(n.id)}">${escapeHtml(tt("shell.notifications.dismiss", "Dismiss"))}</button>
             ${
               mail
-                ? `<button type="button" class="notif-btn notif-btn-block" data-block-sender="${escapeHtml(n.id)}" data-email="${escapeHtml(senderKey)}" title="${
-                    senderKey ? `Block alerts from ${escapeHtml(senderKey)}` : "Block this sender"
-                  }">Block</button>`
+                ? `<button type="button" class="notif-btn notif-btn-block" data-block-sender="${escapeHtml(n.id)}" data-email="${escapeHtml(senderKey)}" title="${escapeHtml(blockTitle)}">${escapeHtml(tt("shell.notifications.block", "Block"))}</button>`
                 : ""
             }
           </div>
@@ -288,6 +306,44 @@
     });
   }
 
+  function applyPageChrome() {
+    if (!pageRoot) return;
+    const h1 = pageRoot.querySelector(".notifications-page-head h1");
+    if (h1) h1.textContent = tt("shell.notifications.pageTitle", "Notifications");
+    const markAll = pageRoot.querySelector("#notif-mark-all");
+    if (markAll) markAll.textContent = tt("shell.notifications.markAllRead", "Mark all read");
+    const clearAll = pageRoot.querySelector("#notif-clear");
+    if (clearAll) clearAll.textContent = tt("shell.notifications.clearAll", "Clear all");
+    const settingsBtn = pageRoot.querySelector("#notif-settings-btn");
+    if (settingsBtn) {
+      settingsBtn.title = tt("shell.notifications.settings", "Settings");
+      settingsBtn.setAttribute("aria-label", tt("shell.notifications.settingsAria", "Notification settings"));
+    }
+    const emptyStrong = pageRoot.querySelector("#notif-page-empty strong");
+    if (emptyStrong) emptyStrong.textContent = tt("shell.notifications.empty", "No notifications");
+    const settingsTitle = pageRoot.querySelector("#notif-settings-title");
+    if (settingsTitle) settingsTitle.textContent = tt("shell.notifications.settings", "Settings");
+    const closeBtn = pageRoot.querySelector(".notif-settings-panel-head [data-close-settings]");
+    if (closeBtn) {
+      closeBtn.textContent = tt("shell.notifications.closeSettings", "Close");
+      closeBtn.setAttribute("aria-label", tt("shell.notifications.closeSettings", "Close"));
+    }
+    const mailTitle = pageRoot.querySelector("#notif-mail-settings-title");
+    if (mailTitle) mailTitle.textContent = tt("shell.notifications.mailAlerts", "Mail alerts");
+    const mailSub = pageRoot.querySelector(".notif-settings-sub");
+    if (mailSub) mailSub.textContent = tt("shell.notifications.mailAlertsSub", "New Gmail messages appear in the bell.");
+    const showMail = pageRoot.querySelector(".notif-settings-toggle span");
+    if (showMail) showMail.textContent = tt("shell.notifications.showMail", "Show mail notifications");
+    const blockLabel = pageRoot.querySelector(".notif-block-label");
+    if (blockLabel) blockLabel.textContent = tt("shell.notifications.blockedSenders", "Blocked senders");
+    const blockAdd = pageRoot.querySelector("#notif-block-add");
+    if (blockAdd) blockAdd.textContent = tt("shell.notifications.addBlock", "Add");
+    const blockInput = pageRoot.querySelector("#notif-block-input");
+    if (blockInput) blockInput.placeholder = tt("shell.notifications.blockPlaceholder", "sender@example.com");
+    renderPageList();
+    renderMailSettings();
+  }
+
   function buildPage() {
     const root = document.createElement("div");
     root.className = "notifications-page";
@@ -296,50 +352,50 @@
         <div class="notifications-page-head-brand">
           <img src="brand/atom-white.png" alt="" width="32" height="32" class="notifications-page-mark" />
           <div>
-            <h1>Notifications</h1>
-            <p class="notifications-page-sub" id="notif-page-count">Loading…</p>
+            <h1></h1>
+            <p class="notifications-page-sub" id="notif-page-count"></p>
           </div>
         </div>
         <div class="notifications-page-actions">
-          <button type="button" class="notif-btn notif-btn-icon" id="notif-settings-btn" title="Settings" aria-label="Notification settings">
+          <button type="button" class="notif-btn notif-btn-icon" id="notif-settings-btn" title="" aria-label="">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
             </svg>
           </button>
-          <button type="button" class="notif-btn" id="notif-mark-all">Mark all read</button>
-          <button type="button" class="notif-btn notif-btn-quiet" id="notif-clear">Clear all</button>
+          <button type="button" class="notif-btn" id="notif-mark-all"></button>
+          <button type="button" class="notif-btn notif-btn-quiet" id="notif-clear"></button>
         </div>
       </header>
       <div class="notifications-page-body">
         <div class="notif-page-list" id="notif-page-list"></div>
         <div class="notif-page-empty" id="notif-page-empty" hidden>
           <img src="brand/atom-white.png" alt="" width="40" height="40" class="notif-empty-mark" />
-          <strong>No notifications</strong>
+          <strong></strong>
         </div>
       </div>
       <div class="notif-settings-overlay" id="notif-settings-overlay" hidden>
         <div class="notif-settings-backdrop" data-close-settings></div>
         <aside class="notif-settings-panel" role="dialog" aria-labelledby="notif-settings-title">
           <header class="notif-settings-panel-head">
-            <h2 id="notif-settings-title">Settings</h2>
-            <button type="button" class="notif-btn notif-btn-quiet" data-close-settings aria-label="Close settings">Close</button>
+            <h2 id="notif-settings-title"></h2>
+            <button type="button" class="notif-btn notif-btn-quiet" data-close-settings aria-label=""></button>
           </header>
           <div class="notif-settings-panel-body">
             <section class="notif-settings" aria-labelledby="notif-mail-settings-title">
               <div class="notif-settings-head">
-                <h3 id="notif-mail-settings-title">Mail alerts</h3>
-                <p class="notif-settings-sub">New Gmail messages appear in the bell.</p>
+                <h3 id="notif-mail-settings-title"></h3>
+                <p class="notif-settings-sub"></p>
               </div>
               <label class="notif-settings-toggle">
                 <input type="checkbox" id="notif-mail-alerts" checked />
-                <span>Show mail notifications</span>
+                <span></span>
               </label>
               <div class="notif-block-section">
-                <label class="notif-block-label" for="notif-block-input">Blocked senders</label>
+                <label class="notif-block-label" for="notif-block-input"></label>
                 <div class="notif-block-add">
-                  <input type="email" id="notif-block-input" class="notif-block-input" placeholder="sender@example.com" autocomplete="off" />
-                  <button type="button" class="notif-btn" id="notif-block-add">Add</button>
+                  <input type="email" id="notif-block-input" class="notif-block-input" placeholder="" autocomplete="off" />
+                  <button type="button" class="notif-btn" id="notif-block-add"></button>
                 </div>
                 <div class="notif-blocklist" id="notif-blocklist"></div>
               </div>
@@ -377,7 +433,11 @@
       });
       if (res?.ok) {
         mailPrefs = res.prefs || mailPrefs;
-        window.showMySpaceToast?.(e.target.checked ? "Mail alerts enabled" : "Mail alerts disabled");
+        window.showMySpaceToast?.(
+          e.target.checked
+            ? tt("shell.notifications.mailEnabled", "Mail alerts enabled")
+            : tt("shell.notifications.mailDisabled", "Mail alerts disabled")
+        );
       }
     });
 
@@ -390,9 +450,9 @@
         mailPrefs = res.prefs || mailPrefs;
         if (input) input.value = "";
         renderMailSettings();
-        window.showMySpaceToast?.("Sender blocked");
+        window.showMySpaceToast?.(tt("shell.notifications.senderBlocked", "Sender blocked"));
       } else {
-        window.showMySpaceToast?.(res?.error || "Could not block sender");
+        window.showMySpaceToast?.(res?.error || tt("shell.notifications.blockFailed", "Could not block sender"));
       }
     };
     root.querySelector("#notif-block-add")?.addEventListener("click", addBlocked);
@@ -404,18 +464,18 @@
     });
 
     pageRoot = root;
-    renderPageList();
+    applyPageChrome();
     return root;
   }
 
   function openPage() {
     if (!window.MySpaceWorkspace?.openPanel) {
-      window.showMySpaceToast?.("Workspace unavailable.");
+      window.showMySpaceToast?.(tt("shell.notifications.workspaceUnavailable", "Workspace unavailable."));
       return null;
     }
     return window.MySpaceWorkspace.openPanel({
       appId: "notifications",
-      title: "Notifications",
+      title: tt("shell.notifications.pageTitle", "Notifications"),
       iconSrc: PAGE_ICON,
       iconEmoji: null,
       reuse: true,
@@ -435,6 +495,7 @@
   async function refresh() {
     const snap = await window.mySpace?.notifications?.list?.();
     if (snap) applySnapshot(snap);
+    if (pageRoot) applyPageChrome();
   }
 
   function decorateButton() {
@@ -468,6 +529,10 @@
     unsub = window.mySpace.notifications.onUpdated((snap) => applySnapshot(snap));
     refresh();
   }
+
+  window.addEventListener("myspace-i18n-applied", () => {
+    if (pageRoot) applyPageChrome();
+  });
 
   window.MySpaceNotificationsBell = {
     open: openPage,

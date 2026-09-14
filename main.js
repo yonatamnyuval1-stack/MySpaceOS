@@ -102,11 +102,53 @@ function broadcastMyspaceIdentityChanged() {
   }
 }
 
+function normalizeUiLanguage(raw) {
+  const s = String(raw || "en").trim().toLowerCase();
+  return s.startsWith("he") ? "he" : "en";
+}
+
+let osUiLanguageMemory = null;
+
+function readOsUiLanguage() {
+  if (osUiLanguageMemory) return osUiLanguageMemory;
+  try {
+    const cfg = loadActiveConfig();
+    const raw = cfg?.language ?? cfg?.settings?.language;
+    return normalizeUiLanguage(raw);
+  } catch {
+    return "en";
+  }
+}
+
+function setOsUiLanguageMemory(language) {
+  osUiLanguageMemory = normalizeUiLanguage(language);
+  return osUiLanguageMemory;
+}
+
+function refreshOsUiLanguageMemoryFromDisk() {
+  osUiLanguageMemory = null;
+  return setOsUiLanguageMemory(readOsUiLanguage());
+}
+
+function broadcastLanguageChanged(language) {
+  const normalized = setOsUiLanguageMemory(language);
+  const payload = { language: normalized };
+  for (const win of BrowserWindow.getAllWindows()) {
+    if (win.isDestroyed()) continue;
+    try {
+      win.webContents.send("myspace-language-changed", payload);
+    } catch {
+    }
+  }
+} 
+
 async function applyIdentitySession(result) {
   if (!result?.ok || !result.user) return result;
   await profile.onIdentitySignedIn(result.user);
   await profile.notifyProfileSwitched();
+  refreshOsUiLanguageMemoryFromDisk();
   broadcastMyspaceIdentityChanged();
+  broadcastLanguageChanged(readOsUiLanguage());
   return { ...result, profileDir: profile.profileDir(result.user.id) };
 }
 
@@ -445,7 +487,7 @@ function createWindow(options = {}) {
     height: options.height || 768,
     minWidth: 960,
     minHeight: 600,
-    title: options.secondary ? "My Space — Window" : "My Space",
+    title: options.secondary ? "My Space: Window" : "My Space",
     backgroundColor: "#0a0e14",
     show: false,
     autoHideMenuBar: true,
@@ -556,8 +598,31 @@ ipcMain.handle("get-config", async () => {
   }
 });
 ipcMain.handle("get-defaults", () => loadDefaultConfig());
+ipcMain.handle("os-ui-language", async () => {
+  try {
+    await identity.tryRestoreSession();
+    return { ok: true, language: readOsUiLanguage() };
+  } catch (err) {
+    return { ok: false, language: "en", error: err?.message || String(err) };
+  }
+});
+ipcMain.on("os-ui-language-sync", (event) => {
+  try {
+    event.returnValue = { ok: true, language: readOsUiLanguage() };
+  } catch (err) {
+    event.returnValue = { ok: false, language: "en", error: err?.message || String(err) };
+  }
+});
+ipcMain.handle("os-ui-language-broadcast", async (_event, args = {}) => {
+  const language = normalizeUiLanguage(args?.language || readOsUiLanguage());
+  broadcastLanguageChanged(language);
+  return { ok: true, language };
+});
 ipcMain.handle("save-user-data", async (_event, data) => {
   await identity.tryRestoreSession();
+  if (data && typeof data === "object" && data.language != null) {
+    setOsUiLanguageMemory(data.language);
+  }
   const userPath = getUserConfigPath();
   fs.mkdirSync(path.dirname(userPath), { recursive: true });
   fs.writeFileSync(userPath, JSON.stringify(data, null, 2), "utf-8");
@@ -591,7 +656,9 @@ ipcMain.handle("myspace-identity", async (_event, action, args = {}) => {
       case "logout": {
         await identity.logout();
         await profile.notifyProfileSwitched();
+        refreshOsUiLanguageMemoryFromDisk();
         broadcastMyspaceIdentityChanged();
+        broadcastLanguageChanged(readOsUiLanguage());
         return { ok: true };
       }
       default:
@@ -609,7 +676,7 @@ ipcMain.handle("scan-installed-apps", async () => {
   const withIcons = await Promise.all(
     slice.map(async (program) => ({
       ...program,
-      iconData: await getFileIconDataUrl(program.paths[0]),
+     iconData: await getFileIconDataUrl(program.paths[0]),
     }))
   );
   return withIcons;
@@ -992,6 +1059,11 @@ app.whenReady().then(async () => {
     await identity.tryRestoreSession();
   } catch (err) {
     console.error("My Space identity restore failed:", err);
+  }
+  try {
+    refreshOsUiLanguageMemoryFromDisk();
+  } catch (err) {
+    console.error("UI language memory init failed:", err);
   }
   registerProtocolClient();
   try {

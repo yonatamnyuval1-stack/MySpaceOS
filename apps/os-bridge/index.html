@@ -13,38 +13,38 @@
         <div class="brand">
           <span class="brand-logo" aria-hidden="true">🔗</span>
           <div>
-            <strong>OS Bridge</strong>
-            <span class="brand-sub" id="brand-sub">Host & devices</span>
+            <strong data-i18n="platform.bridge.name">OS Bridge</strong>
+            <span class="brand-sub" id="brand-sub" data-i18n="platform.bridge.tagline">Host & devices</span>
           </div>
         </div>
-        <nav class="nav" id="main-nav">
+        <nav class="nav" id="main-nav" data-i18n-aria="platform.bridge.name">
           <button type="button" class="nav-item active" data-page="devices">
             <span class="nav-icon">◈</span>
-            Devices
+            <span data-i18n="service.bridge.devices">Devices</span>
           </button>
           <button type="button" class="nav-item" data-page="places">
             <span class="nav-icon">▤</span>
-            Places
+            <span data-i18n="service.bridge.places">Places</span>
           </button>
           <button type="button" class="nav-item" data-page="actions">
             <span class="nav-icon">↗</span>
-            Share
+            <span data-i18n="service.bridge.share">Share</span>
           </button>
           <button type="button" class="nav-item" data-page="host">
             <span class="nav-icon">▣</span>
-            Host
+            <span data-i18n="service.bridge.host">Host</span>
           </button>
         </nav>
         <footer class="sidebar-foot">
-          <p id="sidebar-status">Local Wi‑Fi, not Remote Hub</p>
+          <p id="sidebar-status" data-i18n="service.bridge.sidebarLocal">Local Wi‑Fi, not Remote Hub</p>
         </footer>
       </aside>
 
       <main class="main">
         <header class="topbar">
           <div class="topbar-text">
-            <h1 id="page-title">Devices</h1>
-            <p class="subtitle" id="page-subtitle">Pair a phone on the same Wi‑Fi</p>
+            <h1 id="page-title" data-i18n="service.bridge.devices">Devices</h1>
+            <p class="subtitle" id="page-subtitle" data-i18n="service.bridge.devicesSub">Pair a phone on the same Wi‑Fi</p>
           </div>
           <div class="topbar-actions" id="topbar-actions"></div>
         </header>
@@ -57,6 +57,12 @@
     </div>
     <div id="toast" class="toast" hidden role="status"></div>
 
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="lib/utils.js"></script>
     <script src="lib/qrcode-browser.js"></script>
     <script src="pages/devices.js"></script>

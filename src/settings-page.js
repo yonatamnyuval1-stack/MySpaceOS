@@ -1,11 +1,22 @@
 (function () {
   const CATEGORIES = [
-    { id: "general", label: "General" },
-    { id: "backgrounds", label: "Backgrounds" },
-    { id: "apps", label: "Apps" },
-    { id: "languages-time", label: "Languages and time" },
-    { id: "tools", label: "Tools" },
+    { id: "general", labelKey: "settings.cat.general", label: "General" },
+    { id: "backgrounds", labelKey: "settings.cat.backgrounds", label: "Backgrounds" },
+    { id: "apps", labelKey: "settings.cat.apps", label: "Apps" },
+    { id: "languages-time", labelKey: "settings.cat.languages", label: "Languages and time" },
+    { id: "tools", labelKey: "settings.cat.tools", label: "Tools" },
   ];
+
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    const fill = (str) => {
+      if (!vars || typeof str !== "string") return str;
+      return str.replace(/\{(\w+)\}/g, (_, k) => (vars[k] != null ? String(vars[k]) : `{${k}}`));
+    };
+    if (!I?.t) return fill(fallback || key);
+    const v = I.t(key, vars);
+    return v === key ? fill(fallback || key) : v;
+  }
 
   const SETTINGS_ICON_GRAY =
     "data:image/svg+xml," +
@@ -122,7 +133,16 @@
   }
 
   function patchSettings(patch) {
-    window.MySpaceConfig?.updateSettings?.(patch);
+    const next = { ...(patch || {}) };
+    if (next.language != null) {
+      const lang = String(next.language).toLowerCase().startsWith("he") ? "he" : "en";
+      next.language = lang;
+      const cur = window.MySpaceConfig?.getSettings?.() || {};
+      if (lang === "he" && (!cur.locale || String(cur.locale).toLowerCase().startsWith("en"))) {
+        next.locale = "he-IL";
+      }
+    }
+    window.MySpaceConfig?.updateSettings?.(next);
     if (typeof window.applyMySpaceHeader === "function") {
       window.applyMySpaceHeader();
     } else {
@@ -132,6 +152,15 @@
       if (titleEl && s.title) titleEl.textContent = s.title;
       if (subEl && s.subtitle != null) subEl.textContent = s.subtitle;
       document.title = s.title || document.title;
+    }
+    if (next.language != null) {
+      window.MySpaceI18nBoot?.applyShellLanguage?.(next.language, { force: true });
+      if (next.locale && typeof updateClockFromSettings === "function") updateClockFromSettings();
+      try {
+        window.MySpaceSettingsPage?.open?.();
+      } catch {
+        /* ignore */
+      }
     }
   }
 
@@ -143,19 +172,19 @@
 
     pane.appendChild(
       settingsHeader({
-        title: "General",
-        meta: "Space identity, desktop behavior, and everyday defaults",
-        badgeText: "System",
+        title: tt("settings.general.title", "General"),
+        meta: tt("settings.general.meta", "Space identity, desktop behavior, and everyday defaults"),
+        badgeText: tt("settings.general.badge", "System"),
         badgeClass: "is-visible",
         iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#5b6b82" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>`,
       })
     );
 
-    const identity = kit.section("Space");
+    const identity = kit.section(tt("settings.general.section.space", "Space"));
     identity.appendChild(
       kit.row(
-        "Space name",
-        "Shown in the taskbar and window title.",
+        tt("settings.general.spaceName", "Space name"),
+        tt("settings.general.spaceNameHint", "Shown in the taskbar and window title."),
         kit.textInput(cur.title || "My Space", "My Space", (v) => {
           const next = (v || "").trim() || "My Space";
           patchSettings({ title: next });
@@ -164,19 +193,23 @@
     );
     identity.appendChild(
       kit.row(
-        "Tagline",
-        "Short line under Welcome and related surfaces.",
-        kit.textInput(cur.subtitle || "", "Your work environment…", (v) => {
-          patchSettings({ subtitle: (v || "").trim() });
-        })
+        tt("settings.general.tagline", "Tagline"),
+        tt("settings.general.taglineHint", "Short line under Welcome and related surfaces."),
+        kit.textInput(
+          cur.subtitle || "",
+          tt("settings.general.taglinePlaceholder", "Your work environment…"),
+          (v) => {
+            patchSettings({ subtitle: (v || "").trim() });
+          }
+        )
       )
     );
 
-    const desktop = kit.section("Desktop");
+    const desktop = kit.section(tt("settings.general.section.desktop", "Desktop"));
     desktop.appendChild(
       kit.row(
-        "Show clock in taskbar",
-        "Display the current date and time on the right of the taskbar.",
+        tt("settings.general.showClock", "Show clock in taskbar"),
+        tt("settings.general.showClockHint", "Display the current date and time on the right of the taskbar."),
         kit.toggle(cur.showClock !== false, (on) => {
           patchSettings({ showClock: on });
           updateClockFromSettings();
@@ -185,8 +218,8 @@
     );
     desktop.appendChild(
       kit.row(
-        "Show Welcome on startup",
-        "Open the Welcome command center when My Space launches. Welcome is a startup screen, not a desktop app.",
+        tt("settings.general.showWelcome", "Show Welcome on startup"),
+        tt("settings.general.showWelcomeHint", "Open the Welcome command center when My Space launches. Welcome is a startup screen, not a desktop app."),
         kit.toggle(cur.openWelcomeOnStart !== false, (on) => {
           patchSettings({ openWelcomeOnStart: on });
         })
@@ -194,8 +227,8 @@
     );
     desktop.appendChild(
       kit.row(
-        "Hot corners",
-        "Move the cursor to screen corners: desktop, palette, Start, shortcuts.",
+        tt("settings.general.hotCorners", "Hot corners"),
+        tt("settings.general.hotCornersHint", "Move the cursor to screen corners: desktop, palette, Start, shortcuts."),
         kit.toggle(cur.hotCorners !== false, (on) => {
           patchSettings({ hotCorners: on });
           window.MySpaceHotCorners?.setEnabled?.(on);
@@ -204,8 +237,8 @@
     );
     desktop.appendChild(
       kit.row(
-        "Focus hides other icons",
-        "During Focus / Pomodoro work, show only Today and the active app on the desktop.",
+        tt("settings.general.focusHides", "Focus hides other icons"),
+        tt("settings.general.focusHidesHint", "During Focus / Pomodoro work, show only Today and the active app on the desktop."),
         kit.toggle(cur.focusDesktopOnly !== false, (on) => {
           patchSettings({ focusDesktopOnly: on });
           window.__myspaceAiRefreshDesktop?.();
@@ -214,15 +247,15 @@
     );
     desktop.appendChild(
       kit.row(
-        "Confirm before closing apps",
-        "Ask for confirmation when closing an open app window.",
+        tt("settings.general.confirmClose", "Confirm before closing apps"),
+        tt("settings.general.confirmCloseHint", "Ask for confirmation when closing an open app window."),
         kit.toggle(cur.confirmCloseApps !== false, (on) => {
           patchSettings({ confirmCloseApps: on });
         })
       )
     );
 
-    const spaces = kit.section("Desktop spaces");
+    const spaces = kit.section(tt("settings.general.section.spaces", "Desktop spaces"));
     const liveSpaces = () => window.MySpaceDesktopSpaces?.spaces?.() || window.MySpaceConfig?.getDesktopSpaces?.() || { spaces: [], activeId: "" };
     const pack = liveSpaces();
     const spaceRow = el("div", "appset-actions");
@@ -249,75 +282,77 @@
     });
     spaces.appendChild(
       kit.row(
-        "Active desktop",
-        "Each My Space window has its own Study / Work / Play desktops (open apps stay with that window).",
+        tt("settings.general.activeDesktop", "Active desktop"),
+        tt("settings.general.activeDesktopHint", "Each My Space window has its own Study / Work / Play desktops (open apps stay with that window)."),
         spaceRow
       )
     );
 
-    const maintenance = kit.section("Maintenance");
+    const maintenance = kit.section(tt("settings.general.section.maintenance", "Maintenance"));
     const resetWrap = el("div", "appset-actions");
     resetWrap.appendChild(
-      kit.actionBtn("Reset icon positions", "danger", async () => {
-        const ok = window.confirm("Reset all desktop icon positions to the default layout?");
+      kit.actionBtn(tt("settings.general.resetPositions", "Reset icon positions"), "danger", async () => {
+        const ok = window.confirm(
+          tt("settings.general.resetPositionsConfirm", "Reset all desktop icon positions to the default layout?")
+        );
         if (!ok) return;
         await window.MySpaceConfig?.resetPositions?.();
         window.__myspaceAiRefreshDesktop?.();
-        window.showMySpaceToast?.("Desktop icon positions reset");
+        window.showMySpaceToast?.(tt("settings.general.resetPositionsDone", "Desktop icon positions reset"));
       })
     );
     maintenance.appendChild(
       kit.row(
-        "Desktop layout",
-        "Clear saved icon coordinates and rearrange apps automatically.",
+        tt("settings.general.desktopLayout", "Desktop layout"),
+        tt("settings.general.desktopLayoutHint", "Clear saved icon coordinates and rearrange apps automatically."),
         resetWrap
       )
     );
 
     const backupWrap = el("div", "appset-actions");
     backupWrap.appendChild(
-      kit.actionBtn("Export backup", null, async () => {
+      kit.actionBtn(tt("settings.general.exportBackup", "Export backup"), null, async () => {
         const res = await window.mySpace?.backup?.export?.();
-        if (res?.ok) window.showMySpaceToast?.(res.message || "Backup exported");
+        if (res?.ok) window.showMySpaceToast?.(res.message || tt("settings.general.exportOk", "Backup exported"));
         else if (res?.error && !/cancel/i.test(res.error)) {
-          window.showMySpaceToast?.(res.error || "Export failed");
+          window.showMySpaceToast?.(res.error || tt("settings.general.exportFail", "Export failed"));
         }
       })
     );
     backupWrap.appendChild(
-      kit.actionBtn("Restore backup", "danger", async () => {
+      kit.actionBtn(tt("settings.general.restoreBackup", "Restore backup"), "danger", async () => {
         const ok = window.confirm(
-          "Restore will replace your My Space data from a zip, then restart. Continue?"
+          tt("settings.general.restoreConfirm", "Restore will replace your My Space data from a zip, then restart. Continue?")
         );
         if (!ok) return;
         const res = await window.mySpace?.backup?.import?.();
-        if (res?.ok) window.showMySpaceToast?.(res.message || "Restoring…");
+        if (res?.ok) window.showMySpaceToast?.(res.message || tt("settings.general.restoring", "Restoring…"));
         else if (res?.error && !/cancel/i.test(res.error)) {
-          window.showMySpaceToast?.(res.error || "Restore failed");
+          window.showMySpaceToast?.(res.error || tt("settings.general.restoreFail", "Restore failed"));
         }
       })
     );
     backupWrap.appendChild(
-      kit.actionBtn("Open data folder", null, async () => {
+      kit.actionBtn(tt("settings.general.openDataFolder", "Open data folder"), null, async () => {
         const res = await window.mySpace?.backup?.path?.();
-        if (res?.ok) window.showMySpaceToast?.(res.message || "Opened data folder");
-        else window.showMySpaceToast?.(res?.error || "Could not open folder");
+        if (res?.ok) window.showMySpaceToast?.(res.message || tt("settings.general.dataFolderOpened", "Opened data folder"));
+        else window.showMySpaceToast?.(res?.error || tt("settings.general.dataFolderFail", "Could not open folder"));
       })
     );
     maintenance.appendChild(
       kit.row(
-        "Backup & restore",
-        "Export or restore the full userData archive (scripts, settings, app JSON). Shell: backup(export).",
+        tt("settings.general.backupRestore", "Backup & restore"),
+        tt("settings.general.backupRestoreHint", "Export or restore the full userData archive (scripts, settings, app JSON). Shell: backup(export)."),
         backupWrap
       )
     );
 
-    const about = kit.section("About");
+    const about = kit.section(tt("settings.general.section.about", "About"));
     const aboutGrid = el("div", "appset-about");
     [
-      ["Product", "My Space"],
-      ["Version", "0.1.0"],
-      ["Type", "Desktop environment"],
+      [tt("settings.general.about.product", "Product"), "My Space"],
+      [tt("settings.general.about.version", "Version"), "0.1.0"],
+      [tt("settings.general.about.type", "Type"), tt("settings.general.about.typeValue", "Desktop environment")],
     ].forEach(([k, v]) => {
       const item = el("div", "appset-about-item");
       item.appendChild(el("div", "appset-about-key", k));
@@ -368,21 +403,27 @@
 
     pane.appendChild(
       settingsHeader({
-        title: "Languages and time",
-        meta: "Region, clock format, and how dates appear across My Space",
-        badgeText: "Locale",
+        title: tt("settings.languages.title", "Languages and time"),
+        meta: tt("settings.languages.meta", "Region, clock format, and how dates appear across My Space"),
+        badgeText: tt("settings.languages.badge", "Locale"),
         badgeClass: "is-visible",
         iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#5b6b82" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>`,
       })
     );
 
-    const language = kit.section("Language");
+    const language = kit.section(tt("settings.language", "Language"));
     language.appendChild(
       kit.row(
-        "Display language",
-        "Language used for menus and settings. Additional languages will appear here later.",
+        tt("settings.language.display", "Display language"),
+        tt(
+          "settings.language.hint",
+          "Applies to the desktop and platform services. Many apps may still be English until they adopt translations."
+        ),
         kit.select(
-          [{ value: "en", label: "English" }],
+          [
+            { value: "en", label: tt("settings.language.en", "English") },
+            { value: "he", label: tt("settings.language.he", "Hebrew") },
+          ],
           cur.language || "en",
           (v) => patchSettings({ language: v })
         )
@@ -390,17 +431,17 @@
     );
     language.appendChild(
       kit.row(
-        "Region format",
-        "Controls how dates and numbers are formatted.",
+        tt("settings.region", "Region format"),
+        tt("settings.region.hint", "Controls how dates and numbers are formatted."),
         kit.select(
           [
-            { value: "en-US", label: "United States (en-US)" },
-            { value: "en-GB", label: "United Kingdom (en-GB)" },
-            { value: "he-IL", label: "Israel (he-IL)" },
-            { value: "fr-FR", label: "France (fr-FR)" },
-            { value: "de-DE", label: "Germany (de-DE)" },
-            { value: "es-ES", label: "Spain (es-ES)" },
-            { value: "ja-JP", label: "Japan (ja-JP)" },
+            { value: "en-US", label: tt("settings.region.enUS", "United States (en-US)") },
+            { value: "en-GB", label: tt("settings.region.enGB", "United Kingdom (en-GB)") },
+            { value: "he-IL", label: tt("settings.region.heIL", "Israel (he-IL)") },
+            { value: "fr-FR", label: tt("settings.region.frFR", "France (fr-FR)") },
+            { value: "de-DE", label: tt("settings.region.deDE", "Germany (de-DE)") },
+            { value: "es-ES", label: tt("settings.region.esES", "Spain (es-ES)") },
+            { value: "ja-JP", label: tt("settings.region.jaJP", "Japan (ja-JP)") },
           ],
           cur.locale || "en-US",
           (v) => {
@@ -411,19 +452,19 @@
       )
     );
 
-    const time = kit.section("Time");
+    const time = kit.section(tt("settings.time", "Time"));
     const tzOptions = [
-      { value: systemTz, label: `System default (${systemTz})` },
-      { value: "UTC", label: "UTC" },
-      { value: "America/New_York", label: "Eastern Time (New York)" },
-      { value: "America/Los_Angeles", label: "Pacific Time (Los Angeles)" },
-      { value: "Europe/London", label: "London" },
-      { value: "Europe/Paris", label: "Paris" },
-      { value: "Europe/Berlin", label: "Berlin" },
-      { value: "Asia/Jerusalem", label: "Jerusalem" },
-      { value: "Asia/Dubai", label: "Dubai" },
-      { value: "Asia/Tokyo", label: "Tokyo" },
-      { value: "Australia/Sydney", label: "Sydney" },
+      { value: systemTz, label: tt("settings.time.systemDefault", "System default ({tz})", { tz: systemTz }) },
+      { value: "UTC", label: tt("settings.time.utc", "UTC") },
+      { value: "America/New_York", label: tt("settings.time.eastern", "Eastern Time (New York)") },
+      { value: "America/Los_Angeles", label: tt("settings.time.pacific", "Pacific Time (Los Angeles)") },
+      { value: "Europe/London", label: tt("settings.time.london", "London") },
+      { value: "Europe/Paris", label: tt("settings.time.paris", "Paris") },
+      { value: "Europe/Berlin", label: tt("settings.time.berlin", "Berlin") },
+      { value: "Asia/Jerusalem", label: tt("settings.time.jerusalem", "Jerusalem") },
+      { value: "Asia/Dubai", label: tt("settings.time.dubai", "Dubai") },
+      { value: "Asia/Tokyo", label: tt("settings.time.tokyo", "Tokyo") },
+      { value: "Australia/Sydney", label: tt("settings.time.sydney", "Sydney") },
     ];
     const currentTz = cur.timezone || systemTz;
     if (!tzOptions.some((o) => o.value === currentTz)) {
@@ -431,8 +472,8 @@
     }
     time.appendChild(
       kit.row(
-        "Time zone",
-        "Used for the taskbar clock and time-related displays.",
+        tt("settings.time.zone", "Time zone"),
+        tt("settings.time.zoneHint", "Used for the taskbar clock and time-related displays."),
         kit.select(tzOptions, currentTz, (v) => {
           patchSettings({ timezone: v });
           updateClockFromSettings();
@@ -441,12 +482,12 @@
     );
     time.appendChild(
       kit.row(
-        "Clock format",
-        "12-hour (AM/PM) or 24-hour clock.",
+        tt("settings.time.format", "Clock format"),
+        tt("settings.time.formatHint", "12-hour (AM/PM) or 24-hour clock."),
         kit.select(
           [
-            { value: "12h", label: "12-hour" },
-            { value: "24h", label: "24-hour" },
+            { value: "12h", label: tt("settings.time.12h", "12-hour") },
+            { value: "24h", label: tt("settings.time.24h", "24-hour") },
           ],
           cur.timeFormat === "24h" ? "24h" : "12h",
           (v) => {
@@ -458,8 +499,8 @@
     );
     time.appendChild(
       kit.row(
-        "Show seconds",
-        "Include seconds in the taskbar clock.",
+        tt("settings.time.showSeconds", "Show seconds"),
+        tt("settings.time.showSecondsHint", "Include seconds in the taskbar clock."),
         kit.toggle(!!cur.showSeconds, (on) => {
           patchSettings({ showSeconds: on });
           updateClockFromSettings();
@@ -467,15 +508,15 @@
       )
     );
 
-    const calendar = kit.section("Calendar");
+    const calendar = kit.section(tt("settings.calendar", "Calendar"));
     calendar.appendChild(
       kit.row(
-        "First day of week",
-        "Preferred start day for calendars and weekly views.",
+        tt("settings.calendar.firstDay", "First day of week"),
+        tt("settings.calendar.firstDayHint", "Preferred start day for calendars and weekly views."),
         kit.select(
           [
-            { value: "sunday", label: "Sunday" },
-            { value: "monday", label: "Monday" },
+            { value: "sunday", label: tt("settings.calendar.sunday", "Sunday") },
+            { value: "monday", label: tt("settings.calendar.monday", "Monday") },
           ],
           cur.weekStartsOn === "monday" ? "monday" : "sunday",
           (v) => patchSettings({ weekStartsOn: v })
@@ -483,10 +524,10 @@
       )
     );
 
-    const preview = kit.section("Preview");
+    const preview = kit.section(tt("settings.preview", "Preview"));
     const previewRow = el("div", "appset-row");
     const previewText = el("div", "appset-row-text");
-    previewText.appendChild(el("div", "appset-row-label", "Current clock"));
+    previewText.appendChild(el("div", "appset-row-label", tt("settings.preview.clock", "Current clock")));
     const previewHint = el("div", "appset-row-hint settings-locale-preview");
     previewHint.id = "settings-locale-preview";
     previewText.appendChild(previewHint);
@@ -530,9 +571,9 @@
     const pane = el("div", "settings-pane settings-pane--backgrounds");
     pane.appendChild(
       settingsHeader({
-        title: "Backgrounds",
-        meta: "Pick several wallpapers: My Space rotates them every 5 minutes",
-        badgeText: "Desktop",
+        title: tt("settings.backgrounds.title", "Backgrounds"),
+        meta: tt("settings.backgrounds.meta", "Pick several wallpapers: My Space rotates them every 5 minutes"),
+        badgeText: tt("settings.backgrounds.badge", "Desktop"),
         badgeClass: "is-visible",
         iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#5b6b82" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 14l4-4 3 3 4-5 7 6"/></svg>`,
       })
@@ -552,13 +593,13 @@
       const selected = window.MySpaceWallpapers?.getPlaylist?.() || [];
       const n = selected.length;
       if (n >= 2) {
-        status.textContent = `Rotating ${n} backgrounds every 5 minutes. Click to add or remove.`;
+        status.textContent = tt("settings.backgrounds.statusRotating", "Rotating {n} backgrounds every 5 minutes. Click to add or remove.", { n });
         status.classList.add("is-rotating");
       } else if (n === 1) {
-        status.textContent = "1 wallpaper selected: pick at least one more to start rotation.";
+        status.textContent = tt("settings.backgrounds.statusOne", "1 wallpaper selected: pick at least one more to start rotation.");
         status.classList.remove("is-rotating");
       } else {
-        status.textContent = "Select wallpapers to use. With 2 or more, they rotate every 5 minutes.";
+        status.textContent = tt("settings.backgrounds.statusNone", "Select wallpapers to use. With 2 or more, they rotate every 5 minutes.");
         status.classList.remove("is-rotating");
       }
     }
@@ -639,14 +680,14 @@
     const tag = el(
       "span",
       `settings-tool-tag ${tool.active ? "is-active" : "is-inactive"}`,
-      tool.active ? "active" : "inactive"
+      tool.active ? tt("settings.tools.active", "active") : tt("settings.tools.inactive", "inactive")
     );
     left.appendChild(tag);
 
     const btn = el(
       "button",
       `settings-tool-toggle ${tool.active ? "is-stop" : "is-start"}`,
-      tool.active ? "stop" : "start"
+      tool.active ? tt("settings.tools.stop", "stop") : tt("settings.tools.start", "start")
     );
     btn.type = "button";
     btn.addEventListener("click", () => onToggle(tool, btn, tag, row));
@@ -665,25 +706,25 @@
     list.appendChild(status);
 
     async function refresh() {
-      status.textContent = "Loading tools…";
+      status.textContent = tt("settings.tools.loading", "Loading tools…");
       status.classList.remove("hidden");
       list.querySelectorAll(".settings-tool-row").forEach((n) => n.remove());
 
       if (!window.mySpace?.aiChat?.listTools) {
-        status.textContent = "Tools API unavailable.";
+        status.textContent = tt("settings.tools.unavailable", "Tools API unavailable.");
         return;
       }
 
       try {
         const res = await window.mySpace.aiChat.listTools();
         if (!res?.ok) {
-          status.textContent = res?.error || "Could not load tools.";
+          status.textContent = res?.error || tt("settings.tools.loadError", "Could not load tools.");
           return;
         }
         status.classList.add("hidden");
         const tools = Array.isArray(res.tools) ? res.tools : [];
         if (!tools.length) {
-          status.textContent = "No tools registered.";
+          status.textContent = tt("settings.tools.empty", "No tools registered.");
           status.classList.remove("hidden");
           return;
         }
@@ -697,14 +738,14 @@
                 const result = await window.mySpace.aiChat.setToolActive(t.name, nextActive);
                 if (!result?.ok) throw new Error(result?.error || "Failed");
                 t.active = nextActive;
-                tag.textContent = nextActive ? "active" : "inactive";
+                tag.textContent = nextActive ? tt("settings.tools.active", "active") : tt("settings.tools.inactive", "inactive");
                 tag.classList.toggle("is-active", nextActive);
                 tag.classList.toggle("is-inactive", !nextActive);
-                btn.textContent = nextActive ? "stop" : "start";
+                btn.textContent = nextActive ? tt("settings.tools.stop", "stop") : tt("settings.tools.start", "start");
                 btn.classList.toggle("is-stop", nextActive);
                 btn.classList.toggle("is-start", !nextActive);
               } catch (err) {
-                window.showMySpaceToast?.(err.message || "Could not update tool");
+                window.showMySpaceToast?.(err.message || tt("settings.tools.updateFailed", "Could not update tool"));
               } finally {
                 btn.disabled = false;
               }
@@ -712,7 +753,7 @@
           );
         });
       } catch (err) {
-        status.textContent = err.message || "Could not load tools.";
+        status.textContent = err.message || tt("settings.tools.loadError", "Could not load tools.");
         status.classList.remove("hidden");
       }
     }
@@ -764,17 +805,17 @@
     titleBlock.appendChild(el("h2", "appset-name", live.name || live.id));
     const metaBits = [live.type, live.module, live.description].filter(Boolean);
     titleBlock.appendChild(
-      el("p", "appset-meta", metaBits.slice(0, 2).join(" · ") || "Application")
+      el("p", "appset-meta", metaBits.slice(0, 2).join(" · ") || tt("settings.apps.application", "Application"))
     );
     header.appendChild(titleBlock);
 
     const statusBtn = el(
       "button",
       `appset-status ${isHidden ? "is-hidden" : "is-visible"}`,
-      isHidden ? "Hidden" : "Visible"
+      isHidden ? tt("settings.apps.hidden", "Hidden") : tt("settings.apps.visible", "Visible")
     );
     statusBtn.type = "button";
-    statusBtn.title = isHidden ? "Show on desktop" : "Hide from desktop";
+    statusBtn.title = isHidden ? tt("settings.apps.showOnDesktop", "Show on desktop") : tt("settings.apps.hideFromDesktop", "Hide from desktop");
     statusBtn.addEventListener("click", () => {
       const nextHidden = !getLive().hidden;
       window.MySpaceConfig?.setAppHidden?.(live.id, nextHidden);
@@ -868,11 +909,11 @@
     }
     let prefs = loadPrefs();
 
-    const desktop = section("Desktop");
+    const desktop = section(tt("settings.apps.section.desktop", "Desktop"));
     desktop.appendChild(
       row(
-        "Show on desktop",
-        "When hidden, the app is removed from the desktop and Start menu.",
+        tt("settings.apps.showOnDesktop", "Show on desktop"),
+        tt("settings.apps.showDesktopHint", "When hidden, the app is removed from the desktop and Start menu."),
         toggle(!isHidden, (on) => {
           window.MySpaceConfig?.setAppHidden?.(live.id, !on);
           window.__myspaceAiRefreshDesktop?.();
@@ -882,8 +923,8 @@
     );
     desktop.appendChild(
       row(
-        "Show in Start menu",
-        "Include this app in the Start menu list.",
+        tt("settings.apps.showInStart", "Show in Start menu"),
+        tt("settings.apps.showInStartHint", "Include this app in the Start menu list."),
         toggle(prefs.startMenu !== false, (on) => {
           prefs = savePrefs({ startMenu: on });
         })
@@ -891,19 +932,19 @@
     );
     desktop.appendChild(
       row(
-        "Keep icon position",
-        "Remember where you placed this icon on the desktop.",
+        tt("settings.apps.keepPosition", "Keep icon position"),
+        tt("settings.apps.keepPositionHint", "Remember where you placed this icon on the desktop."),
         toggle(prefs.keepPosition !== false, (on) => {
           prefs = savePrefs({ keepPosition: on });
         })
       )
     );
 
-    const launch = section("Launch");
+    const launch = section(tt("settings.apps.section.launch", "Launch"));
     launch.appendChild(
       row(
-        "Open at startup",
-        "Launch this app automatically when My Space starts.",
+        tt("settings.apps.openAtStartup", "Open at startup"),
+        tt("settings.apps.openAtStartupHint", "Launch this app automatically when My Space starts."),
         toggle(!!prefs.openAtStartup, (on) => {
           prefs = savePrefs({ openAtStartup: on });
         })
@@ -911,8 +952,8 @@
     );
     launch.appendChild(
       row(
-        "Restore last page",
-        "Return to the last opened screen inside the app.",
+        tt("settings.apps.restorePage", "Restore last page"),
+        tt("settings.apps.restorePageHint", "Return to the last opened screen inside the app."),
         toggle(prefs.restorePage !== false, (on) => {
           prefs = savePrefs({ restorePage: on });
         })
@@ -920,8 +961,8 @@
     );
     launch.appendChild(
       row(
-        "Confirm before close",
-        "Ask before closing this app window.",
+        tt("settings.apps.confirmBeforeClose", "Confirm before close"),
+        tt("settings.apps.confirmBeforeCloseHint", "Ask before closing this app window."),
         toggle(!!prefs.confirmClose, (on) => {
           prefs = savePrefs({ confirmClose: on });
         })
@@ -929,13 +970,13 @@
     );
     launch.appendChild(
       row(
-        "Default open mode",
-        "How this app should open when launched.",
+        tt("settings.apps.openMode", "Default open mode"),
+        tt("settings.apps.openModeHint", "How this app should open when launched."),
         select(
           [
-            { value: "workspace", label: "Inside My Space" },
-            { value: "external", label: "Separate window" },
-            { value: "ask", label: "Ask each time" },
+            { value: "workspace", label: tt("settings.apps.openMode.workspace", "Inside My Space") },
+            { value: "external", label: tt("settings.apps.openMode.external", "Separate window") },
+            { value: "ask", label: tt("settings.apps.openMode.ask", "Ask each time") },
           ],
           prefs.openMode || "workspace",
           (v) => {
@@ -945,12 +986,12 @@
       )
     );
 
-    const appearance = section("Appearance");
+    const appearance = section(tt("settings.apps.section.appearance", "Appearance"));
     appearance.appendChild(
       row(
-        "Display name",
-        "Name shown on the desktop and in Settings.",
-        textInput(live.name, "App name", (v) => {
+        tt("settings.apps.displayName", "Display name"),
+        tt("settings.apps.displayNameHint", "Name shown on the desktop and in Settings."),
+        textInput(live.name, tt("settings.apps.appNamePlaceholder", "App name"), (v) => {
           const name = String(v || "").trim();
           if (!name) return;
           window.MySpaceConfig?.updateApp?.(live.id, { name });
@@ -961,9 +1002,9 @@
     );
     appearance.appendChild(
       row(
-        "Description",
-        "Short subtitle under the app.",
-        textInput(live.description || "", "Description", (v) => {
+        tt("settings.apps.description", "Description"),
+        tt("settings.apps.descriptionHint", "Short subtitle under the app."),
+        textInput(live.description || "", tt("settings.apps.description", "Description"), (v) => {
           window.MySpaceConfig?.updateApp?.(live.id, { description: v });
           ctx.onOpenAppSettings?.(getLive());
         })
@@ -971,8 +1012,8 @@
     );
     appearance.appendChild(
       row(
-        "Compact icon",
-        "Use a smaller icon on the desktop grid.",
+        tt("settings.apps.compactIcon", "Compact icon"),
+        tt("settings.apps.compactIconHint", "Use a smaller icon on the desktop grid."),
         toggle(!!prefs.compactIcon, (on) => {
           prefs = savePrefs({ compactIcon: on });
         })
@@ -980,15 +1021,15 @@
     );
     appearance.appendChild(
       row(
-        "Accent highlight",
-        "Tint the app card with a soft accent.",
+        tt("settings.apps.accent", "Accent highlight"),
+        tt("settings.apps.accentHint", "Tint the app card with a soft accent."),
         select(
           [
-            { value: "none", label: "None" },
-            { value: "blue", label: "Blue" },
-            { value: "green", label: "Green" },
-            { value: "orange", label: "Orange" },
-            { value: "violet", label: "Violet" },
+            { value: "none", label: tt("settings.apps.accent.none", "None") },
+            { value: "blue", label: tt("settings.apps.accent.blue", "Blue") },
+            { value: "green", label: tt("settings.apps.accent.green", "Green") },
+            { value: "orange", label: tt("settings.apps.accent.orange", "Orange") },
+            { value: "violet", label: tt("settings.apps.accent.violet", "Violet") },
           ],
           prefs.accent || "none",
           (v) => {
@@ -998,11 +1039,11 @@
       )
     );
 
-    const notes = section("Notifications");
+    const notes = section(tt("settings.apps.section.notifications", "Notifications"));
     notes.appendChild(
       row(
-        "Allow notifications",
-        "Let this app show desktop toasts and alerts.",
+        tt("settings.apps.allowNotifications", "Allow notifications"),
+        tt("settings.apps.allowNotificationsHint", "Let this app show desktop toasts and alerts."),
         toggle(prefs.notifications !== false, (on) => {
           prefs = savePrefs({ notifications: on });
         })
@@ -1010,8 +1051,8 @@
     );
     notes.appendChild(
       row(
-        "Sound",
-        "Play a short sound with notifications.",
+        tt("settings.apps.sound", "Sound"),
+        tt("settings.apps.soundHint", "Play a short sound with notifications."),
         toggle(!!prefs.sound, (on) => {
           prefs = savePrefs({ sound: on });
         })
@@ -1019,19 +1060,19 @@
     );
     notes.appendChild(
       row(
-        "Quiet hours",
-        "Silence alerts during quiet hours.",
+        tt("settings.apps.quietHours", "Quiet hours"),
+        tt("settings.apps.quietHoursHint", "Silence alerts during quiet hours."),
         toggle(!!prefs.quietHours, (on) => {
           prefs = savePrefs({ quietHours: on });
         })
       )
     );
 
-    const privacy = section("Privacy & data");
+    const privacy = section(tt("settings.apps.section.privacy", "Privacy & data"));
     privacy.appendChild(
       row(
-        "Remember recent items",
-        "Keep a short history of recent activity in this app.",
+        tt("settings.apps.rememberRecent", "Remember recent items"),
+        tt("settings.apps.rememberRecentHint", "Keep a short history of recent activity in this app."),
         toggle(prefs.recentItems !== false, (on) => {
           prefs = savePrefs({ recentItems: on });
         })
@@ -1039,8 +1080,8 @@
     );
     privacy.appendChild(
       row(
-        "Sync preferences",
-        "Keep these settings with your My Space profile.",
+        tt("settings.apps.syncPrefs", "Sync preferences"),
+        tt("settings.apps.syncPrefsHint", "Keep these settings with your My Space profile."),
         toggle(prefs.syncPrefs !== false, (on) => {
           prefs = savePrefs({ syncPrefs: on });
         })
@@ -1048,28 +1089,28 @@
     );
     const dataActions = el("div", "appset-actions");
     dataActions.appendChild(
-      actionBtn("Reset app preferences", "ghost", () => {
+      actionBtn(tt("settings.apps.resetPrefs", "Reset app preferences"), "ghost", () => {
         localStorage.removeItem(prefsKey);
         prefs = {};
-        window.showMySpaceToast?.("App preferences reset");
+        window.showMySpaceToast?.(tt("settings.apps.resetPrefsDone", "App preferences reset"));
         ctx.onOpenAppSettings?.(getLive());
       })
     );
     dataActions.appendChild(
-      actionBtn("Clear icon position", "ghost", () => {
+      actionBtn(tt("settings.apps.clearPosition", "Clear icon position"), "ghost", () => {
         window.MySpaceConfig?.resetAppPosition?.(live.id);
         window.__myspaceAiRefreshDesktop?.();
-        window.showMySpaceToast?.("Icon position cleared");
+        window.showMySpaceToast?.(tt("settings.apps.clearPositionDone", "Icon position cleared"));
       })
     );
     privacy.appendChild(dataActions);
 
-    const shortcuts = section("Shortcuts");
+    const shortcuts = section(tt("settings.apps.section.shortcuts", "Shortcuts"));
     shortcuts.appendChild(
       row(
-        "Open app",
-        "Quick open from Settings.",
-        actionBtn("Open", "primary", () => {
+        tt("settings.apps.openApp", "Open app"),
+        tt("settings.apps.openAppHint", "Quick open from Settings."),
+        actionBtn(tt("settings.apps.open", "Open"), "primary", () => {
           window.__myspaceAiLaunchApp?.(getLive());
         })
       )
@@ -1077,28 +1118,28 @@
     if (window.MySpaceConfig?.canRemove?.(live.id)) {
       shortcuts.appendChild(
         row(
-          "Remove shortcut",
-          "Remove this app from My Space (does not uninstall from Windows).",
-          actionBtn("Remove", "danger", async () => {
-            const ok = window.confirm(`Remove "${live.name}" from My Space?`);
+          tt("settings.apps.removeShortcut", "Remove shortcut"),
+          tt("settings.apps.removeShortcutHint", "Remove this app from My Space (does not uninstall from Windows)."),
+          actionBtn(tt("settings.apps.remove", "Remove"), "danger", async () => {
+            const ok = window.confirm(tt("settings.apps.removeConfirm", 'Remove "{name}" from My Space?', { name: live.name }));
             if (!ok) return;
             await window.MySpaceConfig.removeApp(live.id);
             window.__myspaceAiRefreshDesktop?.();
-            window.showMySpaceToast?.(`Removed ${live.name}`);
+            window.showMySpaceToast?.(tt("settings.apps.removed", "Removed {name}", { name: live.name }));
             ctx.onBackToApps?.();
           })
         )
       );
     }
 
-    const about = section("About");
+    const about = section(tt("settings.apps.section.about", "About"));
     const aboutGrid = el("div", "appset-about");
     const aboutRows = [
-      ["ID", live.id],
-      ["Type", live.type || "—"],
-      ["Module", live.module || "—"],
-      ["URL", live.url || "—"],
-      ["Paths", Array.isArray(live.paths) ? live.paths.join(", ") : live.paths || "—"],
+      [tt("settings.apps.about.id", "ID"), live.id],
+      [tt("settings.apps.about.type", "Type"), live.type || "—"],
+      [tt("settings.apps.about.module", "Module"), live.module || "—"],
+      [tt("settings.apps.about.url", "URL"), live.url || "—"],
+      [tt("settings.apps.about.paths", "Paths"), Array.isArray(live.paths) ? live.paths.join(", ") : live.paths || "—"],
     ];
     aboutRows.forEach(([k, v]) => {
       const item = el("div", "appset-about-item");
@@ -1122,7 +1163,7 @@
       const btn = el("button", "settings-app-card");
       btn.type = "button";
       btn.title = app.name;
-      btn.setAttribute("aria-label", `${app.name} settings`);
+      btn.setAttribute("aria-label", tt("settings.apps.settingsAria", "{name} settings", { name: app.name }));
       if (app.hidden) btn.classList.add("is-hidden-app");
 
       const iconWrap = el("div", "settings-app-card-icon");
@@ -1132,7 +1173,7 @@
 
       btn.appendChild(el("span", "settings-app-card-name", app.name || app.id));
       if (app.hidden) {
-        btn.appendChild(el("span", "settings-app-card-badge", "Hidden"));
+        btn.appendChild(el("span", "settings-app-card-badge", tt("settings.apps.hidden", "Hidden")));
       }
 
       btn.addEventListener("click", () => onOpenAppSettings?.(app));
@@ -1182,10 +1223,10 @@
   function buildPage() {
     const root = el("div", "settings-page");
     root.setAttribute("role", "application");
-    root.setAttribute("aria-label", "Settings");
+    root.setAttribute("aria-label", tt("settings.aria", "Settings"));
 
     const nav = el("aside", "settings-nav");
-    nav.setAttribute("aria-label", "Settings categories");
+    nav.setAttribute("aria-label", tt("settings.nav.aria", "Settings categories"));
 
     const list = el("nav", "settings-nav-list");
     list.setAttribute("role", "tablist");
@@ -1225,7 +1266,7 @@
       btn.type = "button";
       btn.dataset.category = cat.id;
       btn.setAttribute("role", "tab");
-      btn.appendChild(el("span", "settings-nav-item-label", cat.label));
+      btn.appendChild(el("span", "settings-nav-item-label", tt(cat.labelKey, cat.label)));
       btn.addEventListener("click", () => {
         activeId = cat.id;
         appSettingsApp = null;
@@ -1247,7 +1288,7 @@
     }
     return window.MySpaceWorkspace.openPanel({
       appId: "settings",
-      title: "Settings",
+      title: tt("settings.aria", "Settings"),
       iconSrc: SETTINGS_ICON_GRAY,
       iconEmoji: "⚙",
       reuse: true,

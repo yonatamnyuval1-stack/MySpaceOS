@@ -1689,7 +1689,7 @@ async function getDetail(args) {
   }
   if (!profile.about) {
     profile.about =
-      entry.description || "No extended profile yet — showing live data where available.";
+      entry.description || "No extended profile yet: showing live data where available.";
   }
 
   const live = DIGESTERS[id] ? DIGESTERS[id]() : { stats: {}, events: [], highlights: [] };

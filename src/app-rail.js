@@ -440,7 +440,11 @@
       openBtn.className = "app-rail-series-menu-open";
       openBtn.setAttribute("role", "menuitem");
       openBtn.dataset.serviceAction = service.action || "";
-      openBtn.title = service.tagline || service.name || "";
+      openBtn.title =
+        window.MySpaceI18n?.platformField?.(service.id, "tagline", service.tagline) ||
+        service.tagline ||
+        service.name ||
+        "";
 
       const mark = document.createElement("img");
       mark.src = serviceMarkSrc(service);
@@ -455,9 +459,15 @@
       const text = document.createElement("span");
       text.className = "app-rail-series-menu-text";
       const name = document.createElement("strong");
-      name.textContent = service.name || service.id;
+      name.textContent =
+        window.MySpaceI18n?.platformField?.(service.id, "name", service.name) ||
+        service.name ||
+        service.id;
       const tag = document.createElement("em");
-      tag.textContent = service.tagline || "";
+      tag.textContent =
+        window.MySpaceI18n?.platformField?.(service.id, "tagline", service.tagline) ||
+        service.tagline ||
+        "";
       text.append(name, tag);
       openBtn.append(mark, text);
       row.appendChild(openBtn);

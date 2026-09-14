@@ -1,4 +1,11 @@
 (function () {
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const PAGES = ["active", "all", "history", "new", "about"];
 
   const state = {
@@ -144,9 +151,11 @@
   function updateBlurb() {
     const s = state.stats || {};
     if (el.blurb) {
-      el.blurb.textContent = `${s.active || 0} active · ${s.paused || 0} paused${
-        s.nextRunAt ? ` · next ${fmtWhen(s.nextRunAt)}` : ""
-      }`;
+      el.blurb.textContent =
+        tt("service.scheduler.blurbStats", `${s.active || 0} active · ${s.paused || 0} paused`, {
+          active: s.active || 0,
+          paused: s.paused || 0,
+        }) + (s.nextRunAt ? tt("service.scheduler.blurbNext", ` · next ${fmtWhen(s.nextRunAt)}`, { when: fmtWhen(s.nextRunAt) }) : "");
     }
   }
 
@@ -154,10 +163,10 @@
     const s = state.stats || {};
     if (!el.statGrid) return;
     const cards = [
-      { label: "Active", value: s.active || 0 },
-      { label: "Paused", value: s.paused || 0 },
-      { label: "Total", value: s.total || 0 },
-      { label: "History", value: s.historyCount || 0 },
+      { label: tt("service.scheduler.statActive", "Active"), value: s.active || 0 },
+      { label: tt("service.scheduler.statPaused", "Paused"), value: s.paused || 0 },
+      { label: tt("service.scheduler.statTotal", "Total"), value: s.total || 0 },
+      { label: tt("service.scheduler.statHistory", "History"), value: s.historyCount || 0 },
     ];
     el.statGrid.innerHTML = cards
       .map(
@@ -185,13 +194,13 @@
         ${detail ? `<div class="job-detail">${escapeHtml(detail)}</div>` : ""}
       </div>
       <div class="job-actions">
-        <button type="button" class="btn btn-sm" data-run="${escapeHtml(s.id)}">Run now</button>
+        <button type="button" class="btn btn-sm" data-run="${escapeHtml(s.id)}">${escapeHtml(tt("service.scheduler.runNow", "Run now"))}</button>
         ${
           s.enabled
-            ? `<button type="button" class="btn btn-sm" data-pause="${escapeHtml(s.id)}">Pause</button>`
-            : `<button type="button" class="btn btn-sm" data-resume="${escapeHtml(s.id)}">Resume</button>`
+            ? `<button type="button" class="btn btn-sm" data-pause="${escapeHtml(s.id)}">${escapeHtml(tt("service.scheduler.pause", "Pause"))}</button>`
+            : `<button type="button" class="btn btn-sm" data-resume="${escapeHtml(s.id)}">${escapeHtml(tt("service.scheduler.resume", "Resume"))}</button>`
         }
-        <button type="button" class="btn btn-sm btn-danger" data-remove="${escapeHtml(s.id)}">Remove</button>
+        <button type="button" class="btn btn-sm btn-danger" data-remove="${escapeHtml(s.id)}">${escapeHtml(tt("service.common.remove", "Remove"))}</button>
       </div>
     </article>`;
   }
@@ -200,30 +209,30 @@
     listEl.querySelectorAll("[data-run]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const res = await api()?.runNow?.(btn.dataset.run);
-        if (res?.ok === false) setStatus(res.error || "Run failed", "err");
-        else setStatus("Fired", "ok");
+        if (res?.ok === false) setStatus(res.error || tt("service.scheduler.runFailed", "Run failed"), "err");
+        else setStatus(tt("service.scheduler.fired", "Fired"), "ok");
         await refresh();
       });
     });
     listEl.querySelectorAll("[data-pause]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         await api()?.pause?.(btn.dataset.pause);
-        setStatus("Paused", "ok");
+        setStatus(tt("service.scheduler.paused", "Paused"), "ok");
         await refresh();
       });
     });
     listEl.querySelectorAll("[data-resume]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         await api()?.resume?.(btn.dataset.resume);
-        setStatus("Resumed", "ok");
+        setStatus(tt("service.scheduler.resumed", "Resumed"), "ok");
         await refresh();
       });
     });
     listEl.querySelectorAll("[data-remove]").forEach((btn) => {
       btn.addEventListener("click", async () => {
-        if (!confirm("Remove this schedule?")) return;
+        if (!confirm(tt("service.scheduler.confirmRemove", "Remove this schedule?"))) return;
         await api()?.remove?.(btn.dataset.remove);
-        setStatus("Removed", "ok");
+        setStatus(tt("service.scheduler.removed", "Removed"), "ok");
         await refresh();
       });
     });
@@ -232,7 +241,10 @@
   function paintScheduleList(listEl, emptyEl, tab) {
     const rows = filteredSchedules(tab);
     if (tab === "active" && el.activeMeta) {
-      el.activeMeta.textContent = `${rows.length} schedule${rows.length === 1 ? "" : "s"}`;
+      el.activeMeta.textContent =
+        rows.length === 1
+          ? tt("service.scheduler.scheduleCount", `${rows.length} schedule`, { count: rows.length })
+          : tt("service.scheduler.scheduleCountPlural", `${rows.length} schedules`, { count: rows.length });
     }
     if (!listEl) return;
     if (!rows.length) {
@@ -276,50 +288,50 @@
     const f = state.form;
     el.newPanel.innerHTML = `
       <label class="field">
-        <span>Title (optional)</span>
+        <span>${escapeHtml(tt("service.scheduler.titleOptional", "Title (optional)"))}</span>
         <input type="text" id="sch-title" value="${escapeHtml(f.title)}" placeholder="Nightly backup" />
       </label>
       <label class="field">
-        <span>Trigger</span>
+        <span>${escapeHtml(tt("service.scheduler.trigger", "Trigger"))}</span>
         <select id="sch-mode">
-          <option value="every"${f.mode === "every" ? " selected" : ""}>Every interval</option>
-          <option value="daily"${f.mode === "daily" ? " selected" : ""}>Daily at</option>
-          <option value="in"${f.mode === "in" ? " selected" : ""}>Once in</option>
-          <option value="at"${f.mode === "at" ? " selected" : ""}>Once at (ISO)</option>
+          <option value="every"${f.mode === "every" ? " selected" : ""}>${escapeHtml(tt("service.scheduler.everyInterval", "Every interval"))}</option>
+          <option value="daily"${f.mode === "daily" ? " selected" : ""}>${escapeHtml(tt("service.scheduler.dailyAt", "Daily at"))}</option>
+          <option value="in"${f.mode === "in" ? " selected" : ""}>${escapeHtml(tt("service.scheduler.onceIn", "Once in"))}</option>
+          <option value="at"${f.mode === "at" ? " selected" : ""}>${escapeHtml(tt("service.scheduler.onceAtIso", "Once at (ISO)"))}</option>
         </select>
       </label>
       <label class="field" id="sch-every-wrap"${f.mode === "every" ? "" : " hidden"}>
-        <span>Interval</span>
+        <span>${escapeHtml(tt("service.scheduler.interval", "Interval"))}</span>
         <input type="text" id="sch-every" value="${escapeHtml(f.every)}" placeholder="1h · 15m · 1d" />
       </label>
       <label class="field" id="sch-daily-wrap"${f.mode === "daily" ? "" : " hidden"}>
-        <span>Time (local)</span>
+        <span>${escapeHtml(tt("service.scheduler.timeLocal", "Time (local)"))}</span>
         <input type="text" id="sch-daily" value="${escapeHtml(f.daily)}" placeholder="02:00" />
       </label>
       <label class="field" id="sch-delay-wrap"${f.mode === "in" ? "" : " hidden"}>
-        <span>Delay</span>
+        <span>${escapeHtml(tt("service.scheduler.delay", "Delay"))}</span>
         <input type="text" id="sch-delay" value="${escapeHtml(f.delay)}" placeholder="30m" />
       </label>
       <label class="field" id="sch-at-wrap"${f.mode === "at" ? "" : " hidden"}>
-        <span>ISO datetime</span>
+        <span>${escapeHtml(tt("service.scheduler.isoDatetime", "ISO datetime"))}</span>
         <input type="text" id="sch-at" value="${escapeHtml(f.at)}" placeholder="2026-08-27T14:00:00" />
       </label>
       <label class="field">
-        <span>Command or scripts(run name)</span>
+        <span>${escapeHtml(tt("service.scheduler.commandField", "Command or scripts(run name)"))}</span>
         <input type="text" id="sch-command" value="${escapeHtml(f.command)}" placeholder="backup(status)" spellcheck="false" />
       </label>
       <label class="field">
-        <span>Via</span>
+        <span>${escapeHtml(tt("service.scheduler.via", "Via"))}</span>
         <select id="sch-via">
-          <option value="jobs"${f.via === "jobs" ? " selected" : ""}>Jobs queue (recommended)</option>
-          <option value="direct"${f.via === "direct" ? " selected" : ""}>Direct shell</option>
+          <option value="jobs"${f.via === "jobs" ? " selected" : ""}>${escapeHtml(tt("service.scheduler.viaJobs", "Jobs queue (recommended)"))}</option>
+          <option value="direct"${f.via === "direct" ? " selected" : ""}>${escapeHtml(tt("service.scheduler.viaDirect", "Direct shell"))}</option>
         </select>
       </label>
       <div class="form-actions">
-        <button type="button" class="btn btn-primary" id="sch-create">Create schedule</button>
+        <button type="button" class="btn btn-primary" id="sch-create">${escapeHtml(tt("service.scheduler.createSchedule", "Create schedule"))}</button>
       </div>
       <p class="muted" style="margin-top:0.75rem;font-size:0.85rem">
-        Equivalent shell: <code id="sch-preview"></code>
+        ${escapeHtml(tt("service.scheduler.shellPreview", "Equivalent shell:"))} <code id="sch-preview"></code>
       </p>`;
 
     const syncPreview = () => {
@@ -360,7 +372,7 @@
       const via = document.getElementById("sch-via")?.value || "jobs";
       const cmd = document.getElementById("sch-command")?.value?.trim();
       if (!cmd) {
-        setStatus("Command required", "err");
+        setStatus(tt("service.scheduler.commandRequired", "Command required"), "err");
         return;
       }
       let body = "";
@@ -370,7 +382,7 @@
       else {
         const at = document.getElementById("sch-at")?.value?.trim();
         if (!at) {
-          setStatus("ISO time required", "err");
+          setStatus(tt("service.scheduler.isoRequired", "ISO time required"), "err");
           return;
         }
         body = `at ${at} ${cmd}`;
@@ -381,11 +393,11 @@
       parts.push(body);
       const res = await api()?.add?.({ spec: parts.join(" "), source: "scheduler-app" });
       if (res?.ok === false) {
-        setStatus(res.error || "Create failed", "err");
+        setStatus(res.error || tt("service.scheduler.createFailed", "Create failed"), "err");
         return;
       }
       state.form.command = "";
-      setStatus("Schedule created", "ok");
+      setStatus(tt("service.scheduler.created", "Schedule created"), "ok");
       setPage("active");
       await refresh();
     });
@@ -404,12 +416,12 @@
   async function refresh() {
     const apiRef = api();
     if (!apiRef) {
-      setStatus("Scheduler bridge missing — restart My Space", "err");
+      setStatus(tt("service.scheduler.bridgeMissing", "Scheduler bridge missing — restart My Space"), "err");
       return;
     }
     const res = await apiRef.stats();
     if (res?.ok === false) {
-      setStatus(res.error || "Could not load scheduler", "err");
+      setStatus(res.error || tt("service.scheduler.loadFailed", "Could not load scheduler"), "err");
       return;
     }
     state.schedules = res?.schedules || [];
@@ -452,10 +464,10 @@
     const btn = e.target.closest("[data-page]");
     if (btn) setPage(btn.dataset.page);
   });
-  el.btnRefresh?.addEventListener("click", () => void refresh().then(() => setStatus("Refreshed", "ok")));
+  el.btnRefresh?.addEventListener("click", () => void refresh().then(() => setStatus(tt("service.scheduler.refreshed", "Refreshed"), "ok")));
   el.btnClearHistory?.addEventListener("click", async () => {
     await api()?.clearHistory?.();
-    setStatus("History cleared", "ok");
+    setStatus(tt("service.scheduler.historyCleared", "History cleared"), "ok");
     await refresh();
   });
   el.activeSearch?.addEventListener("input", () => {
@@ -476,6 +488,8 @@
     applyRoute,
     refresh,
   };
+
+  window.addEventListener("myspace-i18n-applied", () => paint());
 
   ensureLive();
   void refresh()

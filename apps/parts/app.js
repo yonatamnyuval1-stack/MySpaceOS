@@ -1,4 +1,8 @@
 (function () {
+  function tt(key, vars) {
+    return window.MySpaceI18n?.t?.(key, vars) ?? key;
+  }
+
   const els = {
     shell: document.getElementById("app-shell"),
     nav: document.getElementById("main-nav"),
@@ -118,9 +122,14 @@
 
   function paintExplore() {
     const rows = filteredParts();
-    if (els.searchMeta) els.searchMeta.textContent = `${rows.length} part${rows.length === 1 ? "" : "s"}`;
+    if (els.searchMeta) {
+      els.searchMeta.textContent =
+        rows.length === 1
+          ? tt("service.parts.partCount", { count: rows.length })
+          : tt("service.parts.partCountPlural", { count: rows.length });
+    }
     if (els.blurb) {
-      els.blurb.textContent = `${state.parts.length} modules in the forge. any app can publish uploads`;
+      els.blurb.textContent = tt("service.parts.blurbForge", { count: state.parts.length });
     }
     if (!els.repoList) return;
 
@@ -164,7 +173,7 @@
           `<option value="${escapeHtml(t)}"${t === state.adoptTarget ? " selected" : ""}>${escapeHtml(t)}</option>`
       )
       .join("");
-    els.adoptTarget.innerHTML = opts || `<option value="">No apps</option>`;
+    els.adoptTarget.innerHTML = opts || `<option value="">${escapeHtml(tt("service.parts.noApps"))}</option>`;
   }
 
   function paintPublishApps() {
@@ -175,14 +184,14 @@
           `<option value="${escapeHtml(t)}"${t === state.publishApp ? " selected" : ""}>${escapeHtml(t)}</option>`
       )
       .join("");
-    els.publishApp.innerHTML = opts || `<option value="">No apps</option>`;
+    els.publishApp.innerHTML = opts || `<option value="">${escapeHtml(tt("service.parts.noApps"))}</option>`;
   }
 
   function paintPublishedList() {
     if (!els.publishedList) return;
     const rows = state.published || [];
     if (!rows.length) {
-      els.publishedList.innerHTML = `<p class="empty-inline">No uploads yet for this app.</p>`;
+      els.publishedList.innerHTML = `<p class="empty-inline">${escapeHtml(tt("service.parts.emptyUploads"))}</p>`;
       return;
     }
     els.publishedList.innerHTML = rows
@@ -192,7 +201,7 @@
             <button type="button" class="linkish" data-open="${escapeHtml(p.id)}">${escapeHtml(p.id)}</button>
             <span class="muted">${escapeHtml(p.summary || p.title || "")}</span>
           </div>
-          <button type="button" class="btn btn-sm btn-danger" data-unpub="${escapeHtml(p.id)}">Remove</button>
+          <button type="button" class="btn btn-sm btn-danger" data-unpub="${escapeHtml(p.id)}">${escapeHtml(tt("service.parts.remove"))}</button>
         </div>`
       )
       .join("");
@@ -209,7 +218,7 @@
     const files = Object.keys(state.detail?.files || {});
     if (!els.fileTree) return;
     if (!files.length) {
-      els.fileTree.innerHTML = `<p class="file-item" style="cursor:default;color:var(--muted)">No files</p>`;
+      els.fileTree.innerHTML = `<p class="file-item" style="cursor:default;color:var(--muted)">${escapeHtml(tt("service.parts.noFiles"))}</p>`;
       return;
     }
     els.fileTree.innerHTML = files
@@ -481,7 +490,7 @@
 
   els.btnReload?.addEventListener("click", () => {
     void refresh()
-      .then(() => setStatus("Catalog refreshed", "ok"))
+      .then(() => setStatus(tt("service.parts.catalogRefreshed"), "ok"))
       .catch((err) => setStatus(err?.message || "Refresh failed", "err"));
   });
 
@@ -505,9 +514,9 @@
     const text = state.detail?.part?.usage || state.detail?.part?.contract || "";
     try {
       await navigator.clipboard.writeText(text);
-      setStatus("Usage copied", "ok");
+      setStatus(tt("service.common.copied"), "ok");
     } catch {
-      setStatus("Copy failed", "err");
+      setStatus(tt("service.common.copyFailed"), "err");
     }
   });
 
@@ -515,9 +524,9 @@
     const body = (state.detail?.files || {})[state.activeFile] || "";
     try {
       await navigator.clipboard.writeText(body);
-      setStatus("File copied", "ok");
+      setStatus(tt("service.common.copied"), "ok");
     } catch {
-      setStatus("Copy failed", "err");
+      setStatus(tt("service.common.copyFailed"), "err");
     }
   });
 
@@ -534,6 +543,18 @@
     refresh,
     applyRoute,
   };
+
+  function onI18nApplied() {
+    if (state.page === "explore") paintExplore();
+    if (state.page === "repo") {
+      paintFileTree();
+      paintFilePane();
+      paintTargets();
+    }
+    if (state.page === "publish") paintPublishedList();
+  }
+  window.addEventListener("myspace-i18n-applied", onI18nApplied);
+  window.addEventListener("myspace-i18n-ready", onI18nApplied);
 
   void refresh()
     .then(() => paintViews())

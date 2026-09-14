@@ -1,4 +1,8 @@
 (function () {
+  function tt(key, vars) {
+    return window.MySpaceI18n?.t?.(key, vars) ?? key;
+  }
+
   const LOGOS = {
     gmail:
       '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#EA4335" d="M2 6.5v11A2.5 2.5 0 0 0 4.5 20h1.5V9.4L12 14l6-4.6V20h1.5A2.5 2.5 0 0 0 22 17.5v-11c0-.7-.37-1.32-.94-1.66L12 11 2.94 4.84A1.9 1.9 0 0 0 2 6.5z"/><path fill="#4285F4" d="M22 6.5v.7L16 12.1V20h1.5A2.5 2.5 0 0 0 20 17.5v-11z"/><path fill="#34A853" d="M4 20h1.5V12.1L2 7.2v10.3A2.5 2.5 0 0 0 4.5 20H4z"/><path fill="#FBBC04" d="M22 6.5c0-.7-.37-1.32-.94-1.66L12 11 2.94 4.84A1.9 1.9 0 0 0 2 6.5L12 14l10-7.5z"/></svg>',
@@ -268,7 +272,7 @@
 
     els.grid.innerHTML =
       keys.length === 0
-        ? `<div class="hub-opened"><h2>No apps loaded</h2><p>Restart My Space, then open Connect again.</p></div>`
+        ? `<div class="hub-opened"><h2>${escapeHtml(tt("service.connect.noApps"))}</h2><p>${escapeHtml(tt("service.connect.noAppsHint"))}</p></div>`
         : keys
       .map((key) => {
         const group = byCat.get(key);
@@ -282,7 +286,7 @@
                   <span class="hub-logo" style="--hub-color:${escapeHtml(s.color)}">${LOGOS[s.logo] || ""}</span>
                   <span class="hub-card-name">${escapeHtml(s.name)}</span>
                   <span class="hub-card-desc">${escapeHtml(s.description)}</span>
-                  ${conn ? `<span class="hub-badge">Connected</span>` : ""}
+                  ${conn ? `<span class="hub-badge">${escapeHtml(tt("service.connect.connected"))}</span>` : ""}
                 </button>`;
               })
               .join("")}
@@ -363,6 +367,9 @@
     openEmbedded: openWorkspace,
     openFromNotification,
   };
+
+  window.addEventListener("myspace-i18n-applied", () => renderCatalog());
+  window.addEventListener("myspace-i18n-ready", () => renderCatalog());
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();

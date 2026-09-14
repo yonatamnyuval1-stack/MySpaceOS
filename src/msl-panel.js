@@ -1,4 +1,11 @@
 (function () {
+  function tt(key, fallback) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key);
+    return v === key ? (fallback || key) : v;
+  }
+
   async function show(initialTab) {
     const page = ["caps", "keys", "mint", "inject", "about"].includes(initialTab)
       ? initialTab
@@ -12,7 +19,7 @@
       "platform"
     );
     if (res && res.ok === false) {
-      window.showMySpaceToast?.(res.error || "Could not open MSL");
+      window.showMySpaceToast?.(res.error || tt("service.msl.openFailed", "Could not open MSL"));
     }
   }
 
@@ -24,6 +31,10 @@
     return false;
   }
   function refresh() {}
+
+  window.addEventListener("myspace-i18n-applied", () => {
+    if (isOpen()) refresh();
+  });
 
   window.MySpaceMslPanel = { show, hide, toggle, isOpen, refresh };
 })();

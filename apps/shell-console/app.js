@@ -1,11 +1,15 @@
 (function () {
+  function tt(key, vars) {
+    return window.MySpaceI18n?.t?.(key, vars) ?? key;
+  }
+
   const PAGE_META = {
-    runner: { title: "Run", subtitle: "Execute shell commands on My Space" },
-    aliases: { title: "Aliases", subtitle: "Short names that expand to full commands" },
-    macros: { title: "Macros", subtitle: "Multi-step command chains" },
-    when: { title: "When rules", subtitle: "Automatic reactions to events" },
-    history: { title: "History", subtitle: "Past commands from desktop and Console" },
-    reference: { title: "Reference", subtitle: "Command cheat sheet" },
+    runner: { titleKey: "service.shell.runTitle", subtitleKey: "service.shell.runSub" },
+    aliases: { titleKey: "service.shell.aliasesTitle", subtitleKey: "service.shell.aliasesSub" },
+    macros: { titleKey: "service.shell.macrosTitle", subtitleKey: "service.shell.macrosSub" },
+    when: { titleKey: "service.shell.whenTitle", subtitleKey: "service.shell.whenSub" },
+    history: { titleKey: "service.shell.historyTitle", subtitleKey: "service.shell.historySub" },
+    reference: { titleKey: "service.shell.referenceTitle", subtitleKey: "service.shell.referenceSub" },
   };
 
   const pages = [
@@ -38,11 +42,11 @@
   };
 
   function formatSyncTime() {
-    if (!lastSyncAt) return "Not synced yet";
+    if (!lastSyncAt) return tt("service.shell.notSynced");
     try {
-      return `Synced ${new Date(lastSyncAt).toLocaleTimeString()}`;
+      return tt("service.shell.syncedAt", { time: new Date(lastSyncAt).toLocaleTimeString() });
     } catch {
-      return "Synced";
+      return tt("service.shell.sync");
     }
   }
 
@@ -54,7 +58,13 @@
       const w = (data.whenRules || []).length;
       const h = (data.history || []).length;
       if (ui.sidebarStatus) {
-        ui.sidebarStatus.textContent = `${a} aliases · ${m} macros · ${w} rules · ${h} history · ${formatSyncTime()}`;
+        ui.sidebarStatus.textContent = tt("service.shell.sidebarStats", {
+          aliases: a,
+          macros: m,
+          rules: w,
+          history: h,
+          sync: formatSyncTime(),
+        });
       }
     } catch {
     }
@@ -63,7 +73,7 @@
   async function syncAll(showFeedback = false) {
     if (ui.btnSync) {
       ui.btnSync.disabled = true;
-      ui.btnSync.textContent = "Syncing…";
+      ui.btnSync.textContent = tt("service.shell.syncing");
     }
     try {
       window.ConsoleStorage.invalidate();
@@ -84,7 +94,7 @@
     } finally {
       if (ui.btnSync) {
         ui.btnSync.disabled = false;
-        ui.btnSync.textContent = "Sync";
+        ui.btnSync.textContent = tt("service.shell.sync");
       }
     }
   }
@@ -116,9 +126,9 @@
       btn.classList.toggle("active", btn.dataset.page === next.id);
     });
     const meta = PAGE_META[next.id] || PAGE_META.runner;
-    ui.title.textContent = meta.title;
-    ui.subtitle.textContent = meta.subtitle;
-    ui.brandSub.textContent = meta.title;
+    ui.title.textContent = tt(meta.titleKey);
+    ui.subtitle.textContent = tt(meta.subtitleKey);
+    ui.brandSub.textContent = tt("service.shell.brandSub");
     closeModal();
     window.ConsoleStorage.invalidate();
     if (next.scan) next.scan();
@@ -205,6 +215,13 @@
     refreshAll,
     syncAll,
   };
+
+  function onI18nApplied() {
+    setActivePage(activePageId);
+    refreshStats();
+  }
+  window.addEventListener("myspace-i18n-applied", onI18nApplied);
+  window.addEventListener("myspace-i18n-ready", onI18nApplied);
 
   (async function boot() {
     try {

@@ -17,27 +17,40 @@
   const MAX_PALETTE_ITEMS = 2000;
   const VIRTUAL_OVERSCAN = 8;
 
-  const STATIC_ACTIONS = [
-    { id: "action:ask-ai", kind: "action", title: "Mind Chat…", subtitle: "Side assistant · tools · or type ? your question", icon: "✦", keywords: "ask ai mind chat gemini assistant help" },
-    { id: "action:add", kind: "action", title: "Add program", subtitle: "Install a shortcut", icon: "＋", keywords: "add install program shortcut" },
-    { id: "action:settings", kind: "action", title: "Settings", subtitle: "My Space settings", icon: "⚙", keywords: "settings preferences" },
-    { id: "action:desktop", kind: "action", title: "Show desktop", subtitle: "Minimize windows", icon: "⌂", keywords: "desktop home minimize" },
-    { id: "action:focus", kind: "action", title: "Toggle Focus mode", subtitle: "Silence notifications · Today + active app", icon: "◎", keywords: "focus pomodoro mute silence" },
-    { id: "action:space-cycle", kind: "action", title: "Switch desktop space", subtitle: "Cycle Study / Work / Play", icon: "⧉", keywords: "space profile study work play" },
-    { id: "action:new-window", kind: "action", title: "New My Space window", subtitle: "Open a second desktop window", icon: "⧉", keywords: "window new second dual" },
-    { id: "action:shortcuts", kind: "action", title: "Keyboard shortcuts", subtitle: "Ctrl+/ cheat sheet", icon: "⌨", keywords: "shortcuts keys help" },
-    { id: "action:msl", kind: "action", title: "MSL — My Space Link", subtitle: "Capability bus · panel", icon: "⛓", keywords: "msl link protocol capability bus inject" },
-    { id: "action:parts", kind: "action", title: "Parts — GitHub between apps", subtitle: "Link · explore & adopt embeddable modules", icon: "⛓", keywords: "parts forge modules catalog adopt embed reusable link github" },
-    { id: "action:jobs", kind: "action", title: "Jobs — OS compute runtime", subtitle: "Queue · capacity · full app", icon: "⚙", keywords: "jobs compute queue capacity contract budget shell script launch runtime" },
-    { id: "action:scheduler", kind: "action", title: "Scheduler — OS time runtime", subtitle: "Active schedules · history · schedule(…)", icon: "⏱", keywords: "scheduler schedule cron timer every daily jobs scripts time runtime" },
-    { id: "action:mind", kind: "action", title: "Mind Chat", subtitle: "AI series · conversations · history", icon: "✦", keywords: "mind ai gemini ollama llm model chat ask cloud gpu quick think deep" },
-    { id: "action:mind-setup", kind: "action", title: "Mind Setup", subtitle: "API key · Quick / Everyday / Deep models", icon: "✦", keywords: "mind setup key gemini ollama model task" },
-    { id: "action:flow", kind: "action", title: "Model Flow", subtitle: "AI series · plan · approve · run", icon: "✦", keywords: "flow model flow zapier automation plan approve tools lab" },
-    { id: "action:connect", kind: "action", title: "Connect", subtitle: "Web series · mail, messaging, browsers", icon: "🔍", keywords: "connect mail gmail whatsapp telegram browser hub catalog web" },
-    { id: "action:shell-atlas", kind: "action", title: "Shell — command atlas", subtitle: "Full map of live shell commands", icon: "〉", keywords: "shell atlas console commands help reference language" },
-    { id: "action:shell", kind: "action", title: "Shell command…", subtitle: "Open classic command line · or type >", icon: ">", keywords: "shell console command run" },
-    { id: "action:snap", kind: "action", title: "Snap side by side", subtitle: "Split two open apps", icon: "▣", keywords: "snap split side dual" },
-  ];
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    const fill = (s) => {
+      if (!vars || typeof s !== "string") return s;
+      return s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] != null ? String(vars[k]) : `{${k}}`));
+    };
+    if (!I?.t) return fill(fallback || key);
+    const v = I.t(key, vars);
+    return v === key ? fill(fallback || key) : v;
+  }
+
+  function staticActions() {
+    return [
+      { id: "action:ask-ai", kind: "action", title: tt("shell.palette.action.askAi.title", "Mind Chat…"), subtitle: tt("shell.palette.action.askAi.subtitle", "Side assistant · tools · or type ? your question"), icon: "✦", keywords: "ask ai mind chat gemini assistant help" },
+      { id: "action:add", kind: "action", title: tt("shell.palette.action.add.title", "Add program"), subtitle: tt("shell.palette.action.add.subtitle", "Install a shortcut"), icon: "＋", keywords: "add install program shortcut" },
+      { id: "action:settings", kind: "action", title: tt("shell.palette.action.settings.title", "Settings"), subtitle: tt("shell.palette.action.settings.subtitle", "My Space settings"), icon: "⚙", keywords: "settings preferences" },
+      { id: "action:desktop", kind: "action", title: tt("shell.palette.action.desktop.title", "Show desktop"), subtitle: tt("shell.palette.action.desktop.subtitle", "Minimize windows"), icon: "⌂", keywords: "desktop home minimize" },
+      { id: "action:focus", kind: "action", title: tt("shell.palette.action.focus.title", "Toggle Focus mode"), subtitle: tt("shell.palette.action.focus.subtitle", "Silence notifications · Today + active app"), icon: "◎", keywords: "focus pomodoro mute silence" },
+      { id: "action:space-cycle", kind: "action", title: tt("shell.palette.action.spaceCycle.title", "Switch desktop space"), subtitle: tt("shell.palette.action.spaceCycle.subtitle", "Cycle Study / Work / Play"), icon: "⧉", keywords: "space profile study work play" },
+      { id: "action:new-window", kind: "action", title: tt("shell.palette.action.newWindow.title", "New My Space window"), subtitle: tt("shell.palette.action.newWindow.subtitle", "Open a second desktop window"), icon: "⧉", keywords: "window new second dual" },
+      { id: "action:shortcuts", kind: "action", title: tt("shell.palette.action.shortcuts.title", "Keyboard shortcuts"), subtitle: tt("shell.palette.action.shortcuts.subtitle", "Ctrl+/ cheat sheet"), icon: "⌨", keywords: "shortcuts keys help" },
+      { id: "action:msl", kind: "action", title: tt("shell.palette.action.msl.title", "MSL — My Space Link"), subtitle: tt("shell.palette.action.msl.subtitle", "Capability bus · panel"), icon: "⛓", keywords: "msl link protocol capability bus inject" },
+      { id: "action:parts", kind: "action", title: tt("shell.palette.action.parts.title", "Parts — GitHub between apps"), subtitle: tt("shell.palette.action.parts.subtitle", "Link · explore & adopt embeddable modules"), icon: "⛓", keywords: "parts forge modules catalog adopt embed reusable link github" },
+      { id: "action:jobs", kind: "action", title: tt("shell.palette.action.jobs.title", "Jobs — OS compute runtime"), subtitle: tt("shell.palette.action.jobs.subtitle", "Queue · capacity · full app"), icon: "⚙", keywords: "jobs compute queue capacity contract budget shell script launch runtime" },
+      { id: "action:scheduler", kind: "action", title: tt("shell.palette.action.scheduler.title", "Scheduler — OS time runtime"), subtitle: tt("shell.palette.action.scheduler.subtitle", "Active schedules · history · schedule(…)"), icon: "⏱", keywords: "scheduler schedule cron timer every daily jobs scripts time runtime" },
+      { id: "action:mind", kind: "action", title: tt("shell.palette.action.mind.title", "Mind Chat"), subtitle: tt("shell.palette.action.mind.subtitle", "AI series · conversations · history"), icon: "✦", keywords: "mind ai gemini ollama llm model chat ask cloud gpu quick think deep" },
+      { id: "action:mind-setup", kind: "action", title: tt("shell.palette.action.mindSetup.title", "Mind Setup"), subtitle: tt("shell.palette.action.mindSetup.subtitle", "API key · Quick / Everyday / Deep models"), icon: "✦", keywords: "mind setup key gemini ollama model task" },
+      { id: "action:flow", kind: "action", title: tt("shell.palette.action.flow.title", "Model Flow"), subtitle: tt("shell.palette.action.flow.subtitle", "AI series · plan · approve · run"), icon: "✦", keywords: "flow model flow zapier automation plan approve tools lab" },
+      { id: "action:connect", kind: "action", title: tt("shell.palette.action.connect.title", "Connect"), subtitle: tt("shell.palette.action.connect.subtitle", "Web series · mail, messaging, browsers"), icon: "🔍", keywords: "connect mail gmail whatsapp telegram browser hub catalog web" },
+      { id: "action:shell-atlas", kind: "action", title: tt("shell.palette.action.shellAtlas.title", "Shell — command atlas"), subtitle: tt("shell.palette.action.shellAtlas.subtitle", "Full map of live shell commands"), icon: "〉", keywords: "shell atlas console commands help reference language" },
+      { id: "action:shell", kind: "action", title: tt("shell.palette.action.shell.title", "Shell command…"), subtitle: tt("shell.palette.action.shell.subtitle", "Open classic command line · or type >"), icon: ">", keywords: "shell console command run" },
+      { id: "action:snap", kind: "action", title: tt("shell.palette.action.snap.title", "Snap side by side"), subtitle: tt("shell.palette.action.snap.subtitle", "Split two open apps"), icon: "▣", keywords: "snap split side dual" },
+    ];
+  }
 
   const SHELL_SUGGESTIONS = [
     { cmd: "run ", title: "run <app>(…)", subtitle: "Launch · page · key:value", keywords: "run launch open app goto" },
@@ -71,24 +84,34 @@
     { cmd: "settings", title: "settings", subtitle: "Open settings", keywords: "settings" },
   ];
 
+  function applyChrome() {
+    if (!root) return;
+    root.setAttribute("aria-label", tt("shell.palette.aria", "Command palette"));
+    if (input) input.placeholder = tt("shell.palette.placeholder", "Search everything in My Space…");
+    if (hintEl && !open) {
+      hintEl.textContent = tt("shell.palette.hint", "Type to search · ? AI (can run actions) · > shell");
+    }
+  }
+
   function ensure() {
     if (root) return root;
     root = document.createElement("div");
     root.className = "cmd-palette hidden";
     root.setAttribute("role", "dialog");
-    root.setAttribute("aria-label", "Command palette");
+    root.setAttribute("aria-label", tt("shell.palette.aria", "Command palette"));
     root.innerHTML = `
       <div class="cmd-palette-card">
         <div class="cmd-palette-input-row">
           <span class="cmd-palette-mark" aria-hidden="true">⌘</span>
-          <input type="search" class="cmd-palette-input" placeholder="Search everything in My Space…" autocomplete="off" spellcheck="false" />
+          <input type="search" class="cmd-palette-input" placeholder="" autocomplete="off" spellcheck="false" />
         </div>
         <div class="cmd-palette-list" role="listbox"></div>
-        <div class="cmd-palette-hint">Type to search · ? AI (can run actions) · &gt; shell</div>
+        <div class="cmd-palette-hint"></div>
       </div>`;
     input = root.querySelector(".cmd-palette-input");
     listEl = root.querySelector(".cmd-palette-list");
     hintEl = root.querySelector(".cmd-palette-hint");
+    applyChrome();
     document.body.appendChild(root);
 
     input.addEventListener("input", () => {
@@ -559,7 +582,7 @@
       }
     }
 
-    for (const action of STATIC_ACTIONS) {
+    for (const action of staticActions()) {
       const rank = score(`${action.title} ${action.subtitle} ${action.keywords}`, q);
       if (!q || rank > 0) out.push({ ...action, rank: action.id === "action:ask-ai" ? rank + 8 : rank });
     }
@@ -585,11 +608,17 @@
     if (!hintEl) return;
     const n = items.length;
     if (!n) {
-      hintEl.textContent = "Type to search · > shell · ? AI (can run actions)";
+      hintEl.textContent = tt("shell.palette.hint", "Type to search · ? AI (can run actions) · > shell");
       return;
     }
-    const extra = contentTotal > contentResults.length ? ` · ${contentTotal} matched` : "";
-    hintEl.textContent = `${n} result${n === 1 ? "" : "s"}${extra} · ↑↓ Enter · Esc · > shell · ? AI`;
+    const extra =
+      contentTotal > contentResults.length
+        ? tt("shell.palette.matchedExtra", " · {n} matched", { n: contentTotal })
+        : "";
+    hintEl.textContent = tt("shell.palette.hintResults", "{n} results{extra} · ↑↓ Enter · Esc · > shell · ? AI", {
+      n,
+      extra,
+    });
   }
 
   function paintVirtualList() {
@@ -625,7 +654,7 @@
     else activeIndex = Math.min(activeIndex, Math.max(0, items.length - 1));
     updateHint();
     if (!items.length) {
-      listEl.innerHTML = `<p class="cmd-palette-empty">No matches</p>`;
+      listEl.innerHTML = `<p class="cmd-palette-empty">${tt("shell.palette.empty", "No matches")}</p>`;
       return;
     }
     paintVirtualList();
@@ -884,6 +913,7 @@
   function show(nextHandlers) {
     handlers = nextHandlers || {};
     ensure();
+    applyChrome();
     open = true;
     contentResults = [];
     contentTotal = 0;
@@ -902,9 +932,20 @@
     return open;
   }
 
+  function refresh() {
+    if (!root) return;
+    applyChrome();
+    if (open) render(input?.value || "", true);
+  }
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && open) hide();
   });
 
-  window.MySpaceCommandPalette = { show, hide, isOpen };
+  window.addEventListener("myspace-i18n-applied", () => {
+    if (root && open) refresh();
+    else if (root) applyChrome();
+  });
+
+  window.MySpaceCommandPalette = { show, hide, isOpen, refresh };
 })();

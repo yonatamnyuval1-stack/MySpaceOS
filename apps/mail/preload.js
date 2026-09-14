@@ -37,3 +37,10 @@ contextBridge.exposeInMainWorld("mailApi", {
     return () => ipcRenderer.removeListener("mail-event", handler);
   },
 });
+
+try {
+  const { attachOsI18n } = require("../shared/i18n/preload-bridge");
+  attachOsI18n(contextBridge, ipcRenderer);
+} catch (err) {
+  console.error("[mail preload] i18n bridge failed:", err);
+}

@@ -35,6 +35,11 @@
     return window.myApp?.updates;
   }
 
+  function tt(key, vars) {
+    const fn = window.MySpaceI18n?.t;
+    return typeof fn === "function" ? fn(key, vars) : key;
+  }
+
   function escapeHtml(s) {
     return String(s ?? "")
       .replace(/&/g, "&amp;")
@@ -87,9 +92,11 @@
       el.pendingCount.classList.toggle("hidden", n <= 0);
     }
     if (el.sidebarVersion) {
-      const ver = state.meta.appVersion ? `App ${state.meta.appVersion}` : "My Space";
+      const ver = state.meta.appVersion
+        ? tt("service.updates.sidebarApp", { version: state.meta.appVersion })
+        : "My Space";
       const checked = state.meta.lastCheckedAt
-        ? ` · checked ${formatDate(state.meta.lastCheckedAt)}`
+        ? tt("service.updates.sidebarChecked", { date: formatDate(state.meta.lastCheckedAt) })
         : "";
       el.sidebarVersion.textContent = `${ver}${checked}`;
     }
@@ -97,8 +104,8 @@
       const n = c.pending || 0;
       el.newUpdatesSub.textContent =
         n > 0
-          ? `${n} release${n === 1 ? "" : "s"} ready — restart to apply`
-          : "When a major release is ready, it shows up here";
+          ? tt("service.updates.newUpdatesSubReady", { count: n })
+          : tt("service.updates.newUpdatesSubDefault");
     }
   }
 
@@ -112,14 +119,14 @@
       el.currentDesc.textContent =
         cur.body ||
         (ver !== "—"
-          ? "You're running this build of My Space."
-          : "Could not read the installed version.");
+          ? tt("service.updates.runningBuild")
+          : tt("service.updates.couldNotReadVersion"));
     }
     if (el.currentDate) {
       const d = formatDate(cur.date);
       el.currentDate.textContent = d
         ? cur.exact === false && cur.catalogVersion
-          ? `Notes from ${cur.catalogVersion} · ${d}`
+          ? tt("service.updates.notesFrom", { version: cur.catalogVersion, date: d })
           : d
         : "";
     }
@@ -145,9 +152,9 @@
         actions
           ? `<div class="update-actions">
               <button type="button" class="btn btn-primary" data-apply="${escapeHtml(u.id)}" ${busy ? "disabled" : ""}>
-                ${busy ? "Restarting…" : "Restart & update"}
+                ${busy ? escapeHtml(tt("service.updates.restarting")) : escapeHtml(tt("service.updates.restartUpdate"))}
               </button>
-              <button type="button" class="btn btn-ghost" data-skip="${escapeHtml(u.id)}" ${busy ? "disabled" : ""}>Skip</button>
+              <button type="button" class="btn btn-ghost" data-skip="${escapeHtml(u.id)}" ${busy ? "disabled" : ""}>${escapeHtml(tt("service.updates.skip"))}</button>
             </div>`
           : ""
       }
@@ -158,7 +165,7 @@
     root?.querySelectorAll("[data-apply]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const id = btn.dataset.apply;
-        if (!id || !confirm("Restart My Space to apply this update?")) return;
+        if (!id || !confirm(tt("service.updates.confirmRestart"))) return;
         state.busyId = id;
         paintPending();
         const res = await api()?.apply(id);
@@ -214,7 +221,7 @@
   function paintAbout() {
     if (!el.aboutPaths) return;
     const path = state.meta.catalogPath || "config/updates.json";
-    el.aboutPaths.textContent = `Catalog: ${path}`;
+    el.aboutPaths.textContent = tt("service.updates.catalog", { path });
   }
 
   async function refresh() {
@@ -248,8 +255,8 @@
       const res = await api()?.check?.();
       await refresh();
       if (res?.ok === false) alert(res.error || "Check failed");
-      else if ((res?.pending || 0) === 0) alert("You're up to date — no new updates.");
-      else alert(`${res.pending} new update(s) listed below.`);
+      else if ((res?.pending || 0) === 0) alert(tt("service.updates.upToDateAlert"));
+      else alert(tt("service.updates.newUpdatesAlert", { count: res.pending }));
     });
     el.historyFilter?.addEventListener("change", () => void loadHistory());
     let t = null;
@@ -266,6 +273,18 @@
 
   window.__myspaceApplyRoute = applyRoute;
   window.UpdatesApp = { setPage, applyRoute };
+
+  function onI18nApplied() {
+    paintChrome();
+    if (state.page === "pending") {
+      paintCurrent();
+      paintPending();
+    }
+    if (state.page === "history") paintHistory();
+    if (state.page === "about") paintAbout();
+  }
+
+  window.addEventListener("myspace-i18n-applied", onI18nApplied);
 
   bind();
   setPage("pending");

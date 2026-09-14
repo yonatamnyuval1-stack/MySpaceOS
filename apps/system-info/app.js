@@ -1,44 +1,44 @@
 (function () {
   const PAGE_META = {
     system: {
-      title: "System",
-      subtitle: "OS, hardware, uptime, and computer identity",
+      titleKey: "service.systemInfo.system",
+      subtitleKey: "service.systemInfo.systemSub",
     },
     cpu: {
-      title: "CPU",
-      subtitle: "Processor load, cores, and top consumers",
+      titleKey: "service.systemInfo.cpu",
+      subtitleKey: "service.systemInfo.cpuSub",
     },
     memory: {
-      title: "Memory",
-      subtitle: "RAM and virtual memory usage on this PC",
+      titleKey: "service.systemInfo.memory",
+      subtitleKey: "service.systemInfo.memorySub",
     },
     storage: {
-      title: "Storage",
-      subtitle: "Volumes, free space, and disk usage",
+      titleKey: "service.systemInfo.storage",
+      subtitleKey: "service.systemInfo.storageSub",
     },
     disk: {
-      title: "Disk Explorer",
-      subtitle: "Folder sizes, usage map, and largest files",
+      titleKey: "service.systemInfo.diskExplorer",
+      subtitleKey: "service.systemInfo.diskSub",
     },
     performance: {
-      title: "Performance Lab",
-      subtitle: "CPU, memory, and disk usage over time",
+      titleKey: "service.systemInfo.performance",
+      subtitleKey: "service.systemInfo.performanceSub",
     },
     processes: {
-      title: "Processes",
-      subtitle: "Running programs, memory use, and status",
+      titleKey: "service.systemInfo.processes",
+      subtitleKey: "service.systemInfo.processesSub",
     },
     network: {
-      title: "Network",
-      subtitle: "Adapters, IP addresses, DNS, and gateways",
+      titleKey: "service.systemInfo.network",
+      subtitleKey: "service.systemInfo.networkSub",
     },
     ports: {
-      title: "Ports",
-      subtitle: "TCP/UDP endpoints on this PC",
+      titleKey: "service.systemInfo.ports",
+      subtitleKey: "service.systemInfo.portsSub",
     },
     environment: {
-      title: "Environment",
-      subtitle: "Environment variables and PATH entries",
+      titleKey: "service.systemInfo.environment",
+      subtitleKey: "service.systemInfo.environmentSub",
     },
   };
 
@@ -81,6 +81,11 @@
   let scanning = false;
   let nextRefreshAt = 0;
 
+  function tt(key, vars) {
+    const fn = window.MySpaceI18n?.t;
+    return typeof fn === "function" ? fn(key, vars) : key;
+  }
+
   function loadRefreshMs() {
     try {
       const raw = localStorage.getItem(REFRESH_KEY);
@@ -109,23 +114,33 @@
     return `${sec}s`;
   }
 
+  function paintPageChrome(pageId) {
+    const meta = PAGE_META[pageId] || PAGE_META.system;
+    if (ui.title) ui.title.textContent = tt(meta.titleKey);
+    if (ui.subtitle) ui.subtitle.textContent = tt(meta.subtitleKey);
+    if (ui.brandSub) ui.brandSub.textContent = tt(meta.titleKey);
+    if (ui.detailTitle) ui.detailTitle.textContent = tt("service.systemInfo.details");
+  }
+
   function updateRefreshMeta() {
     if (!ui.refreshMeta) return;
     const ms = Number(ui.refreshInterval.value) || 0;
     if (ms <= 0) {
-      ui.refreshMeta.textContent = "Auto-refresh off";
+      ui.refreshMeta.textContent = tt("service.systemInfo.autoRefreshOff");
       return;
     }
     if (NO_AUTO_REFRESH.has(activePage?.id)) {
-      ui.refreshMeta.textContent = "Manual only on this page";
+      ui.refreshMeta.textContent = tt("service.systemInfo.manualOnly");
       return;
     }
     if (!nextRefreshAt) {
-      ui.refreshMeta.textContent = `Every ${ms / 1000}s`;
+      ui.refreshMeta.textContent = tt("service.systemInfo.everySeconds", { seconds: ms / 1000 });
       return;
     }
     const left = nextRefreshAt - Date.now();
-    ui.refreshMeta.textContent = `Next refresh in ${formatCountdown(left)}`;
+    ui.refreshMeta.textContent = tt("service.systemInfo.nextRefreshIn", {
+      time: formatCountdown(left),
+    });
   }
 
   function setActivePage(pageId) {
@@ -142,10 +157,7 @@
       btn.classList.toggle("active", btn.dataset.page === next.id);
     });
 
-    const meta = PAGE_META[next.id] || PAGE_META.system;
-    ui.title.textContent = meta.title;
-    ui.subtitle.textContent = meta.subtitle;
-    if (ui.brandSub) ui.brandSub.textContent = meta.title;
+    paintPageChrome(next.id);
 
     ui.shell.classList.remove("detail-open");
     ui.detailPanel.classList.add("hidden");
@@ -208,6 +220,12 @@
     updateRefreshMeta();
   }
 
+  function onI18nApplied() {
+    paintPageChrome(activePage?.id || "system");
+    updateRefreshMeta();
+    if (activePage?.scan) void activePage.scan();
+  }
+
   ui.nav.addEventListener("click", (e) => {
     const btn = e.target.closest(".nav-item[data-page]");
     if (!btn || btn.dataset.page === "app-settings") return;
@@ -218,6 +236,8 @@
   ui.refreshInterval.addEventListener("change", scheduleRefresh);
 
   pages.forEach((p) => p.bind(ui));
+
+  window.addEventListener("myspace-i18n-applied", onI18nApplied);
 
   ui.refreshInterval.value = String(loadRefreshMs());
   function applyRoute(route) {

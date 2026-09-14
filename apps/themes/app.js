@@ -1,4 +1,11 @@
 (() => {
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const state = {
     page: "apps",
     apps: [],
@@ -89,11 +96,11 @@
   }
 
   function themeLabel(theme) {
-    if (!theme || theme.isDefault) return "Default";
+    if (!theme || theme.isDefault) return tt("service.themes.default", "Default");
     const bits = [];
     if (theme.mode) bits.push(theme.mode);
     if (theme.buttons && theme.buttons !== "default") bits.push(theme.buttons);
-    return bits.join(" · ") || "Custom";
+    return bits.join(" · ") || tt("service.themes.custom", "Custom");
   }
 
   function iconSrc(app) {
@@ -119,13 +126,22 @@
   function paintGrid() {
     const list = state.apps || [];
     if (el.sidebarMeta) {
-      el.sidebarMeta.textContent = `${list.length} app${list.length === 1 ? "" : "s"} themed`;
+      el.sidebarMeta.textContent =
+        list.length === 1
+          ? tt("service.themes.sidebarMeta", `${list.length} app themed`, { count: list.length })
+          : tt("service.themes.sidebarMetaPlural", `${list.length} apps themed`, { count: list.length });
     }
     if (el.aboutMeta) {
-      const live = state.liveApply ? "Live apply: on" : "Live apply: off";
+      const live = state.liveApply
+        ? tt("service.themes.liveApplyOn", "Live apply: on")
+        : tt("service.themes.liveApplyOff", "Live apply: off");
       el.aboutMeta.textContent = list.length
-        ? `${live} · ${list.length} apps: ${list.map((a) => a.name).join(", ")}`
-        : `${live} · No apps yet`;
+        ? tt("service.themes.aboutSupported", `${live} · ${list.length} apps: ${list.map((a) => a.name).join(", ")}`, {
+            live,
+            count: list.length,
+            names: list.map((a) => a.name).join(", "),
+          })
+        : `${live} · ${tt("service.themes.noAppsYet", "No apps yet")}`;
     }
     if (el.gridEmpty) el.gridEmpty.classList.toggle("hidden", list.length > 0);
     if (!el.appGrid) return;
@@ -167,7 +183,7 @@
     if (!app) return;
     const theme = app.theme || { mode: app.defaultMode, buttons: app.defaultButtons, isDefault: true };
     if (el.detailTitle) el.detailTitle.textContent = app.name;
-    if (el.detailSub) el.detailSub.textContent = "Mode & buttons";
+    if (el.detailSub) el.detailSub.textContent = tt("service.themes.modeButtons", "Mode & buttons");
     if (el.detailMark) {
       const src = iconSrc(app);
       if (src) {
@@ -178,8 +194,8 @@
     }
     if (el.detailStatus) {
       el.detailStatus.textContent = theme.isDefault
-        ? "Using default appearance"
-        : `Custom · ${themeLabel(theme)}`;
+        ? tt("service.themes.usingDefault", "Using default appearance")
+        : tt("service.themes.customLabel", `Custom · ${themeLabel(theme)}`, { label: themeLabel(theme) });
     }
     paintChips(el.modeChips, app.modes, theme.mode, "mode");
     paintChips(el.buttonChips, app.buttons, theme.buttons, "buttons");
@@ -199,12 +215,12 @@
 
     const res = await api()?.set?.(payload);
     if (!res?.ok) {
-      toast(res?.error || "Could not save");
+      toast(res?.error || tt("service.themes.couldNotSave", "Could not save"));
       return;
     }
     app.theme = res.theme;
     paintDetail();
-    toast(`Saved · ${app.name}`);
+    toast(tt("service.themes.saved", `Saved · ${app.name}`, { name: app.name }));
   }
 
   async function resetSelected() {
@@ -212,12 +228,12 @@
     if (!app) return;
     const res = await api()?.reset?.({ appId: app.id });
     if (!res?.ok) {
-      toast(res?.error || "Could not reset");
+      toast(res?.error || tt("service.themes.couldNotReset", "Could not reset"));
       return;
     }
     app.theme = res.theme;
     paintDetail();
-    toast(`Reset · ${app.name}`);
+    toast(tt("service.themes.reset", `Reset · ${app.name}`, { name: app.name }));
   }
 
   async function refresh() {
@@ -229,7 +245,7 @@
     }
     const res = await api()?.catalog?.();
     if (!res?.ok) {
-      toast(res?.error || "Could not load themes");
+      toast(res?.error || tt("service.themes.couldNotLoad", "Could not load themes"));
       return;
     }
     state.apps = res.apps || [];
@@ -274,6 +290,11 @@
     },
     refresh: () => refresh(),
   };
+
+  window.addEventListener("myspace-i18n-applied", () => {
+    if (state.selectedId) paintDetail();
+    else paintGrid();
+  });
 
   bind();
   setPage("apps");

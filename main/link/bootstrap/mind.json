@@ -160,7 +160,7 @@
     {
       "topic": "mind.updated",
       "title": "Mind updated",
-      "description": "Mind settings or memory changed",
+      "description": "Mind memory or settings changed",
       "payload": {}
     }
   ]

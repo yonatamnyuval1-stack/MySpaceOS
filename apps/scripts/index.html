@@ -14,14 +14,14 @@
         <div class="brand">
           <span class="brand-icon" aria-hidden="true">📜</span>
           <div>
-            <strong>Scripts</strong>
-            <span class="brand-sub">Language runtime</span>
+            <strong data-i18n="platform.scripts.name">Scripts</strong>
+            <span class="brand-sub" data-i18n="platform.scripts.tagline">Language runtime</span>
           </div>
         </div>
-        <button type="button" class="btn btn-primary btn-new" id="btn-new">New script</button>
+        <button type="button" class="btn btn-primary btn-new" id="btn-new" data-i18n="service.scripts.new">New script</button>
         <nav class="script-list" id="script-list" aria-label="Saved scripts"></nav>
         <footer class="sidebar-foot">
-          <p>My Space Language programs</p>
+          <p data-i18n="service.scripts.foot">My Space Language programs</p>
         </footer>
       </aside>
 
@@ -32,22 +32,23 @@
               type="text"
               id="script-name"
               class="script-name-input"
+              data-i18n-placeholder="service.scripts.namePlaceholder"
               placeholder="Script name"
               spellcheck="false"
               autocomplete="off"
             />
-            <p class="subtitle" id="script-meta">Command-line name: type it after right-click on the desktop</p>
+            <p class="subtitle" id="script-meta" data-i18n="service.scripts.metaHint">Command-line name: type it after right-click on the desktop</p>
           </div>
           <div class="topbar-actions">
             <label class="check-row" title="Stop when a step fails">
               <input type="checkbox" id="stop-on-error" checked />
-              Stop on error
+              <span data-i18n="service.scripts.stopOnError">Stop on error</span>
             </label>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-duplicate">Duplicate</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-delete">Delete</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-export-space">Export .space</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-save">Save</button>
-            <button type="button" class="btn btn-primary btn-sm" id="btn-run">Run</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-duplicate" data-i18n="service.scripts.duplicate">Duplicate</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-delete" data-i18n="service.scripts.delete">Delete</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-export-space" data-i18n="service.scripts.export">Export .space</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-save" data-i18n="service.scripts.save">Save</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-run" data-i18n="service.scripts.run">Run</button>
           </div>
         </header>
 
@@ -66,7 +67,7 @@ check running
 loop 2 then refresh"
             ></textarea>
             <p class="editor-hint">
-              Desktop command line: type this script’s <strong>name</strong> (e.g.
+              Desktop command line: type this script's <strong>name</strong> (e.g.
               <code>morning</code>) after right-click · One command per line ·
               <code>#</code> comments · <code>a</code> / <code>close all</code> closes every
               open app (including Scripts)
@@ -75,16 +76,22 @@ loop 2 then refresh"
 
           <section class="output-pane">
             <div class="output-head">
-              <h2>Output</h2>
-              <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-log">Clear</button>
+              <h2 data-i18n="service.scripts.output">Output</h2>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-log" data-i18n="service.scripts.clear">Clear</button>
             </div>
             <div class="output-log" id="output-log" aria-live="polite">
-              <p class="output-empty">Run a script to see each step here.</p>
+              <p class="output-empty" data-i18n="service.scripts.outputEmpty">Run a script to see each step here.</p>
             </div>
           </section>
         </div>
       </main>
     </div>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

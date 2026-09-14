@@ -1,4 +1,11 @@
 (function () {
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const state = {
     scripts: [],
     settings: { stopOnError: true },
@@ -54,19 +61,24 @@
     if (!meta) return;
     const s = activeScript();
     if (!s) {
-      meta.textContent = "Command-line name: type it after right-click on the desktop";
+      meta.textContent = tt("service.scripts.meta", "Command-line name: type it after right-click on the desktop");
       return;
     }
     const cmd = s.name || "name";
-    const base = `Command line: ${cmd} · ${countLines(s.body)} steps · ${formatWhen(s.updatedAt)}`;
-    meta.textContent = state.dirty ? `${base} · unsaved` : base;
+    const steps = countLines(s.body);
+    const base = tt("service.scripts.metaLine", `Command line: ${cmd} · ${steps} steps · ${formatWhen(s.updatedAt)}`, {
+      name: cmd,
+      steps,
+      when: formatWhen(s.updatedAt),
+    });
+    meta.textContent = state.dirty ? `${base} · ${tt("service.scripts.unsaved", "unsaved")}` : base;
   }
 
   function renderList() {
     const list = $("script-list");
     if (!list) return;
     if (!state.scripts.length) {
-      list.innerHTML = `<p class="output-empty" style="padding:0.5rem">No scripts yet.</p>`;
+      list.innerHTML = `<p class="output-empty" style="padding:0.5rem">${escapeHtml(tt("service.scripts.noScripts", "No scripts yet."))}</p>`;
       return;
     }
     list.innerHTML = state.scripts
@@ -74,7 +86,7 @@
         const active = s.id === state.activeId ? " is-active" : "";
         return `<button type="button" class="script-item${active}" data-id="${escapeHtml(s.id)}">
           <strong>${escapeHtml(s.name)}</strong>
-          <span>${countLines(s.body)} steps</span>
+          <span>${escapeHtml(tt("service.scripts.steps", `${countLines(s.body)} steps`, { count: countLines(s.body) }))}</span>
         </button>`;
       })
       .join("");
@@ -88,7 +100,7 @@
   }
 
   async function confirmLeave() {
-    return window.confirm("You have unsaved changes. Discard them?");
+    return window.confirm(tt("service.scripts.confirmDiscard", "You have unsaved changes. Discard them?"));
   }
 
   function selectScript(id) {
@@ -176,7 +188,7 @@
   async function remove() {
     const s = activeScript();
     if (!s) return;
-    if (!window.confirm(`Delete script "${s.name}"?`)) return;
+    if (!window.confirm(tt("service.scripts.confirmDelete", `Delete script "${s.name}"?`, { name: s.name }))) return;
     const res = await invoke("scripts.delete", { id: s.id });
     if (!res?.ok) {
       window.alert(res?.error || "Delete failed");
@@ -198,7 +210,7 @@
     const log = $("output-log");
     if (!log) return;
     if (!results?.length) {
-      log.innerHTML = `<p class="output-empty">Run a script to see each step here.</p>`;
+      log.innerHTML = `<p class="output-empty">${escapeHtml(tt("service.scripts.outputEmpty", "Run a script to see each step here."))}</p>`;
       return;
     }
     const rows = results
@@ -233,7 +245,7 @@
     const btn = $("btn-run");
     if (btn) {
       btn.disabled = true;
-      btn.textContent = "Running…";
+      btn.textContent = tt("service.scripts.running", "Running…");
     }
     paintLog([], null);
 
@@ -246,19 +258,22 @@
       const text =
         res?.message ||
         (res?.stopped
-          ? `Stopped after ${res.ran}/${res.total} steps`
-          : `Finished ${results.length} steps`);
+          ? tt("service.scripts.stoppedAfter", `Stopped after ${res.ran}/${res.total} steps`, {
+              ran: res.ran,
+              total: res.total,
+            })
+          : tt("service.scripts.finishedSteps", `Finished ${results.length} steps`, { count: results.length }));
       paintLog(results, { ok: !!res?.ok, text });
     } catch (err) {
       paintLog(
         [{ line: "(runner)", ok: false, message: err?.message || String(err) }],
-        { ok: false, text: "Runner failed" }
+        { ok: false, text: tt("service.scripts.runnerFailed", "Runner failed") }
       );
     } finally {
       state.running = false;
       if (btn) {
         btn.disabled = false;
-        btn.textContent = "Run";
+        btn.textContent = tt("service.common.run", "Run");
       }
     }
   }
@@ -292,8 +307,8 @@
     }
     if (!window.spaceFile?.export) {
       paintLog(
-        [{ line: "(export)", ok: false, message: "Export unavailable" }],
-        { ok: false, text: "Could not export .space" }
+        [{ line: "(export)", ok: false, message: tt("service.scripts.exportUnavailable", "Export unavailable") }],
+        { ok: false, text: tt("service.scripts.couldNotExport", "Could not export .space") }
       );
       return;
     }
@@ -308,7 +323,7 @@
     } catch (err) {
       paintLog(
         [{ line: "(export)", ok: false, message: err?.message || String(err) }],
-        { ok: false, text: "Could not export .space" }
+        { ok: false, text: tt("service.scripts.couldNotExport", "Could not export .space") }
       );
     }
   }
@@ -370,10 +385,17 @@
     } catch (err) {
       paintLog(
         [{ line: "(load)", ok: false, message: err?.message || String(err) }],
-        { ok: false, text: "Could not load scripts" }
+        { ok: false, text: tt("service.scripts.couldNotLoad", "Could not load scripts") }
       );
     }
   }
+
+  window.addEventListener("myspace-i18n-applied", () => {
+    renderList();
+    markDirty(state.dirty);
+    const log = $("output-log");
+    if (log?.querySelector(".output-empty")) paintLog([], null);
+  });
 
   window.ScriptsApp = {
     openScript,

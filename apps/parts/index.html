@@ -19,36 +19,36 @@
         <div class="brand">
           <img class="brand-logo" src="logo.png" width="32" height="32" alt="" />
           <div>
-            <strong>Parts</strong>
-            <span class="brand-sub">GitHub between apps</span>
+            <strong data-i18n="platform.parts.name">Parts</strong>
+            <span class="brand-sub" data-i18n="platform.parts.tagline">GitHub between apps</span>
           </div>
         </div>
 
         <nav class="nav" id="main-nav" aria-label="Parts">
           <button type="button" class="nav-item is-active" data-page="explore">
             <span class="nav-ico" aria-hidden="true">⌂</span>
-            Explore
+            <span data-i18n="service.parts.explore">Explore</span>
           </button>
           <button type="button" class="nav-item" data-page="publish">
             <span class="nav-ico" aria-hidden="true">↑</span>
-            Publish
+            <span data-i18n="service.parts.publish">Publish</span>
           </button>
           <button type="button" class="nav-item" data-page="about">
             <span class="nav-ico" aria-hidden="true">ⓘ</span>
-            About
+            <span data-i18n="service.parts.about">About</span>
           </button>
         </nav>
 
         <div class="sidebar-filters" id="kind-filters" aria-label="Kinds">
-          <p class="filter-label">Kind</p>
-          <button type="button" class="filter-chip is-active" data-kind="">All</button>
-          <button type="button" class="filter-chip" data-kind="util">Util</button>
-          <button type="button" class="filter-chip" data-kind="ui">UI</button>
-          <button type="button" class="filter-chip" data-kind="data">Data</button>
+          <p class="filter-label" data-i18n="service.parts.kindLabel">Kind</p>
+          <button type="button" class="filter-chip is-active" data-kind="" data-i18n="service.parts.kindAll">All</button>
+          <button type="button" class="filter-chip" data-kind="util" data-i18n="service.parts.kindUtil">Util</button>
+          <button type="button" class="filter-chip" data-kind="ui" data-i18n="service.parts.kindUi">UI</button>
+          <button type="button" class="filter-chip" data-kind="data" data-i18n="service.parts.kindData">Data</button>
         </div>
 
         <footer class="sidebar-foot">
-          <p id="sidebar-blurb">Reusable code modules — adopt into any app without host coupling.</p>
+          <p id="sidebar-blurb" data-i18n="service.parts.sidebarBlurb">Reusable code modules — adopt into any app without host coupling.</p>
         </footer>
       </aside>
 
@@ -57,11 +57,11 @@
         <section class="view view-explore" id="view-explore">
           <header class="page-head">
             <div>
-              <h1>Explore</h1>
-              <p class="lede">Catalog of embeddable modules shared across My Space apps.</p>
+              <h1 data-i18n="service.parts.exploreTitle">Explore</h1>
+              <p class="lede" data-i18n="service.parts.exploreSub">Catalog of embeddable modules shared across My Space apps.</p>
             </div>
             <div class="page-actions">
-              <button type="button" class="btn" id="btn-reload" title="Refresh catalog">Refresh</button>
+              <button type="button" class="btn" id="btn-reload" data-i18n-title="service.parts.refreshTitle" title="Refresh catalog" data-i18n="service.common.refresh">Refresh</button>
             </div>
           </header>
 
@@ -71,6 +71,7 @@
               type="search"
               id="search-input"
               class="search"
+              data-i18n-placeholder="service.parts.findPart"
               placeholder="Find a part…"
               spellcheck="false"
               autocomplete="off"
@@ -80,23 +81,23 @@
 
           <div class="repo-table" role="table" aria-label="Parts catalog">
             <div class="repo-table-head" role="row">
-              <span role="columnheader">Repository</span>
-              <span role="columnheader">Kind</span>
-              <span role="columnheader">Publishers</span>
+              <span role="columnheader" data-i18n="service.parts.colRepository">Repository</span>
+              <span role="columnheader" data-i18n="service.parts.colKind">Kind</span>
+              <span role="columnheader" data-i18n="service.parts.colPublishers">Publishers</span>
             </div>
             <div class="repo-list" id="repo-list" role="rowgroup"></div>
           </div>
 
           <div class="empty hidden" id="explore-empty">
-            <strong>No parts match</strong>
-            <p>Try another filter, or add <code>shared/parts/&lt;id&gt;/part.json</code>.</p>
+            <strong data-i18n="service.parts.emptyExplore">No parts match</strong>
+            <p data-i18n="service.parts.emptyExploreHint">Try another filter, or add shared/parts/&lt;id&gt;/part.json.</p>
           </div>
         </section>
 
         <!-- Repo / part detail -->
         <section class="view view-repo hidden" id="view-repo" aria-label="Part detail">
           <header class="repo-head">
-            <button type="button" class="btn btn-ghost" id="btn-back">← Explore</button>
+            <button type="button" class="btn btn-ghost" id="btn-back" data-i18n="service.parts.backCatalog">← Explore</button>
             <div class="repo-title-block">
               <div class="repo-path">
                 <span class="repo-org" id="repo-org">parts</span>
@@ -108,11 +109,11 @@
             </div>
             <div class="repo-head-actions">
               <label class="adopt-field">
-                <span>Adopt into</span>
+                <span data-i18n="service.parts.adoptInto">Adopt into</span>
                 <select id="adopt-target"></select>
               </label>
-              <button type="button" class="btn btn-primary" id="btn-adopt">Adopt</button>
-              <button type="button" class="btn" id="btn-copy-usage">Copy usage</button>
+              <button type="button" class="btn btn-primary" id="btn-adopt" data-i18n="service.parts.adopt">Adopt</button>
+              <button type="button" class="btn" id="btn-copy-usage" data-i18n="service.parts.copyUsage">Copy usage</button>
             </div>
           </header>
 
@@ -272,6 +273,12 @@ parts(panel)</pre>
         </section>
       </main>
     </div>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

@@ -4,6 +4,20 @@
   let snap = null;
   let tab = "browse";
 
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    const fb = fallback || key;
+    const withVars = (s) => {
+      if (!vars) return s;
+      return String(s).replace(/\{(\w+)\}/g, (_, k) =>
+        vars[k] != null ? String(vars[k]) : `{${k}}`
+      );
+    };
+    if (!I?.t) return withVars(fb);
+    const v = I.t(key, vars);
+    return v === key ? withVars(fb) : v;
+  }
+
   function escapeHtml(s) {
     return String(s ?? "")
       .replace(/&/g, "&amp;")
@@ -36,12 +50,12 @@
     list.innerHTML = `
       <div class="files-panel-section">
         <form class="files-panel-goto" id="files-panel-goto">
-          <input type="text" id="files-panel-path" placeholder="Go to folder path…" spellcheck="false" />
-          <button type="submit" class="files-btn files-btn-primary">Go</button>
+          <input type="text" id="files-panel-path" placeholder="${escapeHtml(tt("service.files.goto", "Go to path…"))}" spellcheck="false" />
+          <button type="submit" class="files-btn files-btn-primary">${escapeHtml(tt("service.files.go", "Go"))}</button>
         </form>
       </div>
       <div class="files-panel-section">
-        <h3>Places</h3>
+        <h3>${escapeHtml(tt("service.files.places", "Places"))}</h3>
         <ul class="files-place-list">
           ${
             places.length
@@ -51,12 +65,12 @@
                       `<li><button type="button" class="files-place" data-path="${escapeHtml(p.path)}"><span>${escapeHtml(p.icon || "📁")}</span><strong>${escapeHtml(p.label)}</strong></button></li>`
                   )
                   .join("")
-              : `<li class="files-panel-empty">No places</li>`
+              : `<li class="files-panel-empty">${escapeHtml(tt("service.files.noPlaces", "No places"))}</li>`
           }
         </ul>
       </div>
       <div class="files-panel-section">
-        <h3>Drives</h3>
+        <h3>${escapeHtml(tt("service.files.drives", "Drives"))}</h3>
         <div class="files-drive-row">
           ${
             drives.length
@@ -72,8 +86,8 @@
       </div>
       <div class="files-panel-section files-panel-quick">
         <div class="files-panel-actions">
-          <button type="button" class="files-btn files-btn-primary" id="files-open-full">Open Files app</button>
-          <button type="button" class="files-btn" id="files-pick-folder">Pick folder…</button>
+          <button type="button" class="files-btn files-btn-primary" id="files-open-full">${escapeHtml(tt("service.files.openApp", "Open Files app"))}</button>
+          <button type="button" class="files-btn" id="files-pick-folder">${escapeHtml(tt("service.files.pickFolder", "Pick folder…"))}</button>
         </div>
       </div>`;
 
@@ -90,7 +104,7 @@
     list.querySelector("#files-pick-folder")?.addEventListener("click", async () => {
       const res = await window.mySpace?.files?.pickFolder?.();
       if (res?.ok === false) {
-        if (res.error !== "Cancelled") toast(res.error || "Cancelled");
+        if (res.error !== "Cancelled") toast(res.error || tt("service.common.cancelled", "Cancelled"));
         return;
       }
       if (res?.path) openFull({ path: res.path });
@@ -105,7 +119,7 @@
       const recent = res?.recent || [];
       list.innerHTML = `
         <div class="files-panel-section">
-          <h3>Recent</h3>
+          <h3>${escapeHtml(tt("service.files.recent", "Recent"))}</h3>
           ${
             recent.length
               ? `<ul class="files-place-list">${recent
@@ -115,11 +129,11 @@
                       `<li><button type="button" class="files-place" data-path="${escapeHtml(r.path)}" data-dir="${r.isDirectory ? "1" : "0"}"><span>${r.isDirectory ? "📁" : "📄"}</span><strong>${escapeHtml(r.name || r.path)}</strong></button></li>`
                   )
                   .join("")}</ul>`
-              : `<p class="files-panel-empty">Nothing recent yet: open files from the full app.</p>`
+              : `<p class="files-panel-empty">${escapeHtml(tt("service.files.nothingRecent", "Nothing recent yet: open files from the full app."))}</p>`
           }
           <div class="files-panel-actions" style="margin-top:0.75rem">
-            <button type="button" class="files-btn files-btn-primary" data-open-full="recent">Open Files</button>
-            <button type="button" class="files-btn" id="files-clear-recent" ${recent.length ? "" : "disabled"}>Clear</button>
+            <button type="button" class="files-btn files-btn-primary" data-open-full="recent">${escapeHtml(tt("service.files.openFiles", "Open Files"))}</button>
+            <button type="button" class="files-btn" id="files-clear-recent" ${recent.length ? "" : "disabled"}>${escapeHtml(tt("service.files.clear", "Clear"))}</button>
           </div>
         </div>`;
       list.querySelectorAll(".files-place").forEach((btn) => {
@@ -131,7 +145,7 @@
       list.querySelector("[data-open-full]")?.addEventListener("click", () => openFull({ page: "recent" }));
       list.querySelector("#files-clear-recent")?.addEventListener("click", async () => {
         await window.mySpace?.files?.clearRecent?.();
-        toast("Recent cleared");
+        toast(tt("service.files.recentCleared", "Recent cleared"));
         await refresh();
         paintRecent();
       });
@@ -144,7 +158,7 @@
     const favs = snap?.favorites || [];
     list.innerHTML = `
       <div class="files-panel-section">
-        <h3>Favorites</h3>
+        <h3>${escapeHtml(tt("service.files.favorites", "Favorites"))}</h3>
         ${
           favs.length
             ? `<ul class="files-place-list">${favs
@@ -153,11 +167,11 @@
                     `<li><button type="button" class="files-place" data-path="${escapeHtml(f.path)}"><span>★</span><strong>${escapeHtml(f.label)}</strong></button></li>`
                 )
                 .join("")}</ul>`
-            : `<p class="files-panel-empty">Pin folders from the Files app (+ in Favorites).</p>`
+            : `<p class="files-panel-empty">${escapeHtml(tt("service.files.pinHint", "Pin folders from the Files app (+ in Favorites)."))}</p>`
         }
         <div class="files-panel-actions" style="margin-top:0.75rem">
-          <button type="button" class="files-btn files-btn-primary" id="files-add-fav">Add folder…</button>
-          <button type="button" class="files-btn" data-open-full="favorites">Open Files</button>
+          <button type="button" class="files-btn files-btn-primary" id="files-add-fav">${escapeHtml(tt("service.files.addFolder", "Add folder…"))}</button>
+          <button type="button" class="files-btn" data-open-full="favorites">${escapeHtml(tt("service.files.openFiles", "Open Files"))}</button>
         </div>
       </div>`;
     list.querySelectorAll(".files-place").forEach((btn) => {
@@ -167,13 +181,37 @@
     list.querySelector("#files-add-fav")?.addEventListener("click", async () => {
       const res = await window.mySpace?.files?.addFavorite?.({});
       if (res?.ok === false) {
-        if (res.error !== "Cancelled") toast(res.error || "Could not add");
+        if (res.error !== "Cancelled") toast(res.error || tt("service.files.couldNotAdd", "Could not add"));
         return;
       }
-      toast("Favorite added");
+      toast(tt("service.files.favAdded", "Favorite added"));
       await refresh();
       paintFavorites();
     });
+  }
+
+  function repaintChrome() {
+    if (!root) return;
+    root.setAttribute("aria-label", tt("platform.files.name", "Files"));
+    const brand = root.querySelector(".files-panel-brand div");
+    if (brand) {
+      const h2 = brand.querySelector("h2");
+      const p = brand.querySelector("p");
+      if (h2) h2.textContent = tt("platform.files.name", "Files");
+      if (p) p.textContent = tt("platform.files.tagline", "Browse this PC inside My Space");
+    }
+    root.querySelector(".files-panel-close")?.setAttribute("aria-label", tt("service.common.close", "Close"));
+    const tabs = {
+      browse: tt("service.files.browse", "Browse"),
+      recent: tt("service.files.recent", "Recent"),
+      favorites: tt("service.files.favorites", "Favorites"),
+    };
+    root.querySelectorAll("[data-files-tab]").forEach((btn) => {
+      const id = btn.dataset.filesTab;
+      if (tabs[id]) btn.textContent = tabs[id];
+    });
+    const fullBtn = root.querySelector("#files-panel-full");
+    if (fullBtn) fullBtn.textContent = tt("platform.files.name", "Files");
   }
 
   function paint() {
@@ -192,26 +230,26 @@
     root.className = "files-panel hidden";
     root.setAttribute("role", "dialog");
     root.setAttribute("aria-modal", "true");
-    root.setAttribute("aria-label", "Files");
+    root.setAttribute("aria-label", tt("platform.files.name", "Files"));
     root.innerHTML = `
       <div class="files-panel-shell">
         <header class="files-panel-head">
           <div class="files-panel-brand">
             <img src="brand/atom-white.png" alt="" width="28" height="28" />
             <div>
-              <h2>Files</h2>
-              <p>Browse this PC: places, folders &amp; preview</p>
+              <h2>${escapeHtml(tt("platform.files.name", "Files"))}</h2>
+              <p>${escapeHtml(tt("platform.files.tagline", "Browse this PC inside My Space"))}</p>
             </div>
           </div>
-          <button type="button" class="files-panel-close" aria-label="Close">×</button>
+          <button type="button" class="files-panel-close" aria-label="${escapeHtml(tt("service.common.close", "Close"))}">×</button>
         </header>
         <div class="files-panel-toolbar">
           <div class="files-panel-tabs">
-            <button type="button" data-files-tab="browse" class="is-active">Browse</button>
-            <button type="button" data-files-tab="recent">Recent</button>
-            <button type="button" data-files-tab="favorites">Favorites</button>
+            <button type="button" data-files-tab="browse" class="is-active">${escapeHtml(tt("service.files.browse", "Browse"))}</button>
+            <button type="button" data-files-tab="recent">${escapeHtml(tt("service.files.recent", "Recent"))}</button>
+            <button type="button" data-files-tab="favorites">${escapeHtml(tt("service.files.favorites", "Favorites"))}</button>
           </div>
-          <button type="button" class="files-btn" id="files-panel-full">Full app</button>
+          <button type="button" class="files-btn" id="files-panel-full">${escapeHtml(tt("platform.files.name", "Files"))}</button>
         </div>
         <div class="files-panel-body" id="files-panel-body"></div>
       </div>`;
@@ -258,6 +296,12 @@
     if (open) hide();
     else show(nextTab);
   }
+
+  window.addEventListener("myspace-i18n-applied", () => {
+    if (!open || !root) return;
+    repaintChrome();
+    paint();
+  });
 
   window.MySpaceFilesPanel = {
     show,

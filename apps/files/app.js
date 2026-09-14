@@ -602,4 +602,14 @@
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
+
+  window.addEventListener("myspace-i18n-applied", () => {
+    try {
+      window.MySpaceI18n?.applyDom?.(document);
+      void refreshSidebar();
+      if (state.cwd) void navigate(state.cwd, { skipHistory: true });
+    } catch {
+      /* ignore */
+    }
+  });
 })();

@@ -1,4 +1,11 @@
 (function () {
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const PAGES = ["queue", "active", "done", "enqueue", "capacity", "about"];
 
   const state = {
@@ -111,9 +118,11 @@
   function updateBlurb() {
     const s = state.stats || {};
     if (el.blurb) {
-      el.blurb.textContent = `${s.queued || 0} queued · ${s.running || 0} running${
-        s.pausedByFocus ? " · background paused by Focus" : ""
-      }`;
+      el.blurb.textContent =
+        tt("service.jobs.blurbStats", `${s.queued || 0} queued · ${s.running || 0} running`, {
+          queued: s.queued || 0,
+          running: s.running || 0,
+        }) + (s.pausedByFocus ? tt("service.jobs.blurbPausedFocus", " · background paused by Focus") : "");
     }
   }
 
@@ -122,12 +131,12 @@
     const pools = s.pools || {};
     if (!el.statGrid) return;
     const cards = [
-      { label: "Queued", value: s.queued || 0 },
-      { label: "Running", value: s.running || 0 },
-      { label: "Connect", value: pools.connect?.running || 0 },
-      { label: "Interactive", value: pools.interactive?.running || 0 },
-      { label: "Shell", value: pools.shell?.running || 0 },
-      { label: "Background", value: pools.background?.running || 0 },
+      { label: tt("service.jobs.statQueued", "Queued"), value: s.queued || 0 },
+      { label: tt("service.jobs.statRunning", "Running"), value: s.running || 0 },
+      { label: tt("service.jobs.statConnect", "Connect"), value: pools.connect?.running || 0 },
+      { label: tt("service.jobs.statInteractive", "Interactive"), value: pools.interactive?.running || 0 },
+      { label: tt("service.jobs.statShell", "Shell"), value: pools.shell?.running || 0 },
+      { label: tt("service.jobs.statBackground", "Background"), value: pools.background?.running || 0 },
     ];
     el.statGrid.innerHTML = cards
       .map(
@@ -142,7 +151,10 @@
   function paintJobList(listEl, emptyEl, tab) {
     const rows = filtered(tab);
     if (tab === "queue" && el.queueMeta) {
-      el.queueMeta.textContent = `${rows.length} job${rows.length === 1 ? "" : "s"}`;
+      el.queueMeta.textContent =
+        rows.length === 1
+          ? tt("service.jobs.jobCount", `${rows.length} job`, { count: rows.length })
+          : tt("service.jobs.jobCountPlural", `${rows.length} jobs`, { count: rows.length });
     }
     if (!listEl) return;
     if (!rows.length) {
@@ -163,7 +175,7 @@
               <span class="pill">${escapeHtml(j.pool || j.kind || "")}</span>
               <span>${escapeHtml(j.kind || "")}</span>
               ${j.source ? `<span>· ${escapeHtml(j.source)}</span>` : ""}
-              ${j.capacityBypass ? `<span>· bypass</span>` : ""}
+              ${j.capacityBypass ? `<span>· ${escapeHtml(tt("service.jobs.bypass", "bypass"))}</span>` : ""}
               ${j.durationMs != null ? `<span>· ${escapeHtml(j.durationMs)}ms</span>` : ""}
             </div>
             ${detail ? `<div class="job-detail">${escapeHtml(detail)}</div>` : ""}
@@ -171,8 +183,8 @@
           <div class="job-actions">
             ${
               j.status === "queued" || j.status === "running"
-                ? `<button type="button" class="btn btn-sm btn-danger" data-cancel="${escapeHtml(j.id)}">Cancel</button>`
-                : `<button type="button" class="btn btn-sm" data-retry="${escapeHtml(j.id)}">Retry</button>`
+                ? `<button type="button" class="btn btn-sm btn-danger" data-cancel="${escapeHtml(j.id)}">${escapeHtml(tt("service.jobs.cancel", "Cancel"))}</button>`
+                : `<button type="button" class="btn btn-sm" data-retry="${escapeHtml(j.id)}">${escapeHtml(tt("service.common.retry", "Retry"))}</button>`
             }
           </div>
         </article>`;
@@ -183,14 +195,14 @@
       btn.addEventListener("click", async () => {
         await api()?.cancel?.(btn.dataset.cancel);
         await refresh();
-        setStatus("Cancelled", "ok");
+        setStatus(tt("service.jobs.cancelled", "Cancelled"), "ok");
       });
     });
     listEl.querySelectorAll("[data-retry]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const res = await api()?.retry?.(btn.dataset.retry);
-        if (res?.ok === false) setStatus(res.error || "Retry failed", "err");
-        else setStatus("Retried", "ok");
+        if (res?.ok === false) setStatus(res.error || tt("service.jobs.retryFailed", "Retry failed"), "err");
+        else setStatus(tt("service.jobs.retried", "Retried"), "ok");
         await refresh();
       });
     });
@@ -201,32 +213,32 @@
     const kind = state.enqueueKind;
     const label =
       kind === "script"
-        ? "Script name"
+        ? tt("service.jobs.scriptName", "Script name")
         : kind === "delay"
-          ? "Milliseconds"
+          ? tt("service.jobs.milliseconds", "Milliseconds")
           : kind === "noop"
             ? "—"
-            : "Shell command";
+            : tt("service.jobs.shellCommand", "Shell command");
     const placeholder =
       kind === "shell"
-        ? "e.g. msl(list)"
+        ? tt("service.jobs.placeholderShell", "e.g. msl(list)")
         : kind === "script"
-          ? "e.g. morning"
+          ? tt("service.jobs.placeholderScript", "e.g. morning")
           : kind === "delay"
             ? "1500"
             : "";
     el.enqueuePanel.innerHTML = `
       <label class="field">
-        <span>Kind</span>
+        <span>${escapeHtml(tt("service.jobs.kindLabel", "Kind"))}</span>
         <select id="enq-kind">
-          <option value="shell" ${kind === "shell" ? "selected" : ""}>Shell command</option>
-          <option value="script" ${kind === "script" ? "selected" : ""}>Saved script</option>
-          <option value="delay" ${kind === "delay" ? "selected" : ""}>Delay (ms)</option>
-          <option value="noop" ${kind === "noop" ? "selected" : ""}>No-op (smoke test)</option>
+          <option value="shell" ${kind === "shell" ? "selected" : ""}>${escapeHtml(tt("service.jobs.shellCommand", "Shell command"))}</option>
+          <option value="script" ${kind === "script" ? "selected" : ""}>${escapeHtml(tt("service.jobs.savedScript", "Saved script"))}</option>
+          <option value="delay" ${kind === "delay" ? "selected" : ""}>${escapeHtml(tt("service.jobs.delayMs", "Delay (ms)"))}</option>
+          <option value="noop" ${kind === "noop" ? "selected" : ""}>${escapeHtml(tt("service.jobs.noopSmoke", "No-op (smoke test)"))}</option>
         </select>
       </label>
       <label class="field">
-        <span>Title <em style="font-style:normal;font-weight:400;opacity:.8">optional</em></span>
+        <span>${escapeHtml(tt("service.jobs.titleOptional", "Title optional"))}</span>
         <input id="enq-title" type="text" value="${escapeHtml(state.enqueueTitle)}" spellcheck="false" />
       </label>
       <label class="field">
@@ -234,7 +246,7 @@
         <input id="enq-text" type="text" value="${escapeHtml(state.enqueueText)}" spellcheck="false"
           ${kind === "noop" ? "disabled" : ""} placeholder="${escapeHtml(placeholder)}" />
       </label>
-      <button type="button" class="btn btn-primary" id="enq-submit">Enqueue</button>`;
+      <button type="button" class="btn btn-primary" id="enq-submit">${escapeHtml(tt("service.jobs.enqueue", "Enqueue"))}</button>`;
 
     document.getElementById("enq-kind")?.addEventListener("change", (e) => {
       state.enqueueKind = e.target.value;
@@ -258,10 +270,15 @@
       if (state.enqueueKind === "delay") payload.delayMs = Number(state.enqueueText) || 1000;
       const res = await api()?.enqueue?.(payload);
       if (res?.ok === false) {
-        setStatus(res.error || "Enqueue failed", "err");
+        setStatus(res.error || tt("service.jobs.enqueueFailed", "Enqueue failed"), "err");
         return;
       }
-      setStatus(`Queued · ${res.job?.title || state.enqueueKind}`, "ok");
+      setStatus(
+        tt("service.jobs.queuedTitle", `Queued · ${res.job?.title || state.enqueueKind}`, {
+          title: res.job?.title || state.enqueueKind,
+        }),
+        "ok"
+      );
       state.enqueueText = "";
       state.enqueueTitle = "";
       setPage("queue");
@@ -278,7 +295,7 @@
 
     el.capacityPanel.innerHTML = `
       <p class="hint" style="padding-top:1rem">
-        Four compute pools. Interactive and Connect are never paused by Focus or daily budget.
+        ${escapeHtml(tt("service.jobs.poolHint", "Four compute pools. Interactive and Connect are never paused by Focus or daily budget."))}
       </p>
       <div class="pool-grid">
         ${[
@@ -290,11 +307,11 @@
           .map(
             ([id, label, min, max]) => `<div class="pool-card">
             <label>
-              ${label} max concurrent
+              ${escapeHtml(tt("service.jobs.poolMaxConcurrent", `${label} max concurrent`, { pool: label }))}
               <input type="number" min="${min}" max="${max}" id="pool-${id}"
                 value="${escapeHtml(pools[id]?.maxConcurrent ?? (id === "connect" ? 10 : id === "interactive" ? 6 : id === "shell" ? 4 : 2))}" />
             </label>
-            <div class="pool-running">Running now: ${escapeHtml(poolRun[id]?.running ?? 0)}</div>
+            <div class="pool-running">${escapeHtml(tt("service.jobs.poolRunningNow", `Running now: ${poolRun[id]?.running ?? 0}`, { count: poolRun[id]?.running ?? 0 }))}</div>
           </div>`
           )
           .join("")}
@@ -302,41 +319,41 @@
       <label class="check-row">
         <input type="checkbox" id="cap-connect-boost" ${c.connectBoost !== false ? "checked" : ""} />
         <div>
-          <strong>Connect boost</strong>
-          <span>Prefer Connect / mail / browser work with a dedicated high-capacity pool.</span>
+          <strong>${escapeHtml(tt("service.jobs.connectBoost", "Connect boost"))}</strong>
+          <span>${escapeHtml(tt("service.jobs.connectBoostHint", "Prefer Connect / mail / browser work with a dedicated high-capacity pool."))}</span>
         </div>
       </label>
       <label class="field" style="padding:0.85rem 1.15rem;margin:0;border-bottom:1px solid var(--line-soft)">
-        <span>Max queued (background/shell; interactive ignores this)</span>
+        <span>${escapeHtml(tt("service.jobs.maxQueued", "Max queued (background/shell; interactive ignores this)"))}</span>
         <input type="number" min="20" max="300" id="cap-queued" value="${escapeHtml(c.maxQueued ?? 100)}" />
       </label>
       <label class="field" style="padding:0.85rem 1.15rem;margin:0;border-bottom:1px solid var(--line-soft)">
-        <span>Background daily budget (seconds, 0 = unlimited)</span>
+        <span>${escapeHtml(tt("service.jobs.dailyBudget", "Background daily budget (seconds, 0 = unlimited)"))}</span>
         <input type="number" min="0" max="86400" id="cap-budget" value="${escapeHtml(c.dailyBudgetSeconds ?? 0)}" />
       </label>
       <label class="check-row">
         <input type="checkbox" id="cap-focus" ${c.pauseWhenFocus !== false ? "checked" : ""} />
         <div>
-          <strong>Pause background while Focus is on</strong>
-          <span>Holds the background pool during focus sessions.</span>
+          <strong>${escapeHtml(tt("service.jobs.pauseFocus", "Pause background while Focus is on"))}</strong>
+          <span>${escapeHtml(tt("service.jobs.pauseFocusHint", "Holds the background pool during focus sessions."))}</span>
         </div>
       </label>
       <label class="check-row">
         <input type="checkbox" id="cap-notify" ${c.notifyOnDone !== false ? "checked" : ""} />
         <div>
-          <strong>Notify on completions</strong>
-          <span>Surface background completions and failures.</span>
+          <strong>${escapeHtml(tt("service.jobs.notifyDone", "Notify on completions"))}</strong>
+          <span>${escapeHtml(tt("service.jobs.notifyDoneHint", "Surface background completions and failures."))}</span>
         </div>
       </label>
-      <div class="section-pad">Exceptions</div>
-      <p class="hint">Match app id / source / title → force a pool. Max 8.</p>
+      <div class="section-pad">${escapeHtml(tt("service.jobs.exceptions", "Exceptions"))}</div>
+      <p class="hint">${escapeHtml(tt("service.jobs.exceptionsHint", "Match app id / source / title → force a pool. Max 8."))}</p>
       <div class="ex-list" id="ex-list">
         ${
           exceptions.length
             ? exceptions
                 .map(
                   (ex, i) => `<div class="ex-row" data-ex-i="${i}">
-              <input type="text" data-ex-match value="${escapeHtml(ex.match || "")}" placeholder="match" spellcheck="false" />
+              <input type="text" data-ex-match value="${escapeHtml(ex.match || "")}" placeholder="${escapeHtml(tt("service.jobs.matchPlaceholder", "match"))}" spellcheck="false" />
               <select data-ex-pool>
                 <option value="interactive" ${ex.pool === "interactive" ? "selected" : ""}>Interactive</option>
                 <option value="connect" ${ex.pool === "connect" ? "selected" : ""}>Connect</option>
@@ -344,23 +361,23 @@
                 <option value="background" ${ex.pool === "background" ? "selected" : ""}>Background</option>
               </select>
               <select data-ex-priority>
-                <option value="high" ${ex.priority === "high" ? "selected" : ""}>High</option>
-                <option value="normal" ${ex.priority === "normal" ? "selected" : ""}>Normal</option>
-                <option value="low" ${ex.priority === "low" ? "selected" : ""}>Low</option>
+                <option value="high" ${ex.priority === "high" ? "selected" : ""}>${escapeHtml(tt("service.jobs.priorityHigh", "High"))}</option>
+                <option value="normal" ${ex.priority === "normal" ? "selected" : ""}>${escapeHtml(tt("service.jobs.priorityNormal", "Normal"))}</option>
+                <option value="low" ${ex.priority === "low" ? "selected" : ""}>${escapeHtml(tt("service.jobs.priorityLow", "Low"))}</option>
               </select>
-              <button type="button" class="btn btn-sm" data-ex-remove>Remove</button>
+              <button type="button" class="btn btn-sm" data-ex-remove>${escapeHtml(tt("service.common.remove", "Remove"))}</button>
             </div>`
                 )
                 .join("")
-            : `<p class="hint" style="padding:0">No exceptions — defaults by activity type.</p>`
+            : `<p class="hint" style="padding:0">${escapeHtml(tt("service.jobs.noExceptions", "No exceptions — defaults by activity type."))}</p>`
         }
       </div>
       <div class="cap-actions">
-        <button type="button" class="btn" id="ex-add">Add exception</button>
+        <button type="button" class="btn" id="ex-add">${escapeHtml(tt("service.jobs.addException", "Add exception"))}</button>
       </div>
       <p class="hint">
-        Background used today: ${escapeHtml(c.usedBudgetSecondsToday || 0)}s
-        ${poolRun.background?.pausedByFocus ? " · <strong>Background paused by Focus</strong>" : ""}
+        ${escapeHtml(tt("service.jobs.backgroundUsedToday", `Background used today: ${c.usedBudgetSecondsToday || 0}s`, { seconds: c.usedBudgetSecondsToday || 0 }))}
+        ${poolRun.background?.pausedByFocus ? ` · <strong>${escapeHtml(tt("service.jobs.backgroundPausedFocus", "Background paused by Focus"))}</strong>` : ""}
       </p>`;
 
     function readExceptions() {
@@ -376,7 +393,7 @@
     document.getElementById("ex-add")?.addEventListener("click", () => {
       const cur = readExceptions();
       if (cur.length >= 8) {
-        setStatus("Max 8 exceptions", "err");
+        setStatus(tt("service.jobs.maxExceptions", "Max 8 exceptions"), "err");
         return;
       }
       cur.push({ match: "", pool: "shell", priority: "normal" });
@@ -418,11 +435,11 @@
       allowProgram: true,
     });
     if (res?.ok === false) {
-      setStatus(res.error || "Save failed", "err");
+      setStatus(res.error || tt("service.jobs.saveFailed", "Save failed"), "err");
       return;
     }
     state.capacity = res.capacity || state.capacity;
-    setStatus("Capacity saved", "ok");
+    setStatus(tt("service.jobs.capacitySaved", "Capacity saved"), "ok");
     await refresh();
   }
 
@@ -445,12 +462,12 @@
   async function refresh() {
     const jobsApi = api();
     if (!jobsApi) {
-      setStatus("Jobs bridge unavailable", "err");
+      setStatus(tt("service.jobs.bridgeUnavailable", "Jobs bridge unavailable"), "err");
       return;
     }
     const res = await jobsApi.stats();
     if (res?.ok === false) {
-      setStatus(res.error || "Could not load jobs", "err");
+      setStatus(res.error || tt("service.jobs.loadFailed", "Could not load jobs"), "err");
       return;
     }
     state.jobs = res?.jobs || [];
@@ -492,15 +509,15 @@
     const btn = e.target.closest("[data-page]");
     if (btn) setPage(btn.dataset.page);
   });
-  el.btnRefresh?.addEventListener("click", () => void refresh().then(() => setStatus("Refreshed", "ok")));
+  el.btnRefresh?.addEventListener("click", () => void refresh().then(() => setStatus(tt("service.jobs.refreshed", "Refreshed"), "ok")));
   el.btnClear?.addEventListener("click", async () => {
     await api()?.clearFinished?.();
-    setStatus("Cleared finished", "ok");
+    setStatus(tt("service.jobs.clearedFinished", "Cleared finished"), "ok");
     await refresh();
   });
   el.btnClearDone?.addEventListener("click", async () => {
     await api()?.clearFinished?.();
-    setStatus("Cleared finished", "ok");
+    setStatus(tt("service.jobs.clearedFinished", "Cleared finished"), "ok");
     await refresh();
   });
   el.btnCapSave?.addEventListener("click", () => void saveCapacity());
@@ -522,6 +539,8 @@
     applyRoute,
     refresh,
   };
+
+  window.addEventListener("myspace-i18n-applied", () => paint());
 
   ensureLive();
   void refresh()

@@ -4,6 +4,17 @@
   let catalog = null;
   let searchQuery = "";
 
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    const fill = (s) => {
+      if (!vars || typeof s !== "string") return s;
+      return s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] != null ? String(vars[k]) : `{${k}}`));
+    };
+    if (!I?.t) return fill(fallback || key);
+    const v = I.t(key, vars);
+    return v === key ? fill(fallback || key) : v;
+  }
+
   const MARK_SRC = {
     "atom-white": "brand/atom-white.png",
     "atom-green": "brand/atom-green.png",
@@ -65,9 +76,27 @@
 
   function seriesBadge(service) {
     if (!service.seriesLabel && !service.series) return "";
-    const label = service.seriesLabel || String(service.series || "").toUpperCase();
+    const key = String(service.series || "").toLowerCase();
+    const I = window.MySpaceI18n;
+    const seriesKey = key ? `shell.series.${key}` : "";
+    let label = service.seriesLabel || String(service.series || "").toUpperCase();
+    if (I?.t && seriesKey) {
+      const translated = I.t(seriesKey);
+      if (translated !== seriesKey) label = translated;
+    }
     const seriesClass = service.series ? ` series-${escapeHtml(service.series)}` : "";
     return `<span class="platform-catalog-series${seriesClass}">${escapeHtml(label)}</span>`;
+  }
+
+  function localizedService(service) {
+    const I = window.MySpaceI18n;
+    if (!I?.platformField || !service?.id) return service;
+    return {
+      ...service,
+      name: I.platformField(service.id, "name", service.name),
+      tagline: I.platformField(service.id, "tagline", service.tagline),
+      summary: I.platformField(service.id, "summary", service.summary),
+    };
   }
 
   function surfacesHtml(service) {
@@ -148,7 +177,8 @@
     return keys.map((k) => map.get(k));
   }
 
-  function renderTile(s) {
+  function renderTile(raw) {
+    const s = localizedService(raw);
     return `
       <button type="button" class="platform-catalog-tile series-${escapeHtml(
         s.series || "platform"
@@ -162,14 +192,19 @@
 
   function renderList(services) {
     const groups = groupServicesBySeries(services);
+    const platformLabel = window.MySpaceI18n?.t?.("shell.series.platform") || "Platform";
     return groups
       .map((g) => {
         const title =
           g.key === "_platform"
-            ? `<div class="platform-catalog-series-heading-row"><h3 class="platform-catalog-series-heading">Platform</h3></div>`
+            ? `<div class="platform-catalog-series-heading-row"><h3 class="platform-catalog-series-heading">${escapeHtml(platformLabel)}</h3></div>`
             : `<div class="platform-catalog-series-heading-row"><h3 class="platform-catalog-series-heading series-${escapeHtml(
                 g.key
-              )}">${escapeHtml(g.label)}</h3></div>`;
+              )}">${escapeHtml(
+                window.MySpaceI18n?.t?.(`shell.series.${g.key}`) !== `shell.series.${g.key}`
+                  ? window.MySpaceI18n.t(`shell.series.${g.key}`)
+                  : g.label
+              )}</h3></div>`;
         return `<section class="platform-catalog-series-block" data-series="${escapeHtml(g.key)}">
           ${title}
           <div class="platform-catalog-tile-grid">
@@ -235,17 +270,36 @@
     hidePowerMenu();
     if (action === "restart") {
       hide();
-      toast("Restarting My Space…");
+      toast(tt("shell.power.restarting", "Restarting My Space…"));
       const res = await window.mySpace?.app?.restart?.();
-      if (res?.ok === false) toast(res.error || "Could not restart");
+      if (res?.ok === false) toast(res.error || tt("shell.power.restartFailed", "Could not restart"));
       return;
     }
     if (action === "quit") {
       hide();
-      toast("Closing My Space…");
+      toast(tt("shell.power.closing", "Closing My Space…"));
       const res = await window.mySpace?.app?.quit?.();
-      if (res?.ok === false) toast(res.error || "Could not quit");
+      if (res?.ok === false) toast(res.error || tt("shell.power.quitFailed", "Could not quit"));
     }
+  }
+
+  function applyPowerChrome() {
+    if (!root) return;
+    const powerBtn = root.querySelector("#platform-catalog-power");
+    if (powerBtn) {
+      powerBtn.title = tt("shell.power.title", "Power: restart or quit");
+      powerBtn.setAttribute("aria-label", tt("shell.power.aria", "Power options"));
+    }
+    const menu = root.querySelector("#platform-catalog-power-menu");
+    if (menu) menu.setAttribute("aria-label", tt("shell.power.aria", "Power options"));
+    const restart = root.querySelector('[data-power="restart"]');
+    if (restart) restart.textContent = tt("shell.power.restart", "Restart My Space");
+    const quit = root.querySelector('[data-power="quit"]');
+    if (quit) quit.textContent = tt("shell.power.quit", "Quit My Space");
+    const traySub = root.querySelector(".platform-catalog-tray-sub");
+    if (traySub) traySub.textContent = tt("shell.welcome.servicesTitle", "Platform services");
+    const closeBtn = root.querySelector(".platform-catalog-close");
+    if (closeBtn) closeBtn.setAttribute("aria-label", tt("service.common.close", "Close"));
   }
 
   function launchAppById(appId, options) {
@@ -770,15 +824,15 @@
           </div>
           <div class="platform-catalog-head-actions">
             <div class="platform-catalog-power-wrap">
-              <button type="button" class="platform-catalog-icon-btn platform-catalog-power" id="platform-catalog-power" title="Power — restart or quit" aria-label="Power options" aria-haspopup="menu" aria-expanded="false">
+              <button type="button" class="platform-catalog-icon-btn platform-catalog-power" id="platform-catalog-power" title="" aria-label="" aria-haspopup="menu" aria-expanded="false">
                 ${POWER_SVG}
               </button>
-              <div class="platform-catalog-power-menu hidden" id="platform-catalog-power-menu" role="menu" aria-label="Power options">
-                <button type="button" class="platform-catalog-power-item" role="menuitem" data-power="restart">Restart My Space</button>
-                <button type="button" class="platform-catalog-power-item is-danger" role="menuitem" data-power="quit">Quit My Space</button>
+              <div class="platform-catalog-power-menu hidden" id="platform-catalog-power-menu" role="menu" aria-label="">
+                <button type="button" class="platform-catalog-power-item" role="menuitem" data-power="restart"></button>
+                <button type="button" class="platform-catalog-power-item is-danger" role="menuitem" data-power="quit"></button>
               </div>
             </div>
-            <button type="button" class="platform-catalog-icon-btn platform-catalog-close" aria-label="Close">×</button>
+            <button type="button" class="platform-catalog-icon-btn platform-catalog-close" aria-label="">×</button>
           </div>
         </footer>
       </div>`;
@@ -808,6 +862,7 @@
       if (e.target === root) hide();
     });
     document.body.appendChild(root);
+    applyPowerChrome();
     return root;
   }
 
@@ -818,6 +873,7 @@
     searchQuery = "";
     const searchInput = root.querySelector("#platform-catalog-search");
     if (searchInput) searchInput.value = "";
+    applyPowerChrome();
     paintCatalogList();
     open = true;
     root.classList.remove("hidden");
@@ -847,6 +903,12 @@
       return;
     }
     hide();
+  });
+
+  window.addEventListener("myspace-i18n-applied", () => {
+    if (!root) return;
+    applyPowerChrome();
+    if (open) paintCatalogList();
   });
 
   window.MySpacePlatformCatalog = {

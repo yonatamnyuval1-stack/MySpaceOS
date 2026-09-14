@@ -76,7 +76,7 @@
       },
       {
         id: "open-split",
-        label: openTabs.length ? "Open split (with open app)" : "Open split (need another open app)",
+        label: openTabs.length ? "Open split" : "Open split",
         icon: "▣",
         disabled: !canSplit || !openTabs.length,
       },

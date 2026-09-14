@@ -1,4 +1,11 @@
 (function () {
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const HIDE_MODULES = new Set(["pulse", "composio", "parts"]);
 
   const els = {
@@ -65,7 +72,7 @@
 
   async function api(channel, args) {
     if (!window.myApp?.invoke) {
-      throw new Error("Pulse could not connect. ");
+      throw new Error(tt("service.pulse.connectCouldNot", "Pulse could not connect. "));
     }
     return window.myApp.invoke(channel, args || {});
   }
@@ -90,7 +97,9 @@
   }
 
   function deliveryLabel(delivery) {
-    return delivery === "ui" ? "Opens the app" : "Runs quietly";
+    return delivery === "ui"
+      ? tt("service.pulse.opensApp", "Opens the app")
+      : tt("service.pulse.runsQuietly", "Runs quietly");
   }
 
   async function loadProfiles() {
@@ -149,8 +158,11 @@
     const cmds = rows.reduce((n, p) => n + (p.commandCount || 0), 0);
     if (els.sidebarBlurb) {
       els.sidebarBlurb.textContent = rows.length
-        ? `${rows.length} apps · ${cmds} commands available`
-        : "Pick an app to see what other apps can ask it to do.";
+        ? tt("service.pulse.sidebarStats", `${rows.length} apps · ${cmds} commands available`, {
+            apps: rows.length,
+            cmds,
+          })
+        : tt("service.pulse.sidebarPickApp", "Pick an app to see what other apps can ask it to do.");
     }
   }
 
@@ -175,15 +187,18 @@
   }
 
   function paintDirectory() {
-    els.pageTitle.textContent = "Apps on Pulse";
-    els.pageSubtitle.textContent = "Choose an app to see the commands it accepts from other apps";
+    els.pageTitle.textContent = tt("service.pulse.appsTitle", "Apps on Pulse");
+    els.pageSubtitle.textContent = tt(
+      "service.pulse.directorySubLong",
+      "Choose an app to see the commands it accepts from other apps"
+    );
 
     const rows = visibleProfiles();
     if (!rows.length) {
       els.content.innerHTML = `
         <div class="empty-state">
-          <h3>No apps yet</h3>
-          <p>When an app adds a Pulse profile, it will show up here.</p>
+          <h3>${escapeHtml(tt("service.pulse.noApps", "No apps yet"))}</h3>
+          <p>${escapeHtml(tt("service.pulse.noAppsHint", "When an app adds a Pulse profile, it will show up here."))}</p>
         </div>`;
       return;
     }
@@ -200,10 +215,22 @@
               <span>${escapeHtml(p.tagline || p.description || "")}</span>
             </div>
             <div class="app-row-meta">
-              ${p.isExternal ? `<span class="pill pill--external">External</span>` : ""}
-              ${p.isService && !p.isExternal ? `<span class="pill pill--service">Service</span>` : ""}
-              <span>${p.commandCount || 0} command${(p.commandCount || 0) === 1 ? "" : "s"}</span>
-              ${(p.eventCount || 0) > 0 ? `<span>${p.eventCount} event${p.eventCount === 1 ? "" : "s"}</span>` : ""}
+              ${p.isExternal ? `<span class="pill pill--external">${escapeHtml(tt("service.pulse.externalPill", "External"))}</span>` : ""}
+              ${p.isService && !p.isExternal ? `<span class="pill pill--service">${escapeHtml(tt("service.pulse.servicePill", "Service"))}</span>` : ""}
+              <span>${
+                (p.commandCount || 0) === 1
+                  ? escapeHtml(tt("service.pulse.commandCount", `${p.commandCount || 0} command`, { count: p.commandCount || 0 }))
+                  : escapeHtml(tt("service.pulse.commandCountPlural", `${p.commandCount || 0} commands`, { count: p.commandCount || 0 }))
+              }</span>
+              ${
+                (p.eventCount || 0) > 0
+                  ? `<span>${
+                      p.eventCount === 1
+                        ? escapeHtml(tt("service.pulse.eventCount", `${p.eventCount} event`, { count: p.eventCount }))
+                        : escapeHtml(tt("service.pulse.eventCountPlural", `${p.eventCount} events`, { count: p.eventCount }))
+                    }</span>`
+                  : ""
+              }
             </div>
             <span class="app-row-chevron" aria-hidden="true">›</span>
           </button>`
@@ -220,8 +247,8 @@
     const fields = Object.keys(cmd.input || {});
     const hint = fields.length
       ? fields.map((f) => `<code>${escapeHtml(f)}</code>`).join(" ")
-      : "No parameters";
-    const placeholder = fields.map((f) => `${f}=`).join(" ") || "optional args…";
+      : tt("service.pulse.noParams", "No parameters");
+    const placeholder = fields.map((f) => `${f}=`).join(" ") || tt("service.pulse.optionalArgs", "optional args…");
 
     return `
       <article class="cmd-card">
@@ -233,14 +260,14 @@
           <span class="pill">${escapeHtml(deliveryLabel(cmd.delivery))}</span>
         </div>
         <div class="cmd-card-params">
-          <span class="params-label">Needs</span>
+          <span class="params-label">${escapeHtml(tt("service.pulse.needs", "Needs"))}</span>
           <span class="params-list">${hint}</span>
         </div>
         <details class="cmd-try">
-          <summary>Try this command</summary>
+          <summary>${escapeHtml(tt("service.pulse.tryCommand", "Try this command"))}</summary>
           <form class="try-form" data-verb="${escapeHtml(cmd.verb)}">
             <input type="text" name="args" placeholder="${escapeHtml(placeholder)}" spellcheck="false" autocomplete="off" />
-            <button type="submit" class="btn btn-primary">Send</button>
+            <button type="submit" class="btn btn-primary">${escapeHtml(tt("service.common.send", "Send"))}</button>
           </form>
         </details>
       </article>`;
@@ -254,10 +281,10 @@
             <h4>${escapeHtml(evt.title || evt.id)}</h4>
             <p>${escapeHtml(evt.description || "")}</p>
           </div>
-          <span class="pill pill-event">Broadcasts</span>
+          <span class="pill pill-event">${escapeHtml(tt("service.pulse.broadcasts", "Broadcasts"))}</span>
         </div>
         <div class="cmd-card-params">
-          <span class="params-label">Topic</span>
+          <span class="params-label">${escapeHtml(tt("service.pulse.topic", "Topic"))}</span>
           <code class="topic">${escapeHtml(evt.id)}</code>
         </div>
       </article>`;
@@ -281,32 +308,32 @@
         ${logoHtml(p, "app-logo--lg")}
         <div>
           <h2>${escapeHtml(p.name || p.moduleId)}${
-            p.isService ? ` <span class="pill pill--service">Service</span>` : ""
+            p.isService ? ` <span class="pill pill--service">${escapeHtml(tt("service.pulse.servicePill", "Service"))}</span>` : ""
           }</h2>
           <p>${escapeHtml(p.tagline || p.description || "")}</p>
         </div>
       </header>
 
       <section class="block">
-        <h3>Commands other apps can send</h3>
+        <h3>${escapeHtml(tt("service.pulse.commandsHeading", "Commands other apps can send"))}</h3>
         ${
           commands.length
             ? `<div class="cmd-list">${commands.map((c) => paintCommand(p.moduleId, c)).join("")}</div>`
-            : `<p class="quiet">This app has not published any commands yet.</p>`
+            : `<p class="quiet">${escapeHtml(tt("service.pulse.noCommands", "This app has not published any commands yet."))}</p>`
         }
       </section>
 
       <section class="block">
-        <h3>Events this app can broadcast</h3>
+        <h3>${escapeHtml(tt("service.pulse.eventsHeading", "Events this app can broadcast"))}</h3>
         ${
           events.length
             ? `<div class="cmd-list">${events.map((e) => paintEvent(e)).join("")}</div>`
-            : `<p class="quiet">No events published yet.</p>`
+            : `<p class="quiet">${escapeHtml(tt("service.pulse.noEvents", "No events published yet."))}</p>`
         }
       </section>
 
       <div class="result-panel ${state.lastResult ? "" : "hidden"}" id="profile-result">
-        <h4>Response</h4>
+        <h4>${escapeHtml(tt("service.pulse.response", "Response"))}</h4>
         <pre></pre>
       </div>`;
 
@@ -327,15 +354,15 @@
             box.querySelector("pre").textContent = state.lastResult;
           }
         } catch (err) {
-          showBanner(err.message || "Command failed", true);
+          showBanner(err.message || tt("service.pulse.commandFailed", "Command failed"), true);
         }
       });
     });
   }
 
   function paintExternal() {
-    els.pageTitle.textContent = "External tools";
-    els.pageSubtitle.textContent = "Connect accounts and call tools outside My Space";
+    els.pageTitle.textContent = tt("service.pulse.externalTitle", "External tools");
+    els.pageSubtitle.textContent = tt("service.pulse.externalSub", "Connect accounts and call tools outside My Space");
 
     const st = state.external.status || {};
     const hasKey = !!st.hasKey;
@@ -676,7 +703,7 @@
         paintExternal();
         showBanner("Connections refreshed");
       } catch (err) {
-        showBanner(err.message || "Refresh failed", true);
+        showBanner(err.message || tt("service.pulse.refreshFailed", "Refresh failed"), true);
       }
     });
 
@@ -766,14 +793,14 @@
   }
 
   function paintActivity() {
-    els.pageTitle.textContent = "Recent activity";
-    els.pageSubtitle.textContent = "Commands and events that recently went through Pulse";
+    els.pageTitle.textContent = tt("service.pulse.activityTitle", "Recent activity");
+    els.pageSubtitle.textContent = tt("service.pulse.activitySub", "Commands and events that recently went through Pulse");
 
     if (!state.log.length) {
       els.content.innerHTML = `
         <div class="empty-state">
-          <h3>Nothing yet</h3>
-          <p>Activity will show up here when apps talk to each other.</p>
+          <h3>${escapeHtml(tt("service.pulse.nothingYet", "Nothing yet"))}</h3>
+          <p>${escapeHtml(tt("service.pulse.activityHint", "Activity will show up here when apps talk to each other."))}</p>
         </div>`;
       return;
     }
@@ -786,10 +813,10 @@
             const label = row.route || row.topic || "—";
             const kind =
               row.kind === "event"
-                ? "Event"
+                ? tt("service.pulse.kindEvent", "Event")
                 : row.kind === "command-ui" || row.kind === "command-ipc"
-                  ? "Command"
-                  : row.kind || "Update";
+                  ? tt("service.pulse.kindCommand", "Command")
+                  : row.kind || tt("service.pulse.kindUpdate", "Update");
             return `
               <div class="activity-row">
                 <span class="activity-kind">${escapeHtml(kind)}</span>
@@ -804,7 +831,7 @@
 
   async function refresh() {
     showBanner(null);
-    els.content.innerHTML = `<div class="loading-state"><div class="loading-bar"></div><p>Loading…</p></div>`;
+    els.content.innerHTML = `<div class="loading-state"><div class="loading-bar"></div><p>${escapeHtml(tt("service.common.loading", "Loading…"))}</p></div>`;
     try {
       if (state.page === "activity") {
         await loadLog();
@@ -818,11 +845,11 @@
         else paintDirectory();
       }
     } catch (err) {
-      state.error = err.message || "Load failed";
+      state.error = err.message || tt("service.pulse.loadFailed", "Load failed");
       showBanner(state.error, true);
       els.content.innerHTML = `
         <div class="empty-state">
-          <h3>Could not load</h3>
+          <h3>${escapeHtml(tt("service.pulse.couldNotLoad", "Could not load"))}</h3>
           <p>${escapeHtml(state.error)}</p>
         </div>`;
     }
@@ -847,7 +874,7 @@
         state.lastResult = null;
         await refresh();
       } catch (err) {
-        showBanner(err.message || "Refresh failed", true);
+        showBanner(err.message || tt("service.pulse.refreshFailed", "Refresh failed"), true);
       }
     });
   }
@@ -868,6 +895,8 @@
     }
     setPage("directory");
   }
+
+  window.addEventListener("myspace-i18n-applied", () => void refresh());
 
   window.PulseApp = { setPage, openProfile, refresh, applyRoute };
   bind();

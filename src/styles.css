@@ -6738,3 +6738,22 @@ body {
   cursor: pointer;
 }
 .files-drive:hover { background: rgba(9, 105, 218, 0.1); }
+
+/* OS UI language — RTL layout for Hebrew */
+html[dir="rtl"] .taskbar-section--start {
+  flex-direction: row-reverse;
+}
+html[dir="rtl"] .taskbar-account-menu,
+html[dir="rtl"] .os-account-card,
+html[dir="rtl"] .settings-shell,
+html[dir="rtl"] .welcome-hub,
+html[dir="rtl"] .app-rail-series-menu-text {
+  text-align: right;
+}
+html[dir="rtl"] .os-account-form,
+html[dir="rtl"] .login-form {
+  text-align: right;
+}
+html[dir="rtl"] .app-rail-series-menu-open {
+  flex-direction: row-reverse;
+}

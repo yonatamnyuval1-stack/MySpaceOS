@@ -1,9 +1,9 @@
 (function () {
   const PAGE_META = {
-    devices: { title: "Devices", subtitle: "Pair a phone on the same Wi‑Fi." },
-    places: { title: "Places", subtitle: "Host folders, drives, and favorites on this PC" },
-    actions: { title: "Share", subtitle: "Clipboard, paths, and open-outside actions" },
-    host: { title: "Host", subtitle: "Windows sound, display, Bluetooth, printers" },
+    devices: { titleKey: "service.bridge.devices", subtitleKey: "service.bridge.devicesSub" },
+    places: { titleKey: "service.bridge.places", subtitleKey: "service.bridge.placesSub" },
+    actions: { titleKey: "service.bridge.share", subtitleKey: "service.bridge.shareSub" },
+    host: { titleKey: "service.bridge.host", subtitleKey: "service.bridge.hostSub" },
   };
 
   const ui = {
@@ -16,17 +16,27 @@
 
   let active = "devices";
 
+  function tt(key, vars) {
+    const fn = window.MySpaceI18n?.t;
+    return typeof fn === "function" ? fn(key, vars) : key;
+  }
+
   function pageEl(id) {
     return document.getElementById(`page-${id}`);
+  }
+
+  function paintPageChrome(pageId) {
+    const id = PAGE_META[pageId] ? pageId : "devices";
+    const meta = PAGE_META[id];
+    if (ui.title) ui.title.textContent = tt(meta.titleKey);
+    if (ui.subtitle) ui.subtitle.textContent = tt(meta.subtitleKey);
+    if (ui.brandSub) ui.brandSub.textContent = tt(meta.titleKey);
   }
 
   async function setActivePage(page) {
     const id = PAGE_META[page] ? page : "devices";
     active = id;
-    const meta = PAGE_META[id];
-    if (ui.title) ui.title.textContent = meta.title;
-    if (ui.subtitle) ui.subtitle.textContent = meta.subtitle;
-    if (ui.brandSub) ui.brandSub.textContent = meta.title;
+    paintPageChrome(id);
 
     document.querySelectorAll(".page").forEach((el) => {
       const on = el.dataset.page === id;
@@ -49,8 +59,11 @@
       const pair = st.pair || {};
       if (ui.sidebarStatus) {
         ui.sidebarStatus.textContent = pair.running
-          ? `Pairing on :${pair.port} · ${pair.devices?.length || 0} device(s)`
-          : "Local Wi‑Fi · not Remote Hub";
+          ? tt("service.bridge.sidebarPairing", {
+              port: pair.port,
+              count: pair.devices?.length || 0,
+            })
+          : tt("service.bridge.sidebarLocal");
       }
     } catch {
     }
@@ -64,8 +77,16 @@
     });
   }
 
+  function onI18nApplied() {
+    paintPageChrome(active);
+    void refreshStatus();
+    const pageApi = window.OsBridgePages?.[active];
+    if (pageApi?.refresh) void pageApi.refresh();
+  }
+
   async function init() {
     bindNav();
+    window.addEventListener("myspace-i18n-applied", onI18nApplied);
     await setActivePage("devices");
     await refreshStatus();
     setInterval(refreshStatus, 8000);

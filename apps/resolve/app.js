@@ -1,4 +1,8 @@
 (function () {
+  function tt(key, vars) {
+    return window.MySpaceI18n?.t?.(key, vars) ?? key;
+  }
+
   const PAGES = ["inbox", "playbooks", "about"];
 
   const state = {
@@ -80,12 +84,12 @@
     const s = state.stats || {};
     if (el.statRow) {
       el.statRow.innerHTML = `
-        <span class="stat-chip"><strong>${s.open || 0}</strong> open</span>
-        <span class="stat-chip"><strong>${s.resolved || 0}</strong> resolved</span>
-        <span class="stat-chip"><strong>${s.playbooks || 0}</strong> playbooks</span>`;
+        <span class="stat-chip"><strong>${s.open || 0}</strong> ${escapeHtml(tt("service.resolve.statOpen"))}</span>
+        <span class="stat-chip"><strong>${s.resolved || 0}</strong> ${escapeHtml(tt("service.resolve.statResolved"))}</span>
+        <span class="stat-chip"><strong>${s.playbooks || 0}</strong> ${escapeHtml(tt("service.resolve.statPlaybooks"))}</span>`;
     }
     if (el.blurb) {
-      el.blurb.textContent = `${s.open || 0} open · Pulse reports land here`;
+      el.blurb.textContent = tt("service.resolve.blurbOpen", { open: s.open || 0 });
     }
     if (el.openCount) {
       const n = s.open || 0;
@@ -127,8 +131,8 @@
           <div class="incident-actions">
             ${
               canFix
-                ? `<button type="button" class="btn btn-primary btn-sm" data-apply="${escapeHtml(inc.id)}">Apply fix</button>
-                   <button type="button" class="btn btn-ghost btn-sm" data-dismiss="${escapeHtml(inc.id)}">Dismiss</button>`
+                ? `<button type="button" class="btn btn-primary btn-sm" data-apply="${escapeHtml(inc.id)}">${escapeHtml(tt("service.resolve.applyFix"))}</button>
+                   <button type="button" class="btn btn-ghost btn-sm" data-dismiss="${escapeHtml(inc.id)}">${escapeHtml(tt("service.resolve.dismiss"))}</button>`
                 : ""
             }
           </div>
@@ -138,7 +142,7 @@
 
     el.incidentList.querySelectorAll("[data-apply]").forEach((btn) => {
       btn.addEventListener("click", async () => {
-        if (!confirm("Apply the playbook fix for this incident?")) return;
+        if (!confirm(tt("service.resolve.confirmApply"))) return;
         const res = await api()?.apply({ id: btn.dataset.apply });
         if (res?.ok === false) alert(res.error || "Apply failed");
         else if (res?.result?.message) alert(res.result.message);
@@ -157,14 +161,14 @@
     if (!el.playbookList) return;
     const list = state.playbooks || [];
     if (!list.length) {
-      el.playbookList.innerHTML = `<p class="empty-msg">No playbooks in catalog.</p>`;
+      el.playbookList.innerHTML = `<p class="empty-msg">${escapeHtml(tt("service.resolve.emptyPlaybooks"))}</p>`;
       return;
     }
     el.playbookList.innerHTML = list
       .map(
         (pb) => `<article class="playbook-card">
-          <h3><code>${escapeHtml(pb.id)}</code>${pb.universal ? ' <span class="pill data">universal</span>' : ""}</h3>
-          <p>${escapeHtml(pb.title)} · ${escapeHtml(pb.category)}${pb.kind ? ` · ${escapeHtml(pb.kind)}` : ""} · ${pb.stepCount} step(s)</p>
+          <h3><code>${escapeHtml(pb.id)}</code>${pb.universal ? ` <span class="pill data">${escapeHtml(tt("service.resolve.universal"))}</span>` : ""}</h3>
+          <p>${escapeHtml(pb.title)} · ${escapeHtml(pb.category)}${pb.kind ? ` · ${escapeHtml(pb.kind)}` : ""} · ${escapeHtml(tt("service.resolve.steps", { count: pb.stepCount }))}</p>
         </article>`
       )
       .join("");
@@ -213,6 +217,12 @@
     const page = String(route?.page || "inbox").toLowerCase();
     if (["inbox", "playbooks", "about"].includes(page)) setPage(page);
   }
+
+  function onI18nApplied() {
+    paint();
+  }
+  window.addEventListener("myspace-i18n-applied", onI18nApplied);
+  window.addEventListener("myspace-i18n-ready", onI18nApplied);
 
   bind();
   readRoute();

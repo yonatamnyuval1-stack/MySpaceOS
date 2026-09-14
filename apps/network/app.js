@@ -50,6 +50,11 @@
     return window.myApp?.network;
   }
 
+  function tt(key, vars) {
+    const fn = window.MySpaceI18n?.t;
+    return typeof fn === "function" ? fn(key, vars) : key;
+  }
+
   function escapeHtml(s) {
     return String(s ?? "")
       .replace(/&/g, "&amp;")
@@ -97,7 +102,7 @@
   function paintChrome() {
     const s = state.status || {};
     if (el.sidebarMeta) {
-      const online = s.online ? "Online" : "Offline";
+      const online = s.online ? tt("service.network.online") : tt("service.network.offline");
       const ip = s.primaryIp || "—";
       el.sidebarMeta.textContent = `${online} · ${ip}`;
     }
@@ -121,10 +126,12 @@
 
     if (el.statusEyebrow) el.statusEyebrow.textContent = s.hostname || "Host";
     if (el.statusTitle) {
-      el.statusTitle.textContent = online ? "Connected" : "Offline or limited";
+      el.statusTitle.textContent = online ? tt("service.network.connected") : tt("service.network.offlineLimited");
     }
     if (el.statusPrimary) {
-      el.statusPrimary.textContent = s.primaryIp ? `Primary ${s.primaryIp}` : "No primary IPv4";
+      el.statusPrimary.textContent = s.primaryIp
+        ? tt("service.network.primaryIp", { ip: s.primaryIp })
+        : tt("service.network.noPrimaryIpv4");
     }
     if (el.statusDesc) {
       const parts = [];
@@ -162,8 +169,12 @@
     const results = checks?.results || [];
     if (el.checksSub) {
       el.checksSub.textContent = checks?.checkedAt
-        ? `Last check ${formatTime(checks.checkedAt)} · ${checks.passed}/${checks.total} passed`
-        : "DNS and service probes used by My Space apps";
+        ? tt("service.network.checksSubLast", {
+            time: formatTime(checks.checkedAt),
+            passed: checks.passed,
+            total: checks.total,
+          })
+        : tt("service.network.checksSubDefault");
     }
     if (el.checksEmpty) el.checksEmpty.classList.toggle("hidden", results.length > 0);
     if (!el.checkList) return;
@@ -267,7 +278,7 @@
     if (stateFilter !== "all") args.state = stateFilter;
     if (protocol !== "all") args.protocol = protocol;
     if (el.portsBody) {
-      el.portsBody.innerHTML = `<tr><td colspan="6" class="muted">Scanning ports…</td></tr>`;
+      el.portsBody.innerHTML = `<tr><td colspan="6" class="muted">${escapeHtml(tt("service.network.scanningPorts"))}</td></tr>`;
     }
     const res = await api()?.ports?.(args);
     state.ports = res?.ports || [];
@@ -289,7 +300,7 @@
     const rows = state.ports || [];
     if (!el.portsBody) return;
     if (!rows.length) {
-      el.portsBody.innerHTML = `<tr><td colspan="6" class="muted">No ports match this filter.</td></tr>`;
+      el.portsBody.innerHTML = `<tr><td colspan="6" class="muted">${escapeHtml(tt("service.network.noPortsMatch"))}</td></tr>`;
     } else {
       el.portsBody.innerHTML = rows
         .map((p) => {
@@ -403,6 +414,19 @@
 
   window.__myspaceApplyRoute = applyRoute;
   window.NetworkApp = { setPage, applyRoute };
+
+  function onI18nApplied() {
+    paintChrome();
+    if (state.page === "status") {
+      paintStatus();
+      paintChecks();
+    }
+    if (state.page === "adapters") paintAdapters();
+    if (state.page === "ports") paintPorts({ totalMatched: state.ports.length });
+    if (state.page === "about") paintAbout();
+  }
+
+  window.addEventListener("myspace-i18n-applied", onI18nApplied);
 
   bind();
   setPage("status");

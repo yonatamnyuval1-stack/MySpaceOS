@@ -1,4 +1,8 @@
 (function () {
+  function tt(key, vars) {
+    return window.MySpaceI18n?.t?.(key, vars) ?? key;
+  }
+
   const INPUT_HINTS = {
     "space.bodies.search": ["q"],
     "space.bodies.get": ["id"],
@@ -139,7 +143,11 @@
 
   function updateBlurb() {
     if (!el.blurb) return;
-    el.blurb.textContent = `${state.capabilities.length} capabilities · ${state.library.length} keys · ${countInjections()} active links`;
+    el.blurb.textContent = tt("service.msl.blurbStats", {
+      caps: state.capabilities.length,
+      keys: state.library.length,
+      links: countInjections(),
+    });
   }
 
   function setPage(page) {
@@ -190,9 +198,9 @@
     if (el.mintPreview) {
       el.mintPreview.textContent = drafts.length
         ? drafts.map((d) => d.uri).join("\n")
-        : "Select tools to preview keys";
+        : tt("service.msl.previewEmpty");
     }
-    if (el.mintSelCount) el.mintSelCount.textContent = `${drafts.length} selected`;
+    if (el.mintSelCount) el.mintSelCount.textContent = tt("service.msl.selectedCount", { count: drafts.length });
   }
 
   function paintCaps() {
@@ -203,15 +211,17 @@
         .toLowerCase()
         .includes(q);
     });
-    if (el.capsMeta) el.capsMeta.textContent = `${rows.length} of ${state.capabilities.length}`;
+    if (el.capsMeta) {
+      el.capsMeta.textContent = tt("service.msl.ofCount", { shown: rows.length, total: state.capabilities.length });
+    }
     if (!el.capsList) return;
     if (!rows.length) {
       el.capsList.innerHTML = "";
       el.capsEmpty?.classList.remove("hidden");
       if (el.capsEmpty) {
         el.capsEmpty.innerHTML = state.capabilities.length
-          ? "<strong>No capabilities match</strong><p>Try another filter, or clear the search.</p>"
-          : "<strong>No capabilities loaded</strong><p>Press Refresh, or restart My Space if this persists.</p>";
+          ? `<strong>${escapeHtml(tt("service.msl.emptyCapsMatch"))}</strong><p>${escapeHtml(tt("service.msl.emptyCapsMatchHint"))}</p>`
+          : `<strong>${escapeHtml(tt("service.msl.emptyCapsNone"))}</strong><p>${escapeHtml(tt("service.msl.emptyCapsNoneHint"))}</p>`;
       }
       return;
     }
@@ -227,8 +237,8 @@
         <span><span class="pill muted">${escapeHtml(c.provider || "—")}</span></span>
         <span><span class="pill">${escapeHtml(c.kind || "—")}</span></span>
         <span class="row-actions">
-          <button type="button" class="btn btn-sm" data-invoke="${escapeHtml(c.id)}">Invoke</button>
-          <button type="button" class="btn btn-sm btn-primary" data-mint-from="${escapeHtml(c.id)}">Mint</button>
+          <button type="button" class="btn btn-sm" data-invoke="${escapeHtml(c.id)}">${escapeHtml(tt("service.msl.invoke"))}</button>
+          <button type="button" class="btn btn-sm btn-primary" data-mint-from="${escapeHtml(c.id)}">${escapeHtml(tt("service.msl.mint"))}</button>
         </span>
       </div>`
       )
@@ -267,7 +277,12 @@
           `${k.label || ""} ${k.uri || ""} ${k.capability || ""}`.toLowerCase().includes(q)
       );
     }
-    if (el.keysMeta) el.keysMeta.textContent = `${keys.length} key${keys.length === 1 ? "" : "s"}`;
+    if (el.keysMeta) {
+      el.keysMeta.textContent =
+        keys.length === 1
+          ? tt("service.msl.keyCount", { count: keys.length })
+          : tt("service.msl.keyCountPlural", { count: keys.length });
+    }
     if (!el.keysList) return;
     if (!keys.length) {
       el.keysList.innerHTML = "";
@@ -283,10 +298,10 @@
           <div class="key-meta"><span class="pill">${escapeHtml(k.capability || "")}</span></div>
         </div>
         <div class="key-actions">
-          <button type="button" class="btn btn-sm" data-resolve="${escapeHtml(k.uri || "")}">Resolve</button>
-          <button type="button" class="btn btn-sm" data-copy="${escapeHtml(k.uri || "")}">Copy</button>
-          <button type="button" class="btn btn-sm btn-primary" data-inject-lib="${escapeHtml(k.id)}">Inject</button>
-          <button type="button" class="btn btn-sm btn-danger" data-del="${escapeHtml(k.id)}">Delete</button>
+          <button type="button" class="btn btn-sm" data-resolve="${escapeHtml(k.uri || "")}">${escapeHtml(tt("service.msl.resolveKey"))}</button>
+          <button type="button" class="btn btn-sm" data-copy="${escapeHtml(k.uri || "")}">${escapeHtml(tt("service.msl.copy"))}</button>
+          <button type="button" class="btn btn-sm btn-primary" data-inject-lib="${escapeHtml(k.id)}">${escapeHtml(tt("service.msl.injectBtn"))}</button>
+          <button type="button" class="btn btn-sm btn-danger" data-del="${escapeHtml(k.id)}">${escapeHtml(tt("service.msl.delete"))}</button>
         </div>
         <pre class="key-uri">${escapeHtml(k.uri || "")}</pre>
       </article>`
@@ -306,9 +321,9 @@
       btn.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(btn.dataset.copy || "");
-          setStatus("Copied", "ok");
+          setStatus(tt("service.common.copied"), "ok");
         } catch {
-          setStatus("Could not copy", "err");
+          setStatus(tt("service.common.copyFailed"), "err");
         }
       });
     });
@@ -328,7 +343,7 @@
         state.library = res.keys || [];
         paintKeys();
         updateBlurb();
-        setStatus("Deleted", "ok");
+        setStatus(tt("service.msl.deleted"), "ok");
       });
     });
   }
@@ -368,7 +383,7 @@
             .join("");
           return `<div class="cap-group">${escapeHtml(g)}</div>${rows}`;
         })
-        .join("") || `<p class="panel-hint">No tools match.</p>`;
+        .join("") || `<p class="panel-hint">${escapeHtml(tt("service.msl.noToolsMatch"))}</p>`;
 
     el.mintCaps.querySelectorAll("[data-cap]").forEach((inp) => {
       inp.addEventListener("change", () => {
@@ -426,11 +441,11 @@
     const opts = state.targets
       .map((t) => `<option value="${escapeHtml(t.id)}">${escapeHtml(t.name || t.id)}</option>`)
       .join("");
-    if (el.mintTarget) el.mintTarget.innerHTML = opts || `<option value="">No targets</option>`;
-    if (el.injectTarget) el.injectTarget.innerHTML = opts || `<option value="">No targets</option>`;
+    if (el.mintTarget) el.mintTarget.innerHTML = opts || `<option value="">${escapeHtml(tt("service.msl.noTargets"))}</option>`;
+    if (el.injectTarget) el.injectTarget.innerHTML = opts || `<option value="">${escapeHtml(tt("service.msl.noTargets"))}</option>`;
     if (el.injectFilter) {
       el.injectFilter.innerHTML =
-        `<option value="">All apps</option>` +
+        `<option value="">${escapeHtml(tt("service.msl.allApps"))}</option>` +
         state.targets.map((t) => `<option value="${escapeHtml(t.id)}">${escapeHtml(t.name || t.id)}</option>`).join("");
       el.injectFilter.value = state.injectFilter || "";
     }
@@ -446,7 +461,7 @@
               `<option value="${escapeHtml(k.id)}">${escapeHtml(k.label || k.capability || k.id)}</option>`
           )
           .join("")
-      : `<option value="">Mint a key first</option>`;
+      : `<option value="">${escapeHtml(tt("service.msl.mintKeyFirst"))}</option>`;
   }
 
   function paintInjections() {
@@ -475,7 +490,7 @@
           </div>
         </div>
         <div class="key-actions">
-          <button type="button" class="btn btn-sm btn-danger" data-rm-inj="${escapeHtml(k.appId)}" data-rm-uri="${escapeHtml(k.uri || "")}" data-rm-id="${escapeHtml(k.id || "")}">Remove</button>
+          <button type="button" class="btn btn-sm btn-danger" data-rm-inj="${escapeHtml(k.appId)}" data-rm-uri="${escapeHtml(k.uri || "")}" data-rm-id="${escapeHtml(k.id || "")}">${escapeHtml(tt("service.msl.remove"))}</button>
         </div>
         <pre class="key-uri">${escapeHtml(k.uri || "")}</pre>
       </article>`
@@ -491,7 +506,7 @@
         });
         if (!res?.ok) return setStatus(res?.error || "Remove failed", "err");
         await refreshInjections();
-        setStatus("Link removed", "ok");
+        setStatus(tt("service.msl.linkRemoved"), "ok");
       });
     });
   }
@@ -648,7 +663,7 @@
     const btn = e.target.closest("[data-page]");
     if (btn) setPage(btn.dataset.page);
   });
-  el.btnRefresh?.addEventListener("click", () => void refreshAll().then(() => setStatus("Refreshed", "ok")));
+  el.btnRefresh?.addEventListener("click", () => void refreshAll().then(() => setStatus(tt("service.msl.refreshed"), "ok")));
   el.capsSearch?.addEventListener("input", () => {
     state.capsQ = el.capsSearch.value || "";
     paintCaps();
@@ -668,9 +683,9 @@
     if (!text || text.startsWith("Select tools")) return;
     try {
       await navigator.clipboard.writeText(text);
-      setStatus("Copied", "ok");
+      setStatus(tt("service.common.copied"), "ok");
     } catch {
-      setStatus("Copy failed", "err");
+      setStatus(tt("service.common.copyFailed"), "err");
     }
   });
   el.btnMintSave?.addEventListener("click", () => void saveLibrary());
@@ -687,6 +702,19 @@
     refresh: refreshAll,
   };
   window.MslProtocolApp = window.MslApp;
+
+  function onI18nApplied() {
+    updateBlurb();
+    if (state.page === "caps") paintCaps();
+    if (state.page === "keys") paintKeys();
+    if (state.page === "mint") {
+      paintMintCaps();
+      updatePreview();
+    }
+    if (state.page === "inject") paintInjections();
+  }
+  window.addEventListener("myspace-i18n-applied", onI18nApplied);
+  window.addEventListener("myspace-i18n-ready", onI18nApplied);
 
   void refreshAll()
     .then(() => setPage("caps"))

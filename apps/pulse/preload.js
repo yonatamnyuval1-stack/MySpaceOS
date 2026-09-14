@@ -70,3 +70,9 @@ try {
 } catch (err) {
   console.error("[pulse preload] Link bridge failed:", err);
 }
+try {
+  const { attachOsI18n } = require("../shared/i18n/preload-bridge");
+  attachOsI18n(contextBridge, ipcRenderer);
+} catch (err) {
+  console.error("[pulse preload] i18n bridge failed:", err);
+}

@@ -32,7 +32,7 @@
     return;
   }
 
-  document.title = `${appTitle} — Sign in`;
+  document.title = `${appTitle}: Sign in`;
 
   const ui = {
     icon: document.getElementById("login-icon"),
@@ -144,12 +144,12 @@
     const label = ui.btnMyspaceLabel || ui.btnMyspace;
     if (myspaceUser?.username) {
       label.textContent = `Continue as ${myspaceUser.username}`;
-      ui.myspaceHint.textContent = "Confirm once — no password needed";
+      ui.myspaceHint.textContent = "Confirm once: no password needed";
     } else {
       label.textContent = "Continue with My Space";
       ui.myspaceHint.textContent = osHasUsers
         ? "Use your signed-in My Space account across apps"
-        : "Create a My Space account once — use it in every app";
+        : "Create a My Space account once: use it in every app";
     }
   }
 
@@ -354,7 +354,6 @@
     }
     ui.osSubmit.disabled = true;
     try {
-      // Sign in to OS only — then ask for app consent (no password again).
       const result = await doContinueMyspace({
         username,
         password,

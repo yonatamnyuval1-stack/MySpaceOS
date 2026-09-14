@@ -13,29 +13,29 @@
         <div class="brand">
           <span class="brand-logo" aria-hidden="true">📁</span>
           <div>
-            <strong>Files</strong>
-            <span class="brand-sub" id="brand-sub">This PC</span>
+            <strong data-i18n="platform.files.name">Files</strong>
+            <span class="brand-sub" id="brand-sub" data-i18n="service.files.thisPc">This PC</span>
           </div>
         </div>
 
         <div class="side-scroll">
-          <p class="nav-label">Places</p>
-          <nav class="nav" id="places-nav" aria-label="Places"></nav>
+          <p class="nav-label" data-i18n="service.files.places">Places</p>
+          <nav class="nav" id="places-nav" data-i18n-aria="service.files.places" aria-label="Places"></nav>
 
-          <p class="nav-label">Drives</p>
-          <nav class="nav" id="drives-nav" aria-label="Drives"></nav>
-
-          <div class="nav-label-row">
-            <p class="nav-label">Favorites</p>
-            <button type="button" class="btn-icon" id="btn-add-fav" title="Add favorite folder">+</button>
-          </div>
-          <nav class="nav" id="fav-nav" aria-label="Favorites"></nav>
+          <p class="nav-label" data-i18n="service.files.drives">Drives</p>
+          <nav class="nav" id="drives-nav" data-i18n-aria="service.files.drives" aria-label="Drives"></nav>
 
           <div class="nav-label-row">
-            <p class="nav-label">Recent</p>
-            <button type="button" class="btn-text" id="btn-clear-recent" title="Clear recent">Clear</button>
+            <p class="nav-label" data-i18n="service.files.favorites">Favorites</p>
+            <button type="button" class="btn-icon" id="btn-add-fav" data-i18n-title="service.files.addFav" title="Add favorite folder">+</button>
           </div>
-          <nav class="nav nav--recent" id="recent-nav" aria-label="Recent"></nav>
+          <nav class="nav" id="fav-nav" data-i18n-aria="service.files.favorites" aria-label="Favorites"></nav>
+
+          <div class="nav-label-row">
+            <p class="nav-label" data-i18n="service.files.recent">Recent</p>
+            <button type="button" class="btn-text" id="btn-clear-recent" data-i18n="service.files.clear" data-i18n-title="service.files.clearRecent" title="Clear recent">Clear</button>
+          </div>
+          <nav class="nav nav--recent" id="recent-nav" data-i18n-aria="service.files.recent" aria-label="Recent"></nav>
         </div>
 
         <footer class="sidebar-foot">
@@ -46,29 +46,29 @@
       <main class="main">
         <header class="topbar">
           <div class="nav-btns">
-            <button type="button" class="btn-icon" id="btn-back" title="Back" disabled>←</button>
-            <button type="button" class="btn-icon" id="btn-up" title="Up" disabled>↑</button>
-            <button type="button" class="btn-icon" id="btn-refresh" title="Refresh">↻</button>
+            <button type="button" class="btn-icon" id="btn-back" data-i18n-title="service.files.back" title="Back" disabled>←</button>
+            <button type="button" class="btn-icon" id="btn-up" data-i18n-title="service.files.up" title="Up" disabled>↑</button>
+            <button type="button" class="btn-icon" id="btn-refresh" data-i18n-title="service.files.refresh" title="Refresh">↻</button>
           </div>
           <div class="crumbs" id="crumbs" aria-label="Path"></div>
           <form class="goto" id="goto-form" autocomplete="off">
-            <input type="text" id="goto-input" class="goto-input" placeholder="Go to path…" spellcheck="false" />
+            <input type="text" id="goto-input" class="goto-input" data-i18n-placeholder="service.files.goto" placeholder="Go to path…" spellcheck="false" />
           </form>
           <div class="topbar-actions">
-            <button type="button" class="btn" id="btn-new-folder" title="New folder">+ Folder</button>
-            <button type="button" class="btn" id="btn-open-ext" title="Open in Explorer">Explorer</button>
+            <button type="button" class="btn" id="btn-new-folder" data-i18n="service.files.folderBtn" data-i18n-title="service.files.newFolder" title="New folder">+ Folder</button>
+            <button type="button" class="btn" id="btn-open-ext" data-i18n="service.files.explorer" data-i18n-title="service.files.openExplorer" title="Open in Explorer">Explorer</button>
           </div>
         </header>
 
         <div class="toolbar">
           <div class="search-wrap">
             <span class="search-icon">⌕</span>
-            <input type="search" id="filter-input" class="search" placeholder="Filter in folder…" autocomplete="off" />
+            <input type="search" id="filter-input" class="search" data-i18n-placeholder="service.files.filter" placeholder="Filter in folder…" autocomplete="off" />
           </div>
-          <select id="sort-select" class="field-select" title="Sort">
-            <option value="name">Name</option>
-            <option value="mtime">Modified</option>
-            <option value="size">Size</option>
+          <select id="sort-select" class="field-select" data-i18n-title="service.files.sort" title="Sort">
+            <option value="name" data-i18n="service.files.name">Name</option>
+            <option value="mtime" data-i18n="service.files.modified">Modified</option>
+            <option value="size" data-i18n="service.files.size">Size</option>
           </select>
           <span class="status-line" id="status-line">—</span>
         </div>
@@ -76,13 +76,13 @@
         <div class="browser">
           <div class="list-pane">
             <div class="list-head">
-              <span class="col-name">Name</span>
-              <span class="col-size">Size</span>
-              <span class="col-date">Modified</span>
+              <span class="col-name" data-i18n="service.files.name">Name</span>
+              <span class="col-size" data-i18n="service.files.size">Size</span>
+              <span class="col-date" data-i18n="service.files.modified">Modified</span>
             </div>
             <div class="file-list" id="file-list" role="list"></div>
             <div class="empty-state hidden" id="empty-list">
-              <h3>Empty folder</h3>
+              <h3 data-i18n="service.files.empty">This folder is empty</h3>
               <p>Nothing to show here.</p>
             </div>
           </div>
@@ -141,6 +141,12 @@
         </div>
       </form>
     </dialog>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

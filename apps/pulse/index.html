@@ -13,34 +13,34 @@
         <div class="brand">
           <img class="brand-logo" src="logo.png" width="36" height="36" alt="" />
           <div>
-            <strong>Pulse</strong>
-            <span class="brand-sub">Internal &amp; external</span>
+            <strong data-i18n="platform.pulse.name">Pulse</strong>
+            <span class="brand-sub" data-i18n="platform.pulse.tagline">Internal &amp; external</span>
           </div>
         </div>
 
         <nav class="nav" id="main-nav" aria-label="Pulse">
-          <button type="button" class="nav-item active" data-page="directory">Apps</button>
-          <button type="button" class="nav-item" data-page="external">External</button>
-          <button type="button" class="nav-item" data-page="activity">Recent activity</button>
+          <button type="button" class="nav-item active" data-page="directory" data-i18n="service.pulse.apps">Apps</button>
+          <button type="button" class="nav-item" data-page="external" data-i18n="service.pulse.external">External</button>
+          <button type="button" class="nav-item" data-page="activity" data-i18n="service.pulse.activity">Recent activity</button>
         </nav>
 
         <footer class="sidebar-foot">
-          <p id="sidebar-blurb">Apps inside My Space, plus Composio tools outside it.</p>
+          <p id="sidebar-blurb" data-i18n="service.pulse.blurb">Apps inside My Space, plus Composio tools outside it.</p>
         </footer>
       </aside>
 
       <main class="main">
         <header class="topbar">
           <div class="topbar-text">
-            <button type="button" class="back-btn hidden" id="btn-back" aria-label="Back">← Back</button>
+            <button type="button" class="back-btn hidden" id="btn-back" data-i18n-aria="service.common.back" aria-label="Back" data-i18n="service.pulse.back">← Back</button>
             <div>
-              <h1 id="page-title">Apps on Pulse</h1>
-              <p class="subtitle" id="page-subtitle">Each app lists the commands it accepts</p>
+              <h1 id="page-title" data-i18n="service.pulse.appsTitle">Apps on Pulse</h1>
+              <p class="subtitle" id="page-subtitle" data-i18n="service.pulse.appsSub">Each app lists the commands it accepts</p>
             </div>
           </div>
           <div class="topbar-actions">
-            <input type="search" id="search-input" class="search" placeholder="Search apps…" spellcheck="false" />
-            <button type="button" class="btn" id="btn-reload">Refresh</button>
+            <input type="search" id="search-input" class="search" data-i18n-placeholder="service.pulse.search" placeholder="Search apps…" spellcheck="false" />
+            <button type="button" class="btn" id="btn-reload" data-i18n="service.common.refresh">Refresh</button>
           </div>
         </header>
 
@@ -48,6 +48,12 @@
         <div class="content" id="content"></div>
       </main>
     </div>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

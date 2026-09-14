@@ -1,4 +1,11 @@
 (function () {
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const els = {
     nav: document.getElementById("main-nav"),
     blurb: document.getElementById("sidebar-blurb"),
@@ -44,7 +51,7 @@
 
   async function api(channel, args) {
     if (!window.myApp?.invoke) {
-      throw new Error("Open Permissions from Platform → Permissions inside My Space.");
+      throw new Error(tt("service.permissions.openFromPlatform", "Open Permissions from Platform → Permissions inside My Space."));
     }
     const res = await window.myApp.invoke(channel, args || {});
     if (res && res.ok === false) throw new Error(res.error || "Request failed");
@@ -107,21 +114,52 @@
   function paintOverview() {
     const s = state.summary || {};
     if (els.blurb) {
-      els.blurb.textContent = `${s.toolsEnabled || 0}/${s.toolsTotal || 0} AI tools on · ${
-        s.trustedDevices || 0
-      } trusted devices`;
+      els.blurb.textContent = tt(
+        "service.permissions.blurbStats",
+        `${s.toolsEnabled || 0}/${s.toolsTotal || 0} AI tools on · ${s.trustedDevices || 0} trusted devices`,
+        { enabled: s.toolsEnabled || 0, total: s.toolsTotal || 0, devices: s.trustedDevices || 0 }
+      );
     }
     const cards = [
-      { page: "tools", label: "AI tools", value: `${s.toolsEnabled || 0}/${s.toolsTotal || 0}`, hint: `${s.toolsDisabled || 0} disabled` },
-      { page: "notifications", label: "Mail alerts", value: s.mailAlerts ? "On" : "Off", hint: `${s.blockedSenders || 0} blocked` },
-      { page: "jobs", label: "Shell jobs", value: s.allowShell ? "Allowed" : "Blocked", hint: s.allowScript ? "Scripts on" : "Scripts off" },
-      { page: "bridge", label: "Bridge", value: String(s.trustedDevices || 0), hint: "Trusted devices" },
-      { page: "external", label: "External", value: s.composioEnabled ? "On" : "Off", hint: `${s.composioAllowlist || 0} allowlisted` },
+      {
+        page: "tools",
+        label: tt("service.permissions.statAiTools", "AI tools"),
+        value: `${s.toolsEnabled || 0}/${s.toolsTotal || 0}`,
+        hint: tt("service.permissions.disabledCount", `${s.toolsDisabled || 0} disabled`, { count: s.toolsDisabled || 0 }),
+      },
+      {
+        page: "notifications",
+        label: tt("service.permissions.statMailAlerts", "Mail alerts"),
+        value: s.mailAlerts ? tt("service.permissions.on", "On") : tt("service.permissions.off", "Off"),
+        hint: tt("service.permissions.blockedCount", `${s.blockedSenders || 0} blocked`, { count: s.blockedSenders || 0 }),
+      },
+      {
+        page: "jobs",
+        label: tt("service.permissions.statShellJobs", "Shell jobs"),
+        value: s.allowShell ? tt("service.permissions.allowed", "Allowed") : tt("service.permissions.blocked", "Blocked"),
+        hint: s.allowScript ? tt("service.permissions.scriptsOn", "Scripts on") : tt("service.permissions.scriptsOff", "Scripts off"),
+      },
+      {
+        page: "bridge",
+        label: tt("service.permissions.statBridge", "Bridge"),
+        value: String(s.trustedDevices || 0),
+        hint: tt("service.permissions.trustedDevices", "Trusted devices"),
+      },
+      {
+        page: "external",
+        label: tt("service.permissions.statExternal", "External"),
+        value: s.composioEnabled ? tt("service.permissions.on", "On") : tt("service.permissions.off", "Off"),
+        hint: tt("service.permissions.allowlistCount", `${s.composioAllowlist || 0} allowlisted`, {
+          count: s.composioAllowlist || 0,
+        }),
+      },
       {
         page: "overview",
-        label: "Confirmations",
-        value: s.requireAiConfirm ? "Required" : "Off",
-        hint: `${s.toolsNeedConfirm || 0} mutating tools`,
+        label: tt("service.permissions.statConfirmations", "Confirmations"),
+        value: s.requireAiConfirm ? tt("service.permissions.required", "Required") : tt("service.permissions.off", "Off"),
+        hint: tt("service.permissions.mutatingTools", `${s.toolsNeedConfirm || 0} mutating tools`, {
+          count: s.toolsNeedConfirm || 0,
+        }),
       },
     ];
     if (els.statGrid) {
@@ -140,22 +178,22 @@
       els.policyCard.innerHTML = `
         <div class="setting-row">
           <div class="setting-copy">
-            <strong>Confirm mutating AI actions</strong>
-            <span>Ask before Mind runs shell, Builds, Drift, or Clock changes. Session “allow for now” still applies in chat.</span>
+            <strong>${escapeHtml(tt("service.permissions.confirmMutating", "Confirm mutating AI actions"))}</strong>
+            <span>${escapeHtml(tt("service.permissions.confirmMutatingHint", "Ask before Mind runs shell, Builds, Drift, or Clock changes. Session \"allow for now\" still applies in chat."))}</span>
           </div>
           ${toggleHtml("policy-confirm", p.requireAiConfirm !== false)}
         </div>
         <div class="setting-row">
           <div class="setting-copy">
-            <strong>Allow unattended Flow runs</strong>
-            <span>Reserved policy flag. Model Flow still uses its approve bar today — this records your preference for future auto-run.</span>
+            <strong>${escapeHtml(tt("service.permissions.allowUnattendedFlow", "Allow unattended Flow runs"))}</strong>
+            <span>${escapeHtml(tt("service.permissions.allowUnattendedFlowHint", "Reserved policy flag. Model Flow still uses its approve bar today — this records your preference for future auto-run."))}</span>
           </div>
           ${toggleHtml("policy-flow", p.allowUnattendedFlow === true)}
         </div>`;
       document.getElementById("policy-confirm")?.addEventListener("change", async (e) => {
         try {
           await api("platform.set", { requireAiConfirm: e.target.checked });
-          setStatus("Confirmation policy saved", "ok");
+          setStatus(tt("service.permissions.confirmPolicySaved", "Confirmation policy saved"), "ok");
           await loadOverview();
         } catch (err) {
           setStatus(err.message, "err");
@@ -165,7 +203,7 @@
       document.getElementById("policy-flow")?.addEventListener("change", async (e) => {
         try {
           await api("platform.set", { allowUnattendedFlow: e.target.checked });
-          setStatus("Flow policy saved", "ok");
+          setStatus(tt("service.permissions.flowPolicySaved", "Flow policy saved"), "ok");
         } catch (err) {
           setStatus(err.message, "err");
           e.target.checked = !e.target.checked;
@@ -181,7 +219,7 @@
     if (els.toolsCategory) {
       const cur = state.toolsCat;
       els.toolsCategory.innerHTML =
-        `<option value="">All categories</option>` +
+        `<option value="">${escapeHtml(tt("service.permissions.allCategories", "All categories"))}</option>` +
         state.categories.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
       els.toolsCategory.value = cur;
     }
@@ -197,15 +235,15 @@
     });
     if (!els.toolsList) return;
     if (!rows.length) {
-      els.toolsList.innerHTML = `<div class="row"><div class="row-meta">No tools match.</div></div>`;
+      els.toolsList.innerHTML = `<div class="row"><div class="row-meta">${escapeHtml(tt("service.permissions.noToolsMatch", "No tools match."))}</div></div>`;
       return;
     }
     els.toolsList.innerHTML = rows
       .map((t) => {
         const badges = [
           `<span class="pill">${escapeHtml(t.category || "other")}</span>`,
-          t.needsConfirm ? `<span class="pill warn">needs confirm</span>` : "",
-          t.active ? `<span class="pill ok">enabled</span>` : `<span class="pill">disabled</span>`,
+          t.needsConfirm ? `<span class="pill warn">${escapeHtml(tt("service.permissions.needsConfirm", "needs confirm"))}</span>` : "",
+          t.active ? `<span class="pill ok">${escapeHtml(tt("service.permissions.enabled", "enabled"))}</span>` : `<span class="pill">${escapeHtml(tt("service.permissions.disabled", "disabled"))}</span>`,
         ]
           .filter(Boolean)
           .join("");
@@ -225,7 +263,13 @@
         const name = row?.dataset.tool;
         try {
           await api("tools.set", { name, active: input.checked });
-          setStatus(`${name} ${input.checked ? "enabled" : "disabled"}`, "ok");
+          setStatus(
+            tt("service.permissions.toolToggled", `${name} ${input.checked ? "enabled" : "disabled"}`, {
+              name,
+              state: input.checked ? tt("service.permissions.enabled", "enabled") : tt("service.permissions.disabled", "disabled"),
+            }),
+            "ok"
+          );
           const t = state.tools.find((x) => x.name === name);
           if (t) t.active = input.checked;
           paintTools();
@@ -250,15 +294,19 @@
     els.notifPanel.innerHTML = `
       <div class="setting-row">
         <div class="setting-copy">
-          <strong>Mail alerts</strong>
-          <span>Show taskbar notifications when new mail arrives.</span>
+          <strong>${escapeHtml(tt("service.permissions.mailAlerts", "Mail alerts"))}</strong>
+          <span>${escapeHtml(tt("service.permissions.mailAlertsHint", "Show taskbar notifications when new mail arrives."))}</span>
         </div>
         ${toggleHtml("notif-mail", p.mailAlertsEnabled !== false)}
       </div>
       <div class="setting-row">
         <div class="setting-copy">
-          <strong>Blocked senders</strong>
-          <span>${blocked.length} address${blocked.length === 1 ? "" : "es"} silenced.</span>
+          <strong>${escapeHtml(tt("service.permissions.blockedSenders", "Blocked senders"))}</strong>
+          <span>${
+            blocked.length === 1
+              ? escapeHtml(tt("service.permissions.addressesSilenced", `${blocked.length} address silenced`, { count: blocked.length }))
+              : escapeHtml(tt("service.permissions.addressesSilencedPlural", `${blocked.length} addresses silenced`, { count: blocked.length }))
+          }</span>
         </div>
       </div>
       <div class="chip-list" id="blocked-chips">
@@ -270,19 +318,19 @@
               <button type="button" data-unblock="${escapeHtml(e)}" aria-label="Unblock">×</button></span>`
                 )
                 .join("")
-            : `<span class="row-meta">No blocked senders yet.</span>`
+            : `<span class="row-meta">${escapeHtml(tt("service.permissions.noBlockedSenders", "No blocked senders yet."))}</span>`
         }
       </div>
       <div class="block-form">
-        <input type="text" id="block-input" placeholder="name@example.com or display name" spellcheck="false" />
-        <button type="button" class="btn btn-primary" id="btn-block">Block</button>
+        <input type="text" id="block-input" placeholder="${escapeHtml(tt("service.permissions.blockPlaceholder", "name@example.com or display name"))}" spellcheck="false" />
+        <button type="button" class="btn btn-primary" id="btn-block">${escapeHtml(tt("service.common.block", "Block"))}</button>
       </div>`;
 
     document.getElementById("notif-mail")?.addEventListener("change", async (e) => {
       try {
         const res = await api("notifications.set", { mailAlertsEnabled: e.target.checked });
         state.notif = res.prefs || state.notif;
-        setStatus("Mail alerts updated", "ok");
+        setStatus(tt("service.permissions.mailAlertsUpdated", "Mail alerts updated"), "ok");
       } catch (err) {
         setStatus(err.message, "err");
         e.target.checked = !e.target.checked;
@@ -297,7 +345,7 @@
         state.notif = res.prefs || state.notif;
         if (input) input.value = "";
         paintNotifications();
-        setStatus("Sender blocked", "ok");
+        setStatus(tt("service.permissions.senderBlocked", "Sender blocked"), "ok");
       } catch (err) {
         setStatus(err.message, "err");
       }
@@ -308,7 +356,7 @@
           const res = await api("notifications.unblock", { email: btn.dataset.unblock });
           state.notif = res.prefs || state.notif;
           paintNotifications();
-          setStatus("Sender unblocked", "ok");
+          setStatus(tt("service.permissions.senderUnblocked", "Sender unblocked"), "ok");
         } catch (err) {
           setStatus(err.message, "err");
         }
@@ -354,7 +402,7 @@
         try {
           const res = await api("jobs.set", { [r.key]: e.target.checked });
           state.jobs = res.capacity || state.jobs;
-          setStatus("Jobs capacity updated", "ok");
+          setStatus(tt("service.permissions.jobsCapacityUpdated", "Jobs capacity updated"), "ok");
         } catch (err) {
           setStatus(err.message, "err");
           e.target.checked = !e.target.checked;
@@ -384,12 +432,12 @@
             <div class="row-title" style="font-family:var(--font)">${escapeHtml(d.name || d.id)}</div>
             <div class="row-meta">${escapeHtml(d.id)}</div>
             <div class="row-badges">
-              <span class="pill ${d.trusted ? "ok" : ""}">${d.trusted ? "trusted" : "untrusted"}</span>
+              <span class="pill ${d.trusted ? "ok" : ""}">${d.trusted ? escapeHtml(tt("service.permissions.trusted", "trusted")) : escapeHtml(tt("service.permissions.untrusted", "untrusted"))}</span>
             </div>
           </div>
           <div style="display:flex;gap:0.4rem">
-            ${d.trusted ? `<button type="button" class="btn btn-sm" data-untrust="${escapeHtml(d.id)}">Untrust</button>` : ""}
-            <button type="button" class="btn btn-sm btn-danger" data-revoke="${escapeHtml(d.id)}">Revoke</button>
+            ${d.trusted ? `<button type="button" class="btn btn-sm" data-untrust="${escapeHtml(d.id)}">${escapeHtml(tt("service.permissions.untrust", "Untrust"))}</button>` : ""}
+            <button type="button" class="btn btn-sm btn-danger" data-revoke="${escapeHtml(d.id)}">${escapeHtml(tt("service.permissions.revoke", "Revoke"))}</button>
           </div>
         </div>`
       )
@@ -398,7 +446,7 @@
       btn.addEventListener("click", async () => {
         try {
           await api("bridge.revoke", { deviceId: btn.dataset.revoke });
-          setStatus("Device revoked", "ok");
+          setStatus(tt("service.permissions.deviceRevoked", "Device revoked"), "ok");
           await loadBridge();
         } catch (err) {
           setStatus(err.message, "err");
@@ -409,7 +457,7 @@
       btn.addEventListener("click", async () => {
         try {
           await api("bridge.untrust", { deviceId: btn.dataset.untrust });
-          setStatus("Device untrusted", "ok");
+          setStatus(tt("service.permissions.deviceUntrusted", "Device untrusted"), "ok");
           await loadBridge();
         } catch (err) {
           setStatus(err.message, "err");
@@ -431,15 +479,15 @@
     els.externalPanel.innerHTML = `
       <div class="setting-row">
         <div class="setting-copy">
-          <strong>External tools enabled</strong>
-          <span>Master switch for Composio / Pulse external toolkits${e.hasKey ? "" : " (no API key saved yet)"}.</span>
+          <strong>${escapeHtml(tt("service.permissions.externalEnabled", "External tools enabled"))}</strong>
+          <span>${escapeHtml(tt("service.permissions.externalEnabledHint", `Master switch for Composio / Pulse external toolkits${e.hasKey ? "" : " (no API key saved yet)"}.`, { keyHint: e.hasKey ? "" : tt("service.permissions.noApiKey", " (no API key saved yet)") }))}</span>
         </div>
         ${toggleHtml("ext-enabled", e.enabled !== false)}
       </div>
       <div class="setting-row">
         <div class="setting-copy">
-          <strong>Toolkit allowlist</strong>
-          <span>Empty list means no extra filter beyond Composio session. Add slugs to restrict.</span>
+          <strong>${escapeHtml(tt("service.permissions.toolkitAllowlist", "Toolkit allowlist"))}</strong>
+          <span>${escapeHtml(tt("service.permissions.allowlistEmptyHint", "Empty list means no extra filter beyond Composio session. Add slugs to restrict."))}</span>
         </div>
       </div>
       <div class="chip-list">
@@ -451,19 +499,19 @@
               <button type="button" data-rm="${escapeHtml(s)}">×</button></span>`
                 )
                 .join("")
-            : `<span class="row-meta">Allowlist empty.</span>`
+            : `<span class="row-meta">${escapeHtml(tt("service.permissions.allowlistEmpty", "Allowlist empty."))}</span>`
         }
       </div>
       <div class="block-form">
-        <input type="text" id="allow-input" placeholder="toolkit slug (e.g. gmail)" spellcheck="false" />
-        <button type="button" class="btn btn-primary" id="btn-allow">Add</button>
+        <input type="text" id="allow-input" placeholder="${escapeHtml(tt("service.permissions.toolkitSlugPlaceholder", "toolkit slug (e.g. gmail)"))}" spellcheck="false" />
+        <button type="button" class="btn btn-primary" id="btn-allow">${escapeHtml(tt("service.common.add", "Add"))}</button>
       </div>`;
 
     document.getElementById("ext-enabled")?.addEventListener("change", async (ev) => {
       try {
         const res = await api("external.set", { enabled: ev.target.checked });
         state.external = { ...state.external, ...res };
-        setStatus("External tools updated", "ok");
+        setStatus(tt("service.permissions.externalUpdated", "External tools updated"), "ok");
       } catch (err) {
         setStatus(err.message, "err");
         ev.target.checked = !ev.target.checked;
@@ -478,7 +526,7 @@
         state.external = { ...state.external, ...res };
         if (input) input.value = "";
         paintExternal();
-        setStatus("Toolkit allowlisted", "ok");
+        setStatus(tt("service.permissions.toolkitAllowlisted", "Toolkit allowlisted"), "ok");
       } catch (err) {
         setStatus(err.message, "err");
       }
@@ -489,7 +537,7 @@
           const res = await api("external.removeAllow", { slug: btn.dataset.rm });
           state.external = { ...state.external, ...res };
           paintExternal();
-          setStatus("Removed from allowlist", "ok");
+          setStatus(tt("service.permissions.removedAllowlist", "Removed from allowlist"), "ok");
         } catch (err) {
           setStatus(err.message, "err");
         }
@@ -540,7 +588,7 @@
   els.btnToolsEnable?.addEventListener("click", async () => {
     try {
       await api("tools.enableAll");
-      setStatus("All tools enabled", "ok");
+      setStatus(tt("service.permissions.allToolsEnabled", "All tools enabled"), "ok");
       await loadTools();
     } catch (err) {
       setStatus(err.message, "err");
@@ -549,7 +597,7 @@
   els.btnToolsLock?.addEventListener("click", async () => {
     try {
       await api("tools.disableMutating");
-      setStatus("Mutating tools disabled", "ok");
+      setStatus(tt("service.permissions.mutatingDisabled", "Mutating tools disabled"), "ok");
       await loadTools();
     } catch (err) {
       setStatus(err.message, "err");
@@ -561,6 +609,8 @@
     applyRoute,
     refresh: () => loadPage(state.page),
   };
+
+  window.addEventListener("myspace-i18n-applied", () => void loadPage(state.page));
 
   const bootPage =
     (typeof window.__myspaceInitialRoute === "object" && window.__myspaceInitialRoute?.page) ||

@@ -151,7 +151,7 @@ Notes is the reference implementation:
 
 ## World Maps
 
-World Maps uses the same core module but keeps its own `world-maps/login.html` (shared-folder UI). Auth IPC goes through the generic handler; sync channels stay in `world-maps-ipc.js` with `setLocalAuthPrepare("world-maps", …)` pointing accounts at the optional shared folder.
+World Maps keeps `world-maps/login.html` (so the shared-folder sync UI can stay) but uses the shared `local-auth/login.js` + Continue with My Space / consent sheets. Auth IPC goes through the generic handler; sync channels stay in `world-maps-ipc.js` with `setLocalAuthPrepare("world-maps", …)` pointing accounts at the optional shared folder.
 
 ## Rollout status
 
@@ -161,9 +161,9 @@ Local auth login is enabled for all **desktop apps** (visible in `config/apps.js
 
 **Per My Space OS profile (system services):** Files workspace, Jobs, Scheduler, Mind/Chat, Vault, Mail, Connect Hub, Composio, Notifications history, Permissions prefs.
 
-**Still mostly install-wide:** Model Flow library/history, OS Bridge pairing dirs, backup/update machine state, MSL registry (optional later).
+**Still mostly install-wide (exceptions):** OAuth client credentials (`mail-oauth.json`), install update state, restore staging.
 
-Each adopting app gets `login.html` (Continue + local account), `manifest.auth`, preload `appAuth` bridge, and per-user data under `{userData}/{appId}/users/{userId}/`.
+Each adopting app gets `login.html` (Continue + local account), `manifest.auth`, preload `appAuth` bridge, and per-user data under the active My Space profile.
 
 ## Success criteria
 
@@ -174,4 +174,4 @@ Each adopting app gets `login.html` (Continue + local account), `manifest.auth`,
 - Switching My Space accounts isolates Files / Mail / Vault / Mind / Jobs
 - New OS accounts create their own Vault master password and connect their own Mail/Hub accounts
 - Legacy `notes.json` still migrates to the first local account when that path is used
-- World Maps login, shared folder, and per-user map data still work
+- World Maps Continue with My Space, shared folder, and per-user map data still work

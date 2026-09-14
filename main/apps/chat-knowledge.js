@@ -45,7 +45,7 @@ const CARDS = [
       "verb",
     ],
     body: `Shell protocol: name(verb args). Examples:
-clock(timer 25m) · today(add Buy milk) · stocks(AAPL) · vault(list) · remote(list) · bridge(open) · mind(ask …) · chat(new) · jobs(panel) · console(runner)
+clock(timer xm), today(add x), stocks(x), vault(list), remote(list), bridge(open), mind(ask x), chat(new), jobs(panel), console(runner)
 • run <app name> opens an app. Partial names fuzzy-match when unique.
 • help / help <app> for verbs. Macros & when-rules live in Console.
 • Scripts app stores multi-line programs; scripts(open) / scripts(new).
@@ -73,7 +73,7 @@ clock(timer 25m) · today(add Buy milk) · stocks(AAPL) · vault(list) · remote
       "study",
     ],
     body: `Common apps (open via run <name> or shell):
-• Chat / Mind Chat — conversations + modes (Companion, Cynical, Spacehand).
+• Chat / Mind Chat: conversations + modes (Companion, Cynical, Spacehand).
 • Clock: timer/pomodoro/world. Today: tasks. Stocks: quotes/watchlist.
 • Vault (profiles): passwords. Notes, Contacts, Translate.
 • Builds, Drift, Study Deck, World Maps, Geography, History, Space, Contracts, Lexicon.
@@ -99,11 +99,11 @@ If unsure of an id: suggest run <readable name> or help.`,
       "quick",
     ],
     body: `Mind = OS AI runtime (Gemini key in Mind Setup; optional Ollama).
-Tasks: quick (cheap) · chat/everyday · think/deep.
+Tasks: quick (cheap), chat/everyday, think/deep.
 • Mind Chat app = history + Modes catalog (sidebar chip).
-• Ask AI (rose FAB) = can run OS actions with confirm — separate from Chat modes.
+• Ask AI (rose FAB) = can run OS actions with confirm: separate from Chat modes.
 • Modes change behavior: Companion (warm), Cynical (mocking), Spacehand (OS guide that can open apps / run shell).
-Shell: mind(panel) · mind(ask …) · mind(setup) · chat(new) · chat(open).`,
+Shell: mind(panel), mind(ask..), mind(setup), chat(new), chat(open).`,
   },
   {
     id: "bridge",
@@ -125,10 +125,10 @@ Shell: mind(panel) · mind(ask …) · mind(setup) · chat(new) · chat(open).`,
       "wi-fi",
     ],
     body: `OS Bridge (app): this host PC.
-• Devices — Start pairing, same Wi‑Fi, scan QR or Copy link (http://IP:17834/?c=CODE).
-• Places — Desktop/Downloads/USB. Share: clipboard/paths. Host — Windows settings links.
-Remote Hub (separate app): RDP / SSH / Wake-on-LAN to other machines — not phone pairing.
-Shell: bridge(open) · bridge(devices) · remote(open) · remote(list).`,
+• Devices: Start pairing, same Wi‑Fi, scan QR or Copy link (http://IP:17834/?c=CODE).
+• Places: Desktop/Downloads/USB. Share: clipboard/paths. Host: Windows settings links.
+Remote Hub (separate app): RDP / SSH / Wake-on-LAN to other machines: not phone pairing.
+Shell: bridge(open), bridge(devices), remote(open), remote(list).`,
   },
   {
     id: "connect",
@@ -144,11 +144,11 @@ Shell: bridge(open) · bridge(devices) · remote(open) · remote(list).`,
       "inbox",
       "email",
     ],
-    body: `Connect = web/services hub (Platform · green series).
+    body: `Connect = web/services hub (Platform: green series).
 • Opens Gmail and other web apps inside My Space (Connect cards).
 • My Space Browser is the green browser surface.
 • Mail notifications can open Connect targets via IPC.
-Shell/platform: run connect · open browser from Platform.
+Shell/platform: run connect: open browser from Platform.
 Ask AI can also open web apps when asked.`,
   },
   {
@@ -158,7 +158,7 @@ Ask AI can also open web apps when asked.`,
     body: `Jobs = compute safety valve, not the default path.
 • Normal app launches, Console, Scripts, Connect run direct.
 • Jobs queues only under extreme concurrent load, explicit enqueue, or background/MSL sources.
-• Panel: Platform → Jobs · jobs(panel) · jobs(list). Clear stuck/finished from the panel.
+• Panel: Platform → Jobs, jobs(panel), jobs(list). Clear stuck/finished from the panel.
 Do not tell users every click is a Job.`,
   },
   {
@@ -230,7 +230,7 @@ function selectKnowledgeCards(userText, opts = {}) {
 function formatKnowledgeBlock(cards) {
   if (!cards?.length) {
     return {
-      block: `Knowledge index (no card matched: stay general, don't invent APIs):\n${INDEX}`,
+      block: `Knowledge index:\n${INDEX}`,
       ids: [],
       chars: INDEX.length,
     };

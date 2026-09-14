@@ -2,7 +2,7 @@ const APP_PROFILES = {
   welcome: {
     tagline: "Startup command center",
     about:
-      "Welcome is the built-in startup screen of the shell — not a desktop app. It opens when My Space launches (unless disabled in Settings → General → Desktop) and surfaces apps, tips, and quick actions without a separate myapp module.",
+      "Welcome is the built-in startup screen of the shell: not a desktop app. It opens when My Space launches (unless disabled in Settings → General → Desktop) and surfaces apps, tips, and quick actions without a separate myapp module.",
     features: [
       "Opens on system startup",
       "Not shown as a desktop or Start menu app",
@@ -80,7 +80,7 @@ const APP_PROFILES = {
     storageKeys: [],
   },
   pulse: {
-    tagline: "Link Bus — apps & external tools",
+    tagline: "Link Bus: apps & external tools",
     about:
       "Cross-app messaging bus for internal apps and Composio external tools. Per-app pulse.json command profiles, send/subscribe, events, and an External tab for API keys and toolkits.",
     features: ["Command routes", "Subscriptions & events", "Activity log", "Composio external tools"],
@@ -366,7 +366,7 @@ const APP_PROFILES = {
     storageKeys: ["drift.json"],
   },
   "model-flow": {
-    tagline: "AI plans tool flows — you approve",
+    tagline: "AI plans tool flows: you approve",
     about:
       "Personal automation studio: plan → edit → approve → run. Connects to external model providers; Lab is not a My Space service.",
     features: ["Plan & approve flows", "Tool staging", "Run history", "Shell flow(…)"],
@@ -374,7 +374,7 @@ const APP_PROFILES = {
     storageKeys: ["model-flow.json"],
   },
   "shell-console": {
-    tagline: "Legacy console (retired)",
+    tagline: "Legacy console",
     about:
       "Former command runner. The live Shell atlas and desktop shell line replaced it; long programs live in Scripts.",
     features: ["Historical aliases / macros data may remain", "Use Platform → Shell instead"],
@@ -397,21 +397,21 @@ const APP_PROFILES = {
     storageKeys: [],
   },
   docker: {
-    tagline: "Docker Desktop (external)",
+    tagline: "Docker Desktop",
     about: "Opens Docker Desktop; optional in-app URL for a local dashboard.",
     features: ["External app launch", "Optional localhost dashboard"],
     pages: [],
     storageKeys: [],
   },
   vscode: {
-    tagline: "Visual Studio Code (external)",
+    tagline: "Visual Studio Code",
     about: "Launches VS Code from common install locations.",
     features: ["External editor launch"],
     pages: [],
     storageKeys: [],
   },
   terminal: {
-    tagline: "Windows Terminal (external)",
+    tagline: "Windows Terminal",
     about: "Launches Windows Terminal (wt.exe) from Apps or PATH.",
     features: ["External terminal launch"],
     pages: [],
@@ -445,7 +445,7 @@ const SERVICE_PROFILES = {
   browser: {
     tagline: "In-app browsing and unified search",
     about:
-      "Workspace web tabs, address bar, and My Space Browser — browse without leaving the shell.",
+      "Workspace web tabs, address bar, and My Space Browser: browse without leaving the shell.",
     features: ["Web tabs", "Address bar", "My Space Browser home"],
     pages: ["Home", "Web"],
     storageKeys: [],
@@ -453,7 +453,7 @@ const SERVICE_PROFILES = {
   connect: {
     tagline: "Find and open web services inside My Space",
     about:
-      "Service catalog for mail, messaging, social, browsers, and more. Open from the search icon — looks the same as before.",
+      "Service catalog for mail, messaging, social, browsers, and more. Open from the search icon: looks the same as before.",
     features: ["Service catalog", "Mail & web destinations", "My Space Browser entry"],
     pages: ["Catalog", "My Space Browser"],
     storageKeys: [],
@@ -485,7 +485,7 @@ const SERVICE_PROFILES = {
   notifications: {
     tagline: "Alerts that matter",
     about:
-      "Notification center for reminders, deadlines, timers, updates, and other high-signal alerts — the bell surface as a platform service.",
+      "Notification center for reminders, deadlines, timers, updates, and other high-signal alerts: the bell surface as a platform service.",
     features: ["Inbox of alerts", "Prefs & blocklist hooks", "OS toast integration"],
     pages: ["Inbox"],
     storageKeys: ["notifications.json"],

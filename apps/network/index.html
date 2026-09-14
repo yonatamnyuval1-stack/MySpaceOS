@@ -19,28 +19,28 @@
         <div class="brand">
           <img class="brand-logo" src="../../src/brand/atom-slate.png" width="32" height="32" alt="" />
           <div>
-            <strong>Network</strong>
-            <span class="brand-sub">My Space connectivity</span>
+            <strong data-i18n="platform.network.name">Network</strong>
+            <span class="brand-sub" data-i18n="platform.network.tagline">My Space connectivity</span>
           </div>
         </div>
-        <nav class="nav" id="main-nav" aria-label="Network">
+        <nav class="nav" id="main-nav" data-i18n-aria="platform.network.name" aria-label="Network">
           <button type="button" class="nav-item is-active" data-page="status">
             <span class="nav-ico" aria-hidden="true">◆</span>
-            Status
+            <span data-i18n="service.network.status">Status</span>
           </button>
           <button type="button" class="nav-item" data-page="adapters">
             <span class="nav-ico" aria-hidden="true">☰</span>
-            Adapters
+            <span data-i18n="service.network.adapters">Adapters</span>
             <span class="nav-badge hidden" id="nav-adapter-count">0</span>
           </button>
           <button type="button" class="nav-item" data-page="ports">
             <span class="nav-ico" aria-hidden="true">◎</span>
-            Ports
+            <span data-i18n="service.network.ports">Ports</span>
             <span class="nav-badge hidden" id="nav-port-count">0</span>
           </button>
           <button type="button" class="nav-item" data-page="about">
             <span class="nav-ico" aria-hidden="true">ⓘ</span>
-            About
+            <span data-i18n="service.common.about">About</span>
           </button>
         </nav>
         <footer class="sidebar-foot">
@@ -52,13 +52,13 @@
         <section class="view" id="view-status">
           <header class="page-head">
             <div>
-              <h1>Status</h1>
-              <p class="page-sub">Live connectivity for this My Space host</p>
+              <h1 data-i18n="service.network.statusTitle">Status</h1>
+              <p class="page-sub" data-i18n="service.network.statusSub">Live connectivity for this My Space host</p>
             </div>
             <div class="page-actions">
-              <button type="button" class="btn btn-ghost" id="btn-settings">Windows Network</button>
-              <button type="button" class="btn btn-ghost" id="btn-check">Check reachability</button>
-              <button type="button" class="btn btn-ghost" id="btn-refresh">Refresh</button>
+              <button type="button" class="btn btn-ghost" id="btn-settings" data-i18n="service.network.winNetwork">Windows Network</button>
+              <button type="button" class="btn btn-ghost" id="btn-check" data-i18n="service.network.checkReachability">Check reachability</button>
+              <button type="button" class="btn btn-ghost" id="btn-refresh" data-i18n="service.common.refresh">Refresh</button>
             </div>
           </header>
 
@@ -73,62 +73,62 @@
               />
             </div>
             <div class="status-body">
-              <p class="status-eyebrow" id="status-eyebrow">Connectivity</p>
-              <h2 class="status-title" id="status-title">Checking…</h2>
+              <p class="status-eyebrow" id="status-eyebrow" data-i18n="service.network.connectivity">Connectivity</p>
+              <h2 class="status-title" id="status-title" data-i18n="service.network.checking">Checking…</h2>
               <p class="status-version" id="status-primary">—</p>
-              <p class="status-desc" id="status-desc">Reading adapters and reachability…</p>
+              <p class="status-desc" id="status-desc" data-i18n="service.network.readingAdapters">Reading adapters and reachability…</p>
               <div class="status-meta-row" id="status-meta-row"></div>
             </div>
           </article>
 
           <div class="section-head">
-            <h2>Reachability</h2>
-            <p class="page-sub" id="checks-sub">DNS and service probes used by My Space apps</p>
+            <h2 data-i18n="service.network.reachability">Reachability</h2>
+            <p class="page-sub" id="checks-sub" data-i18n="service.network.checksSubDefault">DNS and service probes used by My Space apps</p>
           </div>
           <div class="check-list" id="check-list"></div>
-          <p class="empty-msg" id="checks-empty">Run Check reachability to probe DNS and key hosts.</p>
+          <p class="empty-msg" id="checks-empty" data-i18n="service.network.checksEmpty">Run Check reachability to probe DNS and key hosts.</p>
         </section>
 
         <section class="view hidden" id="view-adapters">
           <header class="page-head">
             <div>
-              <h1>Adapters</h1>
-              <p class="page-sub">Interfaces, addresses, gateways, and DNS</p>
+              <h1 data-i18n="service.network.adaptersTitle">Adapters</h1>
+              <p class="page-sub" data-i18n="service.network.adaptersSub">Interfaces, addresses, gateways, and DNS</p>
             </div>
             <div class="page-actions">
-              <input type="search" id="adapter-search" class="search" placeholder="Search adapter, IP, MAC…" />
+              <input type="search" id="adapter-search" class="search" data-i18n-placeholder="service.network.adapterSearchPlaceholder" placeholder="Search adapter, IP, MAC…" />
               <select id="adapter-filter" class="select">
-                <option value="all" selected>All</option>
-                <option value="connected">Connected</option>
-                <option value="down">Not connected</option>
+                <option value="all" selected data-i18n="service.network.filterAll">All</option>
+                <option value="connected" data-i18n="service.network.filterConnected">Connected</option>
+                <option value="down" data-i18n="service.network.filterDown">Not connected</option>
               </select>
-              <button type="button" class="btn btn-ghost" id="btn-refresh-adapters">Refresh</button>
+              <button type="button" class="btn btn-ghost" id="btn-refresh-adapters" data-i18n="service.common.refresh">Refresh</button>
             </div>
           </header>
           <div class="stat-row" id="adapter-stats"></div>
           <div class="adapter-list" id="adapter-list"></div>
-          <p class="empty-msg hidden" id="adapter-empty">No adapters found.</p>
+          <p class="empty-msg hidden" id="adapter-empty" data-i18n="service.network.adapterEmpty">No adapters found.</p>
         </section>
 
         <section class="view hidden" id="view-ports">
           <header class="page-head">
             <div>
-              <h1>Ports</h1>
-              <p class="page-sub">Listening and active TCP/UDP endpoints on this PC</p>
+              <h1 data-i18n="service.network.portsTitle">Ports</h1>
+              <p class="page-sub" data-i18n="service.network.portsSub">Listening and active TCP/UDP endpoints on this PC</p>
             </div>
             <div class="page-actions">
-              <input type="search" id="port-search" class="search" placeholder="Search port, process, PID…" />
+              <input type="search" id="port-search" class="search" data-i18n-placeholder="service.network.portSearchPlaceholder" placeholder="Search port, process, PID…" />
               <select id="port-filter-state" class="select">
-                <option value="LISTENING" selected>Listening</option>
-                <option value="ESTABLISHED">Established</option>
-                <option value="all">All states</option>
+                <option value="LISTENING" selected data-i18n="service.network.portListening">Listening</option>
+                <option value="ESTABLISHED" data-i18n="service.network.portEstablished">Established</option>
+                <option value="all" data-i18n="service.network.portAllStates">All states</option>
               </select>
               <select id="port-filter-protocol" class="select">
-                <option value="all" selected>TCP + UDP</option>
-                <option value="TCP">TCP</option>
-                <option value="UDP">UDP</option>
+                <option value="all" selected data-i18n="service.network.portTcpUdp">TCP + UDP</option>
+                <option value="TCP" data-i18n="service.network.portTcp">TCP</option>
+                <option value="UDP" data-i18n="service.network.portUdp">UDP</option>
               </select>
-              <button type="button" class="btn btn-ghost" id="btn-refresh-ports">Refresh</button>
+              <button type="button" class="btn btn-ghost" id="btn-refresh-ports" data-i18n="service.common.refresh">Refresh</button>
             </div>
           </header>
           <div class="stat-row" id="port-stats"></div>
@@ -136,16 +136,16 @@
             <table class="data-table" id="ports-table">
               <thead>
                 <tr>
-                  <th>Proto</th>
-                  <th>Local</th>
-                  <th>Remote</th>
-                  <th>State</th>
-                  <th>PID</th>
-                  <th>Process</th>
+                  <th data-i18n="service.network.tableProto">Proto</th>
+                  <th data-i18n="service.network.tableLocal">Local</th>
+                  <th data-i18n="service.network.tableRemote">Remote</th>
+                  <th data-i18n="service.network.tableState">State</th>
+                  <th data-i18n="service.network.tablePid">PID</th>
+                  <th data-i18n="service.network.tableProcess">Process</th>
                 </tr>
               </thead>
               <tbody id="ports-body">
-                <tr><td colspan="6" class="muted">Loading…</td></tr>
+                <tr><td colspan="6" class="muted" data-i18n="service.network.loading">Loading…</td></tr>
               </tbody>
             </table>
           </div>
@@ -155,8 +155,8 @@
         <section class="view hidden" id="view-about">
           <header class="page-head">
             <div>
-              <h1>About</h1>
-              <p class="page-sub">How Network fits in My Space</p>
+              <h1 data-i18n="service.network.aboutTitle">About</h1>
+              <p class="page-sub" data-i18n="service.network.aboutSub">How Network fits in My Space</p>
             </div>
           </header>
           <div class="about-page">
@@ -205,6 +205,12 @@
         </section>
       </main>
     </div>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

@@ -19,27 +19,27 @@
         <div class="brand">
           <img class="brand-logo" src="../../src/brand/atom-violet.png" width="32" height="32" alt="" />
           <div>
-            <strong>Resolve</strong>
-            <span class="brand-sub">App troubleshooting</span>
+            <strong data-i18n="platform.resolve.name">Resolve</strong>
+            <span class="brand-sub" data-i18n="platform.resolve.tagline">App troubleshooting</span>
           </div>
         </div>
         <nav class="nav" id="main-nav" aria-label="Resolve">
           <button type="button" class="nav-item is-active" data-page="inbox">
             <span class="nav-ico" aria-hidden="true">▣</span>
-            Inbox
+            <span data-i18n="service.resolve.inbox">Inbox</span>
             <span class="nav-badge hidden" id="nav-open-count">0</span>
           </button>
           <button type="button" class="nav-item" data-page="playbooks">
             <span class="nav-ico" aria-hidden="true">◎</span>
-            Playbooks
+            <span data-i18n="service.resolve.playbooks">Playbooks</span>
           </button>
           <button type="button" class="nav-item" data-page="about">
             <span class="nav-ico" aria-hidden="true">ⓘ</span>
-            About
+            <span data-i18n="service.resolve.about">About</span>
           </button>
         </nav>
         <footer class="sidebar-foot">
-          <p id="sidebar-blurb">Apps report here via Pulse.</p>
+          <p id="sidebar-blurb" data-i18n="service.resolve.sidebarBlurb">Apps report here via Pulse.</p>
         </footer>
       </aside>
 
@@ -47,30 +47,30 @@
         <section class="view" id="view-inbox">
           <header class="page-head">
             <div>
-              <h1>Inbox</h1>
-              <p class="page-sub">Open incidents from apps — triage and apply playbooks</p>
+              <h1 data-i18n="service.resolve.inboxTitle">Inbox</h1>
+              <p class="page-sub" data-i18n="service.resolve.inboxSub">Open incidents from apps — triage and apply playbooks</p>
             </div>
             <div class="page-actions">
-              <input type="search" id="inbox-search" class="search" placeholder="Search app, code, message…" />
+              <input type="search" id="inbox-search" class="search" data-i18n-placeholder="service.resolve.searchPlaceholder" placeholder="Search app, code, message…" />
               <select id="inbox-filter" class="select">
-                <option value="open">Open</option>
-                <option value="">All</option>
-                <option value="resolved">Resolved</option>
-                <option value="dismissed">Dismissed</option>
+                <option value="open" data-i18n="service.resolve.filterOpen">Open</option>
+                <option value="" data-i18n="service.resolve.filterAll">All</option>
+                <option value="resolved" data-i18n="service.resolve.filterResolved">Resolved</option>
+                <option value="dismissed" data-i18n="service.resolve.filterDismissed">Dismissed</option>
               </select>
-              <button type="button" class="btn btn-ghost" id="btn-refresh">Refresh</button>
+              <button type="button" class="btn btn-ghost" id="btn-refresh" data-i18n="service.resolve.refresh">Refresh</button>
             </div>
           </header>
           <div class="stat-row" id="stat-row"></div>
           <div class="incident-list" id="incident-list"></div>
-          <p class="empty-msg hidden" id="inbox-empty">No incidents — apps report problems via Pulse.</p>
+          <p class="empty-msg hidden" id="inbox-empty" data-i18n="service.resolve.emptyInbox">No incidents — apps report problems via Pulse.</p>
         </section>
 
         <section class="view hidden" id="view-playbooks">
           <header class="page-head">
             <div>
-              <h1>Playbooks</h1>
-              <p class="page-sub">Known fixes per app + error code</p>
+              <h1 data-i18n="service.resolve.playbooksTitle">Playbooks</h1>
+              <p class="page-sub" data-i18n="service.resolve.playbooksSub">Known fixes per app + error code</p>
             </div>
           </header>
           <div class="playbook-list" id="playbook-list"></div>
@@ -79,8 +79,8 @@
         <section class="view hidden" id="view-about">
           <header class="page-head">
             <div>
-              <h1>About</h1>
-              <p class="page-sub">Resolve — OS troubleshooting for My Space apps</p>
+              <h1 data-i18n="service.resolve.aboutTitle">About</h1>
+              <p class="page-sub" data-i18n="service.resolve.aboutSub">Resolve — OS troubleshooting for My Space apps</p>
             </div>
           </header>
           <div class="about-card">
@@ -101,6 +101,12 @@
         </section>
       </main>
     </div>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

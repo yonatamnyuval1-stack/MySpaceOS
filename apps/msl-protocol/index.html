@@ -19,36 +19,36 @@
         <div class="brand">
           <img class="brand-logo" src="logo.png" width="32" height="32" alt="" />
           <div>
-            <strong>MSL</strong>
-            <span class="brand-sub">My Space Link</span>
+            <strong data-i18n="platform.msl.name">MSL</strong>
+            <span class="brand-sub" data-i18n="platform.msl.tagline">My Space Link</span>
           </div>
         </div>
 
         <nav class="nav" id="main-nav" aria-label="MSL">
           <button type="button" class="nav-item is-active" data-page="caps">
             <span class="nav-ico" aria-hidden="true">☰</span>
-            Capabilities
+            <span data-i18n="service.msl.capabilities">Capabilities</span>
           </button>
           <button type="button" class="nav-item" data-page="keys">
             <span class="nav-ico" aria-hidden="true">⚿</span>
-            Keys
+            <span data-i18n="service.msl.keys">Keys</span>
           </button>
           <button type="button" class="nav-item" data-page="mint">
             <span class="nav-ico" aria-hidden="true">◇</span>
-            Mint
+            <span data-i18n="service.msl.mint">Mint</span>
           </button>
           <button type="button" class="nav-item" data-page="inject">
             <span class="nav-ico" aria-hidden="true">↗</span>
-            Inject
+            <span data-i18n="service.msl.inject">Inject</span>
           </button>
           <button type="button" class="nav-item" data-page="about">
             <span class="nav-ico" aria-hidden="true">ⓘ</span>
-            About
+            <span data-i18n="service.msl.about">About</span>
           </button>
         </nav>
 
         <footer class="sidebar-foot">
-          <p id="sidebar-blurb">Cross-app capability bus. mint msl:v1 keys and inject them into AI apps.</p>
+          <p id="sidebar-blurb" data-i18n="service.msl.sidebarBlurb">Cross-app capability bus. mint msl:v1 keys and inject them into AI apps.</p>
         </footer>
       </aside>
 
@@ -57,30 +57,30 @@
         <section class="view" id="view-caps">
           <header class="page-head">
             <div>
-              <h1>Capabilities</h1>
-              <p class="lede">Providers publish tools on the Link bus. Invoke live, or mint a reusable key.</p>
+              <h1 data-i18n="service.msl.capsTitle">Capabilities</h1>
+              <p class="lede" data-i18n="service.msl.capsSub">Providers publish tools on the Link bus. Invoke live, or mint a reusable key.</p>
             </div>
             <div class="page-actions">
-              <button type="button" class="btn" id="btn-refresh">Refresh</button>
+              <button type="button" class="btn" id="btn-refresh" data-i18n="service.common.refresh">Refresh</button>
             </div>
           </header>
           <div class="toolbar">
             <span class="search-ico" aria-hidden="true">⌕</span>
-            <input type="search" id="caps-search" class="search" placeholder="Filter by id, title, provider…" spellcheck="false" autocomplete="off" />
+            <input type="search" id="caps-search" class="search" data-i18n-placeholder="service.msl.searchCaps" placeholder="Filter by id, title, provider…" spellcheck="false" autocomplete="off" />
             <span class="search-meta" id="caps-meta"></span>
           </div>
           <div class="table" role="table" aria-label="Capabilities">
             <div class="table-head" role="row">
-              <span role="columnheader">Capability</span>
-              <span role="columnheader">Provider</span>
-              <span role="columnheader">Kind</span>
+              <span role="columnheader" data-i18n="service.msl.colCapability">Capability</span>
+              <span role="columnheader" data-i18n="service.msl.colProvider">Provider</span>
+              <span role="columnheader" data-i18n="service.msl.colKind">Kind</span>
               <span role="columnheader"></span>
             </div>
             <div class="table-body" id="caps-list" role="rowgroup"></div>
           </div>
           <div class="empty hidden" id="caps-empty">
-            <strong>No capabilities match</strong>
-            <p>Try another filter, or refresh the registry.</p>
+            <strong data-i18n="service.msl.emptyCapsMatch">No capabilities match</strong>
+            <p data-i18n="service.msl.emptyCapsMatchHint">Try another filter, or refresh the registry.</p>
           </div>
         </section>
 
@@ -88,22 +88,22 @@
         <section class="view hidden" id="view-keys">
           <header class="page-head">
             <div>
-              <h1>Keys</h1>
-              <p class="lede">Saved msl:v1 URIs in your library: resolve, copy, inject, or delete.</p>
+              <h1 data-i18n="service.msl.keysTitle">Keys</h1>
+              <p class="lede" data-i18n="service.msl.keysSub">Saved msl:v1 URIs in your library: resolve, copy, inject, or delete.</p>
             </div>
             <div class="page-actions">
-              <button type="button" class="btn btn-primary" id="btn-keys-mint">Mint new</button>
+              <button type="button" class="btn btn-primary" id="btn-keys-mint" data-i18n="service.msl.mintNew">Mint new</button>
             </div>
           </header>
           <div class="toolbar">
             <span class="search-ico" aria-hidden="true">⌕</span>
-            <input type="search" id="keys-search" class="search" placeholder="Search library…" spellcheck="false" autocomplete="off" />
+            <input type="search" id="keys-search" class="search" data-i18n-placeholder="service.msl.searchKeys" placeholder="Search library…" spellcheck="false" autocomplete="off" />
             <span class="search-meta" id="keys-meta"></span>
           </div>
           <div class="row-list" id="keys-list"></div>
           <div class="empty hidden" id="keys-empty">
-            <strong>Library is empty</strong>
-            <p>Use Mint to build a key, then save it here.</p>
+            <strong data-i18n="service.msl.emptyKeys">Library is empty</strong>
+            <p data-i18n="service.msl.emptyKeysHint">Use Mint to build a key, then save it here.</p>
           </div>
         </section>
 
@@ -111,42 +111,42 @@
         <section class="view hidden" id="view-mint">
           <header class="page-head">
             <div>
-              <h1>Mint</h1>
-              <p class="lede">Select capabilities, set parameters, preview URIs, then save or inject.</p>
+              <h1 data-i18n="service.msl.mintTitle">Mint</h1>
+              <p class="lede" data-i18n="service.msl.mintSub">Select capabilities, set parameters, preview URIs, then save or inject.</p>
             </div>
           </header>
           <div class="mint-layout">
             <div class="mint-col">
               <div class="panel-block">
                 <div class="panel-block-head">
-                  <h2>Tools</h2>
+                  <h2 data-i18n="service.msl.tools">Tools</h2>
                   <em id="mint-sel-count">0 selected</em>
                 </div>
-                <input type="search" id="mint-filter" class="search search-inset" placeholder="Filter tools…" spellcheck="false" />
+                <input type="search" id="mint-filter" class="search search-inset" data-i18n-placeholder="service.msl.filterTools" placeholder="Filter tools…" spellcheck="false" />
                 <div class="cap-pick" id="mint-caps"></div>
               </div>
             </div>
             <div class="mint-col">
               <div class="panel-block">
-                <div class="panel-block-head"><h2>Parameters</h2></div>
-                <p class="panel-hint" id="mint-params-hint">Select tools on the left to edit inputs per key.</p>
+                <div class="panel-block-head"><h2 data-i18n="service.msl.parameters">Parameters</h2></div>
+                <p class="panel-hint" id="mint-params-hint" data-i18n="service.msl.paramsHint">Select tools on the left to edit inputs per key.</p>
                 <div id="mint-params"></div>
                 <label class="field">
-                  <span>Label prefix <em>optional</em></span>
-                  <input type="text" id="mint-label" placeholder="e.g. History pack" autocomplete="off" />
+                  <span><span data-i18n="service.msl.labelPrefix">Label prefix</span> <em data-i18n="service.msl.optional">optional</em></span>
+                  <input type="text" id="mint-label" data-i18n-placeholder="service.msl.labelPlaceholder" placeholder="e.g. History pack" autocomplete="off" />
                 </label>
               </div>
               <div class="panel-block">
-                <div class="panel-block-head"><h2>Preview</h2></div>
+                <div class="panel-block-head"><h2 data-i18n="service.msl.preview">Preview</h2></div>
                 <pre class="uri-preview" id="mint-preview">Select tools to preview keys</pre>
                 <div class="mint-actions">
-                  <button type="button" class="btn" id="btn-mint-copy">Copy</button>
-                  <button type="button" class="btn" id="btn-mint-save">Save to library</button>
+                  <button type="button" class="btn" id="btn-mint-copy" data-i18n="service.msl.copy">Copy</button>
+                  <button type="button" class="btn" id="btn-mint-save" data-i18n="service.msl.saveLibrary">Save to library</button>
                   <label class="field field-inline">
-                    <span>Inject into</span>
+                    <span data-i18n="service.msl.injectInto">Inject into</span>
                     <select id="mint-target"></select>
                   </label>
-                  <button type="button" class="btn btn-primary" id="btn-mint-inject">Inject</button>
+                  <button type="button" class="btn btn-primary" id="btn-mint-inject" data-i18n="service.msl.injectBtn">Inject</button>
                 </div>
               </div>
             </div>
@@ -157,34 +157,34 @@
         <section class="view hidden" id="view-inject">
           <header class="page-head">
             <div>
-              <h1>Inject</h1>
-              <p class="lede">Wire a saved key into an AI app so its model can use that capability as grounding.</p>
+              <h1 data-i18n="service.msl.injectTitle">Inject</h1>
+              <p class="lede" data-i18n="service.msl.injectSub">Wire a saved key into an AI app so its model can use that capability as grounding.</p>
             </div>
           </header>
           <div class="panel form-panel">
             <label class="field">
-              <span>Target app</span>
+              <span data-i18n="service.msl.targetApp">Target app</span>
               <select id="inject-target"></select>
             </label>
             <label class="field">
-              <span>Saved key</span>
+              <span data-i18n="service.msl.savedKey">Saved key</span>
               <select id="inject-key"></select>
             </label>
             <div class="form-actions">
-              <button type="button" class="btn btn-primary" id="btn-inject">Inject key</button>
+              <button type="button" class="btn btn-primary" id="btn-inject" data-i18n="service.msl.injectKey">Inject key</button>
             </div>
           </div>
-          <h2 class="section-title">Active links</h2>
+          <h2 class="section-title" data-i18n="service.msl.activeLinks">Active links</h2>
           <div class="toolbar">
             <label class="field field-inline">
-              <span>Filter app</span>
+              <span data-i18n="service.msl.filterApp">Filter app</span>
               <select id="inject-filter"></select>
             </label>
           </div>
           <div class="row-list" id="inject-list"></div>
           <div class="empty hidden" id="inject-empty">
-            <strong>No active injections</strong>
-            <p>Inject a key from the form above or from Mint.</p>
+            <strong data-i18n="service.msl.emptyInject">No active injections</strong>
+            <p data-i18n="service.msl.emptyInjectHint">Inject a key from the form above or from Mint.</p>
           </div>
         </section>
 
@@ -192,8 +192,8 @@
         <section class="view hidden" id="view-about">
           <header class="page-head">
             <div>
-              <h1>About MSL</h1>
-              <p class="lede">My Space Link: the Link-series capability bus.</p>
+              <h1 data-i18n="service.msl.aboutTitle">About MSL</h1>
+              <p class="lede" data-i18n="service.msl.aboutSub">My Space Link: the Link-series capability bus.</p>
             </div>
           </header>
           <div class="about-grid">
@@ -228,6 +228,12 @@ msl(help)</pre>
         <p class="toast-line" id="status-line" role="status"></p>
       </main>
     </div>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="../shared/msl-key.js"></script>
     <script src="../shared/msl-client.js"></script>
     <script src="app.js"></script>

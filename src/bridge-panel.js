@@ -6,6 +6,20 @@
   let unsub = null;
   let busy = false;
 
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    const fb = fallback || key;
+    const withVars = (s) => {
+      if (!vars) return s;
+      return String(s).replace(/\{(\w+)\}/g, (_, k) =>
+        vars[k] != null ? String(vars[k]) : `{${k}}`
+      );
+    };
+    if (!I?.t) return withVars(fb);
+    const v = I.t(key, vars);
+    return v === key ? withVars(fb) : v;
+  }
+
   function escapeHtml(s) {
     return String(s ?? "")
       .replace(/&/g, "&amp;")
@@ -47,21 +61,22 @@
     const devices = p.devices || [];
     const inbox = snap?.inboxCount || 0;
     const url = p.primaryUrl || (p.urls && p.urls[0]) || "";
+    const tip = p.tip || tt("service.bridge.wifiTip", "Same Wi‑Fi as this PC. Port 17834.");
 
     list.innerHTML = `
       <div class="bridge-panel-section">
         <div class="bridge-panel-status-row">
-          <span class="bridge-pill ${running ? "is-on" : ""}">${running ? "Listening" : "Stopped"}</span>
-          <span class="bridge-panel-meta">${devices.length} phone(s) · inbox ${inbox}</span>
+          <span class="bridge-pill ${running ? "is-on" : ""}">${escapeHtml(running ? tt("service.bridge.listening", "Listening") : tt("service.bridge.stopped", "Stopped"))}</span>
+          <span class="bridge-panel-meta">${escapeHtml(tt("service.bridge.metaPhonesInbox", "{phones} phone(s) · inbox {inbox}", { phones: devices.length, inbox }))}</span>
         </div>
-        <p class="bridge-panel-hint">${escapeHtml(p.tip || "Same Wi‑Fi as this PC. Port 17834.")}</p>
+        <p class="bridge-panel-hint">${escapeHtml(tip)}</p>
         <div class="bridge-code">${escapeHtml(code)}</div>
         <div class="bridge-panel-actions">
           <button type="button" class="bridge-btn bridge-btn-primary" id="bridge-pair-toggle" ${busy ? "disabled" : ""}>
-            ${running ? "Refresh code" : "Start pairing"}
+            ${escapeHtml(running ? tt("service.bridge.refreshCode", "Refresh code") : tt("service.bridge.startPairing", "Start pairing"))}
           </button>
-          <button type="button" class="bridge-btn" id="bridge-pair-stop" ${running && !busy ? "" : "disabled"}>Stop</button>
-          <button type="button" class="bridge-btn" id="bridge-copy-link" ${url ? "" : "disabled"}>Copy link</button>
+          <button type="button" class="bridge-btn" id="bridge-pair-stop" ${running && !busy ? "" : "disabled"}>${escapeHtml(tt("service.common.stop", "Stop"))}</button>
+          <button type="button" class="bridge-btn" id="bridge-copy-link" ${url ? "" : "disabled"}>${escapeHtml(tt("service.bridge.copyLink", "Copy link"))}</button>
         </div>
         ${
           url
@@ -70,27 +85,27 @@
         }
       </div>
       <div class="bridge-panel-section">
-        <h3>Connected</h3>
+        <h3>${escapeHtml(tt("service.bridge.connected", "Connected"))}</h3>
         ${
           devices.length
             ? `<ul class="bridge-device-list">${devices
                 .map(
                   (d) =>
-                    `<li><strong>${escapeHtml(d.name || "Phone")}</strong><span>${escapeHtml(
+                    `<li><strong>${escapeHtml(d.name || tt("service.bridge.phone", "Phone"))}</strong><span>${escapeHtml(
                       d.lastSeen ? new Date(d.lastSeen).toLocaleTimeString() : ""
                     )}</span></li>`
                 )
                 .join("")}</ul>`
-            : `<p class="bridge-panel-empty">No phone connected: scan QR or open the link in the full app.</p>`
+            : `<p class="bridge-panel-empty">${escapeHtml(tt("service.bridge.noPhone", "No phone connected: scan QR or open the link in the full app."))}</p>`
         }
       </div>
       <div class="bridge-panel-section bridge-panel-quick">
-        <h3>Open surface</h3>
+        <h3>${escapeHtml(tt("service.bridge.openSurface", "Open surface"))}</h3>
         <div class="bridge-surface-row">
-          <button type="button" class="bridge-surface" data-open-page="devices">Devices</button>
-          <button type="button" class="bridge-surface" data-open-page="actions">Share</button>
-          <button type="button" class="bridge-surface" data-open-page="places">Places</button>
-          <button type="button" class="bridge-surface" data-open-page="host">Host</button>
+          <button type="button" class="bridge-surface" data-open-page="devices">${escapeHtml(tt("service.bridge.devices", "Devices"))}</button>
+          <button type="button" class="bridge-surface" data-open-page="actions">${escapeHtml(tt("service.bridge.share", "Share"))}</button>
+          <button type="button" class="bridge-surface" data-open-page="places">${escapeHtml(tt("service.bridge.places", "Places"))}</button>
+          <button type="button" class="bridge-surface" data-open-page="host">${escapeHtml(tt("service.bridge.host", "Host"))}</button>
         </div>
       </div>`;
 
@@ -101,8 +116,8 @@
         ? await window.mySpace?.osBridge?.pairRefreshCode?.()
         : await window.mySpace?.osBridge?.pairStart?.();
       busy = false;
-      if (res?.ok === false) toast(res.error || "Pairing failed");
-      else toast(running ? "Code refreshed" : "Pairing started");
+      if (res?.ok === false) toast(res.error || tt("service.bridge.pairingFailed", "Pairing failed"));
+      else toast(running ? tt("service.bridge.codeRefreshed", "Code refreshed") : tt("service.bridge.pairingStarted", "Pairing started"));
       await refresh();
     });
     list.querySelector("#bridge-pair-stop")?.addEventListener("click", async () => {
@@ -110,17 +125,17 @@
       paint();
       const res = await window.mySpace?.osBridge?.pairStop?.();
       busy = false;
-      if (res?.ok === false) toast(res.error || "Could not stop");
-      else toast("Pairing stopped");
+      if (res?.ok === false) toast(res.error || tt("service.bridge.couldNotStop", "Could not stop"));
+      else toast(tt("service.bridge.pairingStopped", "Pairing stopped"));
       await refresh();
     });
     list.querySelector("#bridge-copy-link")?.addEventListener("click", async () => {
       if (!url) return;
       try {
         await navigator.clipboard.writeText(url);
-        toast("Link copied");
+        toast(tt("service.bridge.linkCopied", "Link copied"));
       } catch {
-        toast("Could not copy link");
+        toast(tt("service.bridge.couldNotCopyLink", "Could not copy link"));
       }
     });
     list.querySelectorAll("[data-open-page]").forEach((btn) => {
@@ -133,10 +148,10 @@
     if (!list) return;
     list.innerHTML = `
       <div class="bridge-panel-section">
-        <p class="bridge-panel-hint">Clipboard+, history, and send-to-phone live in the full Share surface.</p>
+        <p class="bridge-panel-hint">${escapeHtml(tt("service.bridge.shareHint", "Clipboard+, history, and send-to-phone live in the full Share surface."))}</p>
         <div class="bridge-panel-actions">
-          <button type="button" class="bridge-btn bridge-btn-primary" data-open-page="actions">Open Share</button>
-          <button type="button" class="bridge-btn" id="bridge-clip-read">Read PC clipboard</button>
+          <button type="button" class="bridge-btn bridge-btn-primary" data-open-page="actions">${escapeHtml(tt("service.bridge.openShare", "Open Share"))}</button>
+          <button type="button" class="bridge-btn" id="bridge-clip-read">${escapeHtml(tt("service.bridge.readClipboard", "Read PC clipboard"))}</button>
         </div>
         <pre class="bridge-clip-preview" id="bridge-clip-preview">—</pre>
       </div>`;
@@ -146,13 +161,17 @@
       const box = list.querySelector("#bridge-clip-preview");
       if (!box) return;
       if (res?.ok === false) {
-        box.textContent = res.error || "Could not read clipboard";
+        box.textContent = res.error || tt("service.bridge.couldNotReadClipboard", "Could not read clipboard");
         return;
       }
       if (res?.kind === "image") {
-        box.textContent = `Image (${res.mime || "image"}) · ${res.width || "?"}×${res.height || "?"}`;
+        box.textContent = tt("service.bridge.imagePreview", "Image ({mime}) · {width}×{height}", {
+          mime: res.mime || "image",
+          width: res.width || "?",
+          height: res.height || "?",
+        });
       } else {
-        box.textContent = res?.text || "(empty)";
+        box.textContent = res?.text || tt("service.common.empty", "(empty)");
       }
     });
   }
@@ -165,7 +184,7 @@
       const places = res?.places || [];
       list.innerHTML = `
         <div class="bridge-panel-section">
-          <p class="bridge-panel-hint">Host folders & USB: open a place or manage in the full app.</p>
+          <p class="bridge-panel-hint">${escapeHtml(tt("service.bridge.placesHint", "Host folders & USB: open a place or manage in the full app."))}</p>
           <ul class="bridge-place-list">
             ${places
               .slice(0, 8)
@@ -177,17 +196,43 @@
               )
               .join("")}
           </ul>
-          <button type="button" class="bridge-btn bridge-btn-primary" data-open-page="places">Open Places</button>
+          <button type="button" class="bridge-btn bridge-btn-primary" data-open-page="places">${escapeHtml(tt("service.bridge.openPlaces", "Open Places"))}</button>
         </div>`;
       list.querySelector("[data-open-page]")?.addEventListener("click", () => openFull("places"));
       list.querySelectorAll(".bridge-place").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const path = btn.dataset.path;
           const r = await window.mySpace?.osBridge?.openPlace?.(path);
-          if (r?.ok === false) toast(r.error || "Could not open");
+          if (r?.ok === false) toast(r.error || tt("service.bridge.couldNotOpen", "Could not open"));
         });
       });
     })();
+  }
+
+  function repaintChrome() {
+    if (!root) return;
+    root.setAttribute("aria-label", tt("platform.bridge.name", "OS Bridge"));
+    const brand = root.querySelector(".bridge-panel-brand div");
+    if (brand) {
+      const h2 = brand.querySelector("h2");
+      const p = brand.querySelector("p");
+      if (h2) h2.textContent = tt("platform.bridge.name", "OS Bridge");
+      if (p) p.textContent = tt("platform.bridge.panelTagline", "Phone · host folders · clipboard: not Remote Hub");
+    }
+    root.querySelector(".bridge-panel-close")?.setAttribute("aria-label", tt("service.common.close", "Close"));
+    const tabs = {
+      devices: tt("service.bridge.devices", "Devices"),
+      share: tt("service.bridge.share", "Share"),
+      places: tt("service.bridge.places", "Places"),
+    };
+    root.querySelectorAll("[data-bridge-tab]").forEach((btn) => {
+      const id = btn.dataset.bridgeTab;
+      if (tabs[id]) btn.textContent = tabs[id];
+    });
+    const fullBtn = root.querySelector("#bridge-open-full");
+    if (fullBtn) fullBtn.textContent = tt("service.bridge.fullApp", "Full app");
+    const foot = root.querySelector(".bridge-panel-foot span");
+    if (foot) foot.textContent = tt("service.bridge.shellHint", "Shell: bridge(panel) · bridge(pair) · bridge(status)");
   }
 
   function paint() {
@@ -206,30 +251,30 @@
     root.className = "bridge-panel hidden";
     root.setAttribute("role", "dialog");
     root.setAttribute("aria-modal", "true");
-    root.setAttribute("aria-label", "OS Bridge");
+    root.setAttribute("aria-label", tt("platform.bridge.name", "OS Bridge"));
     root.innerHTML = `
       <div class="bridge-panel-shell">
         <header class="bridge-panel-head">
           <div class="bridge-panel-brand">
             <img src="brand/atom-white.png" alt="" width="28" height="28" />
             <div>
-              <h2>OS Bridge</h2>
-              <p>Phone · host folders · clipboard: not Remote Hub</p>
+              <h2>${escapeHtml(tt("platform.bridge.name", "OS Bridge"))}</h2>
+              <p>${escapeHtml(tt("platform.bridge.panelTagline", "Phone · host folders · clipboard: not Remote Hub"))}</p>
             </div>
           </div>
-          <button type="button" class="bridge-panel-close" aria-label="Close">×</button>
+          <button type="button" class="bridge-panel-close" aria-label="${escapeHtml(tt("service.common.close", "Close"))}">×</button>
         </header>
         <div class="bridge-panel-toolbar">
           <div class="bridge-panel-tabs">
-            <button type="button" data-bridge-tab="devices" class="is-active">Devices</button>
-            <button type="button" data-bridge-tab="share">Share</button>
-            <button type="button" data-bridge-tab="places">Places</button>
+            <button type="button" data-bridge-tab="devices" class="is-active">${escapeHtml(tt("service.bridge.devices", "Devices"))}</button>
+            <button type="button" data-bridge-tab="share">${escapeHtml(tt("service.bridge.share", "Share"))}</button>
+            <button type="button" data-bridge-tab="places">${escapeHtml(tt("service.bridge.places", "Places"))}</button>
           </div>
-          <button type="button" class="bridge-btn bridge-btn-quiet" id="bridge-open-full">Full app</button>
+          <button type="button" class="bridge-btn bridge-btn-quiet" id="bridge-open-full">${escapeHtml(tt("service.bridge.fullApp", "Full app"))}</button>
         </div>
         <div class="bridge-panel-body" id="bridge-panel-body"></div>
         <footer class="bridge-panel-foot">
-          <span>Shell: bridge(panel) · bridge(pair) · bridge(status)</span>
+          <span>${escapeHtml(tt("service.bridge.shellHint", "Shell: bridge(panel) · bridge(pair) · bridge(status)"))}</span>
         </footer>
       </div>`;
     root.querySelector(".bridge-panel-close").addEventListener("click", hide);
@@ -274,6 +319,12 @@
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && open) hide();
+  });
+
+  window.addEventListener("myspace-i18n-applied", () => {
+    if (!open || !root) return;
+    repaintChrome();
+    paint();
   });
 
   window.MySpaceBridgePanel = { show, hide, toggle, refresh, isOpen: () => open };

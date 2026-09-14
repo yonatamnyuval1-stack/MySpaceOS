@@ -1,7 +1,9 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
+const MODULE_ID = "world-maps";
+
 function invoke(channel, args) {
-  return ipcRenderer.invoke("myapp-invoke", "world-maps", channel, args);
+  return ipcRenderer.invoke("myapp-invoke", MODULE_ID, channel, args || {});
 }
 
 async function withNavigate(result) {
@@ -11,8 +13,23 @@ async function withNavigate(result) {
   return result;
 }
 
+contextBridge.exposeInMainWorld("myApp", {
+  moduleId: MODULE_ID,
+  invoke,
+});
+
+try {
+  const { attachLocalAuthBridge } = require("../shared/local-auth/preload-bridge");
+  attachLocalAuthBridge(contextBridge, ipcRenderer, MODULE_ID);
+} catch (err) {
+  console.error("[world-maps preload] Local auth bridge failed:", err);
+}
+
 contextBridge.exposeInMainWorld("worldMaps", {
   authStatus: () => invoke("auth-status"),
+  myspaceStatus: () => invoke("auth-myspace-status"),
+  continueWithMyspace: (payload) =>
+    invoke("auth-continue-myspace", payload || {}).then(withNavigate),
   register: (payload) => invoke("auth-register", payload).then(withNavigate),
   login: (payload) => invoke("auth-login", payload).then(withNavigate),
   logout: () => invoke("auth-logout").then(withNavigate),
@@ -37,7 +54,9 @@ contextBridge.exposeInMainWorld("worldMaps", {
   geminiGenerate: (payload) => invoke("gemini-generate", payload),
 });
 
-contextBridge.exposeInMainWorld("myApp", {
-  moduleId: "world-maps",
-  invoke: (channel, args) => ipcRenderer.invoke("myapp-invoke", "world-maps", channel, args || {}),
-});
+try {
+  const { attachLinkBridge } = require("../shared/link-preload");
+  attachLinkBridge(contextBridge, ipcRenderer, MODULE_ID);
+} catch (err) {
+  console.error("[world-maps preload] Link bridge failed:", err);
+}

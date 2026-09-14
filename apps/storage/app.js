@@ -51,6 +51,11 @@
     return window.myApp?.storage;
   }
 
+  function tt(key, vars) {
+    const fn = window.MySpaceI18n?.t;
+    return typeof fn === "function" ? fn(key, vars) : key;
+  }
+
   function escapeHtml(s) {
     return String(s ?? "")
       .replace(/&/g, "&amp;")
@@ -120,7 +125,9 @@
 
     if (el.statusEyebrow) el.statusEyebrow.textContent = s.hostname || "This PC";
     if (el.statusTitle) {
-      el.statusTitle.textContent = ud.sizeLabel ? `${ud.sizeLabel} My Space data` : "My Space data";
+      el.statusTitle.textContent = ud.sizeLabel
+        ? `${ud.sizeLabel} ${tt("service.storage.mySpaceData")}`
+        : tt("service.storage.mySpaceData");
     }
     if (el.statusPrimary) {
       el.statusPrimary.textContent = primary
@@ -250,11 +257,11 @@
     if (el.largeScanNote) {
       el.largeScanNote.textContent = res?.scannedAt
         ? `Scanned ${formatTime(res.scannedAt)} · ${rows.length} files${res.cancelled ? " · cancelled" : ""}`
-        : "Pick a drive and scan to find large files.";
+        : tt("service.storage.largeScanNoteDefault");
     }
     if (!el.largeBody) return;
     if (!rows.length) {
-      el.largeBody.innerHTML = `<tr><td colspan="4" class="muted">No large files found (or scan cancelled).</td></tr>`;
+      el.largeBody.innerHTML = `<tr><td colspan="4" class="muted">${escapeHtml(tt("service.storage.noLargeFiles"))}</td></tr>`;
       return;
     }
     el.largeBody.innerHTML = rows
@@ -263,7 +270,7 @@
           <td>${escapeHtml(f.sizeLabel)}</td>
           <td class="proc-name">${escapeHtml(f.name)}</td>
           <td>${escapeHtml(f.path)}</td>
-          <td><button type="button" class="btn btn-ghost btn-sm" data-reveal="${escapeHtml(f.path)}">Show</button></td>
+          <td><button type="button" class="btn btn-ghost btn-sm" data-reveal="${escapeHtml(f.path)}">${escapeHtml(tt("service.storage.show"))}</button></td>
         </tr>`
       )
       .join("");
@@ -299,8 +306,8 @@
               <span class="pill warn">${escapeHtml(c.sizeLabel)}</span>
             </div>
             <div class="history-actions">
-              <button type="button" class="btn btn-ghost" data-reveal="${escapeHtml(c.path)}">Show</button>
-              <button type="button" class="btn btn-primary" data-delete="${escapeHtml(c.path)}">Remove</button>
+              <button type="button" class="btn btn-ghost" data-reveal="${escapeHtml(c.path)}">${escapeHtml(tt("service.storage.show"))}</button>
+              <button type="button" class="btn btn-primary" data-delete="${escapeHtml(c.path)}">${escapeHtml(tt("service.storage.remove"))}</button>
             </div>
           </article>`
         )
@@ -389,7 +396,7 @@
     state.scanning = true;
     if (el.btnScanLarge) el.btnScanLarge.disabled = true;
     if (el.largeBody) {
-      el.largeBody.innerHTML = `<tr><td colspan="4" class="muted">Scanning… this may take a minute</td></tr>`;
+      el.largeBody.innerHTML = `<tr><td colspan="4" class="muted">${escapeHtml(tt("service.storage.scanning"))}</td></tr>`;
     }
     try {
       const drive = el.largeDrive?.value || "C:\\";
@@ -435,6 +442,17 @@
 
   window.__myspaceApplyRoute = applyRoute;
   window.StorageApp = { setPage, applyRoute };
+
+  function onI18nApplied() {
+    paintChrome();
+    if (state.page === "status") paintStatus();
+    if (state.page === "apps") paintApps();
+    if (state.page === "large-files") paintLargeFiles({ scannedAt: state.largeFiles.length ? Date.now() : null });
+    if (state.page === "cleanup") paintCleanup();
+    if (state.page === "about") paintAbout();
+  }
+
+  window.addEventListener("myspace-i18n-applied", onI18nApplied);
 
   bind();
   setPage("status");

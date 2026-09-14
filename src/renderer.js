@@ -9,23 +9,92 @@ const welcomeSubtitle = document.getElementById("welcome-subtitle");
 let selectedAppId = null;
 let welcomeBound = false;
 
-const WELCOME_TIPS = [
-  "Open <kbd>Start (⊞)</kbd> to add programs from your PC: they open inside My Space.",
-  "Use <kbd>Connect</kbd> for Gmail, messaging, AI, and <kbd>My Space Browser</kbd> (search apps + web in one place).",
-  "Websites launch in a built-in browser tab; desktop apps can embed in workspace windows.",
-  "Use Console commands like <kbd>run space</kbd> or <kbd>run builds</kbd> for quick launches.",
-  "Pin favorites on the desktop, or use Start / Ctrl+K to find apps.",
-];
+function tt(key, fallback, vars) {
+  const I = window.MySpaceI18n;
+  const fill = (s) => {
+    if (!vars || typeof s !== "string") return s;
+    return s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] != null ? String(vars[k]) : `{${k}}`));
+  };
+  if (!I?.t) return fill(fallback || key);
+  const v = I.t(key, vars);
+  return v === key ? fill(fallback || key) : v;
+}
 
-const WELCOME_CHANGELOG = [
-  { tag: "Chat", text: "New Chat app: ChatGPT-style history powered by Mind. run chat · chat(new). Mind Chat (side panel) saves here too." },
-  { tag: "Mind", text: "Mind is simple: Quick (cheap), Everyday, or Deep (Pro). One Gemini key. Platform → Mind." },
-  { tag: "MSL", text: "MSL is a built-in platform service (panel + shell): no desktop app tile." },
-  { tag: "Jobs", text: "Jobs is the OS compute runtime. every launch and shell command is a job under the Capacity contract (Platform → Jobs)." },
-  { tag: "Platform", text: "Platform services catalog: OS, Browser, Shell, MSL, Jobs, Mind, and more from the taskbar atom or Welcome → Services." },
-  { tag: "Connect", text: "Mail hub renamed Connect: catalog of mail, messaging, social, AI, media, tools, and browsers in-app." },
-  { tag: "Browser", text: "My Space Browser searches apps, Connect services, My Space content, and the web from one home page." },
-];
+function welcomeTips() {
+  return [
+    tt(
+      "shell.welcome.tip.0",
+      "Open <kbd>Start (⊞)</kbd> to add programs from your PC: they open inside My Space."
+    ),
+    tt(
+      "shell.welcome.tip.1",
+      "Use <kbd>Connect</kbd> for Gmail, messaging, AI, and <kbd>My Space Browser</kbd>."
+    ),
+    tt(
+      "shell.welcome.tip.2",
+      "Websites launch in a built-in browser tab; desktop apps can embed in workspace windows."
+    ),
+    tt(
+      "shell.welcome.tip.3",
+      "Use Console commands like <kbd>run space</kbd> or <kbd>run builds</kbd> for quick launches."
+    ),
+    tt("shell.welcome.tip.4", "Pin favorites on the desktop, or use Start / Ctrl+K to find apps."),
+  ];
+}
+
+function welcomeChangelog() {
+  return [
+    {
+      tag: tt("shell.welcome.changelog.chat.tag", "Chat"),
+      text: tt(
+        "shell.welcome.changelog.chat.text",
+        "New Chat app: ChatGPT-style history powered by Mind. run chat · chat(new). Mind Chat (side panel) saves here too."
+      ),
+    },
+    {
+      tag: tt("shell.welcome.changelog.mind.tag", "Mind"),
+      text: tt(
+        "shell.welcome.changelog.mind.text",
+        "Mind is simple: Quick (cheap), Everyday, or Deep (Pro). One Gemini key. Platform → Mind."
+      ),
+    },
+    {
+      tag: tt("shell.welcome.changelog.msl.tag", "MSL"),
+      text: tt(
+        "shell.welcome.changelog.msl.text",
+        "MSL is a built-in platform service (panel + shell): no desktop app tile."
+      ),
+    },
+    {
+      tag: tt("shell.welcome.changelog.jobs.tag", "Jobs"),
+      text: tt(
+        "shell.welcome.changelog.jobs.text",
+        "Jobs is the OS compute runtime. every launch and shell command is a job under the Capacity contract (Platform → Jobs)."
+      ),
+    },
+    {
+      tag: tt("shell.welcome.changelog.platform.tag", "Platform"),
+      text: tt(
+        "shell.welcome.changelog.platform.text",
+        "Platform services catalog: OS, Browser, Shell, MSL, Jobs, Mind, and more from the taskbar atom or Welcome → Services."
+      ),
+    },
+    {
+      tag: tt("shell.welcome.changelog.connect.tag", "Connect"),
+      text: tt(
+        "shell.welcome.changelog.connect.text",
+        "Mail hub renamed Connect: catalog of mail, messaging, social, AI, media, tools, and browsers in-app."
+      ),
+    },
+    {
+      tag: tt("shell.welcome.changelog.browser.tag", "Browser"),
+      text: tt(
+        "shell.welcome.changelog.browser.text",
+        "My Space Browser searches apps, Connect services, My Space content, and the web from one home page."
+      ),
+    },
+  ];
+}
 
 function updateClock() {
   if (!clockEl) return;
@@ -88,11 +157,11 @@ async function showBuiltin() {
 }
 
 function typeLabel(type) {
-  if (type === "myapp") return "App";
-  if (type === "url") return "Web";
-  if (type === "exe" || type === "path") return "Program";
-  if (type === "builtin") return "System";
-  return type || "App";
+  if (type === "myapp") return tt("shell.welcome.type.app", "App");
+  if (type === "url") return tt("shell.welcome.type.web", "Web");
+  if (type === "exe" || type === "path") return tt("shell.welcome.type.program", "Program");
+  if (type === "builtin") return tt("shell.welcome.type.system", "System");
+  return type || tt("shell.welcome.type.app", "App");
 }
 
 function renderWelcomeHub() {
@@ -108,16 +177,32 @@ function renderWelcomeHub() {
   if (status) {
     const openCount = window.MySpaceWorkspace?.getTabs?.()?.length || 0;
     const hour = new Date().getHours();
-    const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+    const greeting =
+      hour < 12
+        ? tt("shell.welcome.greeting.morning", "Good morning")
+        : hour < 18
+          ? tt("shell.welcome.greeting.afternoon", "Good afternoon")
+          : tt("shell.welcome.greeting.evening", "Good evening");
+    const locale = settings.locale || "en-US";
+    let dateLabel = "";
+    try {
+      dateLabel = new Date().toLocaleDateString(locale, {
+        weekday: "long",
+        month: "short",
+        day: "numeric",
+      });
+    } catch {
+      dateLabel = new Date().toLocaleDateString();
+    }
     status.innerHTML = `
       <span class="welcome-chip"><strong>${greeting}</strong></span>
-      <span class="welcome-chip"><strong>${apps.length}</strong> apps installed</span>
-      <span class="welcome-chip"><strong>${openCount}</strong> open now</span>
-      <span class="welcome-chip">${new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}</span>`;
+      <span class="welcome-chip"><strong>${apps.length}</strong> ${tt("shell.welcome.appsInstalled", "apps installed")}</span>
+      <span class="welcome-chip"><strong>${openCount}</strong> ${tt("shell.welcome.openNowSuffix", "open now")}</span>
+      <span class="welcome-chip">${dateLabel}</span>`;
   }
 
   const countEl = document.getElementById("welcome-apps-count");
-  if (countEl) countEl.textContent = `${apps.length} available`;
+  if (countEl) countEl.textContent = tt("shell.welcome.available", "{n} available", { n: apps.length });
 
   const appsEl = document.getElementById("welcome-apps");
   if (appsEl) {
@@ -150,24 +235,26 @@ function renderWelcomeHub() {
 
   const tipsEl = document.getElementById("welcome-tips");
   if (tipsEl) {
-    tipsEl.innerHTML = WELCOME_TIPS.map((t) => `<li>${t}</li>`).join("");
+    tipsEl.innerHTML = welcomeTips().map((t) => `<li>${t}</li>`).join("");
   }
 
   const logEl = document.getElementById("welcome-changelog");
   if (logEl) {
-    logEl.innerHTML = WELCOME_CHANGELOG.map(
-      (c) => `<article class="welcome-change">
+    logEl.innerHTML = welcomeChangelog()
+      .map(
+        (c) => `<article class="welcome-change">
         <div class="welcome-change-meta">${c.tag}</div>
         <p>${c.text}</p>
       </article>`
-    ).join("");
+      )
+      .join("");
   }
 
   const runningEl = document.getElementById("welcome-running");
   if (runningEl) {
     const tabs = window.MySpaceWorkspace?.getTabs?.() || [];
     if (!tabs.length) {
-      runningEl.innerHTML = `<p class="welcome-running-empty">Nothing open, pick an app to start.</p>`;
+      runningEl.innerHTML = `<p class="welcome-running-empty">${tt("shell.welcome.runningEmpty", "Nothing open, pick an app to start.")}</p>`;
     } else {
       runningEl.innerHTML = tabs
         .map((tab) => {
@@ -175,7 +262,7 @@ function renderWelcomeHub() {
           const name = app?.name || tab.title || tab.appId;
           return `<div class="welcome-running-item">
             <span>${name}</span>
-            <button type="button" data-focus-tab="${tab.id}">Focus</button>
+            <button type="button" data-focus-tab="${tab.id}">${tt("shell.welcome.focus", "Focus")}</button>
           </div>`;
         })
         .join("");
@@ -1886,10 +1973,18 @@ function setupAccountChip() {
     if (password2) password2.required = isRegister;
     if (sheetSub) {
       sheetSub.textContent = isRegister
-        ? "Create a My Space account for this PC"
-        : "Sign in to sync desktop settings to your profile";
+        ? t("shell.account.sheetSubCreate", null, "Create a My Space account on this computer")
+        : t("shell.account.sheetSub", null, "Sign in to sync desktop settings to your profile");
+      sheetSub.setAttribute(
+        "data-i18n",
+        isRegister ? "shell.account.sheetSubCreate" : "shell.account.sheetSub"
+      );
     }
-    if (submit) submit.textContent = isRegister ? "Create account" : "Sign in";
+    if (submit) {
+      submit.textContent = isRegister
+        ? t("shell.account.create", null, "Create account")
+        : t("shell.account.signIn", null, "Sign in");
+    }
     errorEl?.classList.add("hidden");
   }
 
@@ -1907,23 +2002,42 @@ function setupAccountChip() {
     errorEl?.classList.add("hidden");
   }
 
+  function t(key, vars, fallback) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? fallback || key : v;
+  }
+
   async function refreshAccountUi(user) {
     currentUser = user || null;
     const signedIn = Boolean(user?.username);
-    if (label) label.textContent = signedIn ? user.username : "Guest";
+    if (label) {
+      label.textContent = signedIn ? user.username : t("shell.account.guest", null, "Guest");
+      if (!signedIn) label.setAttribute("data-i18n", "shell.account.guest");
+      else label.removeAttribute("data-i18n");
+    }
     if (avatar) {
       avatar.alt = signedIn ? user.username : "My Space";
       avatar.classList.toggle("taskbar-account-avatar--guest", !signedIn);
     }
     if (menuHead) {
-      menuHead.textContent = signedIn ? `Signed in as ${user.username}` : "Not signed in";
+      menuHead.textContent = signedIn
+        ? t("shell.account.signedInAs", { name: user.username }, `Signed in as ${user.username}`)
+        : t("shell.account.notSignedIn", null, "Not signed in");
+      if (!signedIn) menuHead.setAttribute("data-i18n", "shell.account.notSignedIn");
+      else menuHead.removeAttribute("data-i18n");
     }
     btnSignIn?.classList.toggle("hidden", signedIn);
     btnCreate?.classList.toggle("hidden", signedIn);
     btnSwitch?.classList.toggle("hidden", !signedIn);
     btnSignOut?.classList.toggle("hidden", !signedIn);
-    btn.title = signedIn ? `My Space — ${user.username}` : "My Space account";
+    btn.title = signedIn
+      ? `My Space — ${user.username}`
+      : t("shell.account.title", null, "My Space account");
   }
+
+  window.__myspaceRefreshAccountI18n = () => refreshAccountUi(currentUser);
 
   async function reloadDesktopForProfile() {
     try {
@@ -1974,7 +2088,7 @@ function setupAccountChip() {
     }
     await refreshAccountUi(null);
     await reloadDesktopForProfile();
-    showToast("Signed out of My Space");
+    showToast(t("shell.account.signedOutToast", null, "Signed out of My Space"));
   });
 
   tabSignIn?.addEventListener("click", () => setSheetMode(false));
@@ -2011,7 +2125,9 @@ function setupAccountChip() {
       closeSheet();
       await refreshAccountUi(res.user);
       await reloadDesktopForProfile();
-      showToast(registerMode ? `Welcome, ${res.user.username}` : `Signed in as ${res.user.username}`);
+      showToast(registerMode
+        ? t("shell.account.welcome", { name: res.user.username }, `Welcome, ${res.user.username}`)
+        : t("shell.account.signedInToast", { name: res.user.username }, `Signed in as ${res.user.username}`));
     } catch (err) {
       if (errorEl) {
         errorEl.textContent = err?.message || String(err);
@@ -2197,6 +2313,23 @@ async function init() {
   backBtn.addEventListener("click", showDesktop);
 
   await window.MySpaceConfig.init(window.mySpace);
+  window.MySpaceI18nBoot?.boot?.();
+  window.addEventListener("myspace-i18n-applied", () => {
+    try {
+      window.__myspaceRefreshAccountI18n?.();
+      window.MySpaceAppRail?.refresh?.();
+      window.MySpaceI18n?.applyDom?.(document);
+      renderWelcomeHub();
+      window.MySpaceNotificationsBell?.refresh?.();
+      window.MySpaceStartMenu?.refresh?.();
+      window.MySpaceCommandPalette?.refresh?.();
+      if (window.MySpaceFilesPanel?.isOpen?.()) window.MySpaceFilesPanel.refresh?.();
+      if (window.MySpaceMindPanel?.isOpen?.()) window.MySpaceMindPanel.refresh?.();
+      if (window.MySpaceLinkPanel?.isOpen?.()) window.MySpaceLinkPanel.refresh?.();
+    } catch {
+      /* ignore */
+    }
+  });
   applyHeader();
   setupTaskbar();
   window.MySpaceNotificationsBell?.refresh?.();

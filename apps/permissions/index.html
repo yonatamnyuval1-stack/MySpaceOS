@@ -19,44 +19,44 @@
         <div class="brand">
           <img class="brand-logo" src="logo.png" width="32" height="32" alt="" />
           <div>
-            <strong>Permissions</strong>
-            <span class="brand-sub">Access control</span>
+            <strong data-i18n="platform.permissions.name">Permissions</strong>
+            <span class="brand-sub" data-i18n="platform.permissions.tagline">Access control</span>
           </div>
         </div>
 
         <nav class="nav" id="main-nav" aria-label="Permissions">
           <button type="button" class="nav-item is-active" data-page="overview">
             <span class="nav-ico" aria-hidden="true">▣</span>
-            Overview
+            <span data-i18n="service.permissions.overview">Overview</span>
           </button>
           <button type="button" class="nav-item" data-page="tools">
             <span class="nav-ico" aria-hidden="true">◇</span>
-            AI tools
+            <span data-i18n="service.permissions.tools">AI tools</span>
           </button>
           <button type="button" class="nav-item" data-page="notifications">
             <span class="nav-ico" aria-hidden="true">◎</span>
-            Notifications
+            <span data-i18n="service.permissions.notifications">Notifications</span>
           </button>
           <button type="button" class="nav-item" data-page="jobs">
             <span class="nav-ico" aria-hidden="true">⬡</span>
-            Jobs
+            <span data-i18n="service.permissions.jobs">Jobs</span>
           </button>
           <button type="button" class="nav-item" data-page="bridge">
             <span class="nav-ico" aria-hidden="true">⇄</span>
-            Bridge
+            <span data-i18n="service.permissions.bridge">Bridge</span>
           </button>
           <button type="button" class="nav-item" data-page="external">
             <span class="nav-ico" aria-hidden="true">⧉</span>
-            External
+            <span data-i18n="service.permissions.external">External</span>
           </button>
           <button type="button" class="nav-item" data-page="about">
             <span class="nav-ico" aria-hidden="true">ⓘ</span>
-            About
+            <span data-i18n="service.common.about">About</span>
           </button>
         </nav>
 
         <footer class="sidebar-foot">
-          <p id="sidebar-blurb">Decide what Mind, Jobs, Bridge, and external tools may do on this PC.</p>
+          <p id="sidebar-blurb" data-i18n="service.permissions.blurb">Decide what Mind, Jobs, Bridge, and external tools may do on this PC.</p>
         </footer>
       </aside>
 
@@ -64,11 +64,11 @@
         <section class="view" id="view-overview">
           <header class="page-head">
             <div>
-              <h1>Overview</h1>
-              <p class="lede">A single place for platform access — tools, alerts, compute, devices, and external APIs.</p>
+              <h1 data-i18n="service.permissions.overviewTitle">Overview</h1>
+              <p class="lede" data-i18n="service.permissions.overviewLede">A single place for platform access — tools, alerts, compute, devices, and external APIs.</p>
             </div>
             <div class="page-actions">
-              <button type="button" class="btn" id="btn-refresh">Refresh</button>
+              <button type="button" class="btn" id="btn-refresh" data-i18n="service.common.refresh">Refresh</button>
             </div>
           </header>
           <div class="stat-grid" id="stat-grid"></div>
@@ -78,18 +78,18 @@
         <section class="view hidden" id="view-tools">
           <header class="page-head">
             <div>
-              <h1>AI tools</h1>
-              <p class="lede">Enable or disable tools the Mind side assistant can call. Mutating tools ask for confirmation when policy requires it.</p>
+              <h1 data-i18n="service.permissions.toolsTitle">AI tools</h1>
+              <p class="lede" data-i18n="service.permissions.toolsLede">Enable or disable tools the Mind side assistant can call. Mutating tools ask for confirmation when policy requires it.</p>
             </div>
             <div class="page-actions">
-              <button type="button" class="btn" id="btn-tools-enable">Enable all</button>
-              <button type="button" class="btn" id="btn-tools-lock">Disable mutating</button>
+              <button type="button" class="btn" id="btn-tools-enable" data-i18n="service.permissions.enableAll">Enable all</button>
+              <button type="button" class="btn" id="btn-tools-lock" data-i18n="service.permissions.disableMutating">Disable mutating</button>
             </div>
           </header>
           <div class="toolbar">
-            <input type="search" id="tools-search" class="search" placeholder="Filter tools…" spellcheck="false" />
+            <input type="search" id="tools-search" class="search" data-i18n-placeholder="service.permissions.filterTools" placeholder="Filter tools…" spellcheck="false" />
             <select id="tools-category" class="select">
-              <option value="">All categories</option>
+              <option value="" data-i18n="service.permissions.allCategories">All categories</option>
             </select>
           </div>
           <div class="row-list" id="tools-list"></div>
@@ -98,8 +98,8 @@
         <section class="view hidden" id="view-notifications">
           <header class="page-head">
             <div>
-              <h1>Notifications</h1>
-              <p class="lede">Mail alerts and the sender blocklist used by the taskbar bell.</p>
+              <h1 data-i18n="service.permissions.notificationsTitle">Notifications</h1>
+              <p class="lede" data-i18n="service.permissions.notificationsLede">Mail alerts and the sender blocklist used by the taskbar bell.</p>
             </div>
           </header>
           <div class="panel" id="notif-panel"></div>
@@ -108,8 +108,8 @@
         <section class="view hidden" id="view-jobs">
           <header class="page-head">
             <div>
-              <h1>Jobs</h1>
-              <p class="lede">What the OS compute runtime is allowed to queue — shell, scripts, launches, and focus behavior.</p>
+              <h1 data-i18n="service.permissions.jobsTitle">Jobs</h1>
+              <p class="lede" data-i18n="service.permissions.jobsLede">What the OS compute runtime is allowed to queue — shell, scripts, launches, and focus behavior.</p>
             </div>
           </header>
           <div class="panel" id="jobs-panel"></div>
@@ -118,22 +118,22 @@
         <section class="view hidden" id="view-bridge">
           <header class="page-head">
             <div>
-              <h1>Bridge</h1>
-              <p class="lede">Phones and devices trusted to exchange files and clipboard with this PC.</p>
+              <h1 data-i18n="service.permissions.bridgeTitle">Bridge</h1>
+              <p class="lede" data-i18n="service.permissions.bridgeLede">Phones and devices trusted to exchange files and clipboard with this PC.</p>
             </div>
           </header>
           <div class="row-list" id="bridge-list"></div>
           <div class="empty hidden" id="bridge-empty">
-            <strong>No trusted devices</strong>
-            <p>Pair a phone from Platform → OS Bridge.</p>
+            <strong data-i18n="service.permissions.noDevices">No trusted devices</strong>
+            <p data-i18n="service.permissions.noDevicesHint">Pair a phone from Platform → OS Bridge.</p>
           </div>
         </section>
 
         <section class="view hidden" id="view-external">
           <header class="page-head">
             <div>
-              <h1>External</h1>
-              <p class="lede">Composio / Pulse external toolkits — master switch and allowlist.</p>
+              <h1 data-i18n="service.permissions.externalTitle">External</h1>
+              <p class="lede" data-i18n="service.permissions.externalLede">Composio / Pulse external toolkits — master switch and allowlist.</p>
             </div>
           </header>
           <div class="panel" id="external-panel"></div>
@@ -142,8 +142,8 @@
         <section class="view hidden" id="view-about">
           <header class="page-head">
             <div>
-              <h1>About Permissions</h1>
-              <p class="lede">White-series platform service — access control for My Space.</p>
+              <h1 data-i18n="service.permissions.aboutTitle">About Permissions</h1>
+              <p class="lede" data-i18n="service.permissions.aboutLede">White-series platform service — access control for My Space.</p>
             </div>
           </header>
           <div class="about-grid">
@@ -157,7 +157,7 @@
             <article class="about-block">
               <h2>What it is not</h2>
               <p>
-                It does not replace Vault unlock, MSL capability minting, or Flow’s per-run approve bar. Those stay on
+                It does not replace Vault unlock, MSL capability minting, or Flow's per-run approve bar. Those stay on
                 their own surfaces; this app points at the lasting prefs behind them.
               </p>
             </article>
@@ -175,6 +175,12 @@ perms(overview)</pre>
         <p class="toast-line" id="status-line" role="status"></p>
       </main>
     </div>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

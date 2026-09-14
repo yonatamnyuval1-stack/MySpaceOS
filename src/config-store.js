@@ -508,7 +508,6 @@
   function updateApp(id, data) {
     const app = state.apps.find((a) => a.id === id);
     if (!app) return null;
-
     if (data.name !== undefined) app.name = data.name.trim();
     if (data.description !== undefined) app.description = data.description.trim();
     if (data.icon !== undefined) app.icon = data.icon.trim() || undefined;

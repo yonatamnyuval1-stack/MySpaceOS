@@ -1,4 +1,24 @@
 (function () {
+  function tt(key, vars) {
+    return window.MySpaceI18n?.t?.(key, vars) ?? key;
+  }
+
+  const FOLDER_I18N = {
+    INBOX: "service.mail.folder.inbox",
+    STARRED: "service.mail.folder.starred",
+    IMPORTANT: "service.mail.folder.important",
+    SENT: "service.mail.folder.sent",
+    DRAFT: "service.mail.folder.drafts",
+    SPAM: "service.mail.folder.spam",
+    TRASH: "service.mail.folder.trash",
+    __ALL__: "service.mail.folder.allMail",
+  };
+
+  function folderDisplayName(label) {
+    const key = FOLDER_I18N[label?.id];
+    return key ? tt(key) : label.displayName || label.name || label.id || "";
+  }
+
   const api = window.mailApi;
   const els = {
     setup: document.getElementById("mail-setup"),
@@ -179,7 +199,7 @@
     state.accountId = accountId;
     state.account = account;
     state.activeLabelId = "INBOX";
-    state.activeLabelName = "Inbox";
+    state.activeLabelName = tt("service.mail.inbox");
     state.activeMessageId = null;
     state.searchQuery = "";
     if (els.search) els.search.value = "";
@@ -233,8 +253,7 @@
     if (!els.accounts) return;
     els.accounts.innerHTML = "";
     if (!state.accounts.length) {
-      els.accounts.innerHTML =
-        '<p class="mail-sub">No accounts connected. Click Connect Gmail to get started.</p>';
+      els.accounts.innerHTML = `<p class="mail-sub">${escapeHtml(tt("service.mail.noAccounts"))}</p>`;
       return;
     }
     for (const acc of state.accounts) {
@@ -244,8 +263,8 @@
         <div class="mail-account-email">${escapeHtml(acc.email)}</div>
         <div class="mail-account-meta">${escapeHtml(acc.provider)} · ${escapeHtml(acc.status)}</div>
         <div class="mail-head-actions">
-          <button type="button" class="mail-btn mail-btn-primary" data-open="${escapeHtml(acc.id)}">Open mail</button>
-          <button type="button" class="mail-btn mail-btn-danger" data-disconnect="${escapeHtml(acc.id)}">Disconnect</button>
+          <button type="button" class="mail-btn mail-btn-primary" data-open="${escapeHtml(acc.id)}">${escapeHtml(tt("service.mail.openMail"))}</button>
+          <button type="button" class="mail-btn mail-btn-danger" data-disconnect="${escapeHtml(acc.id)}">${escapeHtml(tt("service.mail.disconnect"))}</button>
         </div>`;
       els.accounts.appendChild(card);
     }
@@ -266,8 +285,8 @@
     const inboxIdx = folders.findIndex((l) => l.id === "INBOX");
     const allMail = {
       id: "__ALL__",
-      displayName: "All Mail",
-      name: "All Mail",
+      displayName: tt("service.mail.folder.allMail"),
+      name: tt("service.mail.folder.allMail"),
       type: "system",
       messagesTotal: 0,
       messagesUnread: 0,
@@ -286,20 +305,21 @@
         label.id === state.activeLabelId && state.totalEstimate
           ? label.messagesUnread || ""
           : label.messagesUnread || "";
-      return `<button type="button" class="mail-folder-btn${active}" data-label="${escapeHtml(label.id)}" data-name="${escapeHtml(label.displayName || label.name)}">
-        <span class="mail-folder-name">${escapeHtml(label.displayName || label.name)}</span>
+      const name = folderDisplayName(label);
+      return `<button type="button" class="mail-folder-btn${active}" data-label="${escapeHtml(label.id)}" data-name="${escapeHtml(name)}">
+        <span class="mail-folder-name">${escapeHtml(name)}</span>
         ${count ? `<span class="mail-folder-count">${count}</span>` : ""}
       </button>`;
     };
     els.sidebar.innerHTML = `
-      <button type="button" class="mail-sidebar-compose" id="btn-compose" disabled title="Coming soon">Compose</button>
+      <button type="button" class="mail-sidebar-compose" id="btn-compose" disabled data-i18n-title="service.mail.composeSoon" title="Coming soon">${escapeHtml(tt("service.mail.compose"))}</button>
       <div class="mail-sidebar-section">
         ${folders.map(renderBtn).join("")}
       </div>
       ${
         custom.length
           ? `<div class="mail-sidebar-section">
-              <div class="mail-sidebar-label">Labels</div>
+              <div class="mail-sidebar-label">${escapeHtml(tt("service.mail.labels"))}</div>
               ${custom.map(renderBtn).join("")}
             </div>`
           : ""
@@ -322,7 +342,7 @@
     if (state.nextPageToken) {
       els.listFooter.hidden = false;
       els.btnLoadMore.disabled = state.loadingMore;
-      els.btnLoadMore.textContent = state.loadingMore ? "Loading…" : "Load more";
+      els.btnLoadMore.textContent = state.loadingMore ? tt("service.mail.loading") : tt("service.mail.loadMore");
     } else {
       els.listFooter.hidden = true;
     }
@@ -331,15 +351,17 @@
   function renderMessageList() {
     if (!els.list || !els.listEmpty) return;
     els.list.innerHTML = "";
-    const title = state.searchQuery ? `Search: ${state.searchQuery}` : state.activeLabelName;
+    const title = state.searchQuery
+      ? tt("service.mail.searchTitle", { query: state.searchQuery })
+      : state.activeLabelName;
     if (els.folderTitle) els.folderTitle.textContent = title;
     if (els.listCount) {
       const shown = state.messages.length;
       const total = state.totalEstimate || shown;
       if (shown && total > shown) {
-        els.listCount.textContent = `${shown} of ${total}`;
+        els.listCount.textContent = tt("service.mail.messagesOf", { shown, total });
       } else if (shown) {
-        els.listCount.textContent = `${shown} messages`;
+        els.listCount.textContent = tt("service.mail.messagesCount", { count: shown });
       } else {
         els.listCount.textContent = "";
       }
@@ -465,7 +487,7 @@
         renderMessageList();
       } else if (!state.messages.length && els.listEmpty) {
         els.listEmpty.hidden = false;
-        els.listEmpty.textContent = "Loading…";
+        els.listEmpty.textContent = tt("service.mail.loading");
       }
     }
 
@@ -545,8 +567,8 @@
     state.accounts = res.accounts || [];
     setStatus(
       state.accounts.length
-        ? `${state.accounts.length} account(s) connected`
-        : "Connect Gmail to start. tokens stay encrypted on this PC"
+        ? tt("service.mail.accountsConnected", { count: state.accounts.length })
+        : tt("service.mail.connectPrompt")
     );
     renderSetupAccounts();
 
@@ -720,6 +742,17 @@
     hasAccount: () => state.accounts.length > 0,
     refreshStatus: () => refresh({ openFirst: false }),
   };
+
+  function onI18nApplied() {
+    if (state.view === "setup") renderSetupAccounts();
+    if (state.view === "client") {
+      renderSidebar();
+      renderLoadMore();
+      renderMessageList();
+    }
+  }
+  window.addEventListener("myspace-i18n-applied", onI18nApplied);
+  window.addEventListener("myspace-i18n-ready", onI18nApplied);
 
   refresh({ openFirst: false });
 })();

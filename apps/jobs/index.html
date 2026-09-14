@@ -19,34 +19,34 @@
         <div class="brand">
           <img class="brand-logo" src="logo.png" width="32" height="32" alt="" />
           <div>
-            <strong>Jobs</strong>
-            <span class="brand-sub">Compute runtime</span>
+            <strong data-i18n="platform.jobs.name">Jobs</strong>
+            <span class="brand-sub" data-i18n="platform.jobs.tagline">Compute runtime</span>
           </div>
         </div>
         <nav class="nav" id="main-nav" aria-label="Jobs">
           <button type="button" class="nav-item is-active" data-page="queue">
             <span class="nav-ico" aria-hidden="true">☰</span>
-            Queue
+            <span data-i18n="service.jobs.queue">Queue</span>
           </button>
           <button type="button" class="nav-item" data-page="active">
             <span class="nav-ico" aria-hidden="true">◉</span>
-            Active
+            <span data-i18n="service.jobs.active">Active</span>
           </button>
           <button type="button" class="nav-item" data-page="done">
             <span class="nav-ico" aria-hidden="true">✓</span>
-            Done
+            <span data-i18n="service.jobs.done">Done</span>
           </button>
           <button type="button" class="nav-item" data-page="enqueue">
             <span class="nav-ico" aria-hidden="true">＋</span>
-            Enqueue
+            <span data-i18n="service.jobs.enqueue">Enqueue</span>
           </button>
           <button type="button" class="nav-item" data-page="capacity">
             <span class="nav-ico" aria-hidden="true">⬡</span>
-            Capacity
+            <span data-i18n="service.jobs.capacity">Capacity</span>
           </button>
           <button type="button" class="nav-item" data-page="about">
             <span class="nav-ico" aria-hidden="true">ⓘ</span>
-            About
+            <span data-i18n="service.common.about">About</span>
           </button>
         </nav>
         <footer class="sidebar-foot">
@@ -58,68 +58,68 @@
         <section class="view" id="view-queue">
           <header class="page-head">
             <div>
-              <h1>Queue</h1>
-              <p class="lede">All jobs: queued, running, and finished.</p>
+              <h1 data-i18n="service.jobs.queue">Queue</h1>
+              <p class="lede" data-i18n="service.jobs.queueLede">All jobs: queued, running, and finished.</p>
             </div>
             <div class="page-actions">
-              <button type="button" class="btn" id="btn-clear">Clear finished</button>
-              <button type="button" class="btn" id="btn-refresh">Refresh</button>
+              <button type="button" class="btn" id="btn-clear" data-i18n="service.jobs.clear">Clear finished</button>
+              <button type="button" class="btn" id="btn-refresh" data-i18n="service.common.refresh">Refresh</button>
             </div>
           </header>
           <div class="stat-grid" id="stat-grid"></div>
           <div class="toolbar">
-            <input type="search" id="queue-search" class="search" placeholder="Filter jobs…" spellcheck="false" />
+            <input type="search" id="queue-search" class="search" data-i18n-placeholder="service.jobs.filterJobs" placeholder="Filter jobs…" spellcheck="false" />
             <span class="search-meta" id="queue-meta"></span>
           </div>
           <div class="row-list" id="queue-list"></div>
           <div class="empty hidden" id="queue-empty">
-            <strong>No jobs</strong>
-            <p>Use Enqueue or <code>jobs(run …)</code> in the shell.</p>
+            <strong data-i18n="service.jobs.empty">No jobs</strong>
+            <p data-i18n="service.jobs.emptyHint">Use Enqueue or <code>jobs(run …)</code> in the shell.</p>
           </div>
         </section>
 
         <section class="view hidden" id="view-active">
           <header class="page-head">
             <div>
-              <h1>Active</h1>
-              <p class="lede">Queued and running jobs only.</p>
+              <h1 data-i18n="service.jobs.active">Active</h1>
+              <p class="lede" data-i18n="service.jobs.activeLede">Queued and running jobs only.</p>
             </div>
           </header>
           <div class="toolbar">
-            <input type="search" id="active-search" class="search" placeholder="Filter…" spellcheck="false" />
+            <input type="search" id="active-search" class="search" data-i18n-placeholder="service.jobs.filter" placeholder="Filter…" spellcheck="false" />
           </div>
           <div class="row-list" id="active-list"></div>
           <div class="empty hidden" id="active-empty">
-            <strong>Nothing active</strong>
-            <p>The queue is idle.</p>
+            <strong data-i18n="service.jobs.nothingActive">Nothing active</strong>
+            <p data-i18n="service.jobs.idle">The queue is idle.</p>
           </div>
         </section>
 
         <section class="view hidden" id="view-done">
           <header class="page-head">
             <div>
-              <h1>Done</h1>
-              <p class="lede">Succeeded, failed, and cancelled jobs.</p>
+              <h1 data-i18n="service.jobs.done">Done</h1>
+              <p class="lede" data-i18n="service.jobs.doneLede">Succeeded, failed, and cancelled jobs.</p>
             </div>
             <div class="page-actions">
-              <button type="button" class="btn" id="btn-clear-done">Clear finished</button>
+              <button type="button" class="btn" id="btn-clear-done" data-i18n="service.jobs.clear">Clear finished</button>
             </div>
           </header>
           <div class="toolbar">
-            <input type="search" id="done-search" class="search" placeholder="Filter…" spellcheck="false" />
+            <input type="search" id="done-search" class="search" data-i18n-placeholder="service.jobs.filter" placeholder="Filter…" spellcheck="false" />
           </div>
           <div class="row-list" id="done-list"></div>
           <div class="empty hidden" id="done-empty">
-            <strong>No finished jobs</strong>
-            <p>Completed work will appear here.</p>
+            <strong data-i18n="service.jobs.noFinished">No finished jobs</strong>
+            <p data-i18n="service.jobs.finishedHint">Completed work will appear here.</p>
           </div>
         </section>
 
         <section class="view hidden" id="view-enqueue">
           <header class="page-head">
             <div>
-              <h1>Enqueue</h1>
-              <p class="lede">Add a shell command, script, delay, or smoke test to the compute queue.</p>
+              <h1 data-i18n="service.jobs.enqueue">Enqueue</h1>
+              <p class="lede" data-i18n="service.jobs.enqueueLede">Add a shell command, script, delay, or smoke test to the compute queue.</p>
             </div>
           </header>
           <div class="panel form-panel" id="enqueue-panel"></div>
@@ -128,11 +128,11 @@
         <section class="view hidden" id="view-capacity">
           <header class="page-head">
             <div>
-              <h1>Capacity</h1>
-              <p class="lede">Pool limits, Connect boost, Focus pause, budget, and routing exceptions.</p>
+              <h1 data-i18n="service.jobs.capacity">Capacity</h1>
+              <p class="lede" data-i18n="service.jobs.capacityLede">Pool limits, Connect boost, Focus pause, budget, and routing exceptions.</p>
             </div>
             <div class="page-actions">
-              <button type="button" class="btn btn-primary" id="btn-cap-save">Save contract</button>
+              <button type="button" class="btn btn-primary" id="btn-cap-save" data-i18n="service.jobs.saveContract">Save contract</button>
             </div>
           </header>
           <div class="panel" id="capacity-panel"></div>
@@ -141,8 +141,8 @@
         <section class="view hidden" id="view-about">
           <header class="page-head">
             <div>
-              <h1>About Jobs</h1>
-              <p class="lede">White-series OS compute runtime, not a branded logo series.</p>
+              <h1 data-i18n="service.jobs.aboutTitle">About Jobs</h1>
+              <p class="lede" data-i18n="service.jobs.aboutLede">White-series OS compute runtime, not a branded logo series.</p>
             </div>
           </header>
           <div class="about-grid">
@@ -176,6 +176,12 @@ jobs(help)</pre>
         <p class="toast-line" id="status-line" role="status"></p>
       </main>
     </div>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

@@ -164,18 +164,18 @@
         </div>
 
         <section class="panel hidden" id="builtin-panel">
-          <button type="button" class="back-btn" id="back-btn">Back to desktop</button>
+          <button type="button" class="back-btn" id="back-btn" data-i18n="shell.backDesktop">Back to desktop</button>
           <div class="welcome-hub" id="welcome-hub">
             <header class="welcome-hero">
               <div class="welcome-hero-top">
-                <p class="welcome-kicker">My Space</p>
-                <button type="button" class="welcome-platform-btn" id="btn-platform-services-welcome" title="Platform services">
+                <p class="welcome-kicker" data-i18n="shell.welcome.kicker">My Space</p>
+                <button type="button" class="welcome-platform-btn" id="btn-platform-services-welcome" data-i18n-title="shell.welcome.servicesTitle" title="Platform services">
                   <img src="brand/atom-white.png" alt="" width="16" height="16" />
-                  <span>Services</span>
+                  <span data-i18n="shell.welcome.services">Services</span>
                 </button>
               </div>
-              <h2 id="welcome-title">Command center</h2>
-              <p id="welcome-subtitle">Your work environment for code and entrepreneurship.</p>
+              <h2 id="welcome-title" data-i18n="shell.welcome.title">Command center</h2>
+              <p id="welcome-subtitle" data-i18n="shell.welcome.subtitle">Your work environment for code and entrepreneurship.</p>
             </header>
 
             <div class="welcome-status" id="welcome-status" aria-live="polite"></div>
@@ -183,7 +183,7 @@
             <div class="welcome-layout">
               <section class="welcome-section welcome-section--apps">
                 <div class="welcome-section-head">
-                  <h3>Apps</h3>
+                  <h3 data-i18n="shell.welcome.apps">Apps</h3>
                   <span class="welcome-section-meta" id="welcome-apps-count"></span>
                 </div>
                 <div class="welcome-apps" id="welcome-apps"></div>
@@ -192,34 +192,34 @@
               <div class="welcome-side">
                 <section class="welcome-section">
                   <div class="welcome-section-head">
-                    <h3>Quick actions</h3>
+                    <h3 data-i18n="shell.welcome.quick">Quick actions</h3>
                   </div>
                   <div class="welcome-actions" id="welcome-actions">
-                    <button type="button" class="welcome-action" data-welcome-action="desktop">Desktop</button>
-                    <button type="button" class="welcome-action" data-welcome-action="start">Start menu</button>
-                    <button type="button" class="welcome-action" data-welcome-action="add">Add program</button>
-                    <button type="button" class="welcome-action" data-welcome-action="settings">Settings</button>
-                    <button type="button" class="welcome-action" data-welcome-action="sysinfo">System Info</button>
+                    <button type="button" class="welcome-action" data-welcome-action="desktop" data-i18n="shell.welcome.desktop">Desktop</button>
+                    <button type="button" class="welcome-action" data-welcome-action="start" data-i18n="shell.welcome.start">Start menu</button>
+                    <button type="button" class="welcome-action" data-welcome-action="add" data-i18n="shell.welcome.add">Add program</button>
+                    <button type="button" class="welcome-action" data-welcome-action="settings" data-i18n="shell.welcome.settings">Settings</button>
+                    <button type="button" class="welcome-action" data-welcome-action="sysinfo" data-i18n="shell.welcome.sysinfo">System Info</button>
                   </div>
                 </section>
 
                 <section class="welcome-section">
                   <div class="welcome-section-head">
-                    <h3>Open now</h3>
+                    <h3 data-i18n="shell.welcome.openNow">Open now</h3>
                   </div>
                   <div class="welcome-running" id="welcome-running"></div>
                 </section>
 
                 <section class="welcome-section">
                   <div class="welcome-section-head">
-                    <h3>Tips</h3>
+                    <h3 data-i18n="shell.welcome.tips">Tips</h3>
                   </div>
                   <ul class="welcome-tips" id="welcome-tips"></ul>
                 </section>
 
                 <section class="welcome-section">
                   <div class="welcome-section-head">
-                    <h3>Last updates</h3>
+                    <h3 data-i18n="shell.welcome.updates">Last updates</h3>
                   </div>
                   <div class="welcome-changelog" id="welcome-changelog"></div>
                 </section>
@@ -229,30 +229,30 @@
         </section>
       </main>
 
-      <footer class="taskbar" role="toolbar" aria-label="Taskbar">
+      <footer class="taskbar" role="toolbar" data-i18n-aria="shell.taskbar" aria-label="Taskbar">
         <div class="taskbar-section taskbar-section--start">
-          <button type="button" class="taskbar-start" id="btn-start" title="Start — add programs">
+          <button type="button" class="taskbar-start" id="btn-start" data-i18n-title="shell.start.title" title="Start — add programs">
             <span class="taskbar-start-icon" aria-hidden="true">⊞</span>
           </button>
-          <button type="button" class="taskbar-pin taskbar-connect" id="btn-connect" title="Connect — find services" aria-label="Open Connect">
+          <button type="button" class="taskbar-pin taskbar-connect" id="btn-connect" data-i18n-title="shell.connect.title" data-i18n-aria="shell.connect.aria" title="Connect — find services" aria-label="Open Connect">
             <svg class="taskbar-search-icon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false">
               <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/>
               <path d="M16.5 16.5L21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </button>
-          <button type="button" class="taskbar-pin" id="btn-settings" title="Settings">⚙</button>
-          <button type="button" class="taskbar-pin taskbar-bell" id="btn-notifications" title="Notifications" aria-label="Notifications">
+          <button type="button" class="taskbar-pin" id="btn-settings" data-i18n-title="shell.settings.title" title="Settings">⚙</button>
+          <button type="button" class="taskbar-pin taskbar-bell" id="btn-notifications" data-i18n-title="shell.notifications.title" data-i18n-aria="shell.notifications.aria" title="Notifications" aria-label="Notifications">
             <span class="taskbar-bell-badge" id="notifications-badge" hidden>0</span>
           </button>
-          <button type="button" class="taskbar-pin taskbar-ask-ai" id="btn-ask-ai" title="Mind Chat" aria-label="Mind Chat" aria-expanded="false">
+          <button type="button" class="taskbar-pin taskbar-ask-ai" id="btn-ask-ai" data-i18n-title="shell.mind.title" data-i18n-aria="shell.mind.aria" title="Mind Chat" aria-label="Mind Chat" aria-expanded="false">
             <img class="taskbar-ask-ai-logo" src="brand/atom-rose.png" alt="" width="18" height="18" />
           </button>
         </div>
         <div class="taskbar-section taskbar-section--apps">
-          <div id="taskbar-apps" class="taskbar-apps" aria-label="Open applications"></div>
+          <div id="taskbar-apps" class="taskbar-apps" data-i18n-aria="shell.apps.aria" aria-label="Open applications"></div>
         </div>
         <div class="taskbar-section taskbar-section--tray">
-          <button type="button" class="taskbar-platform-btn" id="btn-platform-services" title="Platform services" aria-label="Platform services">
+          <button type="button" class="taskbar-platform-btn" id="btn-platform-services" data-i18n-title="shell.platform.title" data-i18n-aria="shell.platform.aria" title="Platform services" aria-label="Platform services">
             <img src="brand/atom-white.png" alt="" width="16" height="16" />
           </button>
           <div class="taskbar-account-wrap" id="taskbar-account-wrap">
@@ -260,20 +260,22 @@
               type="button"
               class="taskbar-account-btn"
               id="btn-account"
+              data-i18n-title="shell.account.title"
+              data-i18n-aria="shell.account.aria"
               title="My Space account"
               aria-label="My Space account"
               aria-haspopup="menu"
               aria-expanded="false"
             >
               <img class="taskbar-account-avatar" id="account-avatar" src="brand/atom-white.png" alt="" width="18" height="18" />
-              <span class="taskbar-account-label" id="account-label">Guest</span>
+              <span class="taskbar-account-label" id="account-label" data-i18n="shell.account.guest">Guest</span>
             </button>
-            <div class="taskbar-account-menu hidden" id="account-menu" role="menu" aria-label="Account">
-              <p class="taskbar-account-menu-head" id="account-menu-head">Not signed in</p>
-              <button type="button" class="taskbar-account-menu-item" id="account-sign-in" role="menuitem">Sign in</button>
-              <button type="button" class="taskbar-account-menu-item" id="account-create" role="menuitem">Create account</button>
-              <button type="button" class="taskbar-account-menu-item hidden" id="account-switch" role="menuitem">Switch account</button>
-              <button type="button" class="taskbar-account-menu-item taskbar-account-menu-item--danger hidden" id="account-sign-out" role="menuitem">Sign out</button>
+            <div class="taskbar-account-menu hidden" id="account-menu" role="menu" data-i18n-aria="shell.account.menu" aria-label="Account">
+              <p class="taskbar-account-menu-head" id="account-menu-head" data-i18n="shell.account.notSignedIn">Not signed in</p>
+              <button type="button" class="taskbar-account-menu-item" id="account-sign-in" role="menuitem" data-i18n="shell.account.signIn">Sign in</button>
+              <button type="button" class="taskbar-account-menu-item" id="account-create" role="menuitem" data-i18n="shell.account.create">Create account</button>
+              <button type="button" class="taskbar-account-menu-item hidden" id="account-switch" role="menuitem" data-i18n="shell.account.switch">Switch account</button>
+              <button type="button" class="taskbar-account-menu-item taskbar-account-menu-item--danger hidden" id="account-sign-out" role="menuitem" data-i18n="shell.account.signOut">Sign out</button>
             </div>
           </div>
           <span class="taskbar-tray-title" id="taskbar-title">My Space</span>
@@ -287,31 +289,35 @@
       <div class="os-account-card">
         <h2 id="os-account-title" class="os-account-title">
           <img class="os-account-logo" src="brand/atom-white.png" alt="" width="28" height="28" />
-          <span>My Space account</span>
+          <span data-i18n="shell.account.sheetTitle">My Space account</span>
         </h2>
-        <p class="os-account-sub" id="os-account-sub">Sign in to sync desktop settings to your profile</p>
+        <p class="os-account-sub" id="os-account-sub" data-i18n="shell.account.sheetSub">Sign in to sync desktop settings to your profile</p>
         <div class="os-account-tabs" id="os-account-tabs">
-          <button type="button" class="os-account-tab active" id="os-account-tab-signin" data-mode="signin">Sign in</button>
-          <button type="button" class="os-account-tab" id="os-account-tab-register" data-mode="register">Create account</button>
+          <button type="button" class="os-account-tab active" id="os-account-tab-signin" data-mode="signin" data-i18n="shell.account.signIn">Sign in</button>
+          <button type="button" class="os-account-tab" id="os-account-tab-register" data-mode="register" data-i18n="shell.account.create">Create account</button>
         </div>
         <form class="os-account-form" id="os-account-form">
-          <label class="os-account-label" for="os-account-username">Username</label>
+          <label class="os-account-label" for="os-account-username" data-i18n="shell.account.username">Username</label>
           <input type="text" id="os-account-username" class="os-account-input" autocomplete="username" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9_]+" />
-          <label class="os-account-label" for="os-account-password">Password</label>
+          <label class="os-account-label" for="os-account-password" data-i18n="shell.account.password">Password</label>
           <input type="password" id="os-account-password" class="os-account-input" autocomplete="current-password" required minlength="6" />
-          <label class="os-account-label hidden" for="os-account-password2" id="os-account-label-password2">Confirm password</label>
+          <label class="os-account-label hidden" for="os-account-password2" id="os-account-label-password2" data-i18n="shell.account.confirmPassword">Confirm password</label>
           <input type="password" id="os-account-password2" class="os-account-input hidden" autocomplete="new-password" minlength="6" />
           <label class="os-account-check">
             <input type="checkbox" id="os-account-remember" checked />
-            <span>Keep me signed in</span>
+            <span data-i18n="shell.account.remember">Keep me signed in</span>
           </label>
           <p class="os-account-error hidden" id="os-account-error" role="alert"></p>
-          <button type="submit" class="os-account-submit" id="os-account-submit">Continue</button>
-          <button type="button" class="os-account-cancel" id="os-account-cancel">Cancel</button>
+          <button type="submit" class="os-account-submit" id="os-account-submit" data-i18n="shell.account.continue">Continue</button>
+          <button type="button" class="os-account-cancel" id="os-account-cancel" data-i18n="shell.account.cancel">Cancel</button>
         </form>
       </div>
     </div>
 
+    <script src="../apps/shared/i18n/locales/en.js"></script>
+    <script src="../apps/shared/i18n/locales/he.js"></script>
+    <script src="../apps/shared/i18n/i18n.js"></script>
+    <script src="i18n-boot.js"></script>
     <script src="icon-utils.js"></script>
     <script src="desktop-utils.js"></script>
     <script src="app-rules.js"></script>

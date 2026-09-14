@@ -19,23 +19,23 @@
         <div class="brand">
           <img class="brand-logo" src="../../src/brand/atom-slate.png" width="32" height="32" alt="" />
           <div>
-            <strong>Backup</strong>
-            <span class="brand-sub">Export &amp; restore</span>
+            <strong data-i18n="platform.backup.name">Backup</strong>
+            <span class="brand-sub" data-i18n="platform.backup.tagline">Export &amp; restore</span>
           </div>
         </div>
-        <nav class="nav" id="main-nav" aria-label="Backup">
+        <nav class="nav" id="main-nav" data-i18n-aria="platform.backup.name" aria-label="Backup">
           <button type="button" class="nav-item is-active" data-page="status">
             <span class="nav-ico" aria-hidden="true">◆</span>
-            Status
+            <span data-i18n="service.backup.status">Status</span>
           </button>
           <button type="button" class="nav-item" data-page="history">
             <span class="nav-ico" aria-hidden="true">☰</span>
-            History
+            <span data-i18n="service.backup.history">History</span>
             <span class="nav-badge hidden" id="nav-history-count">0</span>
           </button>
           <button type="button" class="nav-item" data-page="about">
             <span class="nav-ico" aria-hidden="true">ⓘ</span>
-            About
+            <span data-i18n="service.common.about">About</span>
           </button>
         </nav>
         <footer class="sidebar-foot">
@@ -47,18 +47,18 @@
         <section class="view" id="view-status">
           <header class="page-head">
             <div>
-              <h1>Status</h1>
-              <p class="page-sub">Your My Space data folder — export a zip or restore from one</p>
+              <h1 data-i18n="service.backup.statusTitle">Status</h1>
+              <p class="page-sub" data-i18n="service.backup.statusSub">Your My Space data folder — export a zip or restore from one</p>
             </div>
             <div class="page-actions">
-              <button type="button" class="btn btn-ghost" id="btn-folder">Open data folder</button>
-              <button type="button" class="btn btn-ghost" id="btn-refresh">Refresh</button>
+              <button type="button" class="btn btn-ghost" id="btn-folder" data-i18n="service.backup.openDataFolder">Open data folder</button>
+              <button type="button" class="btn btn-ghost" id="btn-refresh" data-i18n="service.common.refresh">Refresh</button>
             </div>
           </header>
 
           <div class="banner hidden" id="pending-banner" role="status">
-            <strong>Restore pending</strong>
-            <span id="pending-banner-text">A backup is staged and will apply on the next restart.</span>
+            <strong data-i18n="service.backup.restorePending">Restore pending</strong>
+            <span id="pending-banner-text" data-i18n="service.backup.restorePendingText">A backup is staged and will apply on the next restart.</span>
           </div>
 
           <article class="status-hero" id="status-hero">
@@ -72,50 +72,50 @@
               />
             </div>
             <div class="status-body">
-              <p class="status-eyebrow">User data</p>
-              <h2 class="status-title" id="status-title">My Space data</h2>
+              <p class="status-eyebrow" data-i18n="service.backup.userData">User data</p>
+              <h2 class="status-title" id="status-title" data-i18n="service.backup.mySpaceData">My Space data</h2>
               <p class="status-version" id="status-size">—</p>
-              <p class="status-desc" id="status-desc">Loading…</p>
+              <p class="status-desc" id="status-desc" data-i18n="service.systemInfo.loading">Loading…</p>
               <div class="status-meta-row" id="status-meta-row"></div>
               <div class="status-actions">
-                <button type="button" class="btn btn-primary" id="btn-export">Export backup</button>
-                <button type="button" class="btn" id="btn-import">Restore from zip…</button>
+                <button type="button" class="btn btn-primary" id="btn-export" data-i18n="service.backup.exportBackup">Export backup</button>
+                <button type="button" class="btn" id="btn-import" data-i18n="service.backup.restoreFromZip">Restore from zip…</button>
               </div>
             </div>
           </article>
 
           <div class="section-head">
-            <h2>Last activity</h2>
-            <p class="page-sub" id="activity-sub">Exports and restores recorded on this PC</p>
+            <h2 data-i18n="service.backup.lastActivity">Last activity</h2>
+            <p class="page-sub" id="activity-sub" data-i18n="service.backup.activitySubDefault">Exports and restores recorded on this PC</p>
           </div>
           <div class="activity-list" id="activity-list"></div>
-          <p class="empty-msg" id="activity-empty">No exports or restores yet — create your first backup above.</p>
+          <p class="empty-msg" id="activity-empty" data-i18n="service.backup.activityEmpty">No exports or restores yet — create your first backup above.</p>
         </section>
 
         <section class="view hidden" id="view-history">
           <header class="page-head">
             <div>
-              <h1>History</h1>
-              <p class="page-sub">Past exports and restores from this machine</p>
+              <h1 data-i18n="service.backup.historyTitle">History</h1>
+              <p class="page-sub" data-i18n="service.backup.historySub">Past exports and restores from this machine</p>
             </div>
             <div class="page-actions">
               <select id="history-filter" class="select">
-                <option value="all" selected>All</option>
-                <option value="export">Exports</option>
-                <option value="restore">Restores</option>
+                <option value="all" selected data-i18n="service.backup.filterAll">All</option>
+                <option value="export" data-i18n="service.backup.filterExport">Exports</option>
+                <option value="restore" data-i18n="service.backup.filterRestore">Restores</option>
               </select>
-              <button type="button" class="btn btn-ghost" id="btn-refresh-history">Refresh</button>
+              <button type="button" class="btn btn-ghost" id="btn-refresh-history" data-i18n="service.common.refresh">Refresh</button>
             </div>
           </header>
           <div class="history-list" id="history-list"></div>
-          <p class="empty-msg hidden" id="history-empty">No history yet.</p>
+          <p class="empty-msg hidden" id="history-empty" data-i18n="service.backup.historyEmpty">No history yet.</p>
         </section>
 
         <section class="view hidden" id="view-about">
           <header class="page-head">
             <div>
-              <h1>About</h1>
-              <p class="page-sub">How My Space backups work</p>
+              <h1 data-i18n="service.backup.aboutTitle">About</h1>
+              <p class="page-sub" data-i18n="service.backup.aboutSub">How My Space backups work</p>
             </div>
           </header>
           <div class="about-page">
@@ -156,6 +156,12 @@
         </section>
       </main>
     </div>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

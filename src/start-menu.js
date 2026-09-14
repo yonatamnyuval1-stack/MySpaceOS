@@ -6,28 +6,52 @@
   let handlers = null;
   let anchorEl = null;
 
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    const fill = (s) => {
+      if (!vars || typeof s !== "string") return s;
+      return s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] != null ? String(vars[k]) : `{${k}}`));
+    };
+    if (!I?.t) return fill(fallback || key);
+    const v = I.t(key, vars);
+    return v === key ? fill(fallback || key) : v;
+  }
+
+  function applyChrome() {
+    if (!panel) return;
+    panel.setAttribute("aria-label", tt("shell.start.aria", "Start menu"));
+    if (searchInput) {
+      searchInput.placeholder = tt("shell.start.search", "Search apps…");
+    }
+    const addBtn = panel.querySelector('[data-action="add"]');
+    const settingsBtn = panel.querySelector('[data-action="settings"]');
+    if (addBtn) addBtn.textContent = tt("shell.start.addShortcut", "Add shortcut…");
+    if (settingsBtn) settingsBtn.textContent = tt("shell.start.settings", "Settings");
+  }
+
   function ensurePanel() {
     if (panel) return panel;
 
     panel = document.createElement("div");
     panel.className = "start-menu hidden";
     panel.setAttribute("role", "dialog");
-    panel.setAttribute("aria-label", "Start menu");
+    panel.setAttribute("aria-label", tt("shell.start.aria", "Start menu"));
     panel.innerHTML = `
       <div class="start-menu-head">
         <span class="start-menu-logo" aria-hidden="true">⊞</span>
         <div class="start-menu-search-wrap">
-          <input type="search" class="start-menu-search" placeholder="Search apps…" autocomplete="off" spellcheck="false" />
+          <input type="search" class="start-menu-search" placeholder="" autocomplete="off" spellcheck="false" />
         </div>
       </div>
       <div class="start-menu-list" role="listbox"></div>
       <footer class="start-menu-foot">
-        <button type="button" class="start-menu-foot-btn" data-action="add">Add shortcut…</button>
-        <button type="button" class="start-menu-foot-btn" data-action="settings">Settings</button>
+        <button type="button" class="start-menu-foot-btn" data-action="add"></button>
+        <button type="button" class="start-menu-foot-btn" data-action="settings"></button>
       </footer>`;
 
     searchInput = panel.querySelector(".start-menu-search");
     listEl = panel.querySelector(".start-menu-list");
+    applyChrome();
 
     searchInput.addEventListener("input", () => renderList(searchInput.value));
     searchInput.addEventListener("keydown", (e) => {
@@ -69,7 +93,8 @@
     });
 
     if (!apps.length) {
-      listEl.innerHTML = `<p class="start-menu-empty">No apps match "${query || ""}"</p>`;
+      const msg = tt("shell.start.empty", 'No apps match "{q}"', { q: query || "" });
+      listEl.innerHTML = `<p class="start-menu-empty">${msg}</p>`;
       return;
     }
 
@@ -106,6 +131,7 @@
     anchorEl = anchor;
     handlers = nextHandlers;
     const menu = ensurePanel();
+    applyChrome();
     renderList("");
     menu.classList.remove("hidden");
     visible = true;
@@ -128,6 +154,12 @@
     else open(anchor, nextHandlers);
   }
 
+  function refresh() {
+    if (!panel) return;
+    applyChrome();
+    if (visible) renderList(searchInput?.value || "");
+  }
+
   document.addEventListener(
     "pointerdown",
     (e) => {
@@ -142,5 +174,9 @@
     if (visible) positionPanel();
   });
 
-  window.MySpaceStartMenu = { open, close, toggle, isOpen: () => visible };
+  window.addEventListener("myspace-i18n-applied", () => {
+    if (panel) refresh();
+  });
+
+  window.MySpaceStartMenu = { open, close, toggle, isOpen: () => visible, refresh };
 })();

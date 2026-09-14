@@ -14,61 +14,61 @@
         <div class="brand">
           <img class="brand-logo" src="logo.png" width="32" height="32" alt="" />
           <div>
-            <strong>Console</strong>
-            <span class="brand-sub" id="brand-sub">Command engine</span>
+            <strong data-i18n="platform.shell.name">Console</strong>
+            <span class="brand-sub" id="brand-sub" data-i18n="service.shell.brandSub">Command engine</span>
           </div>
         </div>
         <nav class="nav" id="main-nav" aria-label="Console">
           <div class="nav-group">
-            <p class="nav-label">Execute</p>
+            <p class="nav-label" data-i18n="service.shell.navExecute">Execute</p>
             <button type="button" class="nav-item active" data-page="runner">
               <span class="nav-icon">›</span>
-              Run
+              <span data-i18n="service.shell.run">Run</span>
             </button>
             <button type="button" class="nav-item" data-page="history">
               <span class="nav-icon">◷</span>
-              History
+              <span data-i18n="service.shell.history">History</span>
             </button>
           </div>
           <div class="nav-group">
-            <p class="nav-label">Automation</p>
+            <p class="nav-label" data-i18n="service.shell.navAutomation">Automation</p>
             <button type="button" class="nav-item" data-page="aliases">
               <span class="nav-icon">⇢</span>
-              Aliases
+              <span data-i18n="service.shell.aliases">Aliases</span>
             </button>
             <button type="button" class="nav-item" data-page="macros">
               <span class="nav-icon">⧉</span>
-              Macros list
+              <span data-i18n="service.shell.macros">Macros list</span>
             </button>
             <button type="button" class="nav-item" data-page="when">
               <span class="nav-icon">⚡</span>
-              When rules
+              <span data-i18n="service.shell.when">When rules</span>
             </button>
           </div>
           <div class="nav-group">
-            <p class="nav-label">Help</p>
+            <p class="nav-label" data-i18n="service.shell.navHelp">Help</p>
             <button type="button" class="nav-item" data-page="reference">
               <span class="nav-icon">?</span>
-              Reference
+              <span data-i18n="service.shell.reference">Reference</span>
             </button>
           </div>
         </nav>
         <footer class="sidebar-foot">
-          <p id="sidebar-status">Synced with desktop shell</p>
+          <p id="sidebar-status" data-i18n="service.shell.sidebarSynced">Synced with desktop shell</p>
         </footer>
       </aside>
 
       <main class="main">
         <header class="topbar">
           <div class="topbar-text">
-            <h1 id="page-title">Run</h1>
-            <p class="subtitle" id="page-subtitle">Execute shell commands on My Space</p>
+            <h1 id="page-title" data-i18n="service.shell.runTitle">Run</h1>
+            <p class="subtitle" id="page-subtitle" data-i18n="service.shell.runSub">Execute shell commands on My Space</p>
           </div>
           <div class="topbar-actions" id="topbar-actions">
-            <button type="button" class="btn btn-primary btn-sm" id="btn-sync" title="Pull aliases, macros & rules from desktop shell">Sync</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-export">Export</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-import">Import</button>
-            <button type="button" class="btn btn-danger btn-sm" id="btn-reset">Reset</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-sync" data-i18n-title="service.shell.syncPullTitle" title="Pull aliases, macros & rules from desktop shell" data-i18n="service.shell.sync">Sync</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-export" data-i18n="service.shell.export">Export</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-import" data-i18n="service.shell.import">Import</button>
+            <button type="button" class="btn btn-danger btn-sm" id="btn-reset" data-i18n="service.shell.reset">Reset</button>
           </div>
         </header>
 
@@ -82,7 +82,7 @@
 
       <aside class="detail-panel hidden" id="detail-panel" aria-hidden="true">
         <header class="detail-head">
-          <h2 id="detail-title">Edit</h2>
+          <h2 id="detail-title" data-i18n="service.shell.edit">Edit</h2>
           <button type="button" class="btn btn-ghost btn-sm" id="detail-close">✕</button>
         </header>
         <div class="detail-body" id="detail-body"></div>
@@ -92,7 +92,7 @@
     <div class="modal-backdrop hidden" id="modal-backdrop">
       <div class="modal" role="dialog" aria-modal="true">
         <header class="modal-head">
-          <h2 id="modal-title">Edit</h2>
+          <h2 id="modal-title" data-i18n="service.shell.edit">Edit</h2>
           <button type="button" class="btn btn-ghost btn-sm" id="modal-close">✕</button>
         </header>
         <div class="modal-body" id="modal-body"></div>
@@ -110,6 +110,12 @@
         <script src="../shared/settings-definitions.js"></script>
     <script src="../shared/settings-boot.js"></script>
     <script src="../shared/app-settings-runtime.js"></script>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

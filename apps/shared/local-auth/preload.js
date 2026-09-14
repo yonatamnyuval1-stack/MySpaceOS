@@ -1,15 +1,9 @@
 const { contextBridge, ipcRenderer } = require("electron");
-
-/**
- * Shared preload for apps/shared/local-auth/login.html.
- * Module id comes from ?module= in the login URL (read when APIs are called).
- */
 function getModuleId() {
   try {
     const fromQuery = new URLSearchParams(window.location.search).get("module");
     if (fromQuery) return String(fromQuery).trim();
   } catch {
-    /* ignore */
   }
   return "";
 }

@@ -11,11 +11,11 @@
     <div id="hub" class="hub">
       <header class="hub-head">
         <div>
-          <h1>Connect</h1>
-          <p class="hub-sub">Open an app, sign in inside My Space. Official web apps, same as on the web.</p>
+          <h1 data-i18n="platform.connect.name">Connect</h1>
+          <p class="hub-sub" data-i18n="service.connect.hubSub">Open an app, sign in inside My Space. Official web apps, same as on the web.</p>
         </div>
         <div class="hub-search-wrap">
-          <input type="search" id="hub-search" class="hub-search" placeholder="Search apps" autocomplete="off" />
+          <input type="search" id="hub-search" class="hub-search" data-i18n-placeholder="service.connect.searchApps" placeholder="Search apps" autocomplete="off" />
         </div>
       </header>
       <div class="hub-scroll" id="hub-grid"></div>
@@ -25,13 +25,13 @@
 
     <div id="hub-embed" class="hub-embed" hidden>
       <header class="hub-embed-bar">
-        <button type="button" class="mail-icon-btn" id="hub-embed-back" title="Back" aria-label="Back">
+        <button type="button" class="mail-icon-btn" id="hub-embed-back" data-i18n-title="service.connect.back" data-i18n-aria="service.connect.back" title="Back" aria-label="Back">
           <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
         </button>
         <span class="hub-embed-title" id="hub-embed-title">App</span>
         <div class="hub-embed-actions">
-          <button type="button" class="mail-btn" id="hub-embed-reload">Reload</button>
-          <button type="button" class="mail-btn" id="hub-embed-browser">Open in browser</button>
+          <button type="button" class="mail-btn" id="hub-embed-reload" data-i18n="service.connect.reload">Reload</button>
+          <button type="button" class="mail-btn" id="hub-embed-browser" data-i18n="service.connect.openBrowser">Open in browser</button>
         </div>
       </header>
       <div class="hub-embed-howto" id="hub-embed-howto" hidden></div>
@@ -41,17 +41,17 @@
     <div id="mail-workspace" class="mail-workspace" hidden>
       <div id="mail-setup" class="mail-setup">
         <header class="mail-setup-head">
-          <button type="button" class="mail-icon-btn" id="btn-mail-to-hub" title="All apps" aria-label="All apps">
+          <button type="button" class="mail-icon-btn" id="btn-mail-to-hub" data-i18n-title="service.connect.allApps" data-i18n-aria="service.connect.allApps" title="All apps" aria-label="All apps">
             <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
           </button>
           <div class="gmail-logo" aria-hidden="true">
             <span class="gmail-logo-m">M</span><span class="gmail-logo-a">a</span><span class="gmail-logo-i">i</span><span class="gmail-logo-l">l</span>
           </div>
           <div>
-            <p class="mail-sub" id="mail-status">Loading accounts…</p>
+            <p class="mail-sub" id="mail-status" data-i18n="service.mail.loadingAccounts">Loading accounts…</p>
           </div>
           <div class="mail-head-actions">
-            <button type="button" class="mail-btn mail-btn-primary" id="btn-connect-gmail">Connect Gmail</button>
+            <button type="button" class="mail-btn mail-btn-primary" id="btn-connect-gmail" data-i18n="service.mail.connectGmail">Connect Gmail</button>
           </div>
         </header>
         <div class="mail-config-banner" id="mail-config-banner" hidden></div>
@@ -60,10 +60,10 @@
 
       <div id="mail-client" class="mail-client" hidden>
         <header class="mail-toolbar">
-          <button type="button" class="mail-icon-btn" id="btn-back-setup" title="Accounts" aria-label="Accounts">
+          <button type="button" class="mail-icon-btn" id="btn-back-setup" data-i18n-title="service.connect.accounts" data-i18n-aria="service.connect.accounts" title="Accounts" aria-label="Accounts">
             <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
           </button>
-          <button type="button" class="mail-icon-btn" id="btn-client-to-hub" title="All apps" aria-label="All apps">
+          <button type="button" class="mail-icon-btn" id="btn-client-to-hub" data-i18n-title="service.connect.allApps" data-i18n-aria="service.connect.allApps" title="All apps" aria-label="All apps">
             <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
           </button>
           <div class="gmail-logo gmail-logo-sm" aria-hidden="true">
@@ -73,10 +73,10 @@
             <span class="mail-search-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="20" height="20"><path fill="#5f6368" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </span>
-            <input type="search" id="mail-search" placeholder="Search mail" autocomplete="off" />
+            <input type="search" id="mail-search" data-i18n-placeholder="service.mail.searchMail" placeholder="Search mail" autocomplete="off" />
           </form>
           <span class="mail-account-chip" id="mail-account-label"></span>
-          <button type="button" class="mail-icon-btn" id="btn-client-sync" title="Refresh" aria-label="Refresh">
+          <button type="button" class="mail-icon-btn" id="btn-client-sync" data-i18n-title="service.common.refresh" data-i18n-aria="service.common.refresh" title="Refresh" aria-label="Refresh">
             <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08a5.99 5.99 0 0 1-5.65 4c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
           </button>
         </header>
@@ -85,27 +85,27 @@
           <section class="mail-list-pane">
             <header class="mail-list-head">
               <div class="mail-list-head-main">
-                <h2 id="mail-folder-title">Inbox</h2>
+                <h2 id="mail-folder-title" data-i18n="service.mail.inbox">Inbox</h2>
                 <span class="mail-list-count" id="mail-list-count"></span>
               </div>
             </header>
             <div class="mail-list-scroll" id="mail-list"></div>
             <div class="mail-list-footer" id="mail-list-footer" hidden>
-              <button type="button" class="mail-load-more" id="btn-load-more">Load more</button>
+              <button type="button" class="mail-load-more" id="btn-load-more" data-i18n="service.mail.loadMore">Load more</button>
             </div>
-            <p class="mail-list-empty" id="mail-list-empty" hidden>No messages in this folder</p>
+            <p class="mail-list-empty" id="mail-list-empty" hidden data-i18n="service.mail.listEmpty">No messages in this folder</p>
           </section>
           <section class="mail-reader-pane" id="mail-reader">
             <div class="mail-reader-empty" id="mail-reader-empty">
               <svg viewBox="0 0 24 24" width="72" height="72" aria-hidden="true"><path fill="#dadce0" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
-              <p>Select a message to read</p>
+              <p data-i18n="service.mail.selectMessage">Select a message to read</p>
             </div>
             <article class="mail-reader-content" id="mail-reader-content" hidden>
               <div class="mail-reader-toolbar">
-                <button type="button" class="mail-icon-btn" id="btn-reader-back" title="Back to list" aria-label="Back to list">
+                <button type="button" class="mail-icon-btn" id="btn-reader-back" data-i18n-title="service.mail.backToList" data-i18n-aria="service.mail.backToList" title="Back to list" aria-label="Back to list">
                   <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
                 </button>
-                <span class="mail-reader-toolbar-label">Mail</span>
+                <span class="mail-reader-toolbar-label" data-i18n="service.mail.mailLabel">Mail</span>
               </div>
               <header class="mail-reader-head">
                 <h1 id="reader-subject"></h1>
@@ -131,6 +131,12 @@
       </div>
     </div>
 
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="hub-ui.js"></script>
     <script src="app.js"></script>
   </body>

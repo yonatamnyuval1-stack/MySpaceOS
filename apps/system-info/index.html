@@ -14,93 +14,93 @@
         <div class="brand">
           <img class="brand-logo" src="logo.png" width="32" height="32" alt="" />
           <div>
-            <strong>System Info</strong>
-            <span class="brand-sub" id="brand-sub">System</span>
+            <strong data-i18n="platform.system-info.name">System Info</strong>
+            <span class="brand-sub" id="brand-sub" data-i18n="service.systemInfo.system">System</span>
           </div>
         </div>
-        <nav class="nav nav--scroll" id="main-nav" aria-label="Sections">
+        <nav class="nav nav--scroll" id="main-nav" data-i18n-aria="platform.system-info.name" aria-label="Sections">
           <div class="nav-group">
-            <p class="nav-label">Overview</p>
+            <p class="nav-label" data-i18n="service.systemInfo.overview">Overview</p>
             <button type="button" class="nav-item active" data-page="system">
               <span class="nav-icon">◆</span>
-              System
+              <span data-i18n="service.systemInfo.system">System</span>
             </button>
           </div>
           <div class="nav-group">
-            <p class="nav-label">Hardware</p>
+            <p class="nav-label" data-i18n="service.systemInfo.hardware">Hardware</p>
             <button type="button" class="nav-item" data-page="cpu">
               <span class="nav-icon">⬢</span>
-              CPU
+              <span data-i18n="service.systemInfo.cpu">CPU</span>
             </button>
             <button type="button" class="nav-item" data-page="memory">
               <span class="nav-icon">▣</span>
-              Memory
+              <span data-i18n="service.systemInfo.memory">Memory</span>
             </button>
             <button type="button" class="nav-item" data-page="storage">
               <span class="nav-icon">▤</span>
-              Storage
+              <span data-i18n="service.systemInfo.storage">Storage</span>
             </button>
             <button type="button" class="nav-item" data-page="disk">
               <span class="nav-icon">▧</span>
-              Disk Explorer
+              <span data-i18n="service.systemInfo.diskExplorer">Disk Explorer</span>
             </button>
           </div>
           <div class="nav-group">
-            <p class="nav-label">Activity</p>
+            <p class="nav-label" data-i18n="service.systemInfo.activity">Activity</p>
             <button type="button" class="nav-item" data-page="performance">
               <span class="nav-icon">▥</span>
-              Performance
+              <span data-i18n="service.systemInfo.performance">Performance Lab</span>
             </button>
             <button type="button" class="nav-item" data-page="processes">
               <span class="nav-icon">◎</span>
-              Processes
+              <span data-i18n="service.systemInfo.processes">Processes</span>
             </button>
           </div>
           <div class="nav-group">
-            <p class="nav-label">Network</p>
+            <p class="nav-label" data-i18n="service.systemInfo.networkGroup">Network</p>
             <button type="button" class="nav-item" data-page="network">
               <span class="nav-icon">⬡</span>
-              Network
+              <span data-i18n="service.systemInfo.network">Network</span>
             </button>
             <button type="button" class="nav-item" data-page="ports">
               <span class="nav-icon">◎</span>
-              Ports
+              <span data-i18n="service.systemInfo.ports">Ports</span>
             </button>
           </div>
           <div class="nav-group">
-            <p class="nav-label">Config</p>
+            <p class="nav-label" data-i18n="service.systemInfo.config">Config</p>
             <button type="button" class="nav-item" data-page="environment">
               <span class="nav-icon">⬚</span>
-              Environment
+              <span data-i18n="service.systemInfo.environment">Environment</span>
             </button>
           </div>
         </nav>
         <footer class="sidebar-foot">
-          <p>Platform service · black series</p>
+          <p data-i18n="service.systemInfo.sidebarFoot">Platform service · black series</p>
         </footer>
       </aside>
 
       <main class="main">
         <header class="topbar">
           <div class="topbar-text">
-            <h1 id="page-title">System</h1>
-            <p class="subtitle" id="page-subtitle">OS, hardware, uptime, and computer identity</p>
+            <h1 id="page-title" data-i18n="service.systemInfo.system">System</h1>
+            <p class="subtitle" id="page-subtitle" data-i18n="service.systemInfo.systemSub">OS, hardware, uptime, and computer identity</p>
           </div>
           <div class="topbar-actions">
-            <label class="refresh-field" title="How often this page reloads data">
-              <span class="refresh-label">Refresh every</span>
-              <select id="refresh-interval" class="select" aria-label="Refresh interval">
-                <option value="0">Off</option>
-                <option value="15000">15 seconds</option>
-                <option value="30000" selected>30 seconds</option>
-                <option value="60000">1 minute</option>
-                <option value="120000">2 minutes</option>
+            <label class="refresh-field" data-i18n-title="service.systemInfo.refreshIntervalTitle" title="How often this page reloads data">
+              <span class="refresh-label" data-i18n="service.systemInfo.refreshEvery">Refresh every</span>
+              <select id="refresh-interval" class="select" data-i18n-aria="service.systemInfo.refreshIntervalAria" aria-label="Refresh interval">
+                <option value="0" data-i18n="service.systemInfo.refreshOff">Off</option>
+                <option value="15000" data-i18n="service.systemInfo.refresh15s">15 seconds</option>
+                <option value="30000" selected data-i18n="service.systemInfo.refresh30s">30 seconds</option>
+                <option value="60000" data-i18n="service.systemInfo.refresh1m">1 minute</option>
+                <option value="120000" data-i18n="service.systemInfo.refresh2m">2 minutes</option>
               </select>
             </label>
             <span class="refresh-meta" id="refresh-meta" aria-live="polite">Every 30s</span>
             <button type="button" class="btn btn-primary" id="btn-refresh">
               <span class="btn-icon" aria-hidden="true">↻</span>
-              Refresh now
+              <span data-i18n="service.systemInfo.refreshNow">Refresh now</span>
             </button>
           </div>
         </header>
@@ -118,17 +118,17 @@
         <section class="page page--scroll" id="page-cpu" data-page="cpu" hidden>
           <section class="stats" id="cpu-stats"></section>
           <div id="cpu-hero" class="cpu-hero"></div>
-          <h2 class="section-heading">Per-core usage</h2>
+          <h2 class="section-heading" data-i18n="service.systemInfo.perCoreUsage">Per-core usage</h2>
           <div class="core-grid" id="cpu-cores"></div>
-          <h2 class="section-heading">Top CPU time (processes)</h2>
+          <h2 class="section-heading" data-i18n="service.systemInfo.topCpuProcesses">Top CPU time (processes)</h2>
           <section class="table-wrap table-wrap--scroll">
             <div class="table-scroll">
               <table class="data-table" id="cpu-table">
                 <thead>
                   <tr>
-                    <th data-sort="name">Process</th>
-                    <th data-sort="pid">PID</th>
-                    <th data-sort="cpuSeconds">CPU (s)</th>
+                    <th data-sort="name" data-i18n="service.systemInfo.tableProcess">Process</th>
+                    <th data-sort="pid" data-i18n="service.systemInfo.tablePid">PID</th>
+                    <th data-sort="cpuSeconds" data-i18n="service.systemInfo.tableCpuSeconds">CPU (s)</th>
                   </tr>
                 </thead>
                 <tbody id="cpu-body">
@@ -148,18 +148,18 @@
           <section class="toolbar page-toolbar">
             <div class="search-wrap">
               <span class="search-icon" aria-hidden="true">⌕</span>
-              <input type="search" id="ports-search" class="search" placeholder="Search port, process, PID, state…" />
+              <input type="search" id="ports-search" class="search" data-i18n-placeholder="service.systemInfo.portsSearchPlaceholder" placeholder="Search port, process, PID, state…" />
             </div>
             <select id="ports-filter-state" class="select">
-              <option value="all">All states</option>
-              <option value="LISTENING">Listening</option>
-              <option value="ESTABLISHED">Established</option>
-              <option value="TIME_WAIT">Time wait</option>
+              <option value="all" data-i18n="service.systemInfo.filterAllStates">All states</option>
+              <option value="LISTENING" data-i18n="service.systemInfo.filterListening">Listening</option>
+              <option value="ESTABLISHED" data-i18n="service.systemInfo.filterEstablished">Established</option>
+              <option value="TIME_WAIT" data-i18n="service.systemInfo.filterTimeWait">Time wait</option>
             </select>
             <select id="ports-filter-protocol" class="select">
-              <option value="all">TCP + UDP</option>
-              <option value="TCP">TCP only</option>
-              <option value="UDP">UDP only</option>
+              <option value="all" data-i18n="service.systemInfo.filterTcpUdp">TCP + UDP</option>
+              <option value="TCP" data-i18n="service.systemInfo.filterTcpOnly">TCP only</option>
+              <option value="UDP" data-i18n="service.systemInfo.filterUdpOnly">UDP only</option>
             </select>
           </section>
           <section class="table-wrap">
@@ -471,13 +471,19 @@
 
       <aside class="detail-panel hidden" id="detail-panel">
         <header class="detail-header">
-          <h2 id="detail-title">Details</h2>
-          <button type="button" class="btn-icon-only" id="detail-close" aria-label="Close">×</button>
+          <h2 id="detail-title" data-i18n="service.systemInfo.details">Details</h2>
+          <button type="button" class="btn-icon-only" id="detail-close" data-i18n-aria="service.systemInfo.closeDetails" aria-label="Close">×</button>
         </header>
         <div class="detail-body" id="detail-body"></div>
       </aside>
     </div>
 
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/auto-mark.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="lib/utils.js"></script>
     <script src="lib/charts.js"></script>
     <script src="pages/system.js"></script>

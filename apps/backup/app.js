@@ -36,6 +36,11 @@
     return window.myApp?.backup;
   }
 
+  function tt(key, vars) {
+    const fn = window.MySpaceI18n?.t;
+    return typeof fn === "function" ? fn(key, vars) : key;
+  }
+
   function escapeHtml(s) {
     return String(s ?? "")
       .replace(/&/g, "&amp;")
@@ -92,7 +97,7 @@
 
   function paintStatus() {
     const s = state.status || {};
-    if (el.statusTitle) el.statusTitle.textContent = "My Space data";
+    if (el.statusTitle) el.statusTitle.textContent = tt("service.backup.mySpaceData");
     if (el.statusSize) el.statusSize.textContent = s.sizeLabel ? s.sizeLabel : "—";
     if (el.statusDesc) {
       el.statusDesc.textContent = s.path
@@ -119,8 +124,8 @@
       el.pendingBanner.classList.toggle("hidden", !s.pendingRestore);
       if (el.pendingBannerText && s.pendingRestore) {
         el.pendingBannerText.textContent = s.pendingSource
-          ? `Staged from ${s.pendingSource} — will apply on restart.`
-          : "A backup is staged and will apply on the next restart.";
+          ? tt("service.backup.restorePendingStaged", { source: s.pendingSource })
+          : tt("service.backup.restorePendingText");
       }
     }
   }
@@ -132,7 +137,7 @@
     return `<article class="history-card">
       <div class="history-head">
         <div>
-          <h3>${kind === "restore" ? "Restore" : "Export"}</h3>
+          <h3>${kind === "restore" ? escapeHtml(tt("service.backup.restore")) : escapeHtml(tt("service.backup.export"))}</h3>
           <p class="history-path">${escapeHtml(pathLabel)}</p>
         </div>
         <span class="pill ${kind === "restore" ? "warn" : "ok"}">${escapeHtml(kind)}</span>
@@ -147,7 +152,7 @@
           ? `<div class="history-actions">
               <button type="button" class="btn btn-ghost" data-reveal="${escapeHtml(
                 e.path
-              )}">Show in folder</button>
+              )}">${escapeHtml(tt("service.backup.showInFolder"))}</button>
             </div>`
           : ""
       }
@@ -158,8 +163,8 @@
     const list = (state.history || []).slice(0, 4);
     if (el.activitySub) {
       el.activitySub.textContent = list.length
-        ? `${state.history.length} recorded event${state.history.length === 1 ? "" : "s"}`
-        : "Exports and restores recorded on this PC";
+        ? tt("service.backup.activitySubCount", { count: state.history.length })
+        : tt("service.backup.activitySubDefault");
     }
     if (el.activityEmpty) el.activityEmpty.classList.toggle("hidden", list.length > 0);
     if (!el.activityList) return;
@@ -273,7 +278,7 @@
           return;
         }
         // Relaunch on success — keep busy state
-        if (el.btnImport) el.btnImport.textContent = "Restarting…";
+        if (el.btnImport) el.btnImport.textContent = tt("service.backup.restarting");
       } catch (err) {
         alert(err?.message || "Restore failed");
         setBusy(false);
@@ -288,6 +293,18 @@
 
   window.__myspaceApplyRoute = applyRoute;
   window.BackupApp = { setPage, applyRoute };
+
+  function onI18nApplied() {
+    paintChrome();
+    if (state.page === "status") {
+      paintStatus();
+      paintActivity();
+    }
+    if (state.page === "history") paintHistory();
+    if (state.page === "about") paintAbout();
+  }
+
+  window.addEventListener("myspace-i18n-applied", onI18nApplied);
 
   bind();
   setPage("status");
