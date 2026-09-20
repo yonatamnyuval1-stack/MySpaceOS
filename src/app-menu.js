@@ -8,7 +8,7 @@
       builtin: "Built-in screen",
       myapp: "My Space app",
       url: "Website shortcut",
-      external: "Program (opens inside My Space)",
+      external: "Program",
     };
     return labels[app.type] || app.type;
   }

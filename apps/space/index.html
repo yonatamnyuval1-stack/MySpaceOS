@@ -27,7 +27,7 @@
         </nav>
         <p class="nav-section-label hidden" id="cat-section-label">Category</p>
         <nav class="nav nav--cats hidden" id="cat-nav"></nav>
-        <footer class="sidebar-foot"><p>NASA APIs · NTRS · Star map</p></footer>
+        <footer class="sidebar-foot"><p>NASA API, NTRS, Star map</p></footer>
       </aside>
 
       <main class="main">
@@ -53,7 +53,7 @@
               <option value="">Distance layer…</option>
             </select>
           </div>
-          <p class="nav-hint" id="nav-hint">Space: drag to move · scroll or slider to zoom · click stars</p>
+          <p class="nav-hint" id="nav-hint">Space: drag to move, scroll or slider to zoom, click stars</p>
           <div id="nav-selection" class="nav-selection hidden" aria-live="polite"></div>
           <div class="starfield-wrap">
             <canvas id="starfield-canvas" aria-label="Interactive star field" tabindex="0"></canvas>
@@ -235,9 +235,19 @@
     <script src="pages/nasa.js"></script>
     <script src="pages/reports.js"></script>
     <script src="pages/aliens.js"></script>
-        <script src="../shared/settings-definitions.js"></script>
+        <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/app-language.js"></script>
+    <script src="../shared/settings-definitions.js"></script>
     <script src="../shared/settings-boot.js"></script>
     <script src="../shared/app-settings-runtime.js"></script>
     <script src="app.js"></script>
+    <script>window.MySpaceAppLanguage && window.MySpaceAppLanguage.boot();</script>
   </body>
 </html>

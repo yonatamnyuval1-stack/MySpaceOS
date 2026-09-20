@@ -12,7 +12,7 @@ window.ConsolePages.aliases = (function () {
     const shown = filtered();
     page.innerHTML = `
       <div class="page-head">
-        <p class="muted">${items.length} alias(es) — typing the name in the shell runs the full command.</p>
+        <p class="muted">${items.length} alias(es): typing the name in the shell runs the full command.</p>
         <button type="button" class="btn btn-primary btn-sm" id="alias-add">+ Add alias</button>
       </div>
       <div class="toolbar">
@@ -21,7 +21,7 @@ window.ConsolePages.aliases = (function () {
       <div class="item-list" id="alias-list">${
         shown.length
           ? shown.map((a) => rowHtml(a, items.indexOf(a))).join("")
-          : `<p class="empty">${items.length ? "No matches." : "No aliases yet — click Sync or add one."}</p>`
+          : `<p class="empty">${items.length ? "No matches." : "No aliases yet: click Sync or add one."}</p>`
       }</div>`;
 
     page.querySelector("#alias-add")?.addEventListener("click", () => openEditor());

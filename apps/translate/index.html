@@ -26,7 +26,7 @@
           <button type="button" class="nav-item" data-page="settings"><span class="nav-icon">⚙</span> Settings</button>
         </nav>
         <footer class="sidebar-foot">
-          <p>Google + MyMemory · offline history</p>
+          <p>Google + MyMemory, offline history</p>
         </footer>
       </aside>
 
@@ -104,7 +104,7 @@
             <select id="batch-to" class="lang-select"></select>
             <button type="button" class="btn btn-primary" id="btn-batch-run">Translate all</button>
           </div>
-          <p class="muted batch-hint">One line per row · max 100 lines</p>
+          <p class="muted batch-hint">One line per row: max 100 lines</p>
           <div class="batch-grid">
             <div class="translate-pane">
               <div class="pane-toolbar">
@@ -151,9 +151,19 @@
     <script src="pages/phrases.js"></script>
     <script src="pages/batch.js"></script>
     <script src="pages/settings.js"></script>
-        <script src="../shared/settings-definitions.js"></script>
+        <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/app-language.js"></script>
+    <script src="../shared/settings-definitions.js"></script>
     <script src="../shared/settings-boot.js"></script>
     <script src="../shared/app-settings-runtime.js"></script>
     <script src="app.js"></script>
+    <script>window.MySpaceAppLanguage && window.MySpaceAppLanguage.boot();</script>
   </body>
 </html>

@@ -888,6 +888,10 @@
       if (tab && (tab.mode === "myapp" || tab.mode === "webview")) {
         setTimeout(() => void refreshPeekCache(tab), 200);
       }
+      if (tab?.mode === "myapp") {
+        setTimeout(() => pushLanguageToGuest(tab), 80);
+        setTimeout(() => pushLanguageToGuest(tab), 400);
+      }
     });
     el.addEventListener("did-fail-load", (e) => {
       if (e.isMainFrame === false) return;
@@ -1372,7 +1376,7 @@
       window.MySpaceAppRules?.isUnsafeWebviewUrl(normalized)
     ) {
       openInSystemBrowser(normalized);
-      window.showMySpaceToast?.("Opened in your browser (this site cannot run inside My Space).");
+      window.showMySpaceToast?.("Opened in your browser.");
       return null;
     }
 
@@ -2212,7 +2216,7 @@
         view: "workspace",
         active: summarizeTab(tab),
         openTabs,
-        note: "Active app is embedded inside My Space (native Windows window).",
+        note: "Active app is embedded inside My Space.",
       };
     }
 
@@ -2266,7 +2270,7 @@
     if (!content || typeof content !== "object") {
       return {
         ok: false,
-        error: "Could not read page content from webview (script blocked or guest unavailable).",
+        error: "Could not read page content from webview.",
         active: summarizeTab(tab),
       };
     }
@@ -2373,6 +2377,60 @@
     document.documentElement.style.setProperty("--ai-chat-inset-left", "0px");
   }
 
+  function currentOsLanguage() {
+    try {
+      return window.MySpaceI18n?.normalizeLang?.(window.MySpaceI18n.getLanguage?.() || "en") || "en";
+    } catch {
+      return "en";
+    }
+  }
+
+  function pushLanguageToGuest(tab, lang = currentOsLanguage()) {
+    if (!tab?.viewEl || tab.mode !== "myapp") return;
+    const next =
+      window.MySpaceI18n?.normalizeLang?.(lang) ||
+      (String(lang || "en").toLowerCase().startsWith("he") ? "he" : "en");
+    const script = `(function () {
+      try {
+        var I = window.MySpaceI18n;
+        if (!I || typeof I.setLanguage !== "function") return false;
+        var lang = ${JSON.stringify(next)};
+        I.setLanguage(lang, { force: true });
+        if (typeof I.applyDom === "function") I.applyDom(document);
+        window.__myspaceUiLang = lang;
+        window.dispatchEvent(new CustomEvent("myspace-i18n-applied", { detail: { language: lang } }));
+        return true;
+      } catch (e) {
+        return false;
+      }
+    })()`;
+    try {
+      if (typeof tab.viewEl.send === "function") {
+        tab.viewEl.send("myspace-language-changed", { language: next });
+      }
+    } catch {
+      /* ignore */
+    }
+    try {
+      if (typeof tab.viewEl.executeJavaScript === "function") {
+        tab.viewEl.executeJavaScript(script, false);
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function applyLanguageToOpenGuests(lang) {
+    const next = lang || currentOsLanguage();
+    for (const tab of tabs) {
+      if (tab.mode === "myapp") pushLanguageToGuest(tab, next);
+    }
+  }
+
+  window.addEventListener("myspace-i18n-applied", (e) => {
+    applyLanguageToOpenGuests(e?.detail?.language || currentOsLanguage());
+  });
+
   window.MySpaceWorkspace = {
     openWeb,
     openMyApp,
@@ -2397,6 +2455,7 @@
     isTabActiveInTaskbar,
     hasRunningApps: () => tabs.length > 0,
     setAiChatInset,
+    applyLanguageToOpenGuests,
     getTabs: () =>
       tabs.map((t) => ({
         id: t.id,

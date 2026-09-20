@@ -118,25 +118,25 @@
       <p class="boot-splash-pct" id="boot-splash-pct">0%</p>
     </div>
     <div class="shell" id="desktop">
-      <aside class="app-rail" id="app-rail" aria-label="Apps" aria-hidden="true">
-        <button type="button" class="app-rail-scroll-btn" id="app-rail-up" title="Scroll up" aria-label="Scroll up" hidden>▴</button>
+      <aside class="app-rail" id="app-rail" data-i18n-aria="shell.rail.apps" aria-label="Apps" aria-hidden="true">
+        <button type="button" class="app-rail-scroll-btn" id="app-rail-up" data-i18n-title="shell.rail.scrollUp" data-i18n-aria="shell.rail.scrollUp" title="Scroll up" aria-label="Scroll up" hidden>▴</button>
         <div class="app-rail-scroll" id="app-rail-apps">
-          <div class="app-rail-recent" id="app-rail-recent" aria-label="Recent apps"></div>
+          <div class="app-rail-recent" id="app-rail-recent" data-i18n-aria="shell.rail.recent" aria-label="Recent apps"></div>
           <div class="app-rail-divider app-rail-divider--inset" id="app-rail-recent-divider" hidden aria-hidden="true"></div>
           <div class="app-rail-all" id="app-rail-all"></div>
         </div>
-        <button type="button" class="app-rail-scroll-btn" id="app-rail-down" title="Scroll down" aria-label="Scroll down" hidden>▾</button>
+        <button type="button" class="app-rail-scroll-btn" id="app-rail-down" data-i18n-title="shell.rail.scrollDown" data-i18n-aria="shell.rail.scrollDown" title="Scroll down" aria-label="Scroll down" hidden>▾</button>
         <div class="app-rail-divider" aria-hidden="true"></div>
-        <div class="app-rail-scroll app-rail-scroll--services" id="app-rail-services" aria-label="Platform series"></div>
+        <div class="app-rail-scroll app-rail-scroll--services" id="app-rail-services" data-i18n-aria="shell.rail.series" aria-label="Platform series"></div>
       </aside>
-      <main class="workspace" aria-label="Desktop">
+      <main class="workspace" data-i18n-aria="shell.frame.desktop" aria-label="Desktop">
         <section class="app-grid" id="app-grid"></section>
 
-        <section class="app-frame hidden" id="app-frame" aria-label="Application">
+        <section class="app-frame hidden" id="app-frame" data-i18n-aria="shell.frame.application" aria-label="Application">
           <div class="app-frame-chrome" id="app-frame-chrome">
-            <button type="button" class="frame-tool-btn frame-tool-btn--back" id="frame-back" title="Back to desktop">←</button>
-            <div class="app-tab-strip" id="app-tab-strip" role="tablist" aria-label="Open tabs"></div>
-            <button type="button" class="frame-tool-btn" id="tab-snap" title="Snap side by side">⧉</button>
+            <button type="button" class="frame-tool-btn frame-tool-btn--back" id="frame-back" data-i18n-title="shell.frame.backDesktop" title="Back to desktop">←</button>
+            <div class="app-tab-strip" id="app-tab-strip" role="tablist" data-i18n-aria="shell.frame.tabs" aria-label="Open tabs"></div>
+            <button type="button" class="frame-tool-btn" id="tab-snap" data-i18n-title="shell.frame.snap" title="Snap side by side">⧉</button>
           </div>
           <div class="app-frame-nav hidden" id="app-frame-nav">
             <div class="frame-omnibox">
@@ -144,14 +144,15 @@
                 type="text"
                 id="frame-url"
                 class="frame-url-input"
+                data-i18n-placeholder="shell.frame.omnibox"
                 placeholder="Search apps, commands, or enter a URL"
                 spellcheck="false"
                 autocomplete="off"
               />
               <div class="frame-omni-suggest hidden" id="frame-omni-suggest" role="listbox"></div>
             </div>
-            <button type="button" class="frame-tool-btn" id="frame-go" title="Go">Go</button>
-            <button type="button" class="frame-tool-btn" id="frame-refresh" title="Refresh (F5)">↻</button>
+            <button type="button" class="frame-tool-btn" id="frame-go" data-i18n="shell.frame.go" data-i18n-title="shell.frame.go" title="Go">Go</button>
+            <button type="button" class="frame-tool-btn" id="frame-refresh" data-i18n-title="shell.frame.refresh" title="Refresh (F5)">↻</button>
           </div>
           <div class="app-tab-panels" id="app-tab-panels"></div>
         </section>
@@ -316,6 +317,11 @@
 
     <script src="../apps/shared/i18n/locales/en.js"></script>
     <script src="../apps/shared/i18n/locales/he.js"></script>
+    <script src="../apps/shared/i18n/locales/ar.js"></script>
+    <script src="../apps/shared/i18n/locales/fr.js"></script>
+    <script src="../apps/shared/i18n/locales/ru.js"></script>
+    <script src="../apps/shared/i18n/locales/es.js"></script>
+    <script src="../apps/shared/i18n/languages.js"></script>
     <script src="../apps/shared/i18n/i18n.js"></script>
     <script src="i18n-boot.js"></script>
     <script src="icon-utils.js"></script>

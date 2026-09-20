@@ -159,8 +159,9 @@
   }
 
   function applyLanguageFromSettings() {
-    const lang = window.AppSettingsRuntime?.get?.("language") || "en";
+    const lang = window.MySpaceAppLanguage?.resolve?.() || "en";
     window.StocksI18n?.applyDom?.(lang);
+    window.MySpaceI18n?.setLanguage?.(lang, { force: true });
     applyPageMeta(activePage?.id || "dashboard");
   }
 
@@ -171,7 +172,6 @@
       prev = localStorage.getItem("myspace-stocks-ui-layout") || "organized";
       localStorage.setItem("myspace-stocks-ui-layout", layout);
     } catch (_) {
-      /* ignore */
     }
     if (!reloadIfChanged || layout === prev) return;
     const wantClassic = layout === "classic";
@@ -213,7 +213,7 @@
 
   document.addEventListener("app-setting-changed", (e) => {
     if (e.detail?.appId !== "stocks") return;
-    if (e.detail.key === "language") applyLanguageFromSettings();
+    if (e.detail.key === "uiLanguage" || e.detail.key === "language") applyLanguageFromSettings();
     if (e.detail.key === "uiLayout") syncUiLayoutSetting(true);
     if (e.detail.key === "autoRefresh" || e.detail.key === "refreshSeconds") {
       window.StocksPages?.dashboard?.reschedule?.();

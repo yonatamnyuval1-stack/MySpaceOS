@@ -494,7 +494,7 @@ function seedMySpaceProject() {
     icon: "🏠",
     color: "#f59e0b",
     description:
-      "Personal desktop space on top of Windows — workspace, built-in apps (Geography, Space, Studies, Contracts, and more).",
+      "Personal desktop space on top of Windows: workspace, built-in apps.",
     stack: ["Electron", "Node.js", "JavaScript", "HTML/CSS"],
     rootPath: root,
     repoUrl: "",
@@ -603,7 +603,7 @@ function migrateProjects(projects) {
           ? normalizeWinPath(myspace.rootPath)
           : root,
     description:
-      "One sub-category per My Space app — linked source code and a command that launches that app only.",
+      "One sub-category per My Space app: linked source code and a command that launches that app only.",
     notes:
       "Copy command → paste in VS Code terminal. Opens only the selected app via electron --run <app>.",
     subCategories: buildOperatingSystemSubCategories(root).map((s) => normalizeSubCategory(s)),
@@ -1945,7 +1945,7 @@ async function updateProject(args = {}) {
     return {
       ok: false,
       error:
-        "No fields to update. Provide name/rename, description, notes, category, icon, stack, tags, repoUrl, demoUrl, favorite, path, etc.",
+        "No fields to update. Provide name/rename, description, notes, category, icon, stack, tags, repoUrl, demoUrl, favorite, path, etc...",
     };
   }
 
@@ -2011,7 +2011,7 @@ async function addAttachment(args = {}) {
   if (args?.folder) paths.push(args.folder);
   const uniquePaths = [...new Set(paths.map((p) => normalizeWinPath(p)).filter(Boolean))];
   if (!uniquePaths.length) {
-    return { ok: false, error: "Provide path (or paths) to attach — catalog reference only, disk files are not copied or modified" };
+    return { ok: false, error: "Provide path to attach: catalog reference only, disk files are not copied or modified" };
   }
 
   if (!Array.isArray(project.attachments)) project.attachments = [];

@@ -277,7 +277,6 @@
           setBusy(false);
           return;
         }
-        // Relaunch on success — keep busy state
         if (el.btnImport) el.btnImport.textContent = tt("service.backup.restarting");
       } catch (err) {
         alert(err?.message || "Restore failed");

@@ -77,7 +77,6 @@
       el.id = STYLE_ID;
       (document.head || document.documentElement).appendChild(el);
     }
-    // Scope to app chrome only — avoid nuking shell/host buttons.
     const sel = `html[data-buttons="${buttons}"] .app-shell`;
     el.textContent = `
 ${sel} .btn,
@@ -126,7 +125,6 @@ ${sel} button.btn-ghost {
 
   function apply(theme) {
     if (!theme) return;
-    // Never theme the shell / anonymous pages
     if (!moduleId()) return;
 
     const mode = theme.mode || "dark";
@@ -152,7 +150,6 @@ ${sel} button.btn-ghost {
       const res = await api.get({ appId: id });
       if (res?.ok && res.theme) apply(res.theme);
     } catch {
-      /* keep defaults from html data-theme */
     }
   }
 

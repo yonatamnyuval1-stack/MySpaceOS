@@ -48,7 +48,7 @@ function welcomeChangelog() {
       tag: tt("shell.welcome.changelog.chat.tag", "Chat"),
       text: tt(
         "shell.welcome.changelog.chat.text",
-        "New Chat app: ChatGPT-style history powered by Mind. run chat · chat(new). Mind Chat (side panel) saves here too."
+        "New Chat app: ChatGPT-style history powered by Mind. run chat, chat(new). Mind Chat (side panel) saves here too."
       ),
     },
     {
@@ -170,8 +170,23 @@ function renderWelcomeHub() {
   );
   const settings = window.MySpaceConfig?.getSettings?.() || {};
   const titleEl = document.getElementById("welcome-title");
-  if (titleEl) titleEl.textContent = settings.title || "My Space";
-  if (welcomeSubtitle) welcomeSubtitle.textContent = settings.subtitle || "";
+  if (titleEl) {
+    titleEl.setAttribute("data-i18n", "shell.welcome.title");
+    titleEl.textContent = tt("shell.welcome.title", "Command center");
+  }
+  if (welcomeSubtitle) {
+    const custom = String(settings.subtitle || "").trim();
+    if (custom) {
+      welcomeSubtitle.textContent = custom;
+      welcomeSubtitle.removeAttribute("data-i18n");
+    } else {
+      welcomeSubtitle.setAttribute("data-i18n", "shell.welcome.subtitle");
+      welcomeSubtitle.textContent = tt(
+        "shell.welcome.subtitle",
+        "Your work environment for code and entrepreneurship."
+      );
+    }
+  }
 
   const status = document.getElementById("welcome-status");
   if (status) {
@@ -301,9 +316,23 @@ document.getElementById("btn-platform-services")?.addEventListener("click", () =
 
 function applyHeader() {
   const { title, subtitle, wallpaper } = window.MySpaceConfig.getSettings();
-  const mode = window.MySpaceDesktop.isFullDesktop() ? "" : " · Preview";
+  const mode = window.MySpaceDesktop.isFullDesktop()
+    ? ""
+    : ` · ${tt("shell.preview", "Preview")}`;
   if (taskbarTitle) taskbarTitle.textContent = title + mode;
-  if (welcomeSubtitle) welcomeSubtitle.textContent = subtitle;
+  if (welcomeSubtitle) {
+    const custom = String(subtitle || "").trim();
+    if (custom) {
+      welcomeSubtitle.textContent = custom;
+      welcomeSubtitle.removeAttribute("data-i18n");
+    } else {
+      welcomeSubtitle.setAttribute("data-i18n", "shell.welcome.subtitle");
+      welcomeSubtitle.textContent = tt(
+        "shell.welcome.subtitle",
+        "Your work environment for code and entrepreneurship."
+      );
+    }
+  }
   document.title = title;
   window.MySpaceWallpapers?.apply?.(wallpaper || "gradient");
   window.MySpaceWallpapers?.syncRotation?.();
@@ -1732,7 +1761,7 @@ async function openAppsSplit(leftApp, rightApp) {
     return;
   }
   if (left.mode === "external" || right.mode === "external") {
-    showToast("Cannot split: that Windows app opens outside My Space (not embedded)");
+    showToast("Cannot split: that Windows app opens outside My Space");
     return;
   }
   const ok = window.MySpaceWorkspace?.snapSideBySide?.(left.id, right.id);
@@ -1810,7 +1839,7 @@ async function saveNewApp(data) {
 
 function addApp(defaultTab = "installed") {
   if (!window.MySpaceAppPicker?.open) {
-    showToast("Could not load app picker — press Ctrl+Shift+I for errors");
+    showToast("Could not load app picker: press Ctrl+Shift+I for errors");
     return;
   }
   try {
@@ -2318,16 +2347,21 @@ async function init() {
     try {
       window.__myspaceRefreshAccountI18n?.();
       window.MySpaceAppRail?.refresh?.();
-      window.MySpaceI18n?.applyDom?.(document);
+      applyHeader();
       renderWelcomeHub();
+      window.MySpaceI18n?.applyDom?.(document);
       window.MySpaceNotificationsBell?.refresh?.();
       window.MySpaceStartMenu?.refresh?.();
       window.MySpaceCommandPalette?.refresh?.();
+      window.MySpacePlatformCatalog?.refreshI18n?.();
+      try {
+        if (window.MySpaceSettingsPage?.isOpen?.()) window.MySpaceSettingsPage.open();
+      } catch {
+      }
       if (window.MySpaceFilesPanel?.isOpen?.()) window.MySpaceFilesPanel.refresh?.();
       if (window.MySpaceMindPanel?.isOpen?.()) window.MySpaceMindPanel.refresh?.();
       if (window.MySpaceLinkPanel?.isOpen?.()) window.MySpaceLinkPanel.refresh?.();
     } catch {
-      /* ignore */
     }
   });
   applyHeader();
@@ -2498,5 +2532,5 @@ init().catch(async (err) => {
   } catch {
   }
   await dismissBootSplash();
-  showToast("Startup error — check the console (F12)");
+  showToast("Startup error: check the console (F12)");
 });

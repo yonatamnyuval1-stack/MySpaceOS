@@ -236,13 +236,15 @@ window.StocksI18n = (function () {
   }
 
   function applyDom(langCode) {
-    if (langCode === "he" || langCode === "en") current = langCode;
-    else current = "en";
+    const supported = window.MySpaceLanguages?.ids?.() || ["en", "he", "ar", "fr", "ru", "es"];
+    const next = supported.includes(langCode) ? langCode : "en";
+    current = STRINGS[next] ? next : "en";
 
-    const he = current === "he";
-    document.documentElement.lang = current;
-    document.documentElement.dir = he ? "rtl" : "ltr";
-    document.body.classList.toggle("ui-he", he);
+    const rtl = window.MySpaceLanguages?.isRtl?.(current) || current === "he" || current === "ar";
+    document.documentElement.lang = window.MySpaceLanguages?.meta?.(current)?.htmlLang || current;
+    document.documentElement.dir = rtl ? "rtl" : "ltr";
+    document.body.classList.toggle("ui-he", current === "he");
+    document.body.classList.toggle("ui-rtl", rtl);
 
     document.querySelectorAll("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");

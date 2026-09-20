@@ -17,7 +17,7 @@
       ul(["Kicker: small label (Start, Shell, Apps, Commands…). It tells you which mental shelf the article lives on.","Paragraphs: the story: who the app is for and how it fits My Space.","h2 sections: Open it, Surfaces / pages, Shell commands, Typical workflow, Related.","Tables: Verb | What it does | Silent? is the standard command map.","code blocks: copyable shell lines. Prefer these over paraphrasing verbs from memory.","tip / note / warn: Tip is optional speed; Note is context; Watch out is safety or lock behavior."]),
       h2("Silent vs open"),
       p("Many verbs return a short shell message without focusing a window (silent). Verbs like open, bare page names, quiz, and study usually launch or navigate the UI. If a window is already open, silent verbs often refresh it quietly (syncIfOpen). That design lets macros inspect state during focus work."),
-      table(["Intent","Example","Expect"], [["Read / inspect","stocks(quote AAPL)","Silent summary"],["Mutate","today(add Buy milk)","Silent; UI syncs if open"],["Navigate","clock(timer) · run builds","Opens or focuses UI"]]),
+      table(["Intent","Example","Expect"], [["Read / inspect","stocks(quote AAPL)","Silent summary"],["Mutate","today(add Buy milk)","Silent; UI syncs if open"],["Navigate","clock(timer), run builds","Opens or focuses UI"]]),
       h2("Finding the right article"),
       code(["docs(overview)","docs(search timer)","docs(open app-clock)","docs(open cmd-protocol)","docs(list)","docs(bookmarks)"]),
       tip("Bookmark pages you revisit (☆ in the top bar). docs(bookmarks) jumps back to that list."),
@@ -72,7 +72,7 @@
       h2("External & URL pins"),
       table(["Name","Id","Kind","Docs"], [["Microsoft Edge","edge","external","app-external"],["Docker Desktop","docker","external","app-external"],["VS Code","vscode","external","app-external"],["Terminal","terminal","external","app-external"],["Cursor","cursor","external","app-external"],["GitHub","github","url","app-external"]]),
       note("Shell column shows the preferred entry. Apps without commands:true still open via run <name>."),
-      tip("Open a deep article: docs(open app-clock) · docs(search vault)"),
+      tip("Open a deep article: docs(open app-clock), docs(search vault)"),
       h2("How to use this directory"),
       p("Start here when you know the human name of an app but not the module id or shell entry. Copy the Docs page id into docs(open …), or copy the Shell column into the desktop command line."),
       p("External pins are listed separately because they never grow app(verb) tables — if you catch yourself writing edge(list), you want a myapp instead."),
@@ -86,7 +86,7 @@
   );
 
   add(
-    P("app-welcome", "Welcome", "Builtin command center — tips and quick actions", ["apps","welcome","builtin"], [
+    P("app-welcome", "Welcome", "Builtin command center: tips and quick actions", ["apps","welcome","builtin"], [
       kicker("Apps"),
       p("Welcome is the builtin command center of My Space. It is not a myapp folder under apps/: it is woven into the desktop shell as the friendly front door: tips, quick actions, and orientation when you sit down at the desk."),
       p("Who it is for: anyone opening My Space after idle time, new users learning what is pinned, and power users who want a calm surface before diving into Console or Scripts."),
@@ -189,7 +189,7 @@
       h2("Recipe fragments"),
       code(["sys(cpu); sys(memory); sys(ports)","sys(open ports)","macro health = sys(cpu); sys(memory); sys(disk)"]),
       note("Ports output is especially useful before remote connect or local server boot."),
-      warn("Do not treat SysInfo as a security audit — it is a convenience scanner."),
+      warn("Do not treat SysInfo as a security audit: it is a convenience scanner."),
       h2("Related"),
       p("app-remote, app-drift, app-console, cmd-protocol, recipe-morning."),
     ])
@@ -239,11 +239,11 @@
       h2("Shell commands: pages & globals"),
       code(["clock(local) · clock(world) · clock(meetings)","clock(timer) · clock(pomodoro) · clock(stopwatch)","timer 25m          # global rewrite → clock","pomodoro start","stopwatch","clock(help)"]),
       table(["Verb / form","What it does","Silent?"], [["local / world / meetings","Open those pages","No"],["globals timer/pomodoro/stopwatch","Rewrite to clock equivalents","Depends on target verb"],["help","Help string","Yes"]]),
-      note("Timer persistence lives in main process storage — closing the window should not erase an active countdown."),
+      note("Timer persistence lives in main process storage: closing the window should not erase an active countdown."),
       h2("Typical workflow"),
       ol(["clock(timer 25m Deep work) before a coding block.","clock(pomodoro work:45) for longer focus with breaks.","clock(world) when scheduling with remote teammates.","clock(timer status) from a macro without stealing focus."]),
       tip("Pair with today(list) in a morning macro: see agenda, then start a timer."),
-      warn("Do not rely on vague bare numbers in shared scripts — write clock(timer 25m) explicitly."),
+      warn("Do not rely on vague bare numbers in shared scripts: write clock(timer 25m) explicitly."),
       h2("Choosing timer vs pomodoro vs stopwatch"),
       table(["Tool","Best for","Shell seed"], [["Timer","One countdown with optional label","clock(timer 25m Deep work)"],["Pomodoro","Repeating focus/break cadence","clock(pomodoro work:45)"],["Stopwatch","Measure elapsed without a target","clock(stopwatch)"]]),
       h2("Timezone & meetings"),
@@ -256,7 +256,7 @@
   );
 
   add(
-    P("app-remote", "Remote Hub", "Free remote control — RDP, SSH, RustDesk & wake-on-LAN", ["apps","remote","remote-hub"], [
+    P("app-remote", "Remote Hub", "Free remote control: RDP, SSH, RustDesk & wake-on-LAN", ["apps","remote","remote-hub"], [
       kicker("Apps"),
       p("Remote Hub (module remote-hub, alias remote) is your inventory of machines plus the actions to reach them: RDP, SSH, RustDesk-style tools, wake-on-LAN, subnet scan, and Tailscale import. It turns “that PC under the desk” into a named, scriptable endpoint."),
       p("Who it is for: developers with lab machines, homelab operators, and anyone who jumps between SSH and RDP daily."),
@@ -274,11 +274,11 @@
       tip("Keep machine names unique so open/connect/delete never disambiguate mid-macro."),
       note("import-ts pulls Tailscale-known hosts into the inventory when configured."),
       h2("Connect kinds"),
-      ul(["RDP — Windows desktops via mstsc-style launch.","SSH — shell sessions on servers and lab boxes.","RustDesk / tools. when configured in tools inventory.","Wake-on-LAN — power on before any of the above."]),
+      ul(["RDP — Windows desktops via mstsc-style launch.","SSH: shell sessions on servers and lab boxes.","RustDesk / tools. when configured in tools inventory.","Wake-on-LAN — power on before any of the above."]),
       h2("Inventory hygiene"),
       p("Keep names short and unique (Office, Lab-GPU). Put IPs and MAC addresses in the machine record so wake/connect do not need retyping. Re-run import-ts when Tailscale membership changes."),
       code(["remote(list)","remote(search lab)","remote(tools)","remote(import-ts)"]),
-      note("check is cheaper than connect — use it after wake."),
+      note("check is cheaper than connect: use it after wake."),
       h2("Related"),
       p("app-sysinfo, app-external, recipe-remote, cmd-protocol."),
     ])
@@ -297,7 +297,7 @@
       h2("Shell commands"),
       code(["studies(list)","studies(search climate)","studies(open My Brief)","studies(home)","studies(templates)","studies(new)","studies(help)"]),
       table(["Verb","What it does","Silent?"], [["list","List studies / documents","Yes"],["search <query>","Search titles/content index","Yes"],["open <name>","Open a document","No"],["home","Go home","No"],["templates","Open templates","No"],["new","Start a new study","No"],["help","Help string","Yes"]]),
-      note("Gemini chat + export are UI-first — shell gets you to the document, the window finishes the craft."),
+      note("Gemini chat + export are UI-first: shell gets you to the document, the window finishes the craft."),
       h2("Typical workflow"),
       ol(["studies(templates) → pick a structure.","studies(new) or open an existing draft.","Use Gemini chat in-app to outline, then export from UI."]),
       tip("Name documents uniquely so studies(open …) never asks you to disambiguate."),
@@ -314,7 +314,7 @@
     P("app-decks", "Study Deck", "Flashcard decks: create, study, and generate cards with AI", ["apps","decks","study-deck"], [
       kicker("Apps"),
       p("Study Deck (module study-deck) is spaced practice for anything you must remember: languages, APIs, interview facts, personal systems. Create decks, add cards, study with grading, and optionally generate cards with AI."),
-      p("Who it is for: learners who want deliberate recall — not passive rereading in Studies."),
+      p("Who it is for: learners who want deliberate recall: not passive rereading in Studies."),
       p("How it fits: decks(…) manages library mutations; studydeck(…) opens/study flows. Pair with Learning Games for quiz variety and Lexicon for concept lookups while you author cards."),
       h2("Open it"),
       code(["run study-deck","run decks","decks(list)","studydeck(open Spanish)","studydeck(study Spanish)"]),
@@ -338,7 +338,7 @@
   );
 
   add(
-    P("app-today", "Today", "Daily agenda by hour — reminders, done, and snooze", ["apps","today","day-planner"], [
+    P("app-today", "Today", "Daily agenda by hour: reminders, done, and snooze", ["apps","today","day-planner"], [
       kicker("Apps"),
       p("Today (module day-planner, aliases today / planner / dayplanner) is the hour-aware agenda: capture timed items, mark done, snooze, and peek at tomorrow without breaking focus. It is the operational checklist for the day — not a full calendar suite and not the GTD project manager (see Tasks)."),
       p("Who it is for: makers who live in the shell and want capture-during-focus: add a task silently, keep coding, review later."),
@@ -348,10 +348,10 @@
       code(["run today","run day-planner","today(tomorrow)","today(later)","today(done)","today(all)","focus today"]),
       h2("Surfaces / pages"),
       table(["Page","What it is","Open with"], [["home / today","Today’s agenda","run today / default"],["tomorrow","Tomorrow bucket","today(tomorrow)"],["later","Later / deferred","today(later)"],["done","Completed items","today(done)"],["all","Everything","today(all)"]]),
-      h2("Shell commands — capture & mutate"),
+      h2("Shell commands: capture & mutate"),
       code(["today(add Buy milk)","today(add Call Dana 15:00)","today(add Ship report tomorrow)","today(done Buy milk)","today(undo Buy milk)","today(delete Buy milk)","today(snooze Buy milk 15m)","today(snooze Buy milk tomorrow)","today(clear done)"]),
       table(["Verb","What it does","Silent?"], [["add …","Create a task (optional time, tomorrow)","Yes"],["done …","Mark complete (id or unique title)","Yes"],["undo …","Undo done","Yes"],["delete …","Remove task","Yes"],["snooze … 15m|tomorrow","Defer a task","Yes"],["clear done","Clear completed items","Yes"]]),
-      h2("Shell commands — list & pages"),
+      h2("Shell commands: list & pages"),
       code(["today(list)","today(list tomorrow)","today(tomorrow)","today(later)","today(done)","today(all)","today(help)"]),
       table(["Verb","What it does","Silent?"], [["list","List today’s tasks","Yes"],["list tomorrow","List tomorrow’s tasks","Yes"],["tomorrow / later / done / all","Open those pages","No"],["help","Help string","Yes"]]),
       tip("Silent add + later today(open) is a good macro pattern for capture-during-focus."),
@@ -363,14 +363,14 @@
       code(["today(add Buy milk)","today(add Call Dana 15:00)","today(add Ship report tomorrow)","today(snooze Buy milk 15m)","today(snooze Buy milk tomorrow)","today(done Buy milk)","today(list tomorrow)"]),
       h2("Disambiguation"),
       p("If two tasks are both named Email, done Email will not guess. Rename while adding (Email Dana / Email bank) or use identifiers from today(list)."),
-      note("clear done is housekeeping — run it when the done bucket becomes noise."),
+      note("clear done is housekeeping: run it when the done bucket becomes noise."),
       h2("Related"),
       p("app-clock, app-tasks, app-contacts, recipe-morning, cmd-protocol."),
     ])
   );
 
   add(
-    P("app-tasks", "Tasks", "Projects, lists & next actions — GTD between Notes and Today", ["apps","tasks","gtd","todo"], [
+    P("app-tasks", "Tasks", "Projects, lists & next actions: GTD between Notes and Today", ["apps","tasks","gtd","todo"], [
       kicker("Apps"),
       p("Tasks is the GTD layer: Inbox, Next, Waiting, Someday, projects with lists, soft due dates, priorities, flags, and checklists. It sits between Notes (capture text) and Today (timed hour agenda)."),
       p("Who it is for: people who need project structure and next-action clarity — not just “what’s at 15:00”."),
@@ -416,7 +416,7 @@
       h2("Safe shell patterns"),
       code(["vault(status)","vault(search github)","vault(copy GitHub PAT)","vault(lock)"]),
       ul(["Always status before copy in shared macros.","Prefer search → copy over open when you only need clipboard.","Lock at the end of sensitive sessions."]),
-      warn("Clipboard may retain secrets — clear or overwrite after paste into the target app."),
+      warn("Clipboard may retain secrets: clear or overwrite after paste into the target app."),
       p("Vault security handbook pages explain encryption posture; this app page is the operator manual."),
       h2("Related"),
       p("vault-security, storage, app-contacts, app-remote, cmd-protocol."),
@@ -424,7 +424,7 @@
   );
 
   add(
-    P("app-maps", "World Maps", "World map explorer — notes, routes & search", ["apps","maps","world-maps"], [
+    P("app-maps", "World Maps", "World map explorer: notes, routes & search", ["apps","maps","world-maps"], [
       kicker("Apps"),
       p("World Maps (module world-maps, aliases maps / worldmaps) is the annotated map explorer: geocode places, list notes and routes, and open the canvas. It complements Geography (encyclopedia) with a spatial canvas."),
       p("Who it is for: travelers, planners, and anyone who thinks spatially."),
@@ -447,7 +447,7 @@
   );
 
   add(
-    P("app-stocks", "Stocks", "Multi-asset tracker — charts, portfolio, alerts & AI Analysis", ["apps","stocks"], [
+    P("app-stocks", "Stocks", "Multi-asset tracker: charts, portfolio, alerts & AI Analysis", ["apps","stocks"], [
       kicker("Apps"),
       p("Stocks is the multi-asset tracker: equities, crypto, forex, metals, ETFs, commodities, and more. Watchlists, quotes, alerts, portfolio holdings, and an AI Analysis surface (Gemini) live here."),
       p("Who it is for: investors and curious builders who want quotes in the shell and charts in the window."),
@@ -462,7 +462,7 @@
       h2("Shell commands"),
       code(["stocks(AAPL)","stocks(open AAPL)","stocks(quote AAPL)","stocks(watch TSLA)","stocks(unwatch TSLA)","stocks(list)","stocks(alert AAPL > 200)","stocks(alert rm AAPL)","stocks(list alerts)","stocks(mode crypto)","stocks(portfolio)","stocks(hold AAPL 10 @ 180)","stocks(buylist)","stocks(alerts)","stocks(help)"]),
       table(["Verb","What it does","Silent?"], [["AAPL (bare ticker)","Open / focus symbol","Usually navigates"],["open <ticker>","Open symbol UI","No"],["quote <ticker>","Price summary","Yes"],["watch / unwatch","Watchlist mutate","Yes"],["list","List watch / symbols","Yes"],["alert … / alert rm …","Create / remove alert","Yes"],["list alerts","List alerts","Yes"],["mode <name>","Switch asset mode","May navigate / sync"],["portfolio","Open / summarize portfolio","Depends"],["hold <ticker> qty @ price","Record holding","Yes"],["buylist / alerts","Open those surfaces","No"],["help","Help string","Yes"]]),
-      warn("AI Analysis is UI-only with Gemini — there is no stocks(analyze) shell verb to put in macros."),
+      warn("AI Analysis is UI-only with Gemini: there is no stocks(analyze) shell verb to put in macros."),
       tip("Prefer stocks(quote AAPL) inside scripts; use bare AAPL when you want the chart."),
       h2("Typical workflow"),
       ol(["Morning macro: stocks(list); stocks(quote AAPL); stocks(list alerts).","stocks(mode crypto) when rotating focus.","stocks(hold AAPL 10 @ 180) after a fill.","Open AI Analysis in UI for a narrative read — not from shell."]),
@@ -477,7 +477,7 @@
   );
 
   add(
-    P("app-translate", "Translate", "100+ languages — translate, phrases, batch & history", ["apps","translate"], [
+    P("app-translate", "Translate", "100+ languages: translate, phrases, batch & history", ["apps","translate"], [
       kicker("Apps"),
       p("Translate covers 100+ languages with instant translation, phrasebooks, batch mode, history, and smart Hebrew↔English defaults. Shell forms accept free text, arrows (-> en), language names (to hebrew), and classic text:/from:/to:."),
       p("Who it is for: bilinguals, travelers, and builders dealing with mixed-language notes."),
@@ -486,7 +486,7 @@
       code(["run translate","translate(open phrases)","translate(batch)","translate(history)","focus translate"]),
       h2("Surfaces / pages"),
       table(["Page","What it is","Open with"], [["translate","Main translator","run translate / free text verbs"],["history","Past translations","translate(history)"],["phrases","Phrasebook","translate(open phrases)"],["batch","Batch translate","translate(batch)"],["settings","Translator settings","UI"]]),
-      h2("Shell commands — translate forms"),
+      h2("Shell commands: translate forms"),
       code(["translate(hello)","translate(bonjour -> en)","translate(hello to hebrew)","translate(שלום)","translate(text:shalom, from:he, to:en)","translate(to:en hello world)","translate(detect bonjour)","translate(languages)","translate(history)","translate(open phrases)","translate(batch)","translate(help)"]),
       table(["Verb / form","What it does","Silent?"], [["free text","Translate with smart defaults","Yes (result message)"],["… -> en / to hebrew","Directed translation","Yes"],["text:/from:/to:","Classic key form","Yes"],["detect …","Detect language","Yes"],["languages","List / summarize languages","Yes"],["history","Open or show history","Often navigates"],["open phrases","Open phrases","No"],["batch","Open batch UI","No"],["help","Help string","Yes"]]),
       h2("Smart defaults (he↔en)"),
@@ -497,7 +497,7 @@
       h2("Form cheat-sheet"),
       code(["translate(hello)","translate(bonjour -> en)","translate(hello to hebrew)","translate(text:shalom, from:he, to:en)","translate(detect bonjour)"]),
       h2("History & phrases"),
-      p("History captures successful shell translations when enabled — great for building a personal glossary. Phrases is the curated pack for travel. Batch is for glossary imports."),
+      p("History captures successful shell translations when enabled: great for building a personal glossary. Phrases is the curated pack for travel. Batch is for glossary imports."),
       note("If a translation no-ops, check detect and the he↔en flip rules above."),
       h2("Related"),
       p("app-contacts, app-decks, app-geo, cmd-protocol."),
@@ -505,7 +505,7 @@
   );
 
   add(
-    P("app-contacts", "Contacts", "People profiles — phone, email, birthdays & notifications", ["apps","contacts"], [
+    P("app-contacts", "Contacts", "People profiles: phone, email, birthdays & notifications", ["apps","contacts"], [
       kicker("Apps"),
       p("Contacts is the people graph: profiles with email, phone, birthdays, groups, and reminders. The shell can list, search, add, and hand off to OS handlers for mailto / tel / sms."),
       p("Who it is for: anyone who wants people next to Today tasks and Vault secrets without opening a heavy CRM."),
@@ -533,7 +533,7 @@
   );
 
   add(
-    P("app-notes", "Notes", "Quick capture — notebooks, tags, pin & archive", ["apps","notes"], [
+    P("app-notes", "Notes", "Quick capture: notebooks, tags, pin & archive", ["apps","notes"], [
       kicker("Apps"),
       p("Notes is the capture pad for My Space: fast inbox notes, notebooks, tags, pin, and archive. It is lighter than Studies (long documents) and complementary to Tasks (actionable work) and Today (timed agenda)."),
       p("Who it is for: anyone who wants thoughts, lists, and scraps next to the shell without opening a heavy editor."),
@@ -558,7 +558,7 @@
   );
 
   add(
-    P("app-chat", "Chat", "AI chat powered by Mind — history like ChatGPT", ["apps","chat","ai","mind"], [
+    P("app-chat", "Chat", "AI chat powered by Mind: history like ChatGPT", ["apps","chat","ai","mind"], [
       kicker("Apps"),
       p("Chat is a ChatGPT-style conversation app. Ask AI (the side assistant) stays as-is for OS tools; Chat is for long threads, history, and model/context settings — all routed through Mind."),
       h2("Open it"),
@@ -574,7 +574,7 @@
   );
 
   add(
-    P("app-geo", "Geography", "World countries — rich data, images & travel log", ["apps","geo","geography"], [
+    P("app-geo", "Geography", "World countries: rich data, images & travel log", ["apps","geo","geography"], [
       kicker("Apps"),
       p("Geography is the country encyclopedia: rich data, imagery, learn profiles, and a traveled / explore log. get prints facts silently; open jumps to the country panel; learn enters study-oriented views."),
       p("Who it is for: travelers, students, and quiz companions for Learning Games."),
@@ -599,7 +599,7 @@
   );
 
   add(
-    P("app-flags", "Learning Games", "Quizzes — Countries, Elements, and Model Prices", ["apps","flags","flag-quiz"], [
+    P("app-flags", "Learning Games", "Quizzes: Countries, Elements, and Model Prices", ["apps","flags","flag-quiz"], [
       kicker("Apps"),
       p("Learning Games (module flag-quiz, shell flags) hosts quiz modes: Countries (flags/geography), Elements (periodic table), and Model Prices (OpenRouter $/MTok). Scores persist; meta reports version/defaults."),
       p("Who it is for: playful learners who want short rounds between deep work blocks."),
@@ -639,7 +639,7 @@
       h2("Shell commands"),
       p("Pi Digits exposes no app(verb) protocol. Launch only:"),
       code(["run pi-digits"]),
-      table(["Verb / form","What it does","Silent?"], [["(none)","No verbs. UI guided lesson only","—"],["run pi-digits","Open the app","No"]]),
+      table(["Verb / form","What it does","Silent?"], [["(none)","No verbs. UI guided lesson only",":"],["run pi-digits","Open the app","No"]]),
       note("Guided loop: study → warm-up → recall → link. Recite recent / from start and weak-spot review deepen retention."),
       h2("Typical workflow"),
       ol(["clock(timer 10m) then run pi-digits.","Study a chunk, warm up, recall, link the next.","If you stumble, use weak spot review before expanding length.","Check progress/chunks before ending the session."]),
@@ -671,7 +671,7 @@
       ol(["run icon-library","Search a pack, preview, favorite keepers.","Copy SVG or id into your app.","Optionally expose/search via MSL icons.search from other tools."]),
       tip("Keep a small favorite set — consistency beats a huge random palette."),
       h2("Copy targets"),
-      ul(["SVG — paste into app HTML/CSS or design tools.","Id — reference in My Space icon systems / MSL consumers.","Favorites — build a house style set for your myapps."]),
+      ul(["SVG — paste into app HTML/CSS or design tools.","Id: reference in My Space icon systems / MSL consumers.","Favorites — build a house style set for your myapps."]),
       code(["run icon-library"]),
       note("MSL icons.search lets other apps query without opening the library window."),
       h2("Related"),
@@ -850,7 +850,7 @@
   );
 
   add(
-    P("app-lexicon", "Code Lexicon", "4000+ programming concepts: search, browse, daily", ["apps","lexicon","code-lexicon"], [
+    P("app-lexicon", "Code Lexicon", "6000+ programming concepts: search, browse, daily", ["apps","lexicon","code-lexicon"], [
       kicker("Apps"),
       p("Code Lexicon is a searchable encyclopedia of 4000+ programming concepts. Bare lexicon(promise) prints a definition silently; open jumps to the term panel. Daily and stats keep a learning habit alive."),
       p("Who it is for: developers leveling up vocabulary, interview prep, and teachers building decks."),
@@ -973,8 +973,8 @@
       ]),
       tip("See docs(open shell-vars) and docs(open shell-functions). Desktop: help lang."),
       h2("Starter rituals"),
-      code(["scripts(run morning) · scripts(run focus) · scripts(run eod) · scripts(run remote)"]),
-      p("Seeded once by name — your edits are never overwritten. Pair with backup(export) so rituals travel with you."),
+      code(["scripts(run morning), scripts(run focus), scripts(run eod), scripts(run remote)"]),
+      p("Seeded once by name: your edits are never overwritten. Pair with backup(export) so rituals travel with you."),
       h2("Typical workflow"),
       ol(["Prototype: today(list); stocks(list); sys(cpu).","scripts(new morning) then edit the body in Scripts.","scripts(run morning) daily (or from a macro).","Graduate Flow experiments into Scripts when stable."]),
       h2("Example morning script body"),
@@ -1004,7 +1004,7 @@
       ul(["Home page search and the workspace address bar both use the unified index."]),
       ul(["New tab (+) while this browser is active returns to the My Space Browser home."]),
       ul(["Navigation stays inside My Space (forceInApp) for connect-* tabs."]),
-      tip("Logo: Electron atom mark with green foreground — sibling of the default app icon, not the gold M installer mark."),
+      tip("Logo: Electron atom mark with green foreground: sibling of the default app icon, not the gold M installer mark."),
       h2("Opening a service"),
       ol(["Open Connect.","Pick a card (or search the catalog).","The service opens in a workspace web tab (connect-<id>).","Use the address bar to move around; sign in inside the tab when needed."]),
       warn("Some sites may show “browser not secure”. Connect uses a partition-only Firefox-style UA for Google hosts; avoid setting a global Electron UA (that can break the catalog)."),
@@ -1056,7 +1056,7 @@
       note("Paths are resolved from apps.json (Program Files, LOCALAPPDATA, wt.exe, etc.). If launch fails, verify the executable still exists."),
       h2("Typical workflow"),
       ol(["run cursor for AI editing; run terminal for OS shell.","run docker before container work; sys(ports) to confirm binds.","run github when you need the web PR view quickly.","close unused externals at end of day to reclaim RAM."]),
-      tip("Fuzzy names work: edge, docker, vscode, terminal, cursor, github — quotes help with vs code."),
+      tip("Fuzzy names work: edge, docker, vscode, terminal, cursor, github: quotes help with vs code."),
       warn("External apps have no stocks-like verb tables: do not write edge(list) expecting My Space protocol behavior."),
       h2("Focus discipline"),
       p("External editors and browsers accumulate windows. Prefer focus over run when the app is already up, and close at end of day for RAM. My Space cannot teach VS Code or Cursor verbs — those stay inside those products."),

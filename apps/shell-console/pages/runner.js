@@ -15,10 +15,10 @@ window.ConsolePages.runner = (function () {
       <div class="runner-box">
         <form class="runner-form" id="runner-form">
           <span class="runner-prompt">$</span>
-          <input type="text" id="runner-input" class="runner-input" placeholder="run space(ocean) · macro morning" spellcheck="false" autocomplete="off" />
+          <input type="text" id="runner-input" class="runner-input" placeholder="run space(ocean), macro morning" spellcheck="false" autocomplete="off" />
           <button type="submit" class="btn btn-primary">Run</button>
         </form>
-        <p class="runner-hint">↑↓ command history · aliases and macros from the desktop shell work here too</p>
+        <p class="runner-hint">↑↓ command history, aliases and macros from the desktop shell work here too</p>
       </div>
       <details class="settings-panel collapsible">
         <summary>Settings</summary>

@@ -94,7 +94,6 @@ async function fetchWikiEnrichment(title, lang = "en") {
   try {
     summary = await fetchJson(`https://${host}/api/rest_v1/page/summary/${pageTitle}`);
   } catch {
-    /* try English fallback */
     if (wikiLang !== "en") {
       try {
         summary = await fetchJson(
@@ -123,7 +122,6 @@ async function fetchWikiEnrichment(title, lang = "en") {
       }
     }
   } catch {
-    /* ignore */
   }
 
   const images = [];

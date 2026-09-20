@@ -1,4 +1,11 @@
 (function (root) {
+  function tt(key, fallback, vars) {
+    const I = root.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const { pad2 } = root.ClockUtils;
   const { getPartsInZone, zoneCityName, localTimeZone } = root.ClockTime;
 
@@ -259,11 +266,11 @@
 
   function friendlyStatus(statusLabel) {
     const map = {
-      "Work hours": "Office hours",
-      "Edge of work": "Near office hours",
-      Awake: "Awake",
-      Night: "Likely sleeping",
-      Weekend: "Weekend",
+      "Work hours": tt("app.worldClock.status.work", "Office hours"),
+      "Edge of work": tt("app.worldClock.status.edge", "Near office hours"),
+      Awake: tt("app.worldClock.status.awake", "Awake"),
+      Night: tt("app.worldClock.status.night", "Likely sleeping"),
+      Weekend: tt("app.worldClock.status.weekend", "Weekend"),
       Unknown: "—",
     };
     return map[statusLabel] || statusLabel;
@@ -273,21 +280,21 @@
     if (slot.allInWork) {
       return {
         level: "great",
-        title: "Great for everyone",
-        hint: "Everyone is within office hours.",
+        title: tt("app.worldClock.verdict.great", "Great for everyone"),
+        hint: tt("app.worldClock.verdict.greatHint", "Everyone is within office hours."),
       };
     }
     if (slot.score >= 65) {
       return {
         level: "ok",
-        title: "Good for most",
-        hint: "Most people are in or near office hours.",
+        title: tt("app.worldClock.verdict.ok", "Good for most"),
+        hint: tt("app.worldClock.verdict.okHint", "Most people are in or near office hours."),
       };
     }
     return {
       level: "warn",
-      title: "OK with caveats",
-      hint: "Someone may be early, late, or on a weekend.",
+      title: tt("app.worldClock.verdict.warn", "OK with caveats"),
+      hint: tt("app.worldClock.verdict.warnHint", "Someone may be early, late, or on a weekend."),
     };
   }
 
@@ -321,9 +328,9 @@
   }
 
   function liveStatusKind(status) {
-    if (status === "work") return { pill: "Office hours now", class: "work" };
-    if (status === "awake") return { pill: "Awake", class: "awake" };
-    return { pill: "Likely sleeping", class: "night" };
+    if (status === "work") return { pill: tt("app.worldClock.status.workNow", "Office hours now"), class: "work" };
+    if (status === "awake") return { pill: tt("app.worldClock.status.awake", "Awake"), class: "awake" };
+    return { pill: tt("app.worldClock.status.night", "Likely sleeping"), class: "night" };
   }
 
   function buildTimelineGrid(options) {

@@ -1,30 +1,52 @@
 (function () {
-  const PAGE_META = {
-    local: {
-      title: "Local time",
-      subtitle: "Your system clock and timezone",
-    },
-    world: {
-      title: "World clocks",
-      subtitle: "Search countries and cities, pin clocks worldwide",
-    },
-    meetings: {
-      title: "Meeting planner",
-      subtitle: "Add cities, pick a date — see the best time to call in plain language",
-    },
-    timer: {
-      title: "Timer",
-      subtitle: "Countdown with sound and desktop alert when done",
-    },
-    pomodoro: {
-      title: "Pomodoro",
-      subtitle: "Focus sessions with short and long breaks",
-    },
-    stopwatch: {
-      title: "Stopwatch",
-      subtitle: "Precise timing with lap splits",
-    },
-  };
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
+  function pageMeta(id) {
+    const map = {
+      local: {
+        title: tt("app.worldClock.page.local", "Local time"),
+        subtitle: tt("app.worldClock.page.localSub", "Your system clock and timezone"),
+      },
+      world: {
+        title: tt("app.worldClock.page.world", "World clocks"),
+        subtitle: tt(
+          "app.worldClock.page.worldSub",
+          "Search countries and cities, pin clocks worldwide"
+        ),
+      },
+      meetings: {
+        title: tt("app.worldClock.page.meetings", "Meeting planner"),
+        subtitle: tt(
+          "app.worldClock.page.meetingsSub",
+          "Add cities, pick a date — see the best time to call in plain language"
+        ),
+      },
+      timer: {
+        title: tt("app.worldClock.page.timer", "Timer"),
+        subtitle: tt(
+          "app.worldClock.page.timerSub",
+          "Countdown with sound and desktop alert when done"
+        ),
+      },
+      pomodoro: {
+        title: tt("app.worldClock.page.pomodoro", "Pomodoro"),
+        subtitle: tt(
+          "app.worldClock.page.pomodoroSub",
+          "Focus sessions with short and long breaks"
+        ),
+      },
+      stopwatch: {
+        title: tt("app.worldClock.page.stopwatch", "Stopwatch"),
+        subtitle: tt("app.worldClock.page.stopwatchSub", "Precise timing with lap splits"),
+      },
+    };
+    return map[id] || map.local;
+  }
 
   const pages = [
     window.ClockPages.local,
@@ -60,12 +82,36 @@
       btn.classList.toggle("active", btn.dataset.page === next.id);
     });
 
-    const meta = PAGE_META[next.id] || PAGE_META.local;
+    const meta = pageMeta(next.id);
     ui.title.textContent = meta.title;
     ui.subtitle.textContent = meta.subtitle;
-    ui.brandSub.textContent = `v1.2 · ${meta.title}`;
+    ui.brandSub.textContent = tt("app.worldClock.brandSub", `v1.2 · ${meta.title}`, {
+      page: meta.title,
+    });
+    document.title = tt("app.worldClock.name", "Clock");
 
     if (next.activate) next.activate();
+  }
+
+  function repaintChrome() {
+    const id = activePage?.id || "local";
+    const meta = pageMeta(id);
+    ui.title.textContent = meta.title;
+    ui.subtitle.textContent = meta.subtitle;
+    ui.brandSub.textContent = tt("app.worldClock.brandSub", `v1.2 · ${meta.title}`, {
+      page: meta.title,
+    });
+    document.title = tt("app.worldClock.name", "Clock");
+    pages.forEach((p) => {
+      if (typeof p.repaintI18n === "function") p.repaintI18n();
+      else if (typeof p.updateUi === "function") p.updateUi();
+      else if (typeof p.refreshResults === "function") p.refreshResults();
+      else if (typeof p.renderFavorites === "function") p.renderFavorites();
+      else if (typeof p.renderLaps === "function") {
+        p.renderLaps();
+        p.updateButtons?.();
+      }
+    });
   }
 
   ui.nav.addEventListener("click", (e) => {
@@ -202,7 +248,12 @@
     startPomodoro,
     pausePomodoro,
     startStopwatch,
+    repaintChrome,
   };
+
+  document.addEventListener("myspace-app-i18n-applied", () => {
+    repaintChrome();
+  });
 
   window.MySpaceThemeRuntime?.listen?.("world-clock");
   void window.MySpaceThemeRuntime?.boot?.("world-clock");

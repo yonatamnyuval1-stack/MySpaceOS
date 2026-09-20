@@ -6,6 +6,7 @@
     <title>Notes</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
   </head>
   <body>
     <div class="app-shell" id="app-shell">
@@ -13,35 +14,35 @@
         <div class="brand">
           <span class="brand-icon" aria-hidden="true">📝</span>
           <div>
-            <strong>Notes</strong>
-            <span class="brand-sub">Quick capture</span>
+            <strong data-i18n="app.notes.name">Notes</strong>
+            <span class="brand-sub" data-i18n="app.notes.tagline">Quick capture</span>
           </div>
         </div>
 
-        <nav class="nav" id="rail-nav" aria-label="Views">
+        <nav class="nav" id="rail-nav" data-i18n-aria="app.notes.navAria" aria-label="Views">
           <button type="button" class="nav-item active" data-view="all">
-            <span class="nav-icon">▤</span> All notes <em id="count-all">0</em>
+            <span class="nav-icon">▤</span> <span data-i18n="app.notes.nav.all">All notes</span> <em id="count-all">0</em>
           </button>
           <button type="button" class="nav-item" data-view="pinned">
-            <span class="nav-icon">●</span> Pinned <em id="count-pinned">0</em>
+            <span class="nav-icon">●</span> <span data-i18n="app.notes.nav.pinned">Pinned</span> <em id="count-pinned">0</em>
           </button>
           <button type="button" class="nav-item" data-view="archive">
-            <span class="nav-icon">⬚</span> Archive <em id="count-archive">0</em>
+            <span class="nav-icon">⬚</span> <span data-i18n="app.notes.nav.archive">Archive</span> <em id="count-archive">0</em>
           </button>
         </nav>
 
-        <p class="nav-section-label">Notebooks</p>
+        <p class="nav-section-label" data-i18n="app.notes.notebooks">Notebooks</p>
         <div class="nav-section-head">
-          <button type="button" class="btn btn-ghost btn-sm" id="btn-add-notebook" title="New notebook">+ New</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-add-notebook" data-i18n="app.notes.newNotebookBtn" data-i18n-title="app.notes.newNotebookTitle" title="New notebook">+ New</button>
         </div>
-        <nav class="nav nav--cats" id="notebook-list" aria-label="Notebooks"></nav>
+        <nav class="nav nav--cats" id="notebook-list" data-i18n-aria="app.notes.notebooksAria" aria-label="Notebooks"></nav>
 
-        <p class="nav-section-label">Tags</p>
+        <p class="nav-section-label" data-i18n="app.notes.tags">Tags</p>
         <div class="tag-cloud" id="tag-cloud"></div>
 
         <footer class="sidebar-foot">
-          <p>notes(add …) · Del to delete</p>
-          <button type="button" class="btn btn-ghost btn-sm btn-sign-out hidden" id="btn-sign-out">Sign out</button>
+          <p data-i18n="app.notes.foot">notes(add …), Del to delete</p>
+          <button type="button" class="btn btn-ghost btn-sm btn-sign-out hidden" id="btn-sign-out" data-i18n="app.notes.signOut">Sign out</button>
         </footer>
       </aside>
 
@@ -52,7 +53,7 @@
             <p class="subtitle" id="list-sub">Capture anything, pin what matters</p>
           </div>
           <div class="topbar-actions">
-            <button type="button" class="btn btn-primary" id="btn-new" title="New note (Ctrl+N)">+ New note</button>
+            <button type="button" class="btn btn-primary" id="btn-new" data-i18n="app.notes.newNote" data-i18n-title="app.notes.newNoteTitle" title="New note (Ctrl+N)">+ New note</button>
           </div>
         </header>
 
@@ -62,42 +63,43 @@
               type="text"
               id="capture-input"
               class="capture-input"
-              placeholder="Quick capture — Title | body  ·  #tags welcome"
+              data-i18n-placeholder="app.notes.capturePlaceholder"
+              placeholder="Quick capture — Title | body ,  #tags welcome"
               spellcheck="true"
             />
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="submit" class="btn btn-primary" data-i18n="app.notes.add">Add</button>
           </form>
 
           <div class="toolbar">
             <div class="search-wrap">
               <span class="search-icon">⌕</span>
-              <input type="search" id="search-input" class="search" placeholder="Search notes…" autocomplete="off" />
+              <input type="search" id="search-input" class="search" data-i18n-placeholder="app.notes.searchPlaceholder" placeholder="Search notes…" autocomplete="off" />
             </div>
           </div>
 
           <div class="note-list" id="note-list" role="list"></div>
           <div class="empty-state hidden" id="empty-list">
-            <h3>No notes here</h3>
-            <p>Use quick capture above, or press Ctrl+N.</p>
+            <h3 data-i18n="app.notes.emptyTitle">No notes here</h3>
+            <p data-i18n="app.notes.emptyBody">Use quick capture above, or press Ctrl+N.</p>
           </div>
         </div>
       </main>
 
-      <aside class="detail-panel" id="editor-pane" aria-label="Editor">
+      <aside class="detail-panel" id="editor-pane" data-i18n-aria="app.notes.editorAria" aria-label="Editor">
         <div class="editor-empty" id="editor-empty">
           <div class="editor-empty-mark" aria-hidden="true">📝</div>
-          <h2>Select a note</h2>
-          <p>Or capture something new.</p>
+          <h2 data-i18n="app.notes.selectNote">Select a note</h2>
+          <p data-i18n="app.notes.selectNoteHint">Or capture something new.</p>
         </div>
 
         <div class="editor hidden" id="editor">
           <header class="detail-head">
-            <select id="note-notebook" class="field-select" title="Notebook"></select>
+            <select id="note-notebook" class="field-select" data-i18n-title="app.notes.notebookTitle" title="Notebook"></select>
             <div class="detail-actions-inline">
-              <button type="button" class="btn btn-ghost btn-sm" id="btn-pin" title="Pin (Ctrl+P)">Pin</button>
-              <button type="button" class="btn btn-ghost btn-sm" id="btn-duplicate" title="Duplicate">Duplicate</button>
-              <button type="button" class="btn btn-ghost btn-sm" id="btn-archive" title="Archive">Archive</button>
-              <button type="button" class="btn btn-danger btn-sm" id="btn-delete" title="Delete (Del)">Delete</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-pin" data-i18n-title="app.notes.pinTitle" title="Pin (Ctrl+P)">Pin</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-duplicate" data-i18n="app.notes.duplicate" data-i18n-title="app.notes.duplicate" title="Duplicate">Duplicate</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-archive" data-i18n-title="app.notes.archive" title="Archive">Archive</button>
+              <button type="button" class="btn btn-danger btn-sm" id="btn-delete" data-i18n="app.notes.delete" data-i18n-title="app.notes.deleteTitle" title="Delete (Del)">Delete</button>
             </div>
             <span class="save-status" id="save-status" aria-live="polite"></span>
           </header>
@@ -106,6 +108,7 @@
               type="text"
               id="note-title"
               class="note-title"
+              data-i18n-placeholder="app.notes.titlePlaceholder"
               placeholder="Title"
               autocomplete="off"
               spellcheck="true"
@@ -114,12 +117,14 @@
               type="text"
               id="note-tags"
               class="note-tags"
+              data-i18n-placeholder="app.notes.tagsPlaceholder"
               placeholder="Tags — comma or #hash"
               autocomplete="off"
             />
             <textarea
               id="note-body"
               class="note-body"
+              data-i18n-placeholder="app.notes.bodyPlaceholder"
               placeholder="Write freely…"
               spellcheck="true"
             ></textarea>
@@ -137,24 +142,37 @@
         <p class="modal-copy" id="confirm-copy">This cannot be undone.</p>
         <div class="modal-actions">
           <button type="submit" class="btn btn-danger" id="confirm-ok" value="ok">Delete</button>
-          <button type="button" class="btn btn-ghost" id="confirm-cancel">Cancel</button>
+          <button type="button" class="btn btn-ghost" id="confirm-cancel" data-i18n="app.notes.cancel">Cancel</button>
         </div>
       </form>
     </dialog>
 
     <dialog class="modal" id="notebook-modal">
       <form method="dialog" id="notebook-form" class="modal-card">
-        <h3>New notebook</h3>
+        <h3 data-i18n="app.notes.newNotebook">New notebook</h3>
         <label>
-          <span>Name</span>
-          <input type="text" id="notebook-name" required maxlength="60" placeholder="e.g. Work" />
+          <span data-i18n="app.notes.fieldName">Name</span>
+          <input type="text" id="notebook-name" required maxlength="60" data-i18n-placeholder="app.notes.notebookNamePlaceholder" placeholder="e.g. Work" />
         </label>
         <div class="modal-actions">
-          <button type="submit" class="btn btn-primary" value="ok">Create</button>
-          <button type="button" class="btn btn-ghost" id="notebook-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" value="ok" data-i18n="app.notes.create">Create</button>
+          <button type="button" class="btn btn-ghost" id="notebook-cancel" data-i18n="app.notes.cancel">Cancel</button>
         </div>
       </form>
     </dialog>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/app-language.js"></script>
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
     <script src="app.js"></script>
+    <script>window.MySpaceAppLanguage && window.MySpaceAppLanguage.boot();</script>
   </body>
 </html>

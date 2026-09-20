@@ -18,7 +18,7 @@
   const TYPE_HARD_TIME_MS = 60 * 1000;
   const HARD50_TIMED_TIME_MS = 2 * 60 * 1000;
   const LEVEL5_RECORD_MIN_SCORE = 18;
-  const HARD50_TIMED_RECORD_MIN_SCORE = 46; // 50 questions — up to 4 wrongs still qualify for records
+  const HARD50_TIMED_RECORD_MIN_SCORE = 46; 
   const LEVEL5_WRONG_PENALTY_MS = 1000;
 
   const state = {
@@ -459,7 +459,6 @@
     return !!(pack[code]?.[key] || pack.en?.[key]);
   }
 
-  /** Prefer `key.domain` (e.g. results.msg.great.elements), else `key`. */
   function tDomain(key, vars) {
     const specific = `${key}.${contentDomain()}`;
     if (hasI18nKey(specific)) return t(specific, vars);
@@ -1817,8 +1816,9 @@
   }
 
   function applyLanguageFromSettings() {
-    const code = window.AppSettingsRuntime?.get?.("language") || "en";
+    const code = window.MySpaceAppLanguage?.resolve?.() || "en";
     window.FlagQuizI18n?.applyDom?.(code);
+    window.MySpaceI18n?.setLanguage?.(code, { force: true });
     window.AppSettings?.refreshLabels?.();
     paintGameChrome();
     if (state.page === "quiz" && state.questions.length && !state.answered && $("quiz-results")?.hidden) {
@@ -1908,7 +1908,7 @@
     window.AppSettingsRuntime?.onApplied?.(() => applyLanguageFromSettings());
     document.addEventListener("app-setting-changed", (e) => {
       if (e.detail?.appId !== "flag-quiz") return;
-      if (e.detail.key === "language" || e.detail.key === "*") applyLanguageFromSettings();
+      if (e.detail.key === "uiLanguage" || e.detail.key === "language" || e.detail.key === "*") applyLanguageFromSettings();
     });
     document.addEventListener("app-settings-closed", () => {
       if (state.page === "quiz") setPage("quiz");

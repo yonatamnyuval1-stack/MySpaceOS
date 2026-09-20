@@ -17,3 +17,10 @@ try {
 } catch (err) {
   console.error("[day-planner preload] Local auth bridge failed:", err);
 }
+
+try {
+  const { attachOsI18n } = require("../shared/i18n/preload-bridge");
+  attachOsI18n(contextBridge, ipcRenderer);
+} catch (err) {
+  console.error("[preload] i18n bridge failed:", err);
+}

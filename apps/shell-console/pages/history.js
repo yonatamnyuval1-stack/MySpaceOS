@@ -21,7 +21,7 @@ window.ConsolePages.history = (function () {
       <div class="history-list">${
         shown.length
           ? shown.map((h) => rowHtml(h, items.indexOf(h))).join("")
-          : `<p class="empty">${items.length ? "No matches." : "No history yet — run a command from Run or right-click the desktop."}</p>`
+          : `<p class="empty">${items.length ? "No matches." : "No history yet: run a command from Run or right-click the desktop."}</p>`
       }</div>`;
 
     page.querySelector("#hist-clear")?.addEventListener("click", async () => {

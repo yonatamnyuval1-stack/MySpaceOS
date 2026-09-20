@@ -1,4 +1,11 @@
 (function (root) {
+  function tt(key, fallback, vars) {
+    const I = root.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const { escapeHtml, pad2 } = root.ClockUtils;
   const { search, renderSearchResults } = root.ClockSearch;
   const { zoneCityName, localTimeZone } = root.ClockTime;
@@ -89,7 +96,7 @@
     seedDefaults() {
       const tz = localTimeZone();
       const defaults = [
-        { timezone: tz, label: "You (local)" },
+        { timezone: tz, label: tt("app.worldClock.meetings.youLocal", "You (local)") },
         { timezone: "America/New_York", label: "United States" },
         { timezone: "Europe/London", label: "United Kingdom" },
       ];
@@ -176,7 +183,7 @@
       this.renderScheduled();
       if (window.myApp) {
         await window.myApp.invoke("notify", {
-          title: "Meeting saved",
+          title: tt("app.worldClock.meetings.savedNotify", "Meeting saved"),
           body: `${entry.title} — open your calendar app to finish booking if needed.`,
         });
       }
@@ -321,11 +328,19 @@
         <div class="meetings-scheduled-item">
           <div>
             <strong>${escapeHtml(e.title)}</strong>
-            <span class="meetings-cell-sub">${escapeHtml(day)} · ${escapeHtml(when)} · ${e.durationMin} min</span>
+            <span class="meetings-cell-sub">${escapeHtml(
+              tt("app.worldClock.meetings.scheduledMeta", `${day} · ${when} · ${e.durationMin} min`, {
+                day,
+                when,
+                min: e.durationMin,
+              })
+            )}</span>
           </div>
           <div class="meetings-scheduled-actions">
             <button type="button" class="btn btn-ghost btn-sm" data-scheduled-ics="${escapeHtml(e.id)}">.ics</button>
-            <button type="button" class="btn btn-ghost btn-sm meetings-scheduled-remove" data-id="${escapeHtml(e.id)}">Remove</button>
+            <button type="button" class="btn btn-ghost btn-sm meetings-scheduled-remove" data-id="${escapeHtml(e.id)}">${escapeHtml(
+              tt("app.worldClock.meetings.remove", "Remove")
+            )}</button>
           </div>
         </div>`;
         })
@@ -369,7 +384,9 @@
         <span class="meetings-chip" role="listitem">
           <span class="meetings-chip-label">${escapeHtml(p.label)}</span>
           <span class="meetings-chip-city">${escapeHtml(zoneCityName(p.timezone))}</span>
-          <button type="button" class="meetings-chip-remove" data-id="${escapeHtml(p.id)}" title="Remove ${escapeHtml(p.label)}">×</button>
+          <button type="button" class="meetings-chip-remove" data-id="${escapeHtml(p.id)}" title="${escapeHtml(
+            tt("app.worldClock.meetings.removeTitle", `Remove ${p.label}`, { label: p.label })
+          )}">×</button>
         </span>`
         )
         .join("");
@@ -393,14 +410,14 @@
         <div class="meetings-per-city-row">
           <span class="meetings-per-city-name">${escapeHtml(p.label)}</span>
           <label>
-            <span class="sr-only">From</span>
+            <span class="sr-only">${escapeHtml(tt("app.worldClock.meetings.defaultHours", "Default office hours"))}</span>
             <select data-id="${escapeHtml(p.id)}" data-field="workStart" class="meetings-hour-select">
               ${hourOptions(p.workStart)}
             </select>
           </label>
-          <span>to</span>
+          <span>${escapeHtml(tt("app.worldClock.meetings.to", "to"))}</span>
           <label>
-            <span class="sr-only">To</span>
+            <span class="sr-only">${escapeHtml(tt("app.worldClock.meetings.to", "to"))}</span>
             <select data-id="${escapeHtml(p.id)}" data-field="workEnd" class="meetings-hour-select">
               ${hourOptions(p.workEnd)}
             </select>
@@ -426,7 +443,7 @@
       if (n < 1) {
         hero.innerHTML = `
           <div class="meetings-hero-empty">
-            <p>Add at least <strong>one city</strong> above to see a suggested meeting time.</p>
+            <p>${tt("app.worldClock.meetings.needCity", "Add at least <strong>one city</strong> above to see a suggested meeting time.")}</p>
           </div>`;
         alt.innerHTML = "";
         return;
@@ -438,8 +455,10 @@
       if (!slots.length) {
         hero.innerHTML = `
           <div class="meetings-hero-empty">
-            <p>No comfortable time found on this date.</p>
-            <p class="meetings-hint">Try another day, a shorter meeting, or wider office hours.</p>
+            <p>${escapeHtml(tt("app.worldClock.meetings.noTime", "No comfortable time found on this date."))}</p>
+            <p class="meetings-hint">${escapeHtml(
+              tt("app.worldClock.meetings.noTimeHint", "Try another day, a shorter meeting, or wider office hours.")
+            )}</p>
           </div>`;
         alt.innerHTML = "";
         return;
@@ -453,7 +472,9 @@
       const altSlots = slots.filter((s) => s.start.getTime() !== top.start.getTime());
       if (altSlots.length) {
         alt.innerHTML = `
-          <h3 class="meetings-alt-title">Other times that work</h3>
+          <h3 class="meetings-alt-title">${escapeHtml(
+            tt("app.worldClock.meetings.otherTimes", "Other times that work")
+          )}</h3>
           <div class="meetings-alt-list">
             ${altSlots.map((slot) => this.renderAltRow(slot, cfg)).join("")}
           </div>`;
@@ -498,19 +519,36 @@
         <article class="meetings-hero-card meetings-hero-card--${verdict.level}">
           <p class="meetings-hero-kicker">${escapeHtml(verdict.title)}</p>
           <p class="meetings-hero-time">${escapeHtml(yourTime)}</p>
-          <p class="meetings-hero-date">${escapeHtml(dateLine)} · your time · ${cfg.durationMin} min</p>
+          <p class="meetings-hero-date">${escapeHtml(
+            tt("app.worldClock.meetings.yourTime", `${dateLine}, your time, ${cfg.durationMin} min`, {
+              date: dateLine,
+              min: cfg.durationMin,
+            })
+          )}</p>
           <p class="meetings-hero-hint">${escapeHtml(verdict.hint)}</p>
           <ul class="meetings-hero-people">${people}</ul>
           <div class="meetings-calendar-actions">
-            <p class="meetings-calendar-label">Add to your calendar:</p>
+            <p class="meetings-calendar-label">${escapeHtml(
+              tt("app.worldClock.meetings.addCalendar", "Add to your calendar:")
+            )}</p>
             <div class="meetings-calendar-btns">
-              <button type="button" class="btn btn-primary" data-action="google">Google Calendar</button>
-              <button type="button" class="btn" data-action="outlook">Outlook</button>
-              <button type="button" class="btn" data-action="ics">Download .ics</button>
+              <button type="button" class="btn btn-primary" data-action="google">${escapeHtml(
+                tt("app.worldClock.meetings.google", "Google Calendar")
+              )}</button>
+              <button type="button" class="btn" data-action="outlook">${escapeHtml(
+                tt("app.worldClock.meetings.outlook", "Outlook")
+              )}</button>
+              <button type="button" class="btn" data-action="ics">${escapeHtml(
+                tt("app.worldClock.meetings.ics", "Download .ics")
+              )}</button>
             </div>
             <div class="meetings-calendar-btns meetings-calendar-btns--secondary">
-              <button type="button" class="btn btn-ghost" data-action="save">Save in Clock</button>
-              <button type="button" class="btn btn-ghost" data-action="map">Day map</button>
+              <button type="button" class="btn btn-ghost" data-action="save">${escapeHtml(
+                tt("app.worldClock.meetings.saveInClock", "Save in Clock")
+              )}</button>
+              <button type="button" class="btn btn-ghost" data-action="map">${escapeHtml(
+                tt("app.worldClock.meetings.dayMapBtn", "Day map")
+              )}</button>
             </div>
           </div>
         </article>`;
@@ -538,7 +576,9 @@
       const rows = MP.getLiveComparison(now, this.state.participants);
 
       if (!rows.length) {
-        grid.innerHTML = `<p class="meetings-hint">Add cities above to see live times.</p>`;
+        grid.innerHTML = `<p class="meetings-hint">${escapeHtml(
+          tt("app.worldClock.meetings.addCitiesLive", "Add cities above to see live times.")
+        )}</p>`;
         return;
       }
 
@@ -546,7 +586,10 @@
         .map((r) => {
           const live = MP.liveStatusKind(r.status);
           const timeShort = r.time.replace(/^(\d{2}:\d{2}):\d{2}$/, "$1");
-          const dstShort = r.dstLabel === "No DST" ? "No daylight saving" : r.dstLabel;
+          const dstShort =
+            r.dstLabel === "No DST"
+              ? tt("app.worldClock.meetings.noDst", "No daylight saving")
+              : r.dstLabel;
           return `
         <article class="meetings-now-card">
           <h3 class="meetings-now-name">${escapeHtml(r.label)}</h3>
@@ -565,7 +608,9 @@
       const cfg = this.getFormConfig();
 
       if (this.state.participants.length < 1) {
-        wrap.innerHTML = `<p class="meetings-hint">Add a city to see the day map.</p>`;
+        wrap.innerHTML = `<p class="meetings-hint">${escapeHtml(
+          tt("app.worldClock.meetings.addCityMap", "Add a city to see the day map.")
+        )}</p>`;
         return;
       }
 
@@ -578,8 +623,14 @@
       });
 
       const refCity = zoneCityName(grid.referenceTz);
-      let html = `<p class="meetings-timeline-caption">Rows = people on the call. Columns = hours in <strong>${escapeHtml(refCity)}</strong> (your timezone). Numbers = their local hour.</p>`;
-      html += `<div class="meetings-timeline-scroll"><table class="meetings-timeline-table"><thead><tr><th class="meetings-tl-name">City</th>`;
+      let html = `<p class="meetings-timeline-caption">${tt(
+        "app.worldClock.meetings.timelineCaption",
+        `Rows = people on the call. Columns = hours in <strong>${escapeHtml(refCity)}</strong> (your timezone). Numbers = their local hour.`,
+        { city: escapeHtml(refCity) }
+      )}</p>`;
+      html += `<div class="meetings-timeline-scroll"><table class="meetings-timeline-table"><thead><tr><th class="meetings-tl-name">${escapeHtml(
+        tt("app.worldClock.meetings.cityCol", "City")
+      )}</th>`;
 
       grid.hours.forEach((h) => {
         const short = h.replace(":00", "").replace(" · now", "*");
@@ -597,8 +648,14 @@
         });
         html += `</tr>`;
       });
-      html += `</tbody></table></div><p class="meetings-hint meetings-hint--tight">* = current hour</p>`;
+      html += `</tbody></table></div><p class="meetings-hint meetings-hint--tight">${escapeHtml(
+        tt("app.worldClock.meetings.currentHour", "* = current hour")
+      )}</p>`;
       wrap.innerHTML = html;
+    },
+
+    repaintI18n() {
+      if (this.state) this.renderAll();
     },
   };
 

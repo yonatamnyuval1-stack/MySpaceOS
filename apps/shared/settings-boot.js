@@ -35,12 +35,18 @@
 
   function formatSelectLabel(item, value) {
     if (item.key === "vaultLockMinutes" && value === 0) return "Never";
-    if (item.key === "language") {
-      if (value === "he") {
-        const ui = window.MySpaceI18n?.getLanguage?.() || "en";
-        return ui === "he" ? "עברית" : "Hebrew";
+    if (item.key === "uiLanguage" || item.key === "language") {
+      const ui = window.MySpaceI18n?.getLanguage?.() || window.__myspaceAppUiLang || "en";
+      if (value === "system") {
+        return ui === "he" ? "מערכת" : ui === "ar" ? "النظام" : ui === "fr" ? "Système" : ui === "ru" ? "Система" : ui === "es" ? "Sistema" : "System";
       }
-      return "English";
+      const meta = window.MySpaceLanguages?.meta?.(value);
+      if (meta) {
+        // Prefer native name; when UI is English show English name for clarity
+        return ui === "en" ? meta.name : meta.nativeName || meta.name;
+      }
+      if (value === "he") return ui === "he" ? "עברית" : "Hebrew";
+      if (value === "en") return "English";
     }
     if (item.key.endsWith("Minutes") || item.key.endsWith("Minutes")) {
       return value === 1 ? "1 min" : `${value} min`;
@@ -116,7 +122,7 @@
           <button type="button" class="btn btn-ghost btn-sm" id="settings-reset">Reset defaults</button>
           <span class="settings-saving" id="settings-saving">Saving…</span>
         </header>
-        <p class="settings-panel-note">Flip a switch — <strong>ON</strong> keeps the feature active, <strong>OFF</strong> turns it off.</p>
+        <p class="settings-panel-note">Flip a switch: <strong>ON</strong> keeps the feature active, <strong>OFF</strong> turns it off.</p>
         ${sections}
       </div>
     </div>`;
@@ -268,7 +274,7 @@
       const title = document.getElementById("page-title");
       const subtitle = document.getElementById("page-subtitle");
       if (title) title.textContent = label;
-      if (subtitle) subtitle.textContent = uiT("page.settings.sub", "Circuit panel — flip switches to control this app");
+      if (subtitle) subtitle.textContent = uiT("page.settings.sub", "Circuit panel: flip switches to control this app");
     }
   }
 
@@ -330,7 +336,7 @@
     const subtitle = document.getElementById("page-subtitle");
     const brandSub = document.getElementById("brand-sub");
     if (title) title.textContent = uiT("page.settings", "Settings");
-    if (subtitle) subtitle.textContent = uiT("page.settings.sub", "Circuit panel — flip switches to control this app");
+    if (subtitle) subtitle.textContent = uiT("page.settings.sub", "Circuit panel: flip switches to control this app");
     if (brandSub) brandSub.textContent = `⚡ ${schema?.title || uiT("page.settings", "Settings")}`;
 
     document.getElementById("app-shell")?.classList.add("settings-mode");
@@ -404,7 +410,6 @@
     try {
       await load();
     } catch (_) {
-      /* render on open */
     }
   }
 
@@ -438,4 +443,12 @@
   } else {
     boot();
   }
+
+  document.addEventListener("myspace-app-i18n-applied", () => {
+    refreshSettingsChromeLabels();
+    if (active && pageEl) {
+      pageEl.innerHTML = renderPanel();
+      bindPanelEvents();
+    }
+  });
 })();

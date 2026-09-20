@@ -6,6 +6,7 @@ const {
   nativeImage,
   dialog,
   globalShortcut,
+  webContents,
 } = require("electron");
 const path = require("path");
 const fs = require("fs");
@@ -103,8 +104,18 @@ function broadcastMyspaceIdentityChanged() {
 }
 
 function normalizeUiLanguage(raw) {
-  const s = String(raw || "en").trim().toLowerCase();
-  return s.startsWith("he") ? "he" : "en";
+  try {
+    const { normalizeLang } = require("./apps/shared/i18n/languages");
+    return normalizeLang(raw);
+  } catch {
+    const s = String(raw || "en").trim().toLowerCase();
+    if (s.startsWith("he") || s.startsWith("iw")) return "he";
+    if (s.startsWith("ar")) return "ar";
+    if (s.startsWith("fr")) return "fr";
+    if (s.startsWith("ru")) return "ru";
+    if (s.startsWith("es")) return "es";
+    return "en";
+  }
 }
 
 let osUiLanguageMemory = null;
@@ -133,10 +144,14 @@ function refreshOsUiLanguageMemoryFromDisk() {
 function broadcastLanguageChanged(language) {
   const normalized = setOsUiLanguageMemory(language);
   const payload = { language: normalized };
-  for (const win of BrowserWindow.getAllWindows()) {
-    if (win.isDestroyed()) continue;
+  for (const wc of webContents.getAllWebContents()) {
+    if (!wc || wc.isDestroyed?.()) continue;
     try {
-      win.webContents.send("myspace-language-changed", payload);
+      if (typeof wc.getType === "function" && wc.getType() === "devtools") continue;
+    } catch {
+    }
+    try {
+      wc.send("myspace-language-changed", payload);
     } catch {
     }
   }
@@ -220,7 +235,7 @@ function mergeUserBuiltApps(config) {
         type: "myapp",
         module: entry.id,
         icon: entry.icon || "📦",
-        description: entry.description || `User-built app — ${entry.id}`,
+        description: entry.description || `User-built app: ${entry.id}`,
         userBuilt: true,
       });
       known.add(entry.id);
@@ -794,7 +809,7 @@ ipcMain.handle("resolve-app-path", async (_event, appEntry) => {
     return { ok: true, path: target, kind: "file" };
   }
 
-  return { ok: false, error: "No path for this shortcut type" };
+  return { ok: false, error: "No path for this shortcut type." };
 });
 
 ipcMain.handle("reveal-path", async (_event, targetPath, kind) => {
@@ -929,7 +944,6 @@ ipcMain.handle("launch-app", async (_event, appEntry) => {
     const openMode = String(appEntry.openMode || "workspace").toLowerCase();
     const canEmbed = isEmbedAvailable() && shouldEmbedExecutable(target);
 
-    // Shared external-shell protocol for anything that cannot live inside a My Space tab.
     if (openMode === "external" || !canEmbed) {
       return {
         ok: true,

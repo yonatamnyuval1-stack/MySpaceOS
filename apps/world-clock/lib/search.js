@@ -66,8 +66,17 @@
   }
 
   function renderSearchResults(container, items, onPick) {
+    function tt(key, fallback, vars) {
+      const I = root.MySpaceI18n;
+      if (!I?.t) return fallback || key;
+      const v = I.t(key, vars);
+      return v === key ? (fallback || key) : v;
+    }
     if (!items.length) {
-      container.innerHTML = `<p class="search-empty">No matches. Try a country or city name.</p>`;
+      container.innerHTML = `<p class="search-empty">${tt(
+        "app.worldClock.search.empty",
+        "No matches. Try a country or city name."
+      )}</p>`;
       return;
     }
     container.innerHTML = items

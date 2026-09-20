@@ -25,7 +25,7 @@ window.ConsolePages.macros = (function () {
       <div class="item-list" id="macro-list">${
         shown.length
           ? shown.map((m) => rowHtml(m, items.findIndex((x) => x.name === m.name))).join("")
-          : `<p class="empty">${items.length ? "No matches." : "No macros yet — click Sync or add one."}</p>`
+          : `<p class="empty">${items.length ? "No matches." : "No macros yet: click Sync or add one."}</p>`
       }</div>`;
 
     page.querySelector("#macro-add")?.addEventListener("click", () => openEditor());

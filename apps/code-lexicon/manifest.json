@@ -2,7 +2,7 @@
   "id": "code-lexicon",
   "name": "Code Lexicon",
   "version": "1.0.0",
-  "description": "4000+ programming concepts with clear explanations",
+  "description": "6000+ programming concepts with clear explanations",
   "icon": "📖",
   "auth": {
     "type": "local",

@@ -231,8 +231,8 @@
           kind: "quick",
           action: "focus",
           appId,
-          title: `Focus ${name}`,
-          subtitle: "Bring open window to front",
+          title: tt("shell.palette.quick.focus", "Focus {name}", { name }),
+          subtitle: tt("shell.palette.quick.focusSub", "Bring open window to front"),
           icon: "◎",
           rank: 175,
         });
@@ -241,8 +241,8 @@
           kind: "quick",
           action: "close",
           appId,
-          title: `Close ${name}`,
-          subtitle: "Close this window",
+          title: tt("shell.palette.quick.close", "Close {name}", { name }),
+          subtitle: tt("shell.palette.quick.closeSub", "Close this window"),
           icon: "✕",
           rank: 170,
         });
@@ -263,8 +263,8 @@
           kind: "quick",
           action: "focus",
           appId: app.id,
-          title: `Focus ${app.name}`,
-          subtitle: "Open window",
+          title: tt("shell.palette.quick.focus", "Focus {name}", { name: app.name }),
+          subtitle: tt("shell.palette.quick.openWindow", "Open window"),
           icon: "◎",
           rank: rank + 55,
         });
@@ -273,8 +273,8 @@
           kind: "quick",
           action: "close",
           appId: app.id,
-          title: `Close ${app.name}`,
-          subtitle: "Close window",
+          title: tt("shell.palette.quick.close", "Close {name}", { name: app.name }),
+          subtitle: tt("shell.palette.quick.closeWindow", "Close window"),
           icon: "✕",
           rank: rank + 52,
         });
@@ -285,8 +285,12 @@
         kind: "quick",
         action: pinned ? "unpin" : "pin",
         appId: app.id,
-        title: pinned ? `Unpin ${app.name}` : `Pin ${app.name}`,
-        subtitle: pinned ? "Remove from taskbar" : "Pin to taskbar",
+        title: pinned
+          ? tt("shell.palette.quick.unpin", "Unpin {name}", { name: app.name })
+          : tt("shell.palette.quick.pin", "Pin {name}", { name: app.name }),
+        subtitle: pinned
+          ? tt("shell.palette.quick.unpinSub", "Remove from taskbar")
+          : tt("shell.palette.quick.pinSub", "Pin to taskbar"),
         icon: pinned ? "📍" : "📌",
         rank: rank + 48,
       });
@@ -608,14 +612,14 @@
     if (!hintEl) return;
     const n = items.length;
     if (!n) {
-      hintEl.textContent = tt("shell.palette.hint", "Type to search · ? AI (can run actions) · > shell");
+      hintEl.textContent = tt("shell.palette.hint", "Type to search, ? AI (can run actions), > shell");
       return;
     }
     const extra =
       contentTotal > contentResults.length
         ? tt("shell.palette.matchedExtra", " · {n} matched", { n: contentTotal })
         : "";
-    hintEl.textContent = tt("shell.palette.hintResults", "{n} results{extra} · ↑↓ Enter · Esc · > shell · ? AI", {
+    hintEl.textContent = tt("shell.palette.hintResults", "{n} results{extra}, ↑↓ Enter, Esc, > shell, ? AI", {
       n,
       extra,
     });

@@ -28,7 +28,7 @@
       "type": "myapp",
       "module": "docs",
       "icon": "📖",
-      "description": "My Space handbook — shell, apps, protocols, automation & recipes"
+      "description": "My Space handbook: shell, apps, protocols, automation & recipes"
     },
     {
       "id": "system-info",
@@ -38,7 +38,7 @@
       "icon": "📊",
       "iconPath": "apps/system-info/logo.png",
       "hidden": true,
-      "description": "System Info — open from Platform → System Info (not a desktop app)"
+      "description": "System Info: open from Platform → System Info (not a desktop app)"
     },
     {
       "id": "world-clock",
@@ -54,7 +54,7 @@
       "type": "myapp",
       "module": "remote-hub",
       "icon": "🖥️",
-      "description": "Free remote control — RDP, SSH, RustDesk"
+      "description": "Free remote control: RDP, SSH, RustDesk"
     },
     {
       "id": "os-bridge",
@@ -64,7 +64,7 @@
       "icon": "🔗",
       "iconPath": "apps/os-bridge/logo.png",
       "hidden": true,
-      "description": "Phone pairing, host folders, share actions & Windows shortcuts — open from Platform → OS Bridge"
+      "description": "Phone pairing, host folders, share actions & Windows shortcuts: open from Platform → OS Bridge"
     },
     {
       "id": "files",
@@ -74,7 +74,7 @@
       "icon": "📁",
       "iconPath": "apps/files/logo.png",
       "hidden": true,
-      "description": "Browse this PC — places, folders, preview & file actions — open from Platform → Files"
+      "description": "Browse this PC: places, folders, preview & file actions. open from Platform → Files"
     },
     {
       "id": "pulse",
@@ -84,7 +84,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-violet.png",
       "hidden": true,
-      "description": "Link Bus — app command & event profiles — open from Platform → Pulse"
+      "description": "Link Bus: app command & event profiles. open from Platform → Pulse"
     },
     {
       "id": "msl-protocol",
@@ -94,7 +94,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-violet.png",
       "hidden": true,
-      "description": "My Space Link — capabilities, keys, mint & inject — open from Platform → MSL"
+      "description": "My Space Link: capabilities, keys, mint & inject. open from Platform → MSL"
     },
     {
       "id": "parts",
@@ -104,7 +104,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-violet.png",
       "hidden": true,
-      "description": "GitHub between apps — embeddable module catalog — open from Platform → Parts"
+      "description": "GitHub between apps: embeddable module catalog. open from Platform → Parts"
     },
     {
       "id": "permissions",
@@ -114,7 +114,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-white.png",
       "hidden": true,
-      "description": "Access control — AI tools, Jobs, Bridge, alerts, external — open from Platform → Permissions"
+      "description": "Access control: AI tools, Jobs, Bridge, alerts, external. open from Platform → Permissions"
     },
     {
       "id": "jobs",
@@ -124,7 +124,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-white.png",
       "hidden": true,
-      "description": "OS compute runtime — queue, pools, capacity — open from Platform → Jobs"
+      "description": "OS compute runtime: queue, pools, capacity. open from Platform → Jobs"
     },
     {
       "id": "scheduler",
@@ -134,7 +134,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-white.png",
       "hidden": true,
-      "description": "OS time runtime — schedules that fire shell, scripts, Jobs — open from Platform → Scheduler"
+      "description": "OS time runtime: schedules that fire shell, scripts, Jobs. open from Platform → Scheduler"
     },
     {
       "id": "resolve",
@@ -144,7 +144,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-violet.png",
       "hidden": true,
-      "description": "App troubleshooting — incidents & playbooks via Pulse — open from Platform → Resolve"
+      "description": "App troubleshooting: incidents & playbooks via Pulse. open from Platform → Resolve"
     },
     {
       "id": "updates",
@@ -154,7 +154,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-white.png",
       "hidden": true,
-      "description": "Release notes — check, apply, history — open from Platform → Updates"
+      "description": "Release notes: check, apply, history. open from Platform → Updates"
     },
     {
       "id": "network",
@@ -164,7 +164,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-white.png",
       "hidden": true,
-      "description": "Connectivity — status, adapters, ports, reachability — open from Platform → Network"
+      "description": "Connectivity: status, adapters, ports, reachability. open from Platform → Network"
     },
     {
       "id": "backup",
@@ -174,7 +174,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-white.png",
       "hidden": true,
-      "description": "Export & restore user data — open from Platform → Backup"
+      "description": "Export & restore user data: open from Platform → Backup"
     },
     {
       "id": "storage",
@@ -184,7 +184,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-white.png",
       "hidden": true,
-      "description": "Disk & My Space data — drives, apps, large files, cleanup — open from Platform → Storage"
+      "description": "Disk & My Space data: drives, apps, large files, cleanup. open from Platform → Storage"
     },
     {
       "id": "themes",
@@ -194,7 +194,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-white.png",
       "hidden": true,
-      "description": "Per-app light/dark modes and button styles — open from Platform → Themes"
+      "description": "Per-app light/dark modes and button styles: open from Platform → Themes"
     },
     {
       "id": "studies",
@@ -210,7 +210,7 @@
       "type": "myapp",
       "module": "study-deck",
       "icon": "🃏",
-      "description": "Flashcard decks — create, study, and generate cards with AI"
+      "description": "Flashcard decks: create, study, and generate cards with AI"
     },
     {
       "id": "day-planner",
@@ -218,7 +218,7 @@
       "type": "myapp",
       "module": "day-planner",
       "icon": "📅",
-      "description": "Daily agenda by hour — reminders, done, and snooze"
+      "description": "Daily agenda by hour: reminders, done, and snooze"
     },
     {
       "id": "profiles",
@@ -234,7 +234,7 @@
       "type": "myapp",
       "module": "world-maps",
       "icon": "🗺️",
-      "description": "World map explorer — notes, routes & search"
+      "description": "World map explorer: notes, routes & search"
     },
     {
       "id": "stocks",
@@ -242,7 +242,7 @@
       "type": "myapp",
       "module": "stocks",
       "icon": "📈",
-      "description": "Multi-asset tracker — charts, portfolio, AI Analysis & dedicated Gemini chat"
+      "description": "Multi-asset tracker: charts, portfolio, AI Analysis & dedicated Gemini chat"
     },
     {
       "id": "translate",
@@ -250,7 +250,7 @@
       "type": "myapp",
       "module": "translate",
       "icon": "🌐",
-      "description": "100+ languages — translate, phrases, batch & history"
+      "description": "100+ languages: translate, phrases, batch & history"
     },
     {
       "id": "contacts",
@@ -259,7 +259,7 @@
       "module": "contacts",
       "icon": "👥",
       "iconPath": "apps/contacts/logo.svg",
-      "description": "People profiles — phone, email, birthdays & notifications"
+      "description": "People profiles: phone, email, birthdays & notifications"
     },
     {
       "id": "mail",
@@ -269,7 +269,7 @@
       "icon": "🔗",
       "iconPath": "apps/mail/logo.png",
       "hidden": true,
-      "description": "Connect — open from search icon or Platform → Connect (not a desktop app)"
+      "description": "Connect: open from search icon or Platform → Connect (not a desktop app)"
     },
     {
       "id": "notes",
@@ -278,7 +278,7 @@
       "module": "notes",
       "icon": "📝",
       "iconPath": "apps/notes/logo.svg",
-      "description": "Quick capture — notebooks, tags, pin & archive"
+      "description": "Quick capture: notebooks, tags, pin & archive"
     },
     {
       "id": "tasks",
@@ -287,7 +287,7 @@
       "module": "tasks",
       "icon": "✅",
       "iconPath": "apps/tasks/logo.svg",
-      "description": "Projects, lists & next actions — GTD between Notes and Today"
+      "description": "Projects, lists & next actions: GTD between Notes and Today"
     },
     {
       "id": "coupons",
@@ -305,7 +305,7 @@
       "icon": "✦",
       "iconPath": "apps/chat/logo.png",
       "hidden": true,
-      "description": "Mind Chat — open from Platform → Mind (not a desktop app)"
+      "description": "Mind Chat: open from Platform → Mind (not a desktop app)"
     },
     {
       "id": "geography",
@@ -313,7 +313,7 @@
       "type": "myapp",
       "module": "geography",
       "icon": "🌍",
-      "description": "World countries — rich data, images & travel log"
+      "description": "World countries: rich data, images & travel log"
     },
     {
       "id": "flag-quiz",
@@ -321,7 +321,7 @@
       "type": "myapp",
       "module": "flag-quiz",
       "icon": "🎮",
-      "description": "Learning quizzes — Countries, Elements, and Model Prices (OpenRouter $/MTok)"
+      "description": "Learning quizzes: Countries, Elements, and Model Prices (OpenRouter $/MTok)"
     },
     {
       "id": "pi-digits",
@@ -329,7 +329,7 @@
       "type": "myapp",
       "module": "pi-digits",
       "icon": "π",
-      "description": "Learn digits of π — look, remember, type. A little at a time."
+      "description": "Learn digits of π: look, remember, type. A little at a time."
     },
     {
       "id": "icon-library",
@@ -345,7 +345,7 @@
       "type": "myapp",
       "module": "history",
       "icon": "📜",
-      "description": "Historical figures & events — Wikidata & Wikipedia"
+      "description": "Historical figures & events: Wikidata & Wikipedia"
     },
     {
       "id": "space",
@@ -353,7 +353,7 @@
       "type": "myapp",
       "module": "space",
       "icon": "🌌",
-      "description": "Space exploration — stars, NASA lab, public reports & physics"
+      "description": "Space exploration: stars, NASA lab, public reports & physics"
     },
     {
       "id": "contracts",
@@ -361,7 +361,7 @@
       "type": "myapp",
       "module": "contracts",
       "icon": "⚖️",
-      "description": "Formal digital contracts — fillable fields, signatures & expiry alerts"
+      "description": "Formal digital contracts: fillable fields, signatures & expiry alerts"
     },
     {
       "id": "builds",
@@ -369,7 +369,7 @@
       "type": "myapp",
       "module": "builds",
       "icon": "🏗️",
-      "description": "Everything you've built — projects, documentation & code file trees"
+      "description": "Everything you've built: projects, documentation & code file trees"
     },
     {
       "id": "code-lexicon",
@@ -377,7 +377,7 @@
       "type": "myapp",
       "module": "code-lexicon",
       "icon": "📖",
-      "description": "4000+ programming concepts — search, browse"
+      "description": "4000+ programming concepts: search, browse"
     },
     {
       "id": "drift",
@@ -385,7 +385,7 @@
       "type": "myapp",
       "module": "drift",
       "icon": "📈",
-      "description": "What changed on your PC — projects, files & activity timeline"
+      "description": "What changed on your PC: projects, files & activity timeline"
     },
     {
       "id": "model-flow",
@@ -395,7 +395,7 @@
       "icon": "✦",
       "iconPath": "apps/model-flow/logo.png",
       "hidden": true,
-      "description": "Model Flow — open from Platform → Model Flow (not a desktop app)"
+      "description": "Model Flow: open from Platform → Model Flow (not a desktop app)"
     },
     {
       "id": "shell-console",
@@ -405,7 +405,7 @@
       "icon": "⌨️",
       "iconPath": "apps/shell-console/logo.png",
       "hidden": true,
-      "description": "Retired — use Platform → Shell (command atlas)"
+      "description": "Retired: use Platform → Shell (command atlas)"
     },
     {
       "id": "scripts",
@@ -415,7 +415,7 @@
       "icon": "📜",
       "iconPath": "apps/scripts/logo.png",
       "hidden": true,
-      "description": "Runtime for My Space Language programs — open from Platform → Scripts"
+      "description": "Runtime for My Space Language programs: open from Platform → Scripts"
     },
     {
       "id": "edge",
@@ -434,7 +434,7 @@
       "paths": [
         "C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe"
       ],
-      "description": "Containers — optional: Edit → in-app URL for http://localhost dashboard only"
+      "description": "Containers: optional: Edit → in-app URL for http://localhost dashboard only"
     },
     {
       "id": "vscode",

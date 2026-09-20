@@ -135,11 +135,14 @@
   function patchSettings(patch) {
     const next = { ...(patch || {}) };
     if (next.language != null) {
-      const lang = String(next.language).toLowerCase().startsWith("he") ? "he" : "en";
+      const lang = window.MySpaceI18n?.normalizeLang?.(next.language) || window.MySpaceLanguages?.normalizeLang?.(next.language) || "en";
       next.language = lang;
       const cur = window.MySpaceConfig?.getSettings?.() || {};
-      if (lang === "he" && (!cur.locale || String(cur.locale).toLowerCase().startsWith("en"))) {
-        next.locale = "he-IL";
+      const meta = window.MySpaceLanguages?.meta?.(lang);
+      const localeIsDefaultEn =
+        !cur.locale || String(cur.locale).toLowerCase().startsWith("en");
+      if (meta?.locale && localeIsDefaultEn && lang !== "en") {
+        next.locale = meta.locale;
       }
     }
     window.MySpaceConfig?.updateSettings?.(next);
@@ -283,7 +286,7 @@
     spaces.appendChild(
       kit.row(
         tt("settings.general.activeDesktop", "Active desktop"),
-        tt("settings.general.activeDesktopHint", "Each My Space window has its own Study / Work / Play desktops (open apps stay with that window)."),
+        tt("settings.general.activeDesktopHint", "Each My Space window has its own Study / Work / Play desktops."),
         spaceRow
       )
     );
@@ -342,7 +345,7 @@
     maintenance.appendChild(
       kit.row(
         tt("settings.general.backupRestore", "Backup & restore"),
-        tt("settings.general.backupRestoreHint", "Export or restore the full userData archive (scripts, settings, app JSON). Shell: backup(export)."),
+        tt("settings.general.backupRestoreHint", "Export or restore the full userData archive. Shell: backup(export)."),
         backupWrap
       )
     );
@@ -420,10 +423,13 @@
           "Applies to the desktop and platform services. Many apps may still be English until they adopt translations."
         ),
         kit.select(
-          [
-            { value: "en", label: tt("settings.language.en", "English") },
-            { value: "he", label: tt("settings.language.he", "Hebrew") },
-          ],
+          (window.MySpaceLanguages?.list?.() || [
+            { id: "en", name: "English" },
+            { id: "he", name: "Hebrew" },
+          ]).map((l) => ({
+            value: l.id,
+            label: tt(`settings.language.${l.id}`, l.nativeName || l.name),
+          })),
           cur.language || "en",
           (v) => patchSettings({ language: v })
         )
@@ -438,9 +444,11 @@
             { value: "en-US", label: tt("settings.region.enUS", "United States (en-US)") },
             { value: "en-GB", label: tt("settings.region.enGB", "United Kingdom (en-GB)") },
             { value: "he-IL", label: tt("settings.region.heIL", "Israel (he-IL)") },
+            { value: "ar-SA", label: tt("settings.region.arSA", "Saudi Arabia (ar-SA)") },
             { value: "fr-FR", label: tt("settings.region.frFR", "France (fr-FR)") },
             { value: "de-DE", label: tt("settings.region.deDE", "Germany (de-DE)") },
             { value: "es-ES", label: tt("settings.region.esES", "Spain (es-ES)") },
+            { value: "ru-RU", label: tt("settings.region.ruRU", "Russia (ru-RU)") },
             { value: "ja-JP", label: tt("settings.region.jaJP", "Japan (ja-JP)") },
           ],
           cur.locale || "en-US",
@@ -1299,6 +1307,15 @@
 
   window.MySpaceSettingsPage = {
     open,
+    isOpen() {
+      try {
+        return Boolean(
+          window.MySpaceWorkspace?.getTabs?.()?.some((t) => t?.appId === "settings")
+        );
+      } catch {
+        return false;
+      }
+    },
     CATEGORIES,
     SETTINGS_ICON_GRAY,
   };

@@ -48,7 +48,7 @@
           <header class="page-head">
             <div>
               <h1 data-i18n="service.resolve.inboxTitle">Inbox</h1>
-              <p class="page-sub" data-i18n="service.resolve.inboxSub">Open incidents from apps — triage and apply playbooks</p>
+              <p class="page-sub" data-i18n="service.resolve.inboxSub">Open incidents from apps: triage and apply playbooks</p>
             </div>
             <div class="page-actions">
               <input type="search" id="inbox-search" class="search" data-i18n-placeholder="service.resolve.searchPlaceholder" placeholder="Search app, code, message…" />
@@ -63,7 +63,7 @@
           </header>
           <div class="stat-row" id="stat-row"></div>
           <div class="incident-list" id="incident-list"></div>
-          <p class="empty-msg hidden" id="inbox-empty" data-i18n="service.resolve.emptyInbox">No incidents — apps report problems via Pulse.</p>
+          <p class="empty-msg hidden" id="inbox-empty" data-i18n="service.resolve.emptyInbox">No incidents: apps report problems via Pulse.</p>
         </section>
 
         <section class="view hidden" id="view-playbooks">
@@ -80,21 +80,21 @@
           <header class="page-head">
             <div>
               <h1 data-i18n="service.resolve.aboutTitle">About</h1>
-              <p class="page-sub" data-i18n="service.resolve.aboutSub">Resolve — OS troubleshooting for My Space apps</p>
+              <p class="page-sub" data-i18n="service.resolve.aboutSub">Resolve: OS troubleshooting for My Space apps</p>
             </div>
           </header>
           <div class="about-card">
-            <p>
+            <p data-i18n-html="service.resolve.aboutBody">
               <strong>Fault</strong> watches process / IPC / renderer boundaries and maps failures onto universal
               kinds (<code>LOAD_FAILED</code>, <code>SAVE_FAILED</code>, <code>NETWORK</code>,
               <code>RUNTIME</code>…). Resolve matches a playbook (<code>app.KIND</code> or
-              <code>*.KIND</code>) and lets you apply safe fixes (e.g. restore from <code>.bak</code>).
+              <code>*.KIND</code>) and lets you apply safe fixes.
             </p>
             <ul>
-              <li><strong>Fault</strong> — automatic capture + kind detection</li>
-              <li><strong>Report</strong> — incident + Pulse event + bell on errors</li>
-              <li><strong>Ask</strong> — sync playbook lookup without inbox noise</li>
-              <li><strong>Apply</strong> — run a playbook step on an open incident</li>
+              <li data-i18n="service.resolve.aboutFault">Fault: automatic capture + kind detection</li>
+              <li data-i18n="service.resolve.aboutReport">Report: incident + Pulse event + bell on errors</li>
+              <li data-i18n="service.resolve.aboutAsk">Ask: sync playbook lookup without inbox noise</li>
+              <li data-i18n="service.resolve.aboutApply">Apply: run a playbook step on an open incident</li>
             </ul>
             <p class="muted tiny" id="about-paths"></p>
           </div>
@@ -103,6 +103,11 @@
     </div>
     <script src="../shared/i18n/locales/en.js"></script>
     <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
     <script src="../shared/i18n/i18n.js"></script>
     <script src="../shared/i18n/sync-boot.js"></script>
     <script src="../shared/i18n/auto-mark.js"></script>

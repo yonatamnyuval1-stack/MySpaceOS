@@ -2,9 +2,9 @@
   const PAGE_META = {
     navigate: { title: "Navigate", subtitle: "Stars, solar system & deep space. drag to move, scroll or slider to zoom" },
     catalog: { title: "Catalog", subtitle: "Planets, moons, missions, stars & deep sky" },
-    nasa: { title: "NASA Lab", subtitle: "APOD · missions · image library · NEO watch · Mars rovers" },
+    nasa: { title: "NASA Lab", subtitle: "APOD, missions, image library, NEO watch, Mars rovers" },
     reports: { title: "Public Reports", subtitle: "330+ mission reports, decadal surveys & NTRS archive" },
-    aliens: { title: "Aliens", subtitle: "Public UAP documents · SETI · science · timeline · cases" },
+    aliens: { title: "Aliens", subtitle: "Public UAP documents, SETI, science, timeline, cases" },
   };
 
   const pages = [

@@ -12,6 +12,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
   </head>
   <body>
     <div class="app-shell" id="app-shell">
@@ -19,58 +20,58 @@
         <div class="brand">
           <img class="brand-logo" src="logo.svg" width="32" height="32" alt="" />
           <div>
-            <strong>Tasks</strong>
-            <span class="brand-sub">GTD · projects</span>
+            <strong data-i18n="app.tasks.name">Tasks</strong>
+            <span class="brand-sub" data-i18n="app.tasks.tagline">GTD · projects</span>
           </div>
         </div>
 
-        <nav class="nav nav--primary" id="smart-nav" aria-label="Smart lists">
+        <nav class="nav nav--primary" id="smart-nav" data-i18n-aria="app.tasks.smartAria" aria-label="Smart lists">
           <button type="button" class="nav-item active" data-view="inbox">
-            Inbox <em id="count-inbox">0</em>
+            <span data-i18n="app.tasks.nav.inbox">Inbox</span> <em id="count-inbox">0</em>
           </button>
           <button type="button" class="nav-item" data-view="next">
-            Next <em id="count-next">0</em>
+            <span data-i18n="app.tasks.nav.next">Next</span> <em id="count-next">0</em>
           </button>
           <button type="button" class="nav-item" data-view="today">
-            Due today <em id="count-today">0</em>
+            <span data-i18n="app.tasks.nav.today">Due today</span> <em id="count-today">0</em>
           </button>
           <button type="button" class="nav-item" data-view="waiting">
-            Waiting <em id="count-waiting">0</em>
+            <span data-i18n="app.tasks.nav.waiting">Waiting</span> <em id="count-waiting">0</em>
           </button>
         </nav>
 
         <div class="nav-more" id="nav-more">
           <button type="button" class="nav-more-toggle" id="nav-more-toggle" aria-expanded="false">
-            More lists
+            <span data-i18n="app.tasks.moreLists">More lists</span>
             <span class="nav-more-chevron" aria-hidden="true">▾</span>
           </button>
-          <nav class="nav nav--secondary hidden" id="smart-nav-more" aria-label="More lists">
+          <nav class="nav nav--secondary hidden" id="smart-nav-more" data-i18n-aria="app.tasks.moreListsAria" aria-label="More lists">
             <button type="button" class="nav-item" data-view="someday">
-              Someday <em id="count-someday">0</em>
+              <span data-i18n="app.tasks.nav.someday">Someday</span> <em id="count-someday">0</em>
             </button>
             <button type="button" class="nav-item" data-view="upcoming">
-              Upcoming <em id="count-upcoming">0</em>
+              <span data-i18n="app.tasks.nav.upcoming">Upcoming</span> <em id="count-upcoming">0</em>
             </button>
             <button type="button" class="nav-item" data-view="flagged">
-              Flagged <em id="count-flagged">0</em>
+              <span data-i18n="app.tasks.nav.flagged">Flagged</span> <em id="count-flagged">0</em>
             </button>
             <button type="button" class="nav-item" data-view="all">
-              All active <em id="count-all">0</em>
+              <span data-i18n="app.tasks.nav.all">All active</span> <em id="count-all">0</em>
             </button>
             <button type="button" class="nav-item nav-item--muted" data-view="done">
-              Completed <em id="count-done">0</em>
+              <span data-i18n="app.tasks.nav.done">Completed</span> <em id="count-done">0</em>
             </button>
           </nav>
         </div>
 
-        <p class="nav-section-label">Projects</p>
+        <p class="nav-section-label" data-i18n="app.tasks.projects">Projects</p>
         <div class="nav-section-head">
-          <button type="button" class="btn-text" id="btn-add-project">+ Project</button>
+          <button type="button" class="btn-text" id="btn-add-project" data-i18n="app.tasks.addProject">+ Project</button>
         </div>
-        <nav class="nav nav--projects" id="project-list" aria-label="Projects"></nav>
+        <nav class="nav nav--projects" id="project-list" data-i18n-aria="app.tasks.projectsAria" aria-label="Projects"></nav>
 
         <footer class="sidebar-foot">
-          <p>Ctrl+N capture · Today = timed agenda</p>
+          <p data-i18n="app.tasks.foot">Ctrl+N capture, Today = timed agenda</p>
         </footer>
       </aside>
 
@@ -81,9 +82,9 @@
             <p class="subtitle" id="list-sub">Clarify into next actions</p>
           </div>
           <div class="topbar-actions">
-            <button type="button" class="btn btn-ghost btn-icon" id="btn-search-toggle" title="Search">⌕</button>
-            <button type="button" class="btn btn-ghost" id="btn-add-list" hidden>+ List</button>
-            <button type="button" class="btn btn-primary" id="btn-new" title="New task (Ctrl+N)">Add task</button>
+            <button type="button" class="btn btn-ghost btn-icon" id="btn-search-toggle" data-i18n-title="app.tasks.searchTitle" title="Search">⌕</button>
+            <button type="button" class="btn btn-ghost" id="btn-add-list" hidden data-i18n="app.tasks.addList">+ List</button>
+            <button type="button" class="btn btn-primary" id="btn-new" data-i18n="app.tasks.addTask" data-i18n-title="app.tasks.addTaskTitle" title="New task (Ctrl+N)">Add task</button>
           </div>
         </header>
 
@@ -93,36 +94,37 @@
               type="text"
               id="capture-input"
               class="capture-input"
+              data-i18n-placeholder="app.tasks.capturePlaceholder"
               placeholder="Capture a task…"
               spellcheck="true"
             />
-            <button type="submit" class="btn btn-primary capture-submit" aria-label="Add">↵</button>
+            <button type="submit" class="btn btn-primary capture-submit" data-i18n-aria="app.tasks.addAria" aria-label="Add">↵</button>
           </form>
 
           <div class="toolbar hidden" id="search-toolbar">
             <div class="search-wrap">
-              <input type="search" id="search-input" class="search" placeholder="Search tasks…" autocomplete="off" />
+              <input type="search" id="search-input" class="search" data-i18n-placeholder="app.tasks.searchPlaceholder" placeholder="Search tasks…" autocomplete="off" />
             </div>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-search-close">Close</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-search-close" data-i18n="app.tasks.close">Close</button>
           </div>
 
           <div class="task-list" id="task-list" role="list"></div>
           <div class="empty-state hidden" id="empty-list">
-            <h3>Clear</h3>
-            <p>Capture above or press Ctrl+N.</p>
+            <h3 data-i18n="app.tasks.emptyTitle">Clear</h3>
+            <p data-i18n="app.tasks.emptyBody">Capture above or press Ctrl+N.</p>
           </div>
         </div>
       </main>
 
-      <aside class="detail-panel hidden" id="editor-pane" aria-label="Task detail">
+      <aside class="detail-panel hidden" id="editor-pane" data-i18n-aria="app.tasks.detailAria" aria-label="Task detail">
         <div class="editor" id="editor">
           <header class="detail-head">
-            <button type="button" class="btn btn-ghost btn-icon detail-close" id="btn-close-detail" title="Close">×</button>
-            <div class="bucket-chips" id="bucket-chips" role="group" aria-label="Bucket">
-              <button type="button" class="chip" data-bucket="inbox">Inbox</button>
-              <button type="button" class="chip" data-bucket="next">Next</button>
-              <button type="button" class="chip" data-bucket="waiting">Waiting</button>
-              <button type="button" class="chip" data-bucket="someday">Someday</button>
+            <button type="button" class="btn btn-ghost btn-icon detail-close" id="btn-close-detail" data-i18n-title="app.tasks.close" title="Close">×</button>
+            <div class="bucket-chips" id="bucket-chips" role="group" data-i18n-aria="app.tasks.bucketAria" aria-label="Bucket">
+              <button type="button" class="chip" data-bucket="inbox" data-i18n="app.tasks.bucket.inbox">Inbox</button>
+              <button type="button" class="chip" data-bucket="next" data-i18n="app.tasks.bucket.next">Next</button>
+              <button type="button" class="chip" data-bucket="waiting" data-i18n="app.tasks.bucket.waiting">Waiting</button>
+              <button type="button" class="chip" data-bucket="someday" data-i18n="app.tasks.bucket.someday">Someday</button>
             </div>
             <span class="save-status" id="save-status" aria-live="polite"></span>
           </header>
@@ -132,6 +134,7 @@
               type="text"
               id="task-title"
               class="task-title"
+              data-i18n-placeholder="app.tasks.titlePlaceholder"
               placeholder="Task title"
               autocomplete="off"
               spellcheck="true"
@@ -139,6 +142,7 @@
             <textarea
               id="task-notes"
               class="task-notes"
+              data-i18n-placeholder="app.tasks.notesPlaceholder"
               placeholder="Notes…"
               spellcheck="true"
             ></textarea>
@@ -146,42 +150,42 @@
             <div class="checklist-block">
               <ul class="checklist" id="checklist"></ul>
               <form class="checklist-add" id="checklist-form" autocomplete="off">
-                <input type="text" id="checklist-input" placeholder="Sub-step…" maxlength="200" />
-                <button type="submit" class="btn btn-ghost btn-sm">Add</button>
+                <input type="text" id="checklist-input" data-i18n-placeholder="app.tasks.substepPlaceholder" placeholder="Sub-step…" maxlength="200" />
+                <button type="submit" class="btn btn-ghost btn-sm" data-i18n="app.tasks.add">Add</button>
               </form>
             </div>
 
             <details class="props-panel" id="props-panel">
-              <summary>Details</summary>
+              <summary data-i18n="app.tasks.details">Details</summary>
               <div class="props-grid">
                 <label class="field">
-                  <span>Project</span>
+                  <span data-i18n="app.tasks.project">Project</span>
                   <select id="task-project" class="field-select"></select>
                 </label>
                 <label class="field">
-                  <span>List</span>
+                  <span data-i18n="app.tasks.list">List</span>
                   <select id="task-list" class="field-select"></select>
                 </label>
                 <label class="field">
-                  <span>Priority</span>
+                  <span data-i18n="app.tasks.priority">Priority</span>
                   <select id="task-priority" class="field-select">
-                    <option value="0">None</option>
-                    <option value="1">Low</option>
-                    <option value="2">Medium</option>
-                    <option value="3">High</option>
+                    <option value="0" data-i18n="app.tasks.priority.none">None</option>
+                    <option value="1" data-i18n="app.tasks.priority.low">Low</option>
+                    <option value="2" data-i18n="app.tasks.priority.medium">Medium</option>
+                    <option value="3" data-i18n="app.tasks.priority.high">High</option>
                   </select>
                 </label>
                 <label class="field">
-                  <span>Due date</span>
+                  <span data-i18n="app.tasks.dueDate">Due date</span>
                   <input type="date" id="task-due" class="field-input" />
                 </label>
                 <label class="field field--full hidden" id="waiting-field">
-                  <span>Waiting on</span>
-                  <input type="text" id="task-waiting" class="field-input" placeholder="Person or blocker…" autocomplete="off" />
+                  <span data-i18n="app.tasks.waitingOn">Waiting on</span>
+                  <input type="text" id="task-waiting" class="field-input" data-i18n-placeholder="app.tasks.waitingPlaceholder" placeholder="Person or blocker…" autocomplete="off" />
                 </label>
                 <label class="field field--full">
-                  <span>Tags</span>
-                  <input type="text" id="task-tags" class="field-input" placeholder="#work, #home" autocomplete="off" />
+                  <span data-i18n="app.tasks.tags">Tags</span>
+                  <input type="text" id="task-tags" class="field-input" data-i18n-placeholder="app.tasks.tagsPlaceholder" placeholder="#work, #home" autocomplete="off" />
                 </label>
               </div>
             </details>
@@ -190,20 +194,20 @@
           </div>
 
           <footer class="detail-foot">
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-flag" title="Flag">Flag</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-schedule" title="Send to Today">→ Today</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-flag" data-i18n-title="app.tasks.flag" title="Flag">Flag</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-schedule" data-i18n="app.tasks.toToday" data-i18n-title="app.tasks.toTodayTitle" title="Send to Today">→ Today</button>
             <button type="button" class="btn btn-primary" id="btn-complete">Done</button>
-            <button type="button" class="btn-text btn-text--danger" id="btn-delete">Delete</button>
+            <button type="button" class="btn-text btn-text--danger" id="btn-delete" data-i18n="app.tasks.delete">Delete</button>
           </footer>
         </div>
       </aside>
     </div>
 
     <select id="task-bucket" class="hidden" aria-hidden="true" tabindex="-1">
-      <option value="inbox">Inbox</option>
-      <option value="next">Next</option>
-      <option value="waiting">Waiting</option>
-      <option value="someday">Someday</option>
+      <option value="inbox" data-i18n="app.tasks.bucket.inbox">Inbox</option>
+      <option value="next" data-i18n="app.tasks.bucket.next">Next</option>
+      <option value="waiting" data-i18n="app.tasks.bucket.waiting">Waiting</option>
+      <option value="someday" data-i18n="app.tasks.bucket.someday">Someday</option>
     </select>
 
     <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
@@ -214,38 +218,51 @@
         <p class="modal-copy" id="confirm-copy">This cannot be undone.</p>
         <div class="modal-actions">
           <button type="submit" class="btn btn-danger" id="confirm-ok" value="ok">Delete</button>
-          <button type="button" class="btn btn-ghost" id="confirm-cancel">Cancel</button>
+          <button type="button" class="btn btn-ghost" id="confirm-cancel" data-i18n="app.tasks.cancel">Cancel</button>
         </div>
       </form>
     </dialog>
 
     <dialog class="modal" id="project-modal">
       <form method="dialog" id="project-form" class="modal-card">
-        <h3>New project</h3>
+        <h3 data-i18n="app.tasks.newProject">New project</h3>
         <label>
-          <span>Name</span>
-          <input type="text" id="project-name" required maxlength="80" placeholder="e.g. Website relaunch" />
+          <span data-i18n="app.tasks.fieldName">Name</span>
+          <input type="text" id="project-name" required maxlength="80" data-i18n-placeholder="app.tasks.projectNamePlaceholder" placeholder="e.g. Website relaunch" />
         </label>
         <div class="modal-actions">
-          <button type="submit" class="btn btn-primary" value="ok">Create</button>
-          <button type="button" class="btn btn-ghost" id="project-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" value="ok" data-i18n="app.tasks.create">Create</button>
+          <button type="button" class="btn btn-ghost" id="project-cancel" data-i18n="app.tasks.cancel">Cancel</button>
         </div>
       </form>
     </dialog>
 
     <dialog class="modal" id="list-modal">
       <form method="dialog" id="list-form" class="modal-card">
-        <h3>New list</h3>
+        <h3 data-i18n="app.tasks.newList">New list</h3>
         <label>
-          <span>Name</span>
-          <input type="text" id="list-name" required maxlength="80" placeholder="e.g. Design" />
+          <span data-i18n="app.tasks.fieldName">Name</span>
+          <input type="text" id="list-name" required maxlength="80" data-i18n-placeholder="app.tasks.listNamePlaceholder" placeholder="e.g. Design" />
         </label>
         <div class="modal-actions">
-          <button type="submit" class="btn btn-primary" value="ok">Create</button>
-          <button type="button" class="btn btn-ghost" id="list-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" value="ok" data-i18n="app.tasks.create">Create</button>
+          <button type="button" class="btn btn-ghost" id="list-cancel" data-i18n="app.tasks.cancel">Cancel</button>
         </div>
       </form>
     </dialog>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/app-language.js"></script>
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
     <script src="app.js"></script>
+    <script>window.MySpaceAppLanguage && window.MySpaceAppLanguage.boot();</script>
   </body>
 </html>

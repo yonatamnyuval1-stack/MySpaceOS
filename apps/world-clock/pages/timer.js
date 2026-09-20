@@ -1,4 +1,11 @@
 (function (root) {
+  function tt(key, fallback, vars) {
+    const I = root.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const { formatTimerDisplay } = root.ClockUtils;
   const { notifyTimerDone } = root.ClockAudio;
 
@@ -115,7 +122,7 @@
 
     persist() {
       const payload = {
-        label: this.label || "Timer",
+        label: this.label || tt("app.worldClock.timer.label", "Timer"),
         totalSec: this.totalSec,
         remainingSec: this.remainingSec,
         running: this.running,
@@ -134,12 +141,16 @@
         this.totalSec > 0 ? ((this.totalSec - this.remainingSec) / this.totalSec) * 100 : 0;
       if (ring) ring.style.strokeDashoffset = String(283 - (283 * pct) / 100);
       status.textContent = this.running
-        ? "Running…"
+        ? tt("app.worldClock.timer.running", "Running…")
         : this.remainingSec <= 0 && this.totalSec > 0
-          ? "Finished"
-          : "Ready";
+          ? tt("app.worldClock.timer.finished", "Finished")
+          : tt("app.worldClock.timer.ready", "Ready");
       this.page.querySelector("#timer-start").disabled = this.running;
       this.page.querySelector("#timer-pause").disabled = !this.running;
+    },
+
+    repaintI18n() {
+      this.updateUi();
     },
 
     activate() {
@@ -154,7 +165,7 @@
           this.setDuration(5 * 60);
           return;
         }
-        this.label = stored.label || "Timer";
+        this.label = stored.label || tt("app.worldClock.timer.label", "Timer");
         this.totalSec = stored.totalSec;
         if (stored.running && stored.endAt) {
           this.remainingSec = Math.max(0, Math.ceil((stored.endAt - Date.now()) / 1000));

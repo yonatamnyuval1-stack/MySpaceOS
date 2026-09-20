@@ -193,12 +193,12 @@ async function buildStatus() {
   const ranked = [...(connected.length ? connected : adapters)].sort(
     (a, b) => scoreInterface(b.name, b.ipv4Primary) - scoreInterface(a.name, a.ipv4Primary)
   );
-  const primaryFromScan = ranked.find((a) => a.ipv4Primary && a.ipv4Primary !== "—") || ranked[0] || null;
+  const primaryFromScan = ranked.find((a) => a.ipv4Primary && a.ipv4Primary !== ":") || ranked[0] || null;
   const primaryNode = nodeIfaces[0] || null;
 
   const scanIp =
     primaryFromScan?.ipv4Primary &&
-    primaryFromScan.ipv4Primary !== "—" &&
+    primaryFromScan.ipv4Primary !== ":" &&
     /^\d{1,3}(\.\d{1,3}){3}$/.test(primaryFromScan.ipv4Primary)
       ? primaryFromScan.ipv4Primary
       : null;
@@ -207,11 +207,11 @@ async function buildStatus() {
   const primaryName =
     (scanIp ? primaryFromScan?.name : null) || primaryNode?.name || primaryFromScan?.name || null;
   const gateway =
-    primaryFromScan?.gateway4 && primaryFromScan.gateway4 !== "—"
+    primaryFromScan?.gateway4 && primaryFromScan.gateway4 !== ":"
       ? primaryFromScan.gateway4
       : null;
   const dnsPrimary =
-    primaryFromScan?.dnsPrimary && primaryFromScan.dnsPrimary !== "—"
+    primaryFromScan?.dnsPrimary && primaryFromScan.dnsPrimary !== ":"
       ? primaryFromScan.dnsPrimary
       : null;
 
@@ -248,10 +248,10 @@ async function buildStatus() {
       ipv4Primary: n.address,
       connected: true,
       statusLabel: "Up",
-      macAddress: n.mac || "—",
-      gateway4: "—",
-      dnsPrimary: "—",
-      linkSpeed: "—",
+      macAddress: n.mac || ":",
+      gateway4: ":",
+      dnsPrimary: ":",
+      linkSpeed: ":",
     }))).slice(0, 4),
     lastChecks: checks
       ? {
@@ -291,7 +291,7 @@ async function listAdapters() {
         ...a,
         ipv4: [match.address],
         ipv4Primary: match.address,
-        macAddress: a.macAddress && a.macAddress !== "—" ? a.macAddress : match.mac || "—",
+        macAddress: a.macAddress && a.macAddress !== ":" ? a.macAddress : match.mac || ":",
         score: scoreInterface(a.name, match.address),
       };
     });
@@ -307,23 +307,23 @@ async function listAdapters() {
         description: "",
         status: "Up",
         statusLabel: "Connected",
-        linkSpeed: "—",
-        macAddress: n.mac || "—",
+        linkSpeed: ":",
+        macAddress: n.mac || ":",
         ipv4: [n.address],
         ipv6: [],
         ipv4Primary: n.address,
-        ipv6Primary: "—",
-        gateway4: "—",
-        gateway6: "—",
-        dns: ["—"],
-        dnsPrimary: "—",
+        ipv6Primary: ":",
+        gateway4: ":",
+        gateway6: ":",
+        dns: [":"],
+        dnsPrimary: ":",
         connected: true,
         score: n.score,
       })),
       summary: {
         adapters: node.length,
         connected: node.length,
-        primaryIp: node[0]?.address || "—",
+        primaryIp: node[0]?.address || ":",
       },
       source: "node",
       note: scan?.note || scan?.error || null,
@@ -335,7 +335,7 @@ async function listAdapters() {
   );
 
   const primary =
-    adapters.find((a) => a.connected && a.ipv4Primary && a.ipv4Primary !== "—") ||
+    adapters.find((a) => a.connected && a.ipv4Primary && a.ipv4Primary !== ":") ||
     node[0];
 
   return {
@@ -345,7 +345,7 @@ async function listAdapters() {
     summary: {
       adapters: adapters.length,
       connected: adapters.filter((a) => a.connected).length,
-      primaryIp: primary?.ipv4Primary || primary?.address || scan.summary?.primaryIp || "—",
+      primaryIp: primary?.ipv4Primary || primary?.address || scan.summary?.primaryIp || ":",
     },
     source: "windows",
     note: scan.note || null,

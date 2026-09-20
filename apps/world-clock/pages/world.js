@@ -1,4 +1,11 @@
 (function (root) {
+  function tt(key, fallback, vars) {
+    const I = root.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const { uid, escapeHtml } = root.ClockUtils;
   const { search, renderSearchResults } = root.ClockSearch;
   const { analogSvg, clockAngles, formatTime24, getOffsetLabel, zoneCityName } = root.ClockTime;
@@ -89,13 +96,14 @@
       }
       empty.hidden = true;
       const now = new Date();
+      const removeLabel = tt("app.worldClock.world.remove", "Remove");
       grid.innerHTML = this.favorites
         .map((f) => {
           const angles = clockAngles(now, f.timezone);
           const city = zoneCityName(f.timezone);
           return `
         <article class="world-card" data-tz="${escapeHtml(f.timezone)}">
-          <button type="button" class="world-card-remove" title="Remove" data-tz="${escapeHtml(f.timezone)}">×</button>
+          <button type="button" class="world-card-remove" title="${escapeHtml(removeLabel)}" data-tz="${escapeHtml(f.timezone)}">×</button>
           <div class="world-card-face">${analogSvg(angles, 100)}</div>
           <h3 class="world-card-title">${escapeHtml(f.label || f.country)}</h3>
           <p class="world-card-city">${escapeHtml(city)}</p>
@@ -111,6 +119,10 @@
           this.removeTz(btn.dataset.tz);
         });
       });
+    },
+
+    repaintI18n() {
+      this.renderGrid();
     },
   };
 

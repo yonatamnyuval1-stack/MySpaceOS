@@ -1,4 +1,11 @@
 (function (root) {
+  function tt(key, fallback, vars) {
+    const I = root.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const { formatMs } = root.ClockUtils;
 
   const page = {
@@ -74,12 +81,18 @@
     renderLaps() {
       const list = this.page.querySelector("#sw-laps");
       if (!this.laps.length) {
-        list.innerHTML = `<p class="laps-empty">No laps yet. Press Lap while running.</p>`;
+        list.innerHTML = `<p class="laps-empty">${tt(
+          "app.worldClock.sw.emptyLaps",
+          "No laps yet. Press Lap while running."
+        )}</p>`;
         return;
       }
       list.innerHTML = `
         <table class="laps-table">
-          <thead><tr><th>#</th><th>Lap</th><th>Total</th></tr></thead>
+          <thead><tr><th>#</th><th>${tt("app.worldClock.sw.lapCol", "Lap")}</th><th>${tt(
+            "app.worldClock.sw.totalCol",
+            "Total"
+          )}</th></tr></thead>
           <tbody>
             ${this.laps
               .map(
@@ -97,9 +110,16 @@
 
     updateButtons() {
       const startBtn = this.page.querySelector("#sw-start");
-      startBtn.textContent = this.running ? "Pause" : "Start";
+      startBtn.textContent = this.running
+        ? tt("app.worldClock.sw.pause", "Pause")
+        : tt("app.worldClock.sw.start", "Start");
       startBtn.classList.toggle("btn-warn", this.running);
       this.page.querySelector("#sw-lap").disabled = !this.running && this.elapsed === 0;
+    },
+
+    repaintI18n() {
+      this.renderLaps();
+      this.updateButtons();
     },
 
     activate() {

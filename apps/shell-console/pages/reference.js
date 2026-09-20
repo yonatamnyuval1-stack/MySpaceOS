@@ -6,26 +6,26 @@ window.ConsolePages.reference = (function () {
       title: "Shortcuts (built-in)",
       lines: [
         "a → close all",
-        "b<app> → close <app>  (bdrift · bbuilds · bremote hub)",
-        "<app> → run <app>  (drift · space · code lexicon)",
-        "<app>(page) → run <app>(page)  (drift(insights) · space(ocean))",
+        "b<app> → close <app>  (bdrift, bbuilds, bremote hub)",
+        "<app> → run <app>  (drift, space, code lexicon)",
+        "<app>(page) → run <app>(page)  (drift(insights), space(ocean))",
       ],
     },
     {
       title: "Actions",
       lines: [
-        "run <app> · run <app>(page) · open <app>",
-        "close · close all · close <app>",
-        "focus <app> · pin · unpin · reveal",
-        "desktop · settings · add · refresh · sort · reset layout",
+        "run <app>, run <app>(page), open <app>",
+        "close, close all, close <app>",
+        "focus <app>, pin, unpin, reveal",
+        "desktop, settings, add, refresh, sort, reset layout",
       ],
     },
     {
       title: "Queries (check)",
       lines: [
-        "check running · check apps · check <app>",
-        "check routes · check routes space",
-        "check aliases · check macros · check when",
+        "check running, check apps, check <app>",
+        "check routes, check routes space",
+        "check aliases, check macros, check when",
       ],
     },
     {
@@ -53,8 +53,8 @@ window.ConsolePages.reference = (function () {
       title: "Examples",
       lines: [
         "a",
-        "drift · space(ocean) · builds",
-        "bdrift · bbuilds",
+        "drift, space(ocean), builds",
+        "bdrift, bbuilds",
         "macro morning = run builds; run drift",
       ],
     },

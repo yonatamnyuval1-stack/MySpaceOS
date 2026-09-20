@@ -51,7 +51,7 @@
     {
       "verb": "set",
       "title": "Set script body",
-      "description": "Create or replace a script body by name (language write)",
+      "description": "Create or replace a script body by name",
       "delivery": "ipc",
       "channel": "scripts.set",
       "input": {
@@ -62,7 +62,7 @@
     {
       "verb": "append",
       "title": "Append to script",
-      "description": "Append a line to a script by name (language write)",
+      "description": "Append a line to a script by name",
       "delivery": "ipc",
       "channel": "scripts.append",
       "input": {

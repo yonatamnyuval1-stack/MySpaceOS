@@ -14,38 +14,38 @@
         <div class="brand">
           <span class="brand-icon" aria-hidden="true">◷</span>
           <div>
-            <strong>Clock</strong>
+            <strong data-i18n="app.worldClock.name">Clock</strong>
             <span class="brand-sub" id="brand-sub">v1.0 · Local</span>
           </div>
         </div>
-        <nav class="nav" id="main-nav" aria-label="Sections">
+        <nav class="nav" id="main-nav" data-i18n-aria="app.worldClock.navAria" aria-label="Sections">
           <button type="button" class="nav-item active" data-page="local">
             <span class="nav-icon">◎</span>
-            Local time
+            <span data-i18n="app.worldClock.nav.local">Local time</span>
           </button>
           <button type="button" class="nav-item" data-page="world">
             <span class="nav-icon">◉</span>
-            World clocks
+            <span data-i18n="app.worldClock.nav.world">World clocks</span>
           </button>
           <button type="button" class="nav-item" data-page="meetings">
             <span class="nav-icon">◫</span>
-            Meeting planner
+            <span data-i18n="app.worldClock.nav.meetings">Meeting planner</span>
           </button>
           <button type="button" class="nav-item" data-page="timer">
             <span class="nav-icon">◔</span>
-            Timer
+            <span data-i18n="app.worldClock.nav.timer">Timer</span>
           </button>
           <button type="button" class="nav-item" data-page="pomodoro">
             <span class="nav-icon">◍</span>
-            Pomodoro
+            <span data-i18n="app.worldClock.nav.pomodoro">Pomodoro</span>
           </button>
           <button type="button" class="nav-item" data-page="stopwatch">
             <span class="nav-icon">◑</span>
-            Stopwatch
+            <span data-i18n="app.worldClock.nav.stopwatch">Stopwatch</span>
           </button>
         </nav>
         <footer class="sidebar-foot">
-          <p>Built for My Space</p>
+          <p data-i18n="app.worldClock.foot">Built for My Space</p>
         </footer>
       </aside>
 
@@ -63,39 +63,40 @@
               <div class="local-face" aria-hidden="true"></div>
               <div class="local-info">
                 <p class="local-time" aria-live="polite">00:00:00</p>
-                <p class="local-date">—</p>
-                <p class="local-meta mono">—</p>
+                <p class="local-date">:</p>
+                <p class="local-meta mono">:</p>
               </div>
             </div>
             <div class="stats-row">
               <article class="stat-card">
-                <span class="stat-label">Mode</span>
-                <span class="stat-value">24-hour</span>
+                <span class="stat-label" data-i18n="app.worldClock.stat.mode">Mode</span>
+                <span class="stat-value" data-i18n="app.worldClock.stat.mode24">24-hour</span>
               </article>
               <article class="stat-card">
-                <span class="stat-label">Countries</span>
-                <span class="stat-value" id="stat-countries">270+</span>
+                <span class="stat-label" data-i18n="app.worldClock.stat.countries">Countries</span>
+                <span class="stat-value" id="stat-countries">250+</span>
               </article>
               <article class="stat-card">
-                <span class="stat-label">IANA zones</span>
-                <span class="stat-value" id="stat-zones">—</span>
+                <span class="stat-label" data-i18n="app.worldClock.stat.zones">IANA zones</span>
+                <span class="stat-value" id="stat-zones">:</span>
               </article>
             </div>
           </section>
 
           <section class="page" id="page-world" data-page="world" hidden>
             <div class="world-search-wrap">
-              <label class="search-label" for="world-search">Search country or city</label>
+              <label class="search-label" for="world-search" data-i18n="app.worldClock.world.searchLabel">Search country or city</label>
               <input
                 type="search"
                 id="world-search"
                 class="search-input"
+                data-i18n-placeholder="app.worldClock.world.searchPlaceholder"
                 placeholder="e.g. Japan, Israel, New York, London…"
                 autocomplete="off"
               />
               <div id="world-search-results" class="search-results" role="listbox"></div>
             </div>
-            <p id="world-empty" class="world-empty" hidden>
+            <p id="world-empty" class="world-empty" hidden data-i18n="app.worldClock.world.empty">
               No pinned clocks yet. Search above and pick a result to add one.
             </p>
             <div id="world-grid" class="world-grid"></div>
@@ -103,8 +104,8 @@
 
           <section class="page page--meetings" id="page-meetings" data-page="meetings" hidden>
             <div class="meetings-intro">
-              <p>
-                Pick cities and a date — we suggest the best time in <strong>your timezone</strong>.
+              <p data-i18n-html="app.worldClock.meetings.intro">
+                Pick cities and a date: we suggest the best time in <strong>your timezone</strong>.
                 Then add the meeting to <strong>Google Calendar</strong>, <strong>Outlook</strong>, or a
                 <strong>.ics file</strong> (works with most calendar apps).
               </p>
@@ -113,39 +114,40 @@
             <div class="meetings-step">
               <h2 class="meetings-step-title">
                 <span class="meetings-step-num" aria-hidden="true">1</span>
-                Who is on the call?
+                <span data-i18n="app.worldClock.meetings.step1">Who is on the call?</span>
               </h2>
               <div class="meetings-add-row">
                 <div class="world-search-wrap meetings-search-wrap">
-                  <label class="search-label" for="meetings-search">Add a city or country</label>
+                  <label class="search-label" for="meetings-search" data-i18n="app.worldClock.meetings.addLabel">Add a city or country</label>
                   <input
                     type="search"
                     id="meetings-search"
                     class="search-input"
+                    data-i18n-placeholder="app.worldClock.meetings.addPlaceholder"
                     placeholder="e.g. Tokyo, Berlin, Tel Aviv…"
                     autocomplete="off"
                   />
                   <div id="meetings-search-results" class="search-results" role="listbox"></div>
                 </div>
-                <button type="button" class="btn btn-ghost" id="meetings-from-favorites">
+                <button type="button" class="btn btn-ghost" id="meetings-from-favorites" data-i18n="app.worldClock.meetings.fromFavorites">
                   Use my pinned clocks
                 </button>
               </div>
-              <p id="meetings-participants-empty" class="meetings-hint">
-                Add at least 2 places (up to 8). Example: your city and the people you are calling.
+              <p id="meetings-participants-empty" class="meetings-hint" data-i18n="app.worldClock.meetings.participantsHint">
+                Add at least 2 places. Example: your city and the people you are calling.
               </p>
               <div id="meetings-chips" class="meetings-chips" role="list"></div>
               <details class="meetings-advanced" id="meetings-advanced">
-                <summary>Office hours (optional)</summary>
-                <p class="meetings-hint meetings-hint--tight">
+                <summary data-i18n="app.worldClock.meetings.officeHours">Office hours (optional)</summary>
+                <p class="meetings-hint meetings-hint--tight" data-i18n="app.worldClock.meetings.officeHint">
                   We assume a normal workday. Change the default or set hours per city.
                 </p>
                 <div class="meetings-office-default">
                   <label>
-                    <span>Default office hours</span>
+                    <span data-i18n="app.worldClock.meetings.defaultHours">Default office hours</span>
                     <span class="meetings-hours-row">
                       <select id="meetings-work-start" class="meetings-input meetings-input--short"></select>
-                      <span>to</span>
+                      <span data-i18n="app.worldClock.meetings.to">to</span>
                       <select id="meetings-work-end" class="meetings-input meetings-input--short"></select>
                     </span>
                   </label>
@@ -157,30 +159,31 @@
             <div class="meetings-step">
               <h2 class="meetings-step-title">
                 <span class="meetings-step-num" aria-hidden="true">2</span>
-                When is the meeting?
+                <span data-i18n="app.worldClock.meetings.step2">When is the meeting?</span>
               </h2>
               <div class="meetings-when-row">
                 <label class="meetings-field" for="meetings-title">
-                  <span>Meeting title</span>
+                  <span data-i18n="app.worldClock.meetings.title">Meeting title</span>
                   <input
                     type="text"
                     id="meetings-title"
                     class="meetings-input meetings-input--wide"
+                    data-i18n-placeholder="app.worldClock.meetings.titlePlaceholder"
                     placeholder="e.g. Team sync"
                     maxlength="120"
                   />
                 </label>
                 <label class="meetings-field" for="meetings-date">
-                  <span>Date</span>
+                  <span data-i18n="app.worldClock.meetings.date">Date</span>
                   <input type="date" id="meetings-date" class="meetings-input" />
                 </label>
                 <label class="meetings-field" for="meetings-duration">
-                  <span>Length</span>
+                  <span data-i18n="app.worldClock.meetings.length">Length</span>
                   <select id="meetings-duration" class="meetings-input">
-                    <option value="30">30 minutes</option>
-                    <option value="60" selected>1 hour</option>
-                    <option value="90">90 minutes</option>
-                    <option value="120">2 hours</option>
+                    <option value="30" data-i18n="app.worldClock.meetings.dur30">30 minutes</option>
+                    <option value="60" selected data-i18n="app.worldClock.meetings.dur60">1 hour</option>
+                    <option value="90" data-i18n="app.worldClock.meetings.dur90">90 minutes</option>
+                    <option value="120" data-i18n="app.worldClock.meetings.dur120">2 hours</option>
                   </select>
                 </label>
               </div>
@@ -189,29 +192,29 @@
             <section class="meetings-result" id="meetings-result" aria-live="polite">
               <h2 class="meetings-step-title meetings-step-title--plain">
                 <span class="meetings-step-num" aria-hidden="true">3</span>
-                Best time to meet
+                <span data-i18n="app.worldClock.meetings.step3">Best time to meet</span>
               </h2>
               <div id="meetings-hero" class="meetings-hero"></div>
               <div id="meetings-alternatives" class="meetings-alternatives"></div>
               <div id="meetings-scheduled-wrap" class="meetings-scheduled-wrap" hidden>
-                <h3 class="meetings-alt-title">Saved in Clock</h3>
+                <h3 class="meetings-alt-title" data-i18n="app.worldClock.meetings.savedTitle">Saved in Clock</h3>
                 <div id="meetings-scheduled-list" class="meetings-scheduled-list"></div>
               </div>
             </section>
 
             <section class="meetings-step meetings-step--now">
-              <h2 class="meetings-step-title meetings-step-title--plain">Right now</h2>
-              <p class="meetings-hint meetings-hint--tight">Live clock in each city.</p>
+              <h2 class="meetings-step-title meetings-step-title--plain" data-i18n="app.worldClock.meetings.rightNow">Right now</h2>
+              <p class="meetings-hint meetings-hint--tight" data-i18n="app.worldClock.meetings.liveHint">Live clock in each city.</p>
               <div id="meetings-now-grid" class="meetings-now-grid"></div>
             </section>
 
             <details class="meetings-day-map" id="meetings-day-map">
-              <summary>Full day map (24 hours in your timezone)</summary>
+              <summary data-i18n="app.worldClock.meetings.dayMap">Full day map</summary>
               <div class="meetings-legend" aria-hidden="true">
-                <span class="meetings-legend-item meetings-legend-item--work">Office hours</span>
-                <span class="meetings-legend-item meetings-legend-item--edge">Near office</span>
-                <span class="meetings-legend-item meetings-legend-item--awake">Awake</span>
-                <span class="meetings-legend-item meetings-legend-item--night">Sleeping</span>
+                <span class="meetings-legend-item meetings-legend-item--work" data-i18n="app.worldClock.meetings.legendWork">Office hours</span>
+                <span class="meetings-legend-item meetings-legend-item--edge" data-i18n="app.worldClock.meetings.legendEdge">Near office</span>
+                <span class="meetings-legend-item meetings-legend-item--awake" data-i18n="app.worldClock.meetings.legendAwake">Awake</span>
+                <span class="meetings-legend-item meetings-legend-item--night" data-i18n="app.worldClock.meetings.legendNight">Sleeping</span>
               </div>
               <div id="meetings-timeline" class="meetings-timeline"></div>
             </details>
@@ -232,37 +235,37 @@
                   />
                 </svg>
                 <p class="timer-display" id="timer-display">05:00</p>
-                <p class="timer-status" id="timer-status">Ready</p>
+                <p class="timer-status" id="timer-status" data-i18n="app.worldClock.timer.ready">Ready</p>
               </div>
               <div class="timer-panel">
                 <div class="timer-presets">
-                  <button type="button" class="chip" data-preset-sec="60">1 min</button>
-                  <button type="button" class="chip" data-preset-sec="300">5 min</button>
-                  <button type="button" class="chip" data-preset-sec="600">10 min</button>
-                  <button type="button" class="chip" data-preset-sec="900">15 min</button>
-                  <button type="button" class="chip" data-preset-sec="1500">25 min</button>
-                  <button type="button" class="chip" data-preset-sec="3600">1 hr</button>
+                  <button type="button" class="chip" data-preset-sec="60" data-i18n="app.worldClock.timer.preset1">1 min</button>
+                  <button type="button" class="chip" data-preset-sec="300" data-i18n="app.worldClock.timer.preset5">5 min</button>
+                  <button type="button" class="chip" data-preset-sec="600" data-i18n="app.worldClock.timer.preset10">10 min</button>
+                  <button type="button" class="chip" data-preset-sec="900" data-i18n="app.worldClock.timer.preset15">15 min</button>
+                  <button type="button" class="chip" data-preset-sec="1500" data-i18n="app.worldClock.timer.preset25">25 min</button>
+                  <button type="button" class="chip" data-preset-sec="3600" data-i18n="app.worldClock.timer.preset60">1 hr</button>
                 </div>
                 <div class="timer-inputs">
                   <label>
-                    <span>Hours</span>
+                    <span data-i18n="app.worldClock.timer.hours">Hours</span>
                     <input type="number" id="timer-h" min="0" max="99" value="0" />
                   </label>
                   <label>
-                    <span>Min</span>
+                    <span data-i18n="app.worldClock.timer.min">Min</span>
                     <input type="number" id="timer-m" min="0" max="59" value="5" />
                   </label>
                   <label>
-                    <span>Sec</span>
+                    <span data-i18n="app.worldClock.timer.sec">Sec</span>
                     <input type="number" id="timer-s" min="0" max="59" value="0" />
                   </label>
                 </div>
                 <div class="timer-actions">
-                  <button type="button" class="btn btn-primary" id="timer-start">Start</button>
-                  <button type="button" class="btn" id="timer-pause" disabled>Pause</button>
-                  <button type="button" class="btn btn-ghost" id="timer-reset">Reset</button>
+                  <button type="button" class="btn btn-primary" id="timer-start" data-i18n="app.worldClock.timer.start">Start</button>
+                  <button type="button" class="btn" id="timer-pause" disabled data-i18n="app.worldClock.timer.pause">Pause</button>
+                  <button type="button" class="btn btn-ghost" id="timer-reset" data-i18n="app.worldClock.timer.reset">Reset</button>
                 </div>
-                <p class="timer-hint">When the timer ends you'll hear a sound and get a desktop notification.</p>
+                <p class="timer-hint" data-i18n="app.worldClock.timer.hint">When the timer ends you'll hear a sound and get a desktop notification.</p>
               </div>
             </div>
           </section>
@@ -285,59 +288,59 @@
                   </svg>
                   <p class="timer-display pomo-display" id="pomo-display">25:00</p>
                   <p class="pomo-phase-label" id="pomo-phase-label">Focus</p>
-                  <p class="timer-status" id="pomo-status">Ready</p>
+                  <p class="timer-status" id="pomo-status" data-i18n="app.worldClock.pomo.ready">Ready</p>
                 </div>
-                <div class="pomo-dots" id="pomo-dots" aria-label="Cycle progress"></div>
+                <div class="pomo-dots" id="pomo-dots" data-i18n-aria="app.worldClock.pomo.cycleAria" aria-label="Cycle progress"></div>
                 <p class="pomo-next" id="pomo-next">After this: Short break (5m)</p>
                 <div class="pomo-actions">
-                  <button type="button" class="btn btn-primary btn-lg" id="pomo-start">Start</button>
-                  <button type="button" class="btn btn-lg" id="pomo-skip">Skip</button>
-                  <button type="button" class="btn btn-ghost btn-lg" id="pomo-reset">Reset</button>
+                  <button type="button" class="btn btn-primary btn-lg" id="pomo-start" data-i18n="app.worldClock.pomo.start">Start</button>
+                  <button type="button" class="btn btn-lg" id="pomo-skip" data-i18n="app.worldClock.pomo.skip">Skip</button>
+                  <button type="button" class="btn btn-ghost btn-lg" id="pomo-reset" data-i18n="app.worldClock.pomo.reset">Reset</button>
                 </div>
               </div>
               <aside class="pomo-side">
                 <div class="stats-row pomo-stats">
                   <article class="stat-card">
-                    <span class="stat-label">Today</span>
+                    <span class="stat-label" data-i18n="app.worldClock.pomo.today">Today</span>
                     <span class="stat-value"><span id="pomo-today">0</span> 🍅</span>
                   </article>
                   <article class="stat-card">
-                    <span class="stat-label">This cycle</span>
+                    <span class="stat-label" data-i18n="app.worldClock.pomo.thisCycle">This cycle</span>
                     <span class="stat-value" id="pomo-cycle">0 / 4</span>
                   </article>
                 </div>
-                <button type="button" class="btn btn-ghost pomo-settings-toggle" id="pomo-settings-toggle">
+                <button type="button" class="btn btn-ghost pomo-settings-toggle" id="pomo-settings-toggle" data-i18n="app.worldClock.pomo.settings">
                   ⚙ Settings
                 </button>
                 <div class="pomo-settings" id="pomo-settings" hidden>
-                  <h3 class="pomo-settings-title">Session lengths</h3>
+                  <h3 class="pomo-settings-title" data-i18n="app.worldClock.pomo.sessionLengths">Session lengths</h3>
                   <div class="pomo-settings-grid">
                     <label>
-                      <span>Focus (min)</span>
+                      <span data-i18n="app.worldClock.pomo.focusMin">Focus (min)</span>
                       <input type="number" id="pomo-work" min="1" max="120" value="25" />
                     </label>
                     <label>
-                      <span>Short break</span>
+                      <span data-i18n="app.worldClock.pomo.shortBreakLabel">Short break</span>
                       <input type="number" id="pomo-short" min="1" max="60" value="5" />
                     </label>
                     <label>
-                      <span>Long break</span>
+                      <span data-i18n="app.worldClock.pomo.longBreakLabel">Long break</span>
                       <input type="number" id="pomo-long" min="1" max="60" value="15" />
                     </label>
                     <label>
-                      <span>Long every</span>
-                      <input type="number" id="pomo-every" min="2" max="12" value="4" title="Pomodoros before long break" />
+                      <span data-i18n="app.worldClock.pomo.longEvery">Long every</span>
+                      <input type="number" id="pomo-every" min="2" max="12" value="4" data-i18n-title="app.worldClock.pomo.longEveryTitle" title="Pomodoros before long break" />
                     </label>
                   </div>
                   <label class="pomo-check">
                     <input type="checkbox" id="pomo-auto-break" checked />
-                    <span>Auto-start breaks</span>
+                    <span data-i18n="app.worldClock.pomo.autoBreak">Auto-start breaks</span>
                   </label>
                   <label class="pomo-check">
                     <input type="checkbox" id="pomo-auto-work" checked />
-                    <span>Auto-start focus after break</span>
+                    <span data-i18n="app.worldClock.pomo.autoWork">Auto-start focus after break</span>
                   </label>
-                  <p class="timer-hint">Sound and desktop notification at the end of each phase.</p>
+                  <p class="timer-hint" data-i18n="app.worldClock.pomo.hint">Sound and desktop notification at the end of each phase.</p>
                 </div>
               </aside>
             </div>
@@ -347,9 +350,9 @@
             <div class="stopwatch-layout">
               <p class="sw-display mono" id="sw-display">00:00.00</p>
               <div class="sw-actions">
-                <button type="button" class="btn btn-primary btn-lg" id="sw-start">Start</button>
-                <button type="button" class="btn btn-lg" id="sw-lap">Lap</button>
-                <button type="button" class="btn btn-ghost btn-lg" id="sw-reset">Reset</button>
+                <button type="button" class="btn btn-primary btn-lg" id="sw-start" data-i18n="app.worldClock.sw.start">Start</button>
+                <button type="button" class="btn btn-lg" id="sw-lap" data-i18n="app.worldClock.sw.lap">Lap</button>
+                <button type="button" class="btn btn-ghost btn-lg" id="sw-reset" data-i18n="app.worldClock.sw.reset">Reset</button>
               </div>
               <div id="sw-laps" class="sw-laps"></div>
             </div>
@@ -371,10 +374,19 @@
     <script src="pages/timer.js"></script>
     <script src="pages/pomodoro.js"></script>
     <script src="pages/stopwatch.js"></script>
-        <script src="../shared/settings-definitions.js"></script>
+        <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/app-language.js"></script>
+    <script src="../shared/settings-definitions.js"></script>
     <script src="../shared/settings-boot.js"></script>
     <script src="../shared/app-settings-runtime.js"></script>
     <script src="app.js"></script>
+    <script>window.MySpaceAppLanguage && window.MySpaceAppLanguage.boot();</script>
   </body>
 </html>
-

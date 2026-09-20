@@ -1,5 +1,5 @@
 {
-  "note": "Real Parts published from contracts (code lives in shared/parts — clean, no host coupling).",
+  "note": "Real Parts published from contracts.",
   "exports": [
     {
       "ref": "tpl.mustache",

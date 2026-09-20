@@ -34,7 +34,7 @@ function legacyMigratedFlag(accountsRoot) {
 
 /**
  * @param {string} appId
- * @param {Array<string|{legacy: string, target?: string}>} legacyFiles - basenames under userData
+ * @param {Array<string|{legacy: string, target?: string}>} legacyFiles
  */
 function registerLegacyMigrator(appId, legacyFiles) {
   const mappings = (legacyFiles || []).map((entry) => {
@@ -65,7 +65,6 @@ function registerLegacyMigrator(appId, legacyFiles) {
         await fs.promises.access(dest);
         continue;
       } catch {
-        /* missing */
       }
       const legacyPath = path.join(app.getPath("userData"), legacy);
       try {

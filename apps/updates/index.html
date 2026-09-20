@@ -48,7 +48,7 @@
           <header class="page-head">
             <div>
               <h1 data-i18n="service.updates.title">Updates</h1>
-              <p class="page-sub" data-i18n="service.updates.subtitle">Your installed build — new releases appear below</p>
+              <p class="page-sub" data-i18n="service.updates.subtitle">Your installed build: new releases appear below</p>
             </div>
             <div class="page-actions">
               <button type="button" class="btn btn-ghost" id="btn-check" data-i18n="service.updates.checkNow">Check now</button>
@@ -80,14 +80,14 @@
             <p class="page-sub" id="new-updates-sub" data-i18n="service.updates.newUpdatesSubDefault">When a major release is ready, it shows up here</p>
           </div>
           <div class="update-list" id="pending-list"></div>
-          <p class="empty-msg" id="pending-empty" data-i18n="service.updates.pendingEmpty">You're up to date — no new updates right now.</p>
+          <p class="empty-msg" id="pending-empty" data-i18n="service.updates.pendingEmpty">You're up to date: no new updates right now.</p>
         </section>
 
         <section class="view hidden" id="view-history">
           <header class="page-head">
             <div>
               <h1 data-i18n="service.updates.historyTitle">History</h1>
-              <p class="page-sub" data-i18n="service.updates.historySub">Full changelog — every release in the catalog</p>
+              <p class="page-sub" data-i18n="service.updates.historySub">Full changelog: every release in the catalog</p>
             </div>
             <div class="page-actions">
               <input type="search" id="history-search" class="search" data-i18n-placeholder="service.updates.historySearchPlaceholder" placeholder="Search version or notes…" />
@@ -111,49 +111,49 @@
             </div>
           </header>
           <div class="about-page">
-            <p class="about-lead">
-              Updates is a platform service for My Space — not a desktop tile. It shows the build you are
+            <p class="about-lead" data-i18n="service.updates.aboutLead">
+              Updates is a platform service for My Space: not a desktop tile. It shows the build you are
               running now, lists major releases when they are ready, and keeps a full changelog of past notes.
             </p>
 
-            <h2>Current build</h2>
-            <p>
+            <h2 data-i18n="service.updates.aboutCurrentTitle">Current build</h2>
+            <p data-i18n="service.updates.aboutCurrentBody">
               The home page opens on your installed version: My Space logo, version number, and the release
               notes that match that build from the catalog. If there is no exact catalog row for your version,
               Notes may reference the closest earlier release so you still see what shipped.
             </p>
 
-            <h2>New updates</h2>
-            <p>
+            <h2 data-i18n="service.updates.aboutNewTitle">New updates</h2>
+            <p data-i18n-html="service.updates.aboutNewBody">
               When a major entry is added to the catalog and is newer than your installed version, it appears
               under <strong>New updates</strong> on the same page. Apply marks it and relaunches My Space so
               the new build is active. Skip hides it from that list; it remains visible in History.
-              New releases surface here — not in the notification bell.
+              New releases surface here: not in the notification bell.
             </p>
 
-            <h2>History</h2>
-            <p>
+            <h2 data-i18n="service.updates.aboutHistoryTitle">History</h2>
+            <p data-i18n="service.updates.aboutHistoryBody">
               History is the full changelog: every release in the catalog, newest first. Filter by applied,
               pending, or skipped, or search by version and notes. Use it when you want the long trail of
               what changed across builds.
             </p>
 
-            <h2>Check &amp; catalog</h2>
-            <p>
+            <h2 data-i18n="service.updates.aboutCheckTitle">Check &amp; catalog</h2>
+            <p data-i18n-html="service.updates.aboutCheckBody">
               <strong>Check now</strong> re-reads the catalog and refreshes pending counts.
               Release notes live in <code>config/updates.json</code>. Shell shortcuts:
               <code>updates(open)</code>, <code>updates(status)</code>, <code>updates(history)</code>,
               <code>updates(check)</code>.
             </p>
 
-            <h2>At a glance</h2>
+            <h2 data-i18n="service.updates.aboutGlanceTitle">At a glance</h2>
             <ul>
-              <li><strong>Current</strong> — installed version, name, and explanation</li>
-              <li><strong>New updates</strong> — major releases ready to apply</li>
-              <li><strong>Apply</strong> — save + relaunch My Space</li>
-              <li><strong>Skip</strong> — hide from new updates (still in History)</li>
-              <li><strong>History</strong> — full catalog changelog</li>
-              <li><strong>Check now</strong> — refresh the catalog for pending releases</li>
+              <li data-i18n="service.updates.aboutGlanceCurrent">Current: installed version, name, and explanation</li>
+              <li data-i18n="service.updates.aboutGlanceNew">New updates: major releases ready to apply</li>
+              <li data-i18n="service.updates.aboutGlanceApply">Apply: save + relaunch My Space</li>
+              <li data-i18n="service.updates.aboutGlanceSkip">Skip: hide from new updates (still in History)</li>
+              <li data-i18n="service.updates.aboutGlanceHistory">History: full catalog changelog</li>
+              <li data-i18n="service.updates.aboutGlanceCheck">Check now: refresh the catalog for pending releases</li>
             </ul>
 
             <p class="muted about-path" id="about-paths"></p>
@@ -163,6 +163,11 @@
     </div>
     <script src="../shared/i18n/locales/en.js"></script>
     <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
     <script src="../shared/i18n/i18n.js"></script>
     <script src="../shared/i18n/sync-boot.js"></script>
     <script src="../shared/i18n/auto-mark.js"></script>

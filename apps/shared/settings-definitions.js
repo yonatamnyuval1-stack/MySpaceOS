@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const APP_SETTINGS_SCHEMA = {
   builds: {
     title: "Builds",
@@ -88,12 +87,13 @@ const APP_SETTINGS_SCHEMA = {
         label: "Language",
         items: [
           {
-            key: "language",
+            key: "uiLanguage",
             label: "Interface language",
-            hint: "English or Hebrew (RTL) — like World Maps",
+            hint: "Follow My Space display language, or force English / Hebrew (RTL)",
             type: "select",
-            default: "en",
-            options: ["en", "he"],
+            default: "system",
+            options: ["system", "en", "he", "ar", "fr", "ru", "es"],
+            hint: "Follow My Space display language, or force a specific language (RTL when needed)",
           },
         ],
       },
@@ -423,12 +423,13 @@ const APP_SETTINGS_SCHEMA = {
         label: "Language",
         items: [
           {
-            key: "language",
+            key: "uiLanguage",
             label: "Interface language",
-            hint: "English or Hebrew (RTL) — UI and labels",
+            hint: "Follow My Space display language, or force English / Hebrew (RTL)",
             type: "select",
-            default: "en",
-            options: ["en", "he"],
+            default: "system",
+            options: ["system", "en", "he", "ar", "fr", "ru", "es"],
+            hint: "Follow My Space display language, or force a specific language (RTL when needed)",
           },
         ],
       },
@@ -565,7 +566,94 @@ const APP_SETTINGS_SCHEMA = {
       },
     ],
   },
+  tasks: {
+    title: "Tasks",
+    sections: [],
+  },
+  chat: {
+    title: "Chat",
+    sections: [],
+  },
+  coupons: {
+    title: "Coupons",
+    sections: [],
+  },
+  "study-deck": {
+    title: "Study Deck",
+    sections: [],
+  },
 };
+
+const APP_UI_LANGUAGE_SECTION = {
+  id: "language",
+  label: "Language",
+  items: [
+    {
+      key: "uiLanguage",
+      label: "Interface language",
+      hint: "Follow My Space display language, or force a specific language (RTL when needed)",
+      type: "select",
+      default: "system",
+      options: ["system", "en", "he", "ar", "fr", "ru", "es"],
+    },
+  ],
+};
+
+const PRODUCT_APP_LANGUAGE_IDS = [
+  "builds",
+  "chat",
+  "code-lexicon",
+  "contacts",
+  "contracts",
+  "coupons",
+  "day-planner",
+  "docs",
+  "drift",
+  "flag-quiz",
+  "geography",
+  "history",
+  "icon-library",
+  "notes",
+  "pi-digits",
+  "profiles",
+  "remote-hub",
+  "space",
+  "stocks",
+  "studies",
+  "study-deck",
+  "tasks",
+  "translate",
+  "world-clock",
+  "world-maps",
+];
+
+function ensureProductAppLanguageSections() {
+  for (const id of PRODUCT_APP_LANGUAGE_IDS) {
+    if (!APP_SETTINGS_SCHEMA[id]) {
+      APP_SETTINGS_SCHEMA[id] = { title: id, sections: [] };
+    }
+    const app = APP_SETTINGS_SCHEMA[id];
+    if (!Array.isArray(app.sections)) app.sections = [];
+    const existing = app.sections.find((s) => s.id === "language");
+    if (existing) {
+      const item = (existing.items || []).find((i) => i.key === "uiLanguage" || i.key === "language");
+      if (item) {
+        item.key = "uiLanguage";
+        item.default = item.default === "en" || item.default === "he" ? item.default : "system";
+        if (!["system", "en", "he", "ar", "fr", "ru", "es"].includes(item.default)) item.default = "system";
+        item.options = [...APP_UI_LANGUAGE_SECTION.items[0].options];
+        item.hint = APP_UI_LANGUAGE_SECTION.items[0].hint;
+        item.label = APP_UI_LANGUAGE_SECTION.items[0].label;
+      } else {
+        existing.items = [...(existing.items || []), ...APP_UI_LANGUAGE_SECTION.items];
+      }
+      continue;
+    }
+    app.sections.unshift(JSON.parse(JSON.stringify(APP_UI_LANGUAGE_SECTION)));
+  }
+}
+
+ensureProductAppLanguageSections();
 
 function coerceSettingValue(item, value) {
   if (!item) return value;
@@ -578,11 +666,19 @@ function coerceSettingValue(item, value) {
 }
 
 function mergeAppSettings(schema, raw) {
+  const src = raw && typeof raw === "object" ? { ...raw } : {};
+  if (
+    src.uiLanguage == null &&
+    typeof src.language === "string" &&
+    ["en", "he", "ar", "fr", "ru", "es", "system"].includes(src.language)
+  ) {
+    src.uiLanguage = src.language;
+  }
   const out = {};
   for (const sec of schema?.sections || []) {
     for (const item of sec.items || []) {
-      const has = raw && Object.prototype.hasOwnProperty.call(raw, item.key);
-      out[item.key] = coerceSettingValue(item, has ? raw[item.key] : item.default);
+      const has = Object.prototype.hasOwnProperty.call(src, item.key);
+      out[item.key] = coerceSettingValue(item, has ? src[item.key] : item.default);
     }
   }
   return out;

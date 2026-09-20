@@ -1,4 +1,11 @@
 (function () {
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const api = window.myApp;
 
   const els = {
@@ -73,10 +80,13 @@
     try {
       const d = new Date(iso);
       const diff = Date.now() - d.getTime();
-      if (diff < 45_000) return "Just now";
-      if (diff < 3_600_000) return `${Math.max(1, Math.round(diff / 60_000))}m ago`;
-      if (diff < 86_400_000) return `${Math.max(1, Math.round(diff / 3_600_000))}h ago`;
-      if (diff < 6 * 86_400_000) return `${Math.max(1, Math.round(diff / 86_400_000))}d ago`;
+      if (diff < 45_000) return tt("app.notes.justNow", "Just now");
+      const mins = Math.max(1, Math.round(diff / 60_000));
+      if (diff < 3_600_000) return tt("app.notes.minsAgo", `${mins}m ago`, { n: mins });
+      const hours = Math.max(1, Math.round(diff / 3_600_000));
+      if (diff < 86_400_000) return tt("app.notes.hoursAgo", `${hours}h ago`, { n: hours });
+      const days = Math.max(1, Math.round(diff / 86_400_000));
+      if (diff < 6 * 86_400_000) return tt("app.notes.daysAgo", `${days}d ago`, { n: days });
       return d.toLocaleString(undefined, {
         month: "short",
         day: "numeric",
@@ -106,7 +116,7 @@
   }
 
   function notebookName(id) {
-    return state.notebooks.find((n) => n.id === id)?.name || "Inbox";
+    return state.notebooks.find((n) => n.id === id)?.name || tt("app.notes.inboxFallback", "Inbox");
   }
 
   function filteredNotes() {
@@ -149,7 +159,8 @@
     }, 2600);
   }
 
-  function askConfirm({ title, copy, okLabel = "Delete" }) {
+  function askConfirm({ title, copy, okLabel }) {
+    okLabel = okLabel || tt("app.notes.delete", "Delete");
     return new Promise((resolve) => {
       els.confirmTitle.textContent = title;
       els.confirmCopy.textContent = copy;
@@ -188,20 +199,20 @@
 
   function updateListMeta() {
     if (state.view === "pinned") {
-      els.listTitle.textContent = "Pinned";
-      els.listSub.textContent = "Notes you keep on top";
+      els.listTitle.textContent = tt("app.notes.list.pinned", "Pinned");
+      els.listSub.textContent = tt("app.notes.list.pinnedSub", "Notes you keep on top");
     } else if (state.view === "archive") {
-      els.listTitle.textContent = "Archive";
-      els.listSub.textContent = "Out of the way, still searchable";
+      els.listTitle.textContent = tt("app.notes.list.archive", "Archive");
+      els.listSub.textContent = tt("app.notes.list.archiveSub", "Out of the way, still searchable");
     } else if (state.view === "notebook") {
       els.listTitle.textContent = notebookName(state.notebookId);
-      els.listSub.textContent = "Notebook filter";
+      els.listSub.textContent = tt("app.notes.list.notebookSub", "Notebook filter");
     } else if (state.view === "tag") {
       els.listTitle.textContent = `#${state.tag}`;
-      els.listSub.textContent = "Tagged notes";
+      els.listSub.textContent = tt("app.notes.list.tagSub", "Tagged notes");
     } else {
-      els.listTitle.textContent = "All notes";
-      els.listSub.textContent = "Capture anything, pin what matters";
+      els.listTitle.textContent = tt("app.notes.list.all", "All notes");
+      els.listSub.textContent = tt("app.notes.list.allSub", "Capture anything, pin what matters");
     }
   }
 
@@ -233,7 +244,7 @@
       .forEach((n) => (n.tags || []).forEach((t) => tagMap.set(t, (tagMap.get(t) || 0) + 1)));
     const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 24);
     if (!tags.length) {
-      els.tagCloud.innerHTML = `<span class="tag-chip is-muted">No tags yet</span>`;
+      els.tagCloud.innerHTML = `<span class="tag-chip is-muted">${escapeHtml(tt("app.notes.noTagsYet", "No tags yet"))}</span>`;
     } else {
       els.tagCloud.innerHTML = tags
         .map(
@@ -265,8 +276,8 @@
         )}" role="listitem" tabindex="0">
           <button type="button" class="note-card-main" data-select="${escapeHtml(n.id)}">
             <div class="note-card-top">
-              <span class="note-card-title">${escapeHtml(n.title || "Untitled")}</span>
-              ${n.pinned ? '<span class="pin-dot" title="Pinned">●</span>' : ""}
+              <span class="note-card-title">${escapeHtml(n.title || tt("app.notes.untitled", "Untitled"))}</span>
+              ${n.pinned ? `<span class="pin-dot" title="${escapeHtml(tt("app.notes.pinned", "Pinned"))}">●</span>` : ""}
             </div>
             ${preview ? `<p class="note-card-preview">${escapeHtml(preview)}</p>` : ""}
             <div class="note-card-meta">
@@ -276,12 +287,12 @@
             </div>
           </button>
           <div class="note-card-actions">
-            <button type="button" class="card-action" data-pin="${escapeHtml(n.id)}" title="${
-          n.pinned ? "Unpin" : "Pin"
-        }">${n.pinned ? "Unpin" : "Pin"}</button>
+            <button type="button" class="card-action" data-pin="${escapeHtml(n.id)}" title="${escapeHtml(
+          n.pinned ? tt("app.notes.unpin", "Unpin") : tt("app.notes.pin", "Pin")
+        )}">${escapeHtml(n.pinned ? tt("app.notes.unpin", "Unpin") : tt("app.notes.pin", "Pin"))}</button>
             <button type="button" class="card-action card-action-danger" data-delete="${escapeHtml(
               n.id
-            )}" title="Delete">Delete</button>
+            )}" title="${escapeHtml(tt("app.notes.delete", "Delete"))}">${escapeHtml(tt("app.notes.delete", "Delete"))}</button>
           </div>
         </div>`;
       })
@@ -312,13 +323,26 @@
     els.noteBody.value = note.body || "";
     els.noteTags.value = (note.tags || []).map((t) => `#${t}`).join(" ");
     els.btnPin.classList.toggle("is-on", Boolean(note.pinned));
-    els.btnPin.textContent = note.pinned ? "Pinned" : "Pin";
+    els.btnPin.textContent = note.pinned ? tt("app.notes.pinned", "Pinned") : tt("app.notes.pin", "Pin");
     els.btnArchive.classList.toggle("is-on", Boolean(note.archived));
-    els.btnArchive.textContent = note.archived ? "Unarchive" : "Archive";
+    els.btnArchive.textContent = note.archived
+      ? tt("app.notes.unarchive", "Unarchive")
+      : tt("app.notes.archive", "Archive");
     const words = wordCount(note.body);
-    els.editorMeta.textContent = `${words} word${words === 1 ? "" : "s"} · Updated ${formatWhen(
-      note.updatedAt
-    )} · Created ${formatWhen(note.createdAt)}`;
+    const updated = formatWhen(note.updatedAt);
+    const created = formatWhen(note.createdAt);
+    els.editorMeta.textContent =
+      words === 1
+        ? tt("app.notes.wordsMeta", `1 word, Updated ${updated}, Created ${created}`, {
+            n: words,
+            updated,
+            created,
+          })
+        : tt("app.notes.wordsMetaPlural", `${words} words, Updated ${updated}, Created ${created}`, {
+            n: words,
+            updated,
+            created,
+          });
     els.saveStatus.textContent = "";
     els.saveStatus.classList.remove("is-saved");
     state.dirty = false;
@@ -334,7 +358,7 @@
   async function load() {
     const res = await api.invoke("storage.load", {});
     if (!res?.ok) {
-      showToast(res?.error || "Could not load notes", "err");
+      showToast(res?.error || tt("app.notes.loadFailed", "Could not load notes"), "err");
       return;
     }
     state.notebooks = res.data?.notebooks || [];
@@ -349,7 +373,7 @@
   function scheduleSave() {
     if (state.busy) return;
     state.dirty = true;
-    els.saveStatus.textContent = "Saving…";
+    els.saveStatus.textContent = tt("app.notes.saving", "Saving…");
     els.saveStatus.classList.remove("is-saved");
     clearTimeout(state.saveTimer);
     const token = state.saveToken;
@@ -374,18 +398,29 @@
     state.saving = false;
     if (token !== state.saveToken) return false;
     if (!res?.ok) {
-      els.saveStatus.textContent = res?.error || "Save failed";
+      els.saveStatus.textContent = res?.error || tt("app.notes.saveFailed", "Save failed");
       return false;
     }
     const idx = state.notes.findIndex((n) => n.id === note.id);
     if (idx >= 0) state.notes[idx] = res.note;
     state.dirty = false;
-    els.saveStatus.textContent = "Saved";
+    els.saveStatus.textContent = tt("app.notes.saved", "Saved");
     els.saveStatus.classList.add("is-saved");
     const words = wordCount(res.note.body);
-    els.editorMeta.textContent = `${words} word${words === 1 ? "" : "s"} · Updated ${formatWhen(
-      res.note.updatedAt
-    )} · Created ${formatWhen(res.note.createdAt)}`;
+    const updated = formatWhen(res.note.updatedAt);
+    const created = formatWhen(res.note.createdAt);
+    els.editorMeta.textContent =
+      words === 1
+        ? tt("app.notes.wordsMeta", `1 word, Updated ${updated}, Created ${created}`, {
+            n: words,
+            updated,
+            created,
+          })
+        : tt("app.notes.wordsMetaPlural", `${words} words, Updated ${updated}, Created ${created}`, {
+            n: words,
+            updated,
+            created,
+          });
     renderRail();
     renderList();
     return true;
@@ -394,7 +429,7 @@
   async function createNote(seed = {}) {
     if (state.dirty) await flushSave();
     const res = await api.invoke("note.add", {
-      title: seed.title || "Untitled",
+      title: seed.title || tt("app.notes.untitled", "Untitled"),
       body: seed.body || "",
       text: seed.text,
       tags: seed.tags,
@@ -405,7 +440,7 @@
       pinned: seed.pinned,
     });
     if (!res?.ok) {
-      showToast(res?.error || "Could not create note", "err");
+      showToast(res?.error || tt("app.notes.createFailed", "Could not create note"), "err");
       return null;
     }
     state.notes.unshift(res.note);
@@ -425,13 +460,13 @@
     e.preventDefault();
     const text = els.captureInput.value.trim();
     if (!text) {
-      await createNote({ title: "Untitled" });
+      await createNote({ title: tt("app.notes.untitled", "Untitled") });
       return;
     }
     const note = await createNote({ text });
     if (note) {
       els.captureInput.value = "";
-      showToast("Note added");
+      showToast(tt("app.notes.noteAdded", "Note added"));
     }
   }
 
@@ -457,16 +492,19 @@
     if (!note || state.busy) return false;
     if (!skipConfirm) {
       const ok = await askConfirm({
-        title: "Delete note?",
-        copy: `“${note.title || "Untitled"}” will be permanently removed.`,
-        okLabel: "Delete",
+        title: tt("app.notes.deleteConfirm", "Delete note?"),
+        copy: tt(
+          "app.notes.deleteCopy",
+          `“${note.title || tt("app.notes.untitled", "Untitled")}” will be permanently removed.`,
+          { title: note.title || tt("app.notes.untitled", "Untitled") }
+        ),
+        okLabel: tt("app.notes.delete", "Delete"),
       });
       if (!ok) return false;
     }
 
     state.busy = true;
     cancelPendingSave();
-    // Wait out any in-flight save that started before cancel
     let spins = 0;
     while (state.saving && spins < 40) {
       await new Promise((r) => setTimeout(r, 50));
@@ -480,7 +518,7 @@
     const res = await api.invoke("note.delete", { id });
     state.busy = false;
     if (!res?.ok) {
-      showToast(res?.error || "Delete failed", "err");
+      showToast(res?.error || tt("app.notes.deleteFailed", "Delete failed"), "err");
       return false;
     }
 
@@ -490,7 +528,7 @@
       state.selectedId = null;
     }
     render();
-    showToast("Note deleted");
+    showToast(tt("app.notes.noteDeleted", "Note deleted"));
     return true;
   }
 
@@ -500,13 +538,13 @@
     if (state.selectedId === id && state.dirty) await flushSave();
     const res = await api.invoke("note.pin", { id, pinned: !note.pinned });
     if (!res?.ok) {
-      showToast(res?.error || "Pin failed", "err");
+      showToast(res?.error || tt("app.notes.pinFailed", "Pin failed"), "err");
       return;
     }
     const i = state.notes.findIndex((n) => n.id === id);
     if (i >= 0) state.notes[i] = res.note;
     render();
-    showToast(res.note.pinned ? "Pinned" : "Unpinned");
+    showToast(res.note.pinned ? tt("app.notes.toastPinned", "Pinned") : tt("app.notes.toastUnpinned", "Unpinned"));
   }
 
   // Events
@@ -557,7 +595,7 @@
   });
 
   els.captureForm.addEventListener("submit", captureSubmit);
-  els.btnNew.addEventListener("click", () => createNote({ title: "Untitled" }));
+  els.btnNew.addEventListener("click", () => createNote({ title: tt("app.notes.untitled", "Untitled") }));
 
   els.searchInput.addEventListener("input", () => {
     state.search = els.searchInput.value;
@@ -581,12 +619,12 @@
     if (!note) return;
     if (state.dirty) await flushSave();
     const copy = await createNote({
-      title: `${note.title || "Untitled"} (copy)`,
+      title: `${note.title || tt("app.notes.untitled", "Untitled")} ${tt("app.notes.copySuffix", "(copy)")}`,
       body: note.body || "",
       tags: note.tags || [],
       notebookId: note.notebookId,
     });
-    if (copy) showToast("Duplicated");
+    if (copy) showToast(tt("app.notes.duplicated", "Duplicated"));
   });
 
   els.btnArchive.addEventListener("click", async () => {
@@ -595,7 +633,7 @@
     if (state.dirty) await flushSave();
     const res = await api.invoke("note.archive", { id: note.id, archived: !note.archived });
     if (!res?.ok) {
-      showToast(res?.error || "Archive failed", "err");
+      showToast(res?.error || tt("app.notes.archiveFailed", "Archive failed"), "err");
       return;
     }
     const idx = state.notes.findIndex((n) => n.id === note.id);
@@ -605,7 +643,7 @@
       state.selectedId = list[0]?.id || null;
     }
     render();
-    showToast(res.note.archived ? "Archived" : "Restored");
+    showToast(res.note.archived ? tt("app.notes.toastArchived", "Archived") : tt("app.notes.toastRestored", "Restored"));
   });
 
   els.btnDelete.addEventListener("click", () => {
@@ -627,13 +665,13 @@
     if (!name) return;
     const res = await api.invoke("notebook.add", { name });
     if (!res?.ok) {
-      showToast(res?.error || "Could not create notebook", "err");
+      showToast(res?.error || tt("app.notes.notebookFailed", "Could not create notebook"), "err");
       return;
     }
     state.notebooks.push(res.notebook);
     els.notebookModal.close();
     setView("notebook", { notebookId: res.notebook.id });
-    showToast(`Notebook “${res.notebook.name}”`);
+    showToast(tt("app.notes.notebookCreated", `Notebook “${res.notebook.name}”`, { name: res.notebook.name }));
   });
 
   function typingTarget(el) {
@@ -645,7 +683,7 @@
   document.addEventListener("keydown", (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "n") {
       e.preventDefault();
-      createNote({ title: "Untitled" });
+      createNote({ title: tt("app.notes.untitled", "Untitled") });
       return;
     }
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
@@ -743,11 +781,16 @@
       try {
         await window.appAuth.logout();
       } catch (err) {
-        showToast(err?.message || "Could not sign out");
+        showToast(err?.message || tt("app.notes.signOutFailed", "Could not sign out"));
         els.btnSignOut.disabled = false;
       }
     });
   }
+
+  document.addEventListener("myspace-app-i18n-applied", () => {
+    document.title = tt("app.notes.name", "Notes");
+    render();
+  });
   
   load().then(() => {
     els.captureInput.focus();

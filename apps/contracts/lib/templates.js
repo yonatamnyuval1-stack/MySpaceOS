@@ -19,7 +19,7 @@ const CONTRACT_TEMPLATES = [
       {
         n: "1",
         title: "DEFINITIONS",
-        body: 'For purposes of this Non-Disclosure Agreement ("Agreement"), "Confidential Information" means all non-public information disclosed by {{party_a_name}} ("Disclosing Party") to {{party_b_name}} ("Receiving Party") relating to: {{purpose}}.',
+        body: 'For purposes of this Non-Disclosure Agreement , "Confidential Information" means all non-public information disclosed by {{party_a_name}} ("Disclosing Party") to {{party_b_name}} ("Receiving Party") relating to: {{purpose}}.',
       },
       {
         n: "2",
@@ -207,7 +207,7 @@ const CONTRACT_TEMPLATES = [
       },
       {
         n: "III",
-        title: "STATEMENT OF FACTS — WHAT ACTUALLY HAPPENED",
+        title: "STATEMENT OF FACTS: WHAT ACTUALLY HAPPENED",
         body: "{{what_happened}}",
         freeform: true,
       },

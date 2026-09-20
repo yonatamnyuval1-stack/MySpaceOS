@@ -1,4 +1,11 @@
 (function (root) {
+  function tt(key, fallback, vars) {
+    const I = root.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const { formatTimerDisplay } = root.ClockUtils;
   const { notifyPomodoro } = root.ClockAudio;
   const { getPomodoro, savePomodoro, load } = root.ClockStorage;
@@ -9,29 +16,31 @@
     longBreak: "longBreak",
   };
 
-  const PHASE_META = {
-    work: {
-      label: "Focus",
-      badge: "Work session",
-      notifyTitle: "Focus complete",
-      notifyBody: "Great work! Time for a break.",
-      nextAuto: (s) => (s.cycleCount >= s.settings.longEvery ? PHASE.longBreak : PHASE.shortBreak),
-    },
-    shortBreak: {
-      label: "Short break",
-      badge: "Short break",
-      notifyTitle: "Break over",
-      notifyBody: "Ready for another focus session?",
-      nextAuto: () => PHASE.work,
-    },
-    longBreak: {
-      label: "Long break",
-      badge: "Long break",
-      notifyTitle: "Long break over",
-      notifyBody: "You earned it. Start a new focus round.",
-      nextAuto: () => PHASE.work,
-    },
-  };
+  function phaseMeta() {
+    return {
+      work: {
+        label: tt("app.worldClock.pomo.focus", "Focus"),
+        badge: tt("app.worldClock.pomo.workBadge", "Work session"),
+        notifyTitle: tt("app.worldClock.pomo.focusDone", "Focus complete"),
+        notifyBody: tt("app.worldClock.pomo.focusDoneBody", "Great work! Time for a break."),
+        nextAuto: (s) => (s.cycleCount >= s.settings.longEvery ? PHASE.longBreak : PHASE.shortBreak),
+      },
+      shortBreak: {
+        label: tt("app.worldClock.pomo.shortBreak", "Short break"),
+        badge: tt("app.worldClock.pomo.shortBreak", "Short break"),
+        notifyTitle: tt("app.worldClock.pomo.breakOver", "Break over"),
+        notifyBody: tt("app.worldClock.pomo.breakOverBody", "Ready for another focus session?"),
+        nextAuto: () => PHASE.work,
+      },
+      longBreak: {
+        label: tt("app.worldClock.pomo.longBreak", "Long break"),
+        badge: tt("app.worldClock.pomo.longBreak", "Long break"),
+        notifyTitle: tt("app.worldClock.pomo.longOver", "Long break over"),
+        notifyBody: tt("app.worldClock.pomo.longOverBody", "You earned it. Start a new focus round."),
+        nextAuto: () => PHASE.work,
+      },
+    };
+  }
 
   const page = {
     id: "pomodoro",
@@ -130,7 +139,7 @@
       this.remainingSec = 0;
       this.page.classList.add("pomo-done");
 
-      const meta = PHASE_META[this.phase];
+      const meta = phaseMeta()[this.phase];
       await notifyPomodoro(meta.notifyTitle, meta.notifyBody);
 
       if (this.phase === PHASE.work) {
@@ -236,7 +245,7 @@
     },
 
     updateUi() {
-      const meta = PHASE_META[this.phase];
+      const meta = phaseMeta()[this.phase];
       this.page.dataset.phase = this.phase;
 
       this.page.querySelector("#pomo-display").textContent = formatTimerDisplay(this.remainingSec);
@@ -249,10 +258,16 @@
       if (ring) ring.style.strokeDashoffset = String(283 - (283 * pct) / 100);
 
       const status = this.page.querySelector("#pomo-status");
-      status.textContent = this.running ? "In progress…" : this.remainingSec <= 0 ? "Phase complete" : "Ready";
+      status.textContent = this.running
+        ? tt("app.worldClock.pomo.inProgress", "In progress…")
+        : this.remainingSec <= 0
+          ? tt("app.worldClock.pomo.phaseComplete", "Phase complete")
+          : tt("app.worldClock.pomo.ready", "Ready");
 
       const startBtn = this.page.querySelector("#pomo-start");
-      startBtn.textContent = this.running ? "Pause" : "Start";
+      startBtn.textContent = this.running
+        ? tt("app.worldClock.pomo.pause", "Pause")
+        : tt("app.worldClock.pomo.start", "Start");
       startBtn.classList.toggle("btn-warn", this.running);
 
       this.page.querySelector("#pomo-today").textContent = String(this.stats.completed);
@@ -271,15 +286,30 @@
       const nextEl = this.page.querySelector("#pomo-next");
       if (this.phase === PHASE.work) {
         const isLong = (this.stats.completed + 1) % this.settings.longEvery === 0;
-        const next = isLong
-          ? `Long break (${this.settings.longBreakMin}m)`
-          : `Short break (${this.settings.shortBreakMin}m)`;
-        nextEl.textContent = `After this: ${next}`;
+        nextEl.textContent = isLong
+          ? tt("app.worldClock.pomo.afterLong", `After this: Long break (${this.settings.longBreakMin}m)`, {
+              n: this.settings.longBreakMin,
+            })
+          : tt("app.worldClock.pomo.afterShort", `After this: Short break (${this.settings.shortBreakMin}m)`, {
+              n: this.settings.shortBreakMin,
+            });
       } else if (this.phase === PHASE.shortBreak) {
-        nextEl.textContent = `After this: Focus (${this.settings.workMin}m)`;
+        nextEl.textContent = tt(
+          "app.worldClock.pomo.afterFocus",
+          `After this: Focus (${this.settings.workMin}m)`,
+          { n: this.settings.workMin }
+        );
       } else {
-        nextEl.textContent = `After this: New round · Focus (${this.settings.workMin}m)`;
+        nextEl.textContent = tt(
+          "app.worldClock.pomo.afterNewRound",
+          `After this: New round · Focus (${this.settings.workMin}m)`,
+          { n: this.settings.workMin }
+        );
       }
+    },
+
+    repaintI18n() {
+      this.updateUi();
     },
   };
 

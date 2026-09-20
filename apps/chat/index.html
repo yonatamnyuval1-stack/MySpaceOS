@@ -6,6 +6,7 @@
     <title>Chat</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
+    <link rel="stylesheet" href="../shared/settings-panel.css" />
   </head>
   <body>
     <div class="shell" id="shell">
@@ -83,7 +84,6 @@
             <button type="button" class="text-btn hidden" id="btn-stop">Stop</button>
             <button type="submit" class="send" id="btn-send" aria-label="Send">Send</button>
           </form>
-          <p class="fine" id="fine">Enter to send · Shift+Enter for a new line</p>
         </footer>
       </section>
     </div>
@@ -136,7 +136,7 @@
               Use in chats
             </label>
           </div>
-          <p class="memory-lead">Facts Mind remembers across conversations — preferences, projects, context.</p>
+          <p class="memory-lead">Facts Mind remembers across conversations: preferences, projects, context.</p>
           <div class="memory-add">
             <input type="text" id="memory-new-text" class="memory-input" placeholder="Add a fact Mind should remember…" />
             <input type="text" id="memory-new-tags" class="memory-input memory-tags" placeholder="tags (optional)" />
@@ -161,12 +161,25 @@
           </div>
           <button type="button" class="icon-btn" data-close="modes-modal" aria-label="Close">×</button>
         </div>
-        <p class="modes-lead">Each mode is a different mind — tone, rules, and how it answers.</p>
+        <p class="modes-lead">Each mode is a different mind: tone, rules, and how it answers.</p>
         <div class="modes-grid" id="modes-grid"></div>
       </div>
     </div>
 
     <div class="toast hidden" id="toast"></div>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/app-language.js"></script>
+    <script src="../shared/settings-definitions.js"></script>
+    <script src="../shared/settings-boot.js"></script>
+    <script src="../shared/app-settings-runtime.js"></script>
     <script src="app.js"></script>
+    <script>window.MySpaceAppLanguage && window.MySpaceAppLanguage.boot();</script>
   </body>
 </html>

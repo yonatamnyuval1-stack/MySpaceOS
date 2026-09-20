@@ -10,16 +10,29 @@
     "atom-rose": "brand/atom-rose.png",
   };
 
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    const fill = (s) => {
+      if (!vars || typeof s !== "string") return s;
+      return s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] != null ? String(vars[k]) : `{${k}}`));
+    };
+    if (!I?.t) return fill(fallback || key);
+    const v = I.t(key, vars);
+    return v === key ? fill(fallback || key) : v;
+  }
+
   const SERIES_DEFS = [
-    { id: "ai", label: "AI", mark: "atom-rose", hint: "Mind · Flow" },
-    { id: "web", label: "Web", mark: "atom-green", hint: "Browser · Connect" },
-    { id: "shell", label: "Shell", mark: "atom-cyan", hint: "Language atlas · Scripts runtime" },
-    { id: "link", label: "Link", mark: "atom-violet", hint: "MSL · Parts · Pulse · Resolve" },
+    { id: "ai", labelKey: "shell.series.ai", label: "AI", hintKey: "shell.series.ai.hint", hint: "Mind · Flow", mark: "atom-rose" },
+    { id: "web", labelKey: "shell.series.web", label: "Web", hintKey: "shell.series.web.hint", hint: "Browser · Connect", mark: "atom-green" },
+    { id: "shell", labelKey: "shell.series.shell", label: "Shell", hintKey: "shell.series.shell.hint", hint: "Language atlas · Scripts runtime", mark: "atom-cyan" },
+    { id: "link", labelKey: "shell.series.link", label: "Link", hintKey: "shell.series.link.hint", hint: "MSL · Parts · Pulse · Resolve", mark: "atom-violet" },
     {
       id: "platform",
+      labelKey: "shell.series.platform",
       label: "Platform",
-      mark: "atom-white",
+      hintKey: "shell.series.platform.hint",
       hint: "Files · Jobs · Scheduler · Themes · more",
+      mark: "atom-white",
     },
   ];
 
@@ -409,21 +422,24 @@
     menu.dataset.series = seriesDef.id;
     menu.replaceChildren();
 
+    const label = tt(seriesDef.labelKey, seriesDef.label);
+    const hint = tt(seriesDef.hintKey, seriesDef.hint || "");
+
     const head = document.createElement("div");
     head.className = "app-rail-series-menu-head";
     const title = document.createElement("span");
     title.className = "app-rail-series-menu-title";
-    title.textContent = seriesDef.label;
+    title.textContent = label;
     const sub = document.createElement("span");
     sub.className = "app-rail-series-menu-sub";
-    sub.textContent = seriesDef.hint || "";
+    sub.textContent = hint;
     head.append(title, sub);
     menu.appendChild(head);
 
     if (!services.length) {
       const empty = document.createElement("p");
       empty.className = "app-rail-series-menu-empty";
-      empty.textContent = "Nothing here yet";
+      empty.textContent = tt("shell.rail.empty", "Nothing here yet");
       menu.appendChild(empty);
       return;
     }
@@ -530,12 +546,14 @@
     closeSeriesMenu();
 
     for (const def of SERIES_DEFS) {
+      const label = tt(def.labelKey, def.label);
+      const hint = tt(def.hintKey, def.hint || "");
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = `app-rail-series-btn series-${def.id}`;
       btn.dataset.seriesId = def.id;
-      btn.title = `${def.label} — ${def.hint}`;
-      btn.setAttribute("aria-label", `${def.label} series`);
+      btn.title = `${label} — ${hint}`;
+      btn.setAttribute("aria-label", tt("shell.rail.seriesAria", "{name} series", { name: label }));
       btn.setAttribute("aria-haspopup", "menu");
       btn.setAttribute("aria-expanded", "false");
 

@@ -27,7 +27,7 @@
       "mark": "atom-green",
       "action": "open-browser",
       "tagline": "In-app browsing and unified search",
-      "summary": "Workspace web tabs, address bar, and My Space Browser — browse without leaving the shell.",
+      "summary": "Workspace web tabs, address bar, and My Space Browser: browse without leaving the shell.",
       "surfaces": [
         { "id": "home", "label": "Home", "hint": "My Space Browser" },
         { "id": "web", "label": "Web", "hint": "New browser tab" }
@@ -59,9 +59,9 @@
       "mark": "atom-cyan",
       "action": "open-shell",
       "tagline": "Atlas for My Space Language",
-      "summary": "Entry map for My Space Language — the OS orchestration language. Browse grammar (let, fn, if) and every live operation (notes(…), jobs(…), schedule(…), msl(…), …). Type on the desktop line or palette; author long programs in Scripts. Shell is not the language itself and not the Scripts runtime.",
+      "summary": "Entry map for My Space Language: the OS orchestration language. Browse grammar (let, fn, if) and every live operation (notes(…), jobs(…), schedule(…), msl(…), …). Type on the desktop line or palette; author long programs in Scripts. Shell is not the language itself and not the Scripts runtime.",
       "surfaces": [
-        { "id": "overview", "label": "Overview", "hint": "Language · Scripts · Shell" },
+        { "id": "overview", "label": "Overview", "hint": "Language, Scripts, Shell" },
         { "id": "language", "label": "Language", "hint": "My Space Language" },
         { "id": "modules", "label": "Operations", "hint": "All module verbs" },
         { "id": "core", "label": "Core", "hint": "wait, backup, check…" }
@@ -92,7 +92,7 @@
       "accent": "violet",
       "mark": "atom-violet",
       "action": "open-msl",
-      "tagline": "My Space Link — cross-app capabilities",
+      "tagline": "My Space Link: cross-app capabilities",
       "summary": "Full app for the capability bus: browse providers, mint msl:v1 keys, manage the library, and inject into AI apps. Open from Platform → MSL. Shell: msl(open) · msl(list) · msl(invoke …).",
       "surfaces": [
         { "id": "caps", "label": "Capabilities", "hint": "Browse caps" },
@@ -110,7 +110,7 @@
       "accent": "violet",
       "mark": "atom-violet",
       "action": "open-parts",
-      "tagline": "GitHub between apps — embeddable modules",
+      "tagline": "GitHub between apps: embeddable modules",
       "summary": "Full app catalog of clean, reusable code parts (search helpers, UI fragments, data utilities). Browse like a forge, open a part like a repo, adopt by copying files — written without host-app coupling. Complements MSL (live calls) and Pulse (messages). Shell: parts(…).",
       "surfaces": [
         { "id": "explore", "label": "Explore", "hint": "Browse parts" },
@@ -127,7 +127,7 @@
       "accent": "violet",
       "mark": "atom-violet",
       "action": "open-pulse",
-      "tagline": "Link Bus — internal apps & Composio external tools",
+      "tagline": "Link Bus: internal apps & Composio external tools",
       "summary": "Cross-app messaging bus for internal apps and Composio external tools. Per-app command profiles (pulse.json), send/subscribe, plus External tab for API key, Connect Links, and toolkit sync. Complements MSL. Shell: pulse(…) · pulse(external).",
       "surfaces": [
         { "id": "routes", "label": "Routes", "hint": "Command catalog" },
@@ -147,7 +147,7 @@
       "accent": "violet",
       "mark": "atom-violet",
       "action": "open-resolve",
-      "tagline": "App troubleshooting — report, triage & fix",
+      "tagline": "App troubleshooting: report, triage & fix",
       "summary": "Platform service for app incidents: apps report via Pulse in real time, Resolve matches playbooks (e.g. restore .bak), and you apply fixes from the inbox. Shell: resolve(…) · pulse(send resolve report …).",
       "surfaces": [
         { "id": "inbox", "label": "Inbox", "hint": "Open incidents" },
@@ -163,7 +163,7 @@
       "mark": "atom-white",
       "action": "open-jobs",
       "tagline": "OS compute runtime + capacity contract",
-      "summary": "Full compute runtime app (not a desktop tile): queue, active, done, enqueue, and capacity pools — Interactive, Connect, Shell, Background. Connect opens are prioritized. Uses the default My Space atom — not a branded logo series. Shell: jobs(open) · jobs(list) · jobs(capacity).",
+      "summary": "Full compute runtime app (not a desktop tile): queue, active, done, enqueue, and capacity pools: Interactive, Connect, Shell, Background. Connect opens are prioritized. Uses the default My Space atom — not a branded logo series. Shell: jobs(open) · jobs(list) · jobs(capacity).",
       "surfaces": [
         { "id": "queue", "label": "Queue", "hint": "All jobs" },
         { "id": "active", "label": "Active", "hint": "Queued & running" },
@@ -179,7 +179,7 @@
       "accent": "white",
       "mark": "atom-white",
       "action": "open-scheduler",
-      "tagline": "OS time runtime — when work fires",
+      "tagline": "OS time runtime: when work fires",
       "summary": "Platform time contracts (not a desktop tile): active schedules, history, and create. Triggers: every / daily / in / at. Actions enqueue to Jobs by default (or run shell direct). Same store as schedule(…) in Shell and Scripts. Complements Jobs (compute) and Shell when (events). Shell: schedule(open) · schedule(list) · schedule(add every 1h …).",
       "surfaces": [
         { "id": "active", "label": "Active", "hint": "Enabled schedules" },
@@ -211,7 +211,7 @@
       "accent": "white",
       "mark": "atom-white",
       "action": "open-network",
-      "tagline": "Host connectivity — status, adapters, ports",
+      "tagline": "Host connectivity: status, adapters, ports",
       "summary": "Platform network service (not a desktop tile): online status, primary IP, reachability probes (DNS / internet / Gemini / GitHub), adapters, and listening ports. Opens Windows Network settings when needed. Shell: network(open) · network(status) · network(check).",
       "surfaces": [
         { "id": "status", "label": "Status", "hint": "Online + reachability" },
@@ -291,7 +291,7 @@
       "accent": "rose",
       "mark": "atom-rose",
       "action": "open-mind",
-      "tagline": "OS AI runtime — conversations, tasks, models",
+      "tagline": "OS AI runtime: conversations, tasks, models",
       "summary": "Platform AI control plane (not a desktop app). Everyday · Quick · Deep. Long-term Memory for facts and preferences. Gemini key and optional Ollama in Setup.",
       "surfaces": [
         { "id": "chat", "label": "Chat", "hint": "History threads" },
@@ -309,7 +309,7 @@
       "accent": "rose",
       "mark": "atom-rose",
       "action": "open-flow",
-      "tagline": "AI plans tool flows — you approve before they run",
+      "tagline": "AI plans tool flows: you approve before they run",
       "summary": "Personal automation studio (not a desktop app): plan → edit → approve → run. Shell: flow(…). Connects to Model Lab as an external provider — Lab is not a My Space service.",
       "surfaces": [
         { "id": "studio", "label": "Studio", "hint": "Plan & approve" },

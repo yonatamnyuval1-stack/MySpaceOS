@@ -2,7 +2,7 @@
   "id": "contracts",
   "name": "Digital Contracts",
   "version": "1.0.0",
-  "description": "Formal digital contracts — fillable fields, signatures & expiry alerts",
+  "description": "Formal digital contracts: fillable fields, signatures & expiry alerts",
   "icon": "⚖️",
   "auth": {
     "type": "local",

@@ -24,7 +24,7 @@
           "label": "Check disk space and file permissions, then retry save",
           "action": "advise",
           "args": {
-            "message": "Save failed — free disk space, check that My Space can write to userData, then try again."
+            "message": "Save failed: free disk space, check that My Space can write to userData, then try again."
           }
         }
       ]
@@ -52,7 +52,7 @@
           "label": "Check connection and retry",
           "action": "advise",
           "args": {
-            "message": "Network request failed — check internet / VPN / firewall, then retry the action."
+            "message": "Network request failed: check internet / VPN / firewall, then retry the action."
           }
         }
       ]
@@ -67,7 +67,7 @@
           "label": "Review app / OS permissions",
           "action": "advise",
           "args": {
-            "message": "Access was denied — check Permissions service and OS file/folder access for this app."
+            "message": "Access was denied: check Permissions service and OS file/folder access for this app."
           }
         }
       ]
@@ -82,7 +82,7 @@
           "label": "Reload the app; if it repeats, restart My Space",
           "action": "advise",
           "args": {
-            "message": "A script or process error occurred — reload the app tab, or restart My Space if it keeps happening."
+            "message": "A script or process error occurred: reload the app tab, or restart My Space if it keeps happening."
           }
         }
       ]
@@ -97,7 +97,7 @@
           "label": "Reload the page / check the URL",
           "action": "advise",
           "args": {
-            "message": "The page or renderer failed to load — reload the tab; for URL apps check the address and network."
+            "message": "The page or renderer failed to load: reload the tab; for URL apps check the address and network."
           }
         }
       ]

@@ -1,9 +1,9 @@
 (function () {
   const PAGE_META = {
-    library: { title: "Contract Library", subtitle: "Formal agreements — create, sign & track" },
+    library: { title: "Contract Library", subtitle: "Formal agreements: create, sign & track" },
     editor: { title: "Edit Contract", subtitle: "Fill all fields required for this agreement" },
     document: { title: "Official Document", subtitle: "Review text and apply signatures" },
-    expiring: { title: "Expiry Alerts", subtitle: "Contracts ending soon — desktop notifications" },
+    expiring: { title: "Expiry Alerts", subtitle: "Contracts ending soon: desktop notifications" },
   };
 
   const pages = [

@@ -29,7 +29,7 @@
         "aliases-macros + recipes: turn habits into one-liners.",
         "msl + silent-actions: how apps talk without stealing focus.",
         "command-index: jump table when you already know the app name.",
-        "settings-complete · msl-capabilities · architecture: exhaustive reference.",
+        "settings-complete, msl-capabilities, architecture: exhaustive reference.",
       ]),
       h2("The four pillars"),
       table(
@@ -38,7 +38,7 @@
           ["Desktop", "Pins, layout, focus, wallpaper, empty-space command line", "Main My Space window"],
           ["Apps", "First-party myapps (incl. Connect hub) + external tools (Edge, VS Code, Cursor…)", "apps/ + config/apps.json"],
           ["My Space Language", "Orchestration: grammar + module(…) operations; Scripts = runtime; Shell = atlas", "Desktop line · Scripts · Platform → Shell"],
-          ["Links (MSL)", "Publish and call capabilities across apps (My Space Link — not the Language)", "MSL panel + per-app settings"],
+          ["Links (MSL)", "Publish and call capabilities across apps (My Space Link: not the Language)", "MSL panel + per-app settings"],
         ]
       ),
       h2("What “first-party” means"),
@@ -51,7 +51,7 @@
         "Not a cloud suite: data stays in Electron userData on this PC unless you export it.",
         "Not a free-form chatbot OS: Model Flow and Gemini-assisted apps are opt-in helpers, not the core loop.",
       ]),
-      tip("Open Docs anytime: docs · docs(overview) · docs(search timer)"),
+      tip("Open Docs anytime: docs, docs(overview), docs(search timer)"),
       note("This handbook mirrors the live shell. After Restart & Update, new verbs appear here and in help <app>."),
     ])
   );
@@ -66,9 +66,9 @@
       table(
         ["Intent", "Typical form", "Window behavior"],
         [
-          ["Navigate / open", "run builds · space(ocean) · today(tomorrow)", "Opens or focuses UI"],
-          ["Read / inspect", "stocks(quote AAPL) · geo(get IL) · sys(cpu)", "Silent message (unless already open → quiet refresh)"],
-          ["Mutate", "today(add …) · vault(copy …) · decks(new …)", "Silent; syncIfOpen if window exists"],
+          ["Navigate / open", "run builds, space(ocean), today(tomorrow)", "Opens or focuses UI"],
+          ["Read / inspect", "stocks(quote AAPL), geo(get IL), sys(cpu)", "Silent message (unless already open → quiet refresh)"],
+          ["Mutate", "today(add …), vault(copy …), decks(new …)", "Silent; syncIfOpen if window exists"],
         ]
       ),
       h2("Names resolve fuzzily"),
@@ -77,7 +77,7 @@
       ),
       h2("Classic routes vs command protocol"),
       ul([
-        "Classic: run geography(country:IL) — key:value deep links into UI.",
+        "Classic: run geography(country:IL): key:value deep links into UI.",
         "Protocol: geo: verb-first, often silent, designed for scripts.",
         "Both coexist. Prefer protocol for automation; classic for precise UI deep-links.",
       ]),
@@ -85,7 +85,7 @@
       warn(
         "Vault never accepts a master password from the shell. Unlock in the Vault window first. MSL providers can be rolled back per app in Settings."
       ),
-      tip("When stuck: help <app> · check routes <app> · docs(search <topic>)"),
+      tip("When stuck: help <app>, check routes <app>, docs(search <topic>)"),
     ])
   );
 
@@ -133,9 +133,9 @@
       ),
       h2("Launch & focus"),
       code([
-        "run <app> · open <app> · focus <app>",
-        "run remote hub · run \"vs code\"",
-        "focus builds · focus today",
+        "run <app>, open <app>, focus <app>",
+        "run remote hub, run \"vs code\"",
+        "focus builds, focus today",
       ]),
       h2("Close"),
       code([
@@ -147,19 +147,19 @@
       ]),
       h2("Layout helpers"),
       code([
-        "pin <app> · unpin <app>",
+        "pin <app>, unpin <app>",
         "reveal <app>",
-        "desktop · settings",
-        "refresh · sort · reset layout",
+        "desktop, settings",
+        "refresh, sort · reset layout",
       ]),
       h2("Myapps vs external"),
       ul([
-        "myapp: rendered inside My Space (Clock, Docs, Stocks…). Supports routes and often app(verb).",
-        "external: Windows executables (Edge, Docker, Terminal, Cursor). Launch/focus/close semantics differ; embedding may be available when configured.",
-        "url: opens a site (e.g. GitHub) in the browser.",
+        "myapp: rendered inside My Space. Supports routes and often app(verb).",
+        "external: Windows executables. Launch/focus/close semantics differ; embedding may be available when configured.",
+        "url: opens a site in the browser.",
       ]),
-      tip("Fuzzy names: run code lexicon · focus digital contracts · run pi digit"),
-      warn("close all does not quit My Space itself — it clears app windows. External processes may keep running."),
+      tip("Fuzzy names: run code lexicon, focus digital contracts, run pi digit"),
+      warn("close all does not quit My Space itself: it clears app windows. External processes may keep running."),
     ])
   );
 
@@ -194,14 +194,14 @@
       p(
         "My Space Language is the orchestration language of My Space OS. It connects the OS to apps inside My Space and drives everything around them (platform services, automation, permissions, files, schedules, jobs, link buses). It is not a bash clone and not a general-purpose app language — other languages own app-internal logic."
       ),
-      h2("Language · Scripts · Shell · Services"),
+      h2("Language, Scripts, Shell, Services"),
       table(
         ["Layer", "Role"],
         [
           ["My Space Language", "Grammar + operations (let, fn, if, and every module verb)"],
           ["Scripts", "Runtime / library for saved programs written in the language"],
           ["Shell", "Atlas + entry surfaces (desktop line, palette, Platform → Shell)"],
-          ["Platform services", "Jobs, Scheduler, Files, MSL, Pulse… — called by language operations"],
+          ["Platform services", "Jobs, Scheduler, Files, MSL, Pulse…: called by language operations"],
         ]
       ),
       h2("Existing commands are language operations"),
@@ -241,16 +241,16 @@
       ]),
       tip("Inside scripts and macros, prefer silent verbs so playback stays calm."),
       note("Global aliases like timer 25m and wait 5s still exist; clock(timer 25m) is clearer in shared scripts. Shell Atlas is the long-form map — Docs stays the short handbook."),
-      h2("North star — build apps with other languages"),
+      h2("North star: build apps with other languages"),
       p(
         "My Space Language is not only for short automations. Together with Python, JavaScript, and other host languages, it should let users build My Space apps and other complete artifacts: scaffold the app package, wire MSL/Pulse/Permissions, run host tools for UI and logic, schedule maintenance, and pack for share."
       ),
       table(
         ["Owner", "Responsibility", "Examples"],
         [
-          ["My Space Language", "Glue, OS contract, wiring", "app(scaffold …) · msl(expose …) · schedule(…) · host(run …) · pack(build …)"],
-          ["Host languages", "App-internal logic", "Python data · Node UI gen · algorithms"],
-          ["Platform services", "Runtime enforcement", "Jobs · Scheduler · Permissions · Files sandbox"],
+          ["My Space Language", "Glue, OS contract, wiring", "app(scaffold …), msl(expose …), schedule(…), host(run …), pack(build …)"],
+          ["Host languages", "App-internal logic", "Python data, Node UI gen, algorithms"],
+          ["Platform services", "Runtime enforcement", "Jobs, Scheduler, Permissions, Files sandbox"],
         ]
       ),
       h2("Create ladder"),
@@ -258,12 +258,12 @@
       table(
         ["Stage", "Status", "Operations"],
         [
-          ["In-OS objects", "live", "notes(add …) · schedule(add …) · pulse(send …)"],
-          ["Language programs", "live", "scripts(set …) · scripts(append …) · scripts(run …)"],
-          ["Portable artifacts", "live", "pack(export …) · pack(open …)"],
-          ["Workspace files", "live", "files(write …) · files(mkdir …) · files(copy …) · files(workspace)"],
-          ["Host interop", "live", "host(run python file:…) · host(run node file:…) · host(runtimes)"],
-          ["My Space apps", "live", "app(scaffold …) · app(register …) · pack(build …) · run <id>"],
+          ["In-OS objects", "live", "notes(add …), schedule(add …), pulse(send …)"],
+          ["Language programs", "live", "scripts(set …), scripts(append …), scripts(run …)"],
+          ["Portable artifacts", "live", "pack(export …), pack(open …)"],
+          ["Workspace files", "live", "files(write …), files(mkdir …), files(copy …), files(workspace)"],
+          ["Host interop", "live", "host(run python file:…), host(run node file:…), host(runtimes)"],
+          ["My Space apps", "live", "app(scaffold …), app(register …), pack(build …), run <id>"],
         ]
       ),
       h2("App package (target shape)"),
@@ -330,7 +330,7 @@
       ),
       h2("loop: fixed count"),
       code(["loop 3 then sys(cpu)", "loop 5 then wait 1s", "loop help"]),
-      p("Runs the body N times. Good for short retries or spaced waits — not for unbounded work."),
+      p("Runs the body N times. Good for short retries or spaced waits: not for unbounded work."),
       h2("while: conditional repeat"),
       code(["while check running then close", "while help"]),
       p("Re-evaluates the condition each iteration. Always design an exit (close something, pause Drift, etc.)."),
@@ -346,7 +346,7 @@
       ul([
         "Loop / while iterations are capped (~25) so a bad condition cannot freeze the UI.",
         "Nesting depth is capped (~12). Prefer macros over deep nesting.",
-        "A failing step inside ; chains stops the rest — know whether your body uses ; or |.",
+        "A failing step inside ; chains stops the rest: know whether your body uses ; or |.",
       ]),
       h2("When to use Scripts instead"),
       p("If the workflow is longer than a few lines, hard to read as one string, or you want to edit it visually: put it in Scripts and run scripts(name). Macros and if/loop stay best for short rituals."),
@@ -371,7 +371,7 @@
         "let a = 1; let b = 2",
       ]),
       p(
-        "Right-hand side may be a literal (number, true/false, quoted string) or any command. Command results are captured only when the command succeeds. Names are case-sensitive (`$Foo` ≠ `$foo`). Chain multiple lets with `;`."
+        "Right-hand side may be a literal or any command. Command results are captured only when the command succeeds. Names are case-sensitive (`$Foo` ≠ `$foo`). Chain multiple lets with `;`."
       ),
       h2("Use"),
       code([
@@ -396,7 +396,7 @@
       tip("Unresolved $names are left as-is so for … then run $item still works."),
       note("help lang prints the short grammar card. A failed RHS does not overwrite a previous binding."),
       h2("Related"),
-      p("shell-functions · shell-flow · app-scripts · cmd-protocol."),
+      p("shell-functions, shell-flow, app-scripts, cmd-protocol."),
     ])
   );
 
@@ -448,7 +448,7 @@
       tip("Prefer fn for reusable logic; prefer macro for short saved one-liners; prefer Scripts for long editable programs."),
       warn("Function names cannot be reserved words. Nesting is capped."),
       h2("Related"),
-      p("shell-vars · shell-flow · app-scripts · aliases-macros."),
+      p("shell-vars, shell-flow, app-scripts, aliases-macros."),
     ])
   );
 
@@ -468,9 +468,9 @@
       code([
         "timer 25m",
         "timer 25m Deep work",
-        "timer pause · timer stop · timer status",
+        "timer pause, timer stop, timer status",
         "pomodoro start",
-        "wait 5s · wait 2m",
+        "wait 5s, wait 2m",
         "wait until 14:30",
       ]),
       p("wait blocks the shell up to a safety cap (hours-scale limit). Prefer it inside macros for paced sequences."),
@@ -505,7 +505,7 @@
       ),
       h2("Discovery ladder"),
       ol([
-        "help — global cheat sheet of common patterns.",
+        "help: global cheat sheet of common patterns.",
         "help <app>: curated examples for one module.",
         "check routes <app>: pages, aliases, commands flag, and command help lines.",
         "docs(search <word>): handbook articles that explain why, not only how.",
@@ -528,10 +528,10 @@
       ul([
         "Search verbs (snooze, wake, quote) more often than app marketing names.",
         "Search protocol words (silent, msl, sync) for conceptual pages.",
-        "Bookmark pages you revisit — docs(bookmarks).",
+        "Bookmark pages you revisit: docs(bookmarks).",
       ]),
       tip("If help <app> looks empty after an update, Restart & Update, the preload bridge may still be on the previous version."),
-      note("Docs categories: Start · Shell · Commands · Apps · Protocols · Automation · Data & privacy · Recipes · Reference."),
+      note("Docs categories: Start, Shell, Commands, Apps, Protocols, Automation, Data & privacy, Recipes, Reference."),
     ])
   );
 
@@ -541,11 +541,11 @@
       table(
         ["Symptom", "Likely cause", "Fix"],
         [
-          ["Unknown command", "Typo or app not commands:true", "help <app> · check routes"],
-          ["API unavailable — restart", "Preload bridge missing after upgrade", "Restart & Update"],
+          ["Unknown command", "Typo or app not commands:true", "help <app>, check routes"],
+          ["API unavailable: restart", "Preload bridge missing after upgrade", "Restart & Update"],
           ["Not found / Ambiguous", "Name match failed or multiple hits", "Use id or a longer unique name"],
           ["Vault locked", "Mutation without unlock", "Unlock in Vault UI"],
-          ["Translation failed", "Network / provider", "Retry · translate(detect …)"],
+          ["Translation failed", "Network / provider", "Retry, translate(detect …)"],
           ["Machine not found", "Remote Hub empty / typo", "remote(list)"],
         ]
       ),
@@ -554,10 +554,8 @@
     ])
   );
 
-  // ─── Commands protocol ───────────────────────────────────
-
   add(
-    P("cmd-protocol", "App command protocol", "app(verb args) — no run required", ["commands", "protocol"], [
+    P("cmd-protocol", "App command protocol", "app(verb args): no run required", ["commands", "protocol"], [
       kicker("Commands"),
       p(
         "Apps opt in with commands: true in ROUTE_REGISTRY. Once enabled, tryExecuteAppCommand accepts app(verb …) without the run keyword. The same verbs usually work as run app(verb …)."
@@ -592,10 +590,10 @@
         "clock(timer 25m)",
         "clock(timer 90s Focus)",
         "clock(timer 25m label:Tea)",
-        "clock(timer pause) · clock(timer stop) · clock(timer status)",
-        "clock(pomodoro start) · clock(pomodoro work:45) · clock(pomodoro pause)",
+        "clock(timer pause), clock(timer stop), clock(timer status)",
+        "clock(pomodoro start), clock(pomodoro work:45), clock(pomodoro pause)",
         "clock(stopwatch)",
-        "clock(local) · clock(world) · clock(meetings)",
+        "clock(local), clock(world), clock(meetings)",
         "clock(help)",
       ]),
       h2("Clock: behavior notes"),
@@ -611,11 +609,11 @@
         "today(add Buy milk)",
         "today(add Call Dana 15:00)",
         "today(add Ship report tomorrow)",
-        "today(done Buy milk) · today(undo …) · today(delete …)",
-        "today(list) · today(list tomorrow)",
-        "today(snooze Buy milk 15m) · today(snooze … tomorrow)",
+        "today(done Buy milk), today(undo …), today(delete …)",
+        "today(list), today(list tomorrow)",
+        "today(snooze Buy milk 15m), today(snooze … tomorrow)",
         "today(clear done)",
-        "today(tomorrow) · today(later) · today(done) · today(all)",
+        "today(tomorrow), today(later), today(done), today(all)",
         "today(help)",
       ]),
       h2("Today: matching tasks"),
@@ -650,11 +648,11 @@
       p("Module builds. Pages: browse, timeline. Deep link openProject."),
       h2("Builds: verbs"),
       code([
-        "builds(list) · builds(list web) · builds(list fav)",
+        "builds(list), builds(list web), builds(list fav)",
         "builds(open Operating System)",
         "builds(new My App)",
-        "builds(folder My App) · builds(rescan My App)",
-        "builds(timeline) · builds(browse)",
+        "builds(folder My App), builds(rescan My App)",
+        "builds(timeline), builds(browse)",
         "builds(help)",
       ]),
       tip("Name matching is fuzzy on project titles; use a unique substring when several projects share a prefix."),
@@ -668,10 +666,10 @@
       p("Module profiles. Alias: vault. UI unlock is mandatory for mutations."),
       h2("Vault: verbs"),
       code([
-        "vault(status) · vault(lock)",
-        "vault(list) · vault(search gmail)",
-        "vault(open Gmail) · vault(copy Gmail)",
-        "vault(add Work Email) · vault(delete Name)",
+        "vault(status), vault(lock)",
+        "vault(list), vault(search gmail)",
+        "vault(open Gmail), vault(copy Gmail)",
+        "vault(add Work Email), vault(delete Name)",
         "vault(help)",
       ]),
       warn("If status says locked, open Vault, unlock, then retry copy/add/delete. The shell never asks for the master password."),
@@ -679,13 +677,13 @@
       p("Module contacts. Pages: browse, reminders, groups."),
       h2("Contacts: verbs"),
       code([
-        "contacts(list) · contacts(search Dana)",
+        "contacts(list), contacts(search Dana)",
         "contacts(add Dana | dana@mail.com | +972…)",
         "contacts(add Dana dana@mail.com)",
-        "contacts(email Dana) · contacts(phone Dana) · contacts(sms Dana)",
-        "contacts(upcoming) · contacts(open Dana)",
+        "contacts(email Dana), contacts(phone Dana), contacts(sms Dana)",
+        "contacts(upcoming), contacts(open Dana)",
         "contacts(delete Dana)",
-        "contacts(groups) · contacts(browse) · contacts(reminders)",
+        "contacts(groups), contacts(browse), contacts(reminders)",
         "contacts(help)",
       ]),
       h2("Contacts: add parsing"),
@@ -727,12 +725,12 @@
       p("Module system-info. Aliases: sysinfo, sys."),
       h2("System Info: verbs"),
       code([
-        "sysinfo(scan) · sys(system)",
-        "sys(cpu) · sys(memory) · sys(ram)",
-        "sys(storage) · sys(disk)",
-        "sys(processes) · sys(network) · sys(ports)",
-        "sys(environment) · sys(performance)",
-        "sysinfo(open cpu) · sys(open memory)",
+        "sysinfo(scan), sys(system)",
+        "sys(cpu), sys(memory), sys(ram)",
+        "sys(storage), sys(disk)",
+        "sys(processes), sys(network), sys(ports)",
+        "sys(environment), sys(performance)",
+        "sysinfo(open cpu), sys(open memory)",
         "sys(help)",
       ]),
       note("Scans are Windows-oriented; non-Windows returns limited placeholders."),
@@ -747,27 +745,27 @@
       p("Module remote-hub. Alias: remote. Pages: machines, quick, network, enable."),
       h2("Remote: verbs"),
       code([
-        "remote(list) · remote(search office)",
-        "remote(check) · remote(check Office)",
+        "remote(list), remote(search office)",
+        "remote(check), remote(check Office)",
         "remote(open Office)",
-        "remote(connect Office) · remote(connect Office ssh)",
-        "remote(wake Office) · remote(wake AA:BB:CC:DD:EE:FF)",
-        "remote(scan) · remote(tools)",
+        "remote(connect Office), remote(connect Office ssh)",
+        "remote(wake Office), remote(wake AA:BB:CC:DD:EE:FF)",
+        "remote(scan), remote(tools)",
         "remote(add Lab | 10.0.0.5 | rdp)",
-        "remote(delete Lab) · remote(import-ts)",
-        "remote(network) · remote(enable)",
+        "remote(delete Lab), remote(import-ts)",
+        "remote(network), remote(enable)",
         "remote(help)",
       ]),
       h2("Remote: connect modes"),
-      p("rdp · ssh · rustdesk · psremoting · explorer · winrs · custom: optional trailing token on connect."),
+      p("rdp, ssh, rustdesk, psremoting, explorer, winrs, custom: optional trailing token on connect."),
       h2("Drift: identity"),
       p("Module drift. Pages: activity, zones, insights."),
       h2("Drift: verbs"),
       code([
         "drift(scan)",
-        "drift(list) · drift(list today)",
+        "drift(list), drift(list today)",
         "drift(search config)",
-        "drift(zones) · drift(insights)",
+        "drift(zones), drift(insights)",
         "drift(pause)",
         "drift(open <eventId>)",
         "drift(help)",
@@ -796,19 +794,19 @@
       p("Module studies. Pages: home, templates, editor."),
       h2("Studies: verbs"),
       code([
-        "studies(list) · studies(search thesis)",
+        "studies(list), studies(search thesis)",
         "studies(open My Notes)",
-        "studies(templates) · studies(home) · studies(new)",
+        "studies(templates), studies(home), studies(new)",
         "studies(help)",
       ]),
       h2("Flag Quiz: identity"),
       p("Module flag-quiz. Aliases: flags, flagquiz, flag-learn. App display name: Learning Games."),
       h2("Flags: verbs"),
       code([
-        "flags(scores) · flags(list)",
-        "flags(quiz) · flags(start) · flags(play)",
-        "flags(meta) · flags(home) · flags(scores)",
-        "flags(clear) · flags(clear scores)",
+        "flags(scores), flags(list)",
+        "flags(quiz), flags(start), flags(play)",
+        "flags(meta), flags(home), flags(scores)",
+        "flags(clear), flags(clear scores)",
         "flags(help)",
       ]),
       note("quiz/start opens UI and starts a run; scores stays silent."),
@@ -821,35 +819,35 @@
       h2("Geography: identity"),
       p("Module geography. Alias: geo. Pages: explore, learn, traveled. Bare country names resolve to silent get."),
       code([
-        "geo(list) · geo(search Israel)",
-        "geo(get IL) · geo(info Japan)",
+        "geo(list), geo(search Israel)",
+        "geo(get IL), geo(info Japan)",
         "geography(Togo)                 # silent summary",
-        "geo(open Japan) · geo(learn Japan)",
-        "geo(traveled) · geo(explore)",
-        "geo(visited) · geo(favorites)",
+        "geo(open Japan), geo(learn Japan)",
+        "geo(traveled), geo(explore)",
+        "geo(visited), geo(favorites)",
         "geo(help)",
       ]),
       h2("Space: identity"),
       p("Module space. Pages: navigate, catalog, nasa, reports, aliens. Views: cosmos, ocean, earth."),
       code([
         "space(apod)",
-        "space(search Mars) · space(catalog)",
+        "space(search Mars), space(catalog)",
         "space(get earth)",
-        "space(missions) · space(missions apollo)",
+        "space(missions), space(missions apollo)",
         "space(reports)",
-        "space(ocean) · space(earth) · space(cosmos)",
-        "space(open Mars) · space(nasa) · space(aliens)",
+        "space(ocean), space(earth), space(cosmos)",
+        "space(open Mars), space(nasa), space(aliens)",
         "space(help)",
       ]),
       h2("History: identity"),
       p("Module history. Pages: figures, events, collection. Entities use Wikidata ids (Q…)."),
       code([
         "history(status)",
-        "history(list figures) · history(list events)",
+        "history(list figures), history(list events)",
         "history(search Napoleon)",
-        "history(get Q762) · history(info Napoleon)",
-        "history(open Napoleon) · history(bookmarks)",
-        "history(figures) · history(events)",
+        "history(get Q762), history(info Napoleon)",
+        "history(open Napoleon), history(bookmarks)",
+        "history(figures), history(events)",
         "history(help)",
       ]),
       tip("Bare geography/space names are silent summaries; prefix open to navigate."),
@@ -861,20 +859,20 @@
       kicker("Commands"),
       h2("Contracts: verbs"),
       code([
-        "contracts(list) · contracts(templates)",
-        "contracts(upcoming) · contracts(check)",
-        "contracts(get Lease) · contracts(open Lease)",
-        "contracts(editor) · contracts(expiring) · contracts(library)",
+        "contracts(list), contracts(templates)",
+        "contracts(upcoming), contracts(check)",
+        "contracts(get Lease), contracts(open Lease)",
+        "contracts(editor), contracts(expiring) · contracts(library)",
         "contracts(new)",
         "contracts(help)",
       ]),
       p("open can also match a template title to start editor with that template."),
       h2("MSL: verbs"),
       code([
-        "msl(list) · msl(caps) · msl(capabilities)",
+        "msl(list), msl(caps), msl(capabilities)",
         "msl(keys)",
         "msl(parse msl://…)",
-        "msl(open) · msl(home)",
+        "msl(open), msl(home)",
         "msl(help)",
       ]),
       tip("See Protocols → MSL providers for which apps publish what."),
@@ -886,25 +884,25 @@
       kicker("Commands"),
       h2("Code Lexicon"),
       code([
-        "lexicon(search promise) · lexicon(list async)",
-        "lexicon(get closure) · lexicon(promise)   # bare term → silent definition",
-        "lexicon(daily) · lexicon(stats) · lexicon(categories)",
-        "lexicon(open promise) · lexicon(browse)",
+        "lexicon(search promise), lexicon(list async)",
+        "lexicon(get closure), lexicon(promise)   # bare term → silent definition",
+        "lexicon(daily), lexicon(stats), lexicon(categories)",
+        "lexicon(open promise), lexicon(browse)",
         "lexicon(help)",
       ]),
       h2("Model Flow"),
       code([
-        "flow(meta) · flow(status)",
-        "flow(tools) · flow(history)",
+        "flow(meta), flow(status)",
+        "flow(tools), flow(history)",
         "flow(plan Send weekly digest email)",
-        "flow(open) · flow(studio)",
+        "flow(open), flow(studio)",
         "flow(help)",
       ]),
       p("plan returns a summary in the shell and paints the canvas if Flow is open. Edit steps in-app, then Approve & run. Tools panel shows Live vs Staged."),
       h2("Console"),
       code([
-        "console(aliases) · console(macros) · console(when) · console(history)",
-        "console(runner) · console(reference)",
+        "console(aliases), console(macros), console(when), console(history)",
+        "console(runner), console(reference)",
         "console(open aliases)",
         "shell(reference)                  # alias of console",
         "console(help)",
@@ -916,26 +914,26 @@
   add(
     P("cmd-docs-maps-scripts", "Docs, Maps & Scripts", "Handbook plus Scripts & Maps verbs", ["commands", "docs", "scripts", "maps"], [
       kicker("Commands"),
-      h2("Docs — verbs"),
+      h2("Docs: verbs"),
       code([
-        "docs(overview) · docs(cmd-protocol)",
+        "docs(overview), docs(cmd-protocol)",
         "docs(search timer)",
         "docs(open shell-language)",
-        "docs(list) · docs(bookmarks)",
+        "docs(list), docs(bookmarks)",
         "docs(help)",
       ]),
       h2("Scripts: verbs"),
       code([
-        "scripts(list) · scripts(get morning) · scripts(run morning)",
-        "scripts(set nightly backup(status)) · scripts(append nightly schedule(list))",
-        "scripts(open morning) · scripts(new focus) · scripts(help)",
+        "scripts(list), scripts(get morning), scripts(run morning)",
+        "scripts(set nightly backup(status)), scripts(append nightly schedule(list))",
+        "scripts(open morning), scripts(new focus), scripts(help)",
       ]),
       h2("World Maps: verbs"),
       code([
-        "maps(geocode Tel Aviv) · maps(notes) · maps(routes)",
-        "maps(status) · maps(open) · maps(help)",
+        "maps(geocode Tel Aviv), maps(notes), maps(routes)",
+        "maps(status), maps(open), maps(help)",
       ]),
-      tip("Deep pages: app-docs · app-scripts · app-maps · help <app>."),
+      tip("Deep pages: app-docs, app-scripts, app-maps, help <app>."),
     ])
   );
 
@@ -997,7 +995,7 @@
       ),
       h2("Settings panels"),
       p(
-        "Shared settings-definitions.js declares schema per module. Apps include the shared settings CSS/JS bundle to render toggles (history, MSL provider, language, …)."
+        "Shared settings-definitions.js declares schema per module. Apps include the shared settings CSS/JS bundle to render toggles (history, MSL provider, uiLanguage, …)."
       ),
     ])
   );
@@ -1016,7 +1014,7 @@
       h2("Contracts"),
       p("Template-driven formal documents with expiry scanning. upcoming/check keep renewals visible."),
       h2("Builds"),
-      p("Your maker inventory — projects, folders, rescans, timeline. Treat it as the index of everything you have built."),
+      p("Your maker inventory: projects, folders, rescans, timeline. Treat it as the index of everything you have built."),
       h2("Stocks"),
       p("Multi-asset tracker with modes, watchlists, alerts, portfolio. quote/watch are automation-friendly."),
       h2("Translate"),
@@ -1038,7 +1036,7 @@
       h2("Geography"),
       p("Country encyclopedia + learn profiles + travel log. get vs open vs learn are intentionally different verbs."),
       h2("History"),
-      p("Wikidata-backed figures and events with optional Wikipedia extracts. Cache status matters — history(status)."),
+      p("Wikidata-backed figures and events with optional Wikipedia extracts. Cache status matters: history(status)."),
       h2("Space"),
       p("Multi-realm navigator (cosmos/ocean/earth), NASA missions/reports, APOD. catalog search is the silent discovery tool."),
       h2("World Maps"),
@@ -1062,7 +1060,7 @@
       h2("Model Flow"),
       p("Plan/approve/run tool flows. Shell plan is great for drafting; execution with side effects stays in-app."),
       h2("Info"),
-      p("Cross-app digests / screen facts — useful after quizzes or long sessions."),
+      p("Cross-app digests / screen facts: useful after quizzes or long sessions."),
       h2("Icon Library, MSL & Docs"),
       p("Meta tooling: icons for makers, link keys for integration, handbook for humans."),
     ])
@@ -1138,19 +1136,19 @@
       table(
         ["Provider area", "Examples of capability themes"],
         [
-          ["Translate", "translate.text · detect · languages · history"],
-          ["Space", "bodies search/get · wiki · open link"],
+          ["Translate", "translate.text, detect, languages, history"],
+          ["Space", "bodies search/get, wiki, open link"],
           ["Icons", "icons.search"],
           ["Apps Info", "catalog / digests"],
-          ["Clock", "favorites · pomodoro status (provider set)"],
+          ["Clock", "favorites, pomodoro status (provider set)"],
           ["Stocks", "quotes / watch-related queries"],
           ["History", "entity queries"],
           ["World Maps", "map-related queries"],
-          ["Contacts", "list · reminders · email/phone open"],
-          ["Geography", "countries list/get · learn · maps open"],
+          ["Contacts", "list, reminders, email/phone open"],
+          ["Geography", "countries list/get, learn, maps open"],
           ["Today", "tasks list/add/toggle/generate"],
-          ["Builds", "projects list/get/create · folder open"],
-          ["Studies", "docs list/get · export"],
+          ["Builds", "projects list/get/create, folder open"],
+          ["Studies", "docs list/get, export"],
         ]
       ),
       note("If a capability is missing, the provider toggle may be off or the module may not be in MSL_CLIENTS/ALLOWED_CALLERS."),
@@ -1222,7 +1220,7 @@
       ul([
         "Macros can update Today while you stay in full-screen coding.",
         "If Today is open beside you, the list still refreshes.",
-        "No surprise windows during automation — that is the whole point of silent-by-default.",
+        "No surprise windows during automation: that is the whole point of silent-by-default.",
       ]),
       h2("What it is not"),
       ul([
@@ -1235,14 +1233,14 @@
         "today(tomorrow)     # opens / focuses the Tomorrow page on purpose",
       ]),
       tip("When debugging “UI didn’t update”, check whether the window was open and whether the verb is in the sync family."),
-      note("Pair with Silent by default — syncIfOpen is the quiet companion to that policy."),
+      note("Pair with Silent by default: syncIfOpen is the quiet companion to that policy."),
     ])
   );
 
   add(
     P("aliases-macros", "Aliases & macros", "Name shortcuts and multi-step packs", ["automation"], [
       kicker("Automation"),
-      h2("Aliases — one command, one name"),
+      h2("Aliases: one command, one name"),
       code([
         "alias ocean = run space(ocean)",
         "alias cpu = sys(cpu)",
@@ -1251,7 +1249,7 @@
         "console(aliases)",
       ]),
       p("Aliases are expanded before execution. Keep them short and stable."),
-      h2("Macros — named chains"),
+      h2("Macros: named chains"),
       code([
         "macro morning = today(list); sys(cpu); stocks(list); drift(list today)",
         "macro focus = a; clock(timer 50m Deep work)",
@@ -1284,16 +1282,16 @@
       ]),
       h2("Good reactions"),
       ul([
-        "notify — surface awareness without opening windows.",
+        "notify: surface awareness without opening windows.",
         "A single silent verb (today(add …), stocks(list)).",
         "A short named macro you already trust.",
       ]),
       h2("Practice"),
       ol([
         "Confirm the event actually fires (e.g. create a Drift event and watch).",
-        "Start with notify only — prove the trigger before adding work.",
+        "Start with notify only: prove the trigger before adding work.",
         "Escalate to one silent verb, then a small macro if needed.",
-        "Remove unused rules promptly — every rule is permanent load.",
+        "Remove unused rules promptly: every rule is permanent load.",
       ]),
       h2("Anti-patterns"),
       ul([
@@ -1352,12 +1350,12 @@
         "Prefer silent app(verb) lines; put run / focus only where intentional.",
         "Name scripts after outcomes (morning, eod-review), not implementation.",
         "Test each line in the desktop shell before saving the pack.",
-        "Keep wait … between wake/connect style steps.",
+        "Keep wait between wake/connect style steps.",
       ]),
       h2("Starter rituals (shipped)"),
       code([
-        "scripts(run morning) · scripts(run focus)",
-        "scripts(run eod) · scripts(run remote)",
+        "scripts(run morning), scripts(run focus)",
+        "scripts(run eod), scripts(run remote)",
       ]),
       p(
         "These four scripts are seeded once (merged by name). Existing scripts with the same name are never overwritten."
@@ -1370,7 +1368,7 @@
         "stocks(list)",
         "drift(list today)",
       ]),
-      note("Scripts is on the app(verb) protocol: help scripts · docs(open app-scripts)."),
+      note("Scripts is on the app(verb) protocol: help scripts: docs(open app-scripts)."),
       tip("If a script grows past ~20 lines, split into named scripts and call them from a thin wrapper macro."),
     ])
   );
@@ -1380,7 +1378,7 @@
       kicker("Automation"),
       p("Model Flow is a single studio: compose a task, get a plan, edit or drop steps, approve, then run. Side panels cover History, Tools (Live vs Staged), and Connection (Lab key)."),
       code([
-        "flow(meta) · flow(tools) · flow(history)",
+        "flow(meta), flow(tools), flow(history)",
         "flow(plan Summarize inbox and draft a reply)",
         "flow(open)",
       ]),
@@ -1443,8 +1441,8 @@
       ),
       h2("Session model"),
       ul([
-        "Locked — list/copy/mutate fail or return locked status.",
-        "Unlocked — shell verbs can list, copy, add, and update entries for this session.",
+        "Locked: list/copy/mutate fail or return locked status.",
+        "Unlocked: shell verbs can list, copy, add, and update entries for this session.",
         "Lock explicitly when you leave the machine: vault(lock).",
       ]),
       h2("Shell verbs"),
@@ -1461,7 +1459,7 @@
         "Never store the master password in automation of any kind.",
         "Treat vault(list) / search output as sensitive on shared screens and recordings.",
         "Prefer vault(copy …) over printing secrets into the shell transcript.",
-        "Back up Vault ciphertext with the rest of userData — losing the master password loses access.",
+        "Back up Vault ciphertext with the rest of userData: losing the master password loses access.",
       ]),
       h2("Failure checklist"),
       table(
@@ -1489,11 +1487,19 @@
         "Shared definitions: single source of truth for keys and defaults.",
         "Persisted JSON under userData: survives restarts.",
       ]),
+      h2("OS display languages"),
+      p(
+        "My Space OS UI languages: English, Hebrew, Arabic, French, Russian, Spanish (en / he / ar / fr / ru / es). Hebrew and Arabic use RTL layout. Desktop Settings picks the OS display language; product apps can follow it or override."
+      ),
+      h2("Per-app uiLanguage"),
+      p(
+        "Most product apps expose key uiLanguage (select, default system) with values system | en | he | ar | fr | ru | es. system follows the OS display language. Legacy stored key language is migrated to uiLanguage on load when the value is a known option."
+      ),
       h2("Common themes"),
       table(
         ["Theme", "Examples", "Why it matters"],
         [
-          ["Language", "en / he for learning apps", "UI + quiz copy"],
+          ["Language", "uiLanguage: system / en / he / ar / fr / ru / es", "UI copy + RTL when he/ar"],
           ["History", "saveHistory for Translate / Console", "Privacy vs recall"],
           ["MSL provider", "mslProvider kill-switches", "Rollback a published capability"],
           ["Behavior", "confirm clear, sync from desktop", "Safety / integration"],
@@ -1501,8 +1507,10 @@
       ),
       h2("Open"),
       code(["settings", "run settings"]),
-      tip("Turning off an MSL provider is the supported rollback if a capability misbehaves — no code edit required."),
+      tip("Turning off an MSL provider is the supported rollback if a capability misbehaves: no code edit required."),
       note("Changing a setting does not always hot-reload every window; reopen the app if UI looks stale."),
+      h2("Related"),
+      p("settings-index, settings-complete, i18n-languages, app-ui-language, accounts-local-auth."),
     ])
   );
 
@@ -1511,7 +1519,7 @@
       kicker("Protocols"),
       p("A .space file is a My Space document on disk: one script, flow, note, or study deck you can double-click, drag onto the desktop, or send to another machine. It is not MSL (msl:v1/… live links) and not the Space app (space(apod))."),
       h2("What it looks like"),
-      p("UTF-8 JSON with format myspace.space, version 1, a kind, a title, and a payload. Secrets (apiKey, token, password) are stripped from flows on export."),
+      p("UTF-8 JSON with format myspace.space, version 1, a kind, a title, and a payload. Secrets are stripped from flows on export."),
       code([
         "{",
         '  "format": "myspace.space",',
@@ -1526,13 +1534,13 @@
         ["kind", "Opens in", "Payload"],
         [
           ["script", "Scripts", "name + body"],
-          ["flow", "Model Flow", "title, task, steps (saved to the Flow library)"],
+          ["flow", "Model Flow", "title, task, steps"],
           ["note", "Notes", "title, body, tags"],
-          ["deck", "Study Deck", "name + cards (content only, not review stats)"],
+          ["deck", "Study Deck", "name + cards"],
         ]
       ),
-      h2("Shell — pack(…), not space(…)"),
-      p("space(…) already belongs to the Space astronomy app. The file protocol uses pack (aliases: spacefile, dotspace, mysfile)."),
+      h2("Shellף pack(…), not space(…)"),
+      p("space(…) already belongs to the Space astronomy app. The file protocol uses pack."),
       code([
         "pack(open C:\\\\Users\\\\you\\\\morning.space)",
         "pack(inspect morning.space)",
@@ -1546,7 +1554,7 @@
       ]),
       h2("Import behavior"),
       ul([
-        "Import creates a new copy. It never overwrites an existing script/note of the same name (scripts get a -2 suffix).",
+        "Import creates a new copy. It never overwrites an existing script/note of the same name.",
         "Flows land in the Model Flow library, then open in the studio.",
         "Maximum size 2 MB. Unknown future versions are rejected with a clear error.",
       ]),
@@ -1584,7 +1592,7 @@
       ]),
       h2("Manual copy (still valid)"),
       ol([
-        "Quit My Space completely (not just close a child window).",
+        "Quit My Space completely.",
         "Locate %APPDATA%\\my-space (or backup(path)).",
         "Copy the entire folder to an external drive or encrypted archive.",
         "Optionally keep a dated copy (YYYY-MM-DD) so you can roll back.",
@@ -1609,17 +1617,17 @@
       ),
       h2("Restore"),
       ol([
-        "backup(import) and confirm — or quit and replace userData manually.",
-        "After restart, unlock Vault once and run scripts(list) · today(list).",
+        "backup(import) and confirm: or quit and replace userData manually.",
+        "After restart, unlock Vault once and run scripts(list), today(list).",
       ]),
       tip("Schedule a monthly backup(export) alias if this desktop holds real work."),
-      warn("Prefer backup(import) over hand-copying while My Space is running — mid-write JSON can corrupt."),
+      warn("Prefer backup(import) over hand-copying while My Space is running: mid-write JSON can corrupt."),
       note("help backup · docs(open backups)"),
     ])
   );
 
   add(
-    P("recipe-morning", "Recipe · Morning", "Start the day in one macro", ["recipes"], [
+    P("recipe-morning", "Recipe, Morning", "Start the day in one macro", ["recipes"], [
       kicker("Recipes"),
       p(
         "A morning ritual should answer three questions fast: what is on my plate, is the machine healthy, and did anything drift overnight — without opening a wall of windows."
@@ -1672,9 +1680,9 @@
       ]),
       h2("Step notes"),
       ul([
-        "a — closes child windows (destructive on purpose; omit if you need a reference window).",
-        "clock(timer 50m Deep work) — classic deep-work length; change duration freely.",
-        "today(add Review notes) — a landing task so the block has a clear exit.",
+        "a: closes child windows (destructive on purpose; omit if you need a reference window).",
+        "clock(timer 50m Deep work): classic deep-work length; change duration freely.",
+        "today(add Review notes): a landing task so the block has a clear exit.",
       ]),
       h2("Pomodoro alternative"),
       code([
@@ -1689,7 +1697,7 @@
   );
 
   add(
-    P("recipe-dev", "Recipe · Dev session", "Projects, drift, and lexicon", ["recipes"], [
+    P("recipe-dev", "Recipe, Dev session", "Projects, drift, and lexicon", ["recipes"], [
       kicker("Recipes"),
       p(
         "A developer session should load context (projects + recent file activity), optionally refresh language memory, then open the editor last so inventory verbs stay silent and fast."
@@ -1719,7 +1727,7 @@
   );
 
   add(
-    P("recipe-travel", "Recipe · Travel planning", "Geo + translate + contacts", ["recipes"], [
+    P("recipe-travel", "Recipe, Travel planning", "Geo + translate + contacts", ["recipes"], [
       kicker("Recipes"),
       p(
         "Travel prep is a research loop: learn the place, keep phrases ready, and pin people/places you will actually contact. Keep everything silent until you want a map."
@@ -1755,7 +1763,7 @@
   );
 
   add(
-    P("recipe-eod", "Recipe · End of day", "Review, then clear the slate", ["recipes"], [
+    P("recipe-eod", "Recipe, End of day", "Review, then clear the slate", ["recipes"], [
       kicker("Recipes"),
       p(
         "End of day should close the loop: see what is still open, skim activity, then clear finished tasks so tomorrow starts honest."
@@ -1768,7 +1776,7 @@
         "macro eod",
       ]),
       tip("If you prefer a weekly deep clean, use recipe-weekly instead of clearing done every night."),
-      warn("today(clear done) removes completed tasks — keep it out of morning scripts."),
+      warn("today(clear done) removes completed tasks: keep it out of morning scripts."),
     ])
   );
 
@@ -1776,7 +1784,7 @@
     P("recipe-weekly", "Recipe · Weekly review", "Clear, reflect, rescan", ["recipes"], [
       kicker("Recipes"),
       p(
-        "A weekly review clears finished work, rescans activity, and surfaces commitments you might have forgotten — then leaves room for human journaling."
+        "A weekly review clears finished work, rescans activity, and surfaces commitments you might have forgotten: then leaves room for human journaling."
       ),
       h2("Core macro"),
       code([
@@ -1809,7 +1817,7 @@
   );
 
   add(
-    P("recipe-remote", "Recipe · Remote day", "Machines, checks, and wake", ["recipes"], [
+    P("recipe-remote", "Recipe, Remote day", "Machines, checks, and wake", ["recipes"], [
       kicker("Recipes"),
       p(
         "Remote days fail when you connect before the machine is ready. Inventory → health → wake → wait → connect is the reliable order."
@@ -1833,8 +1841,8 @@
       ]),
       h2("Troubleshooting ladder"),
       ol([
-        "remote(tools) — is the client toolchain present?",
-        "remote(check) — is the host reachable / configured?",
+        "remote(tools): is the client toolchain present?",
+        "remote(check): is the host reachable / configured?",
         "Confirm MAC / subnet for Wake-on-LAN.",
         "Increase wait if the machine boots slowly.",
         "Only then remote(connect …).",
@@ -1856,39 +1864,39 @@
         ["App", "Module / aliases", "Docs page", "Live help"],
         [
           ["Docs", "docs", "app-docs", "help docs"],
-          ["Clock", "world-clock · clock", "app-clock", "help clock"],
-          ["Today", "day-planner · today", "app-today", "help today"],
-          ["Tasks", "tasks · gtd · todo", "app-tasks", "help tasks"],
-          ["Vault", "profiles · vault", "app-vault", "help vault"],
+          ["Clock", "world-clock, clock", "app-clock", "help clock"],
+          ["Today", "day-planner, today", "app-today", "help today"],
+          ["Tasks", "tasks, gtd, todo", "app-tasks", "help tasks"],
+          ["Vault", "profiles, vault", "app-vault", "help vault"],
           ["Contacts", "contacts", "app-contacts", "help contacts"],
-          ["Notes", "notes · note", "app-notes", "help notes"],
-          ["Chat", "chat · aichat", "app-chat", "help chat · chat(new)"],
+          ["Notes", "notes, note", "app-notes", "help notes"],
+          ["Chat", "chat, aichat", "app-chat", "help chat · chat(new)"],
           ["Stocks", "stocks", "app-stocks", "help stocks"],
           ["Builds", "builds", "app-builds", "help builds"],
           ["Drift", "drift", "app-drift", "help drift"],
-          ["Remote Hub", "remote-hub · remote", "app-remote", "help remote"],
-          ["System Info", "system-info · sys", "app-sysinfo", "help sys"],
+          ["Remote Hub", "remote-hub, remote", "app-remote", "help remote"],
+          ["System Info", "system-info, sys", "app-sysinfo", "help sys"],
           ["Studies", "studies", "app-studies", "help studies"],
-          ["Study Deck", "study-deck · decks", "app-decks", "help decks"],
+          ["Study Deck", "study-deck, decks", "app-decks", "help decks"],
           ["Translate", "translate", "app-translate", "help translate"],
-          ["Geography", "geography · geo", "app-geo", "help geo"],
-          ["Learning Games", "flag-quiz · flags", "app-flags", "help flags"],
+          ["Geography", "geography, geo", "app-geo", "help geo"],
+          ["Learning Games", "flag-quiz, flags", "app-flags", "help flags"],
           ["History", "history", "app-history", "help history"],
           ["Space", "space", "app-space", "help space"],
           ["Contracts", "contracts", "app-contracts", "help contracts"],
-          ["MSL", "platform · msl", "app-msl", "help msl · msl(panel)"],
-          ["Jobs", "platform · jobs", "app-jobs", "help jobs · jobs(panel)"],
-          ["Mind", "platform · mind", "app-mind", "help mind · mind(panel)"],
-          ["Code Lexicon", "code-lexicon · lexicon", "app-lexicon", "help lexicon"],
-          ["Model Flow", "model-flow · flow", "app-flow", "help flow"],
-          ["Console", "shell-console · console", "app-console", "help console"],
-          ["Scripts", "scripts · script", "app-scripts", "help scripts"],
+          ["MSL", "platform, msl", "app-msl", "help msl, msl(panel)"],
+          ["Jobs", "platform, jobs", "app-jobs", "help jobs, jobs(panel)"],
+          ["Mind", "platform, mind", "app-mind", "help mind, mind(panel)"],
+          ["Code Lexicon", "code-lexicon, lexicon", "app-lexicon", "help lexicon"],
+          ["Model Flow", "model-flow, flow", "app-flow", "help flow"],
+          ["Console", "shell-console, console", "app-console", "help console"],
+          ["Scripts", "scripts, script", "app-scripts", "help scripts"],
           ["World Maps", "world-maps · maps", "app-maps", "help maps"],
           ["Pi Digits", "pi-digits (UI)", "app-pi", "run pi-digits"],
           ["Icon Library", "icon-library (UI)", "app-icons", "run icon-library"],
           ["Welcome", "builtin", "app-welcome", "welcome"],
           ["Info", "apps-info", "app-info", "run info"],
-          ["Externals", "edge · docker · vscode · …", "app-external", "run edge"],
+          ["Externals", "edge, docker, vscode, …", "app-external", "run edge"],
         ]
       ),
       h2("Protocol & discovery"),
@@ -1903,7 +1911,7 @@
         "check routes clock",
       ]),
       tip("If Docs and help disagree after an update, Restart & Update, then trust help <app>."),
-      note("Pi Digits / Icon Library / Welcome / Info remain UI-first (launch via run). help lists every commands:true app automatically."),
+      note("Pi Digits / Icon Library / Welcome / Info remain UI-first. help lists every commands:true app automatically."),
     ])
   );
 
@@ -1916,13 +1924,20 @@
       h2("How to open"),
       code(["settings", "run settings"]),
       p("Then open the specific app and use its gear / Settings affordance for module-specific keys."),
+      h2("OS & app languages"),
+      ul([
+        "OS display languages: English, Hebrew, Arabic, French, Russian, Spanish (en / he / ar / fr / ru / es).",
+        "RTL: Hebrew and Arabic flip layout direction for the desktop and apps that follow system.",
+        "Per-app key uiLanguage: system | en | he | ar | fr | ru | es (default system = follow OS).",
+        "Legacy: older language values migrate to uiLanguage on settings load.",
+      ]),
       h2("Themes you will see"),
       table(
         ["Theme", "Typical keys", "Apps"],
         [
           ["MSL provider", "mslProvider / publish toggles", "Most providers (Translate, Space, Builds, …)"],
           ["History / privacy", "saveHistory", "Translate, Console, …"],
-          ["Language", "en / he UI", "Learning apps, Flags, Pi Digits, …"],
+          ["Language", "uiLanguage (system + en/he/ar/fr/ru/es)", "Product apps (Stocks, Flags, Docs, …)"],
           ["Scan / refresh", "intervals, background scan", "Drift, Builds, Stocks"],
           ["Confirmations", "confirmDelete / confirm clear", "Builds, Vault, …"],
           ["Display", "layout, counts, appearance", "Stocks, Builds, …"],
@@ -1930,23 +1945,26 @@
       ),
       h2("Module highlights"),
       ul([
-        "Builds — auto-refresh trees, confirm delete, MSL icons, publish projects over MSL.",
-        "Drift — background scan, interval, desktop notifications.",
-        "Stocks — quote refresh, after-hours, UI layout classic/organized, alerts.",
-        "Translate — history, language defaults, MSL publish.",
-        "Contacts — reminders, MSL.",
-        "Vault — display / security-adjacent options (unlock remains UI-only).",
-        "Geography / History / Space / Maps — explore/viewer/reading preferences + MSL.",
-        "Studies — document/Gemini-related prefs + MSL.",
-        "Pi Digits — practice chunk size / language.",
-        "Icon Library — preview + MSL icons.search.",
-        "Docs — reading prefs for this handbook.",
-        "Console — history / runner behavior.",
-        "Remote Hub — connection defaults.",
+        "Builds: auto-refresh trees, confirm delete, MSL icons, publish projects over MSL.",
+        "Drift: background scan, interval, desktop notifications.",
+        "Stocks: quote refresh, after-hours, UI layout classic/organized, uiLanguage, alerts.",
+        "Translate: history, auto-detect, MSL publish, uiLanguage.",
+        "Contacts: reminders, MSL, uiLanguage.",
+        "Vault: display / security-adjacent options (unlock remains UI-only).",
+        "Geography / History / Space / Maps: explore/viewer/reading preferences + MSL + uiLanguage.",
+        "Studies: document/Gemini-related prefs + MSL + uiLanguage.",
+        "Pi Digits: practice chunk size + uiLanguage.",
+        "Learning Games (Flags): uiLanguage for quiz UI.",
+        "Icon Library: preview + MSL icons.search.",
+        "Docs: reading prefs + uiLanguage for this handbook.",
+        "Console: history / runner behavior.",
+        "Remote Hub: connection defaults.",
       ]),
       tip("After flipping a setting, reopen the app if the UI looks stale: not every control hot-reloads every surface."),
       note("This catalog summarizes themes; the live Settings UI is authoritative for defaults and hints."),
       warn("Do not disable MSL providers mid-macro that depends on them: macros will fail closed."),
+      h2("Related"),
+      p("settings, settings-complete, i18n-languages, app-ui-language, accounts-local-auth."),
     ])
   );
 
@@ -1987,7 +2005,7 @@
       h2("Ambiguous match"),
       p("Several contacts/projects/decks share a prefix. Pass a longer unique name or an id."),
       h2("Where are Scripts / Maps verbs?"),
-      p("Both are on the protocol: scripts(list/run/…) and maps(geocode/notes/…). See help scripts · help maps · app-scripts · app-maps."),
+      p("Both are on the protocol: scripts(list/run/…) and maps(geocode/notes/…). See help scripts, help maps, app-scripts, app-maps."),
       h2("Command missing after update"),
       p("Click Restart & Update, then help <app>."),
     ])
@@ -2016,6 +2034,7 @@
     P("changelog", "Changelog highlights", "Docs-relevant shell & protocol evolution", ["reference", "updates"], [
       kicker("Reference"),
       ul([
+        "2026-09: Docs expansion + multi-language OS: en/he/ar/fr/ru/es display languages, RTL for he/ar, per-app uiLanguage (system default), legacy language → uiLanguage migration; handbook pages i18n-languages / app-ui-language / accounts-local-auth",
         "0.1.52: Chat app: ChatGPT-style AI history powered by Mind",
         "0.1.51: Mind by task: Quick / Everyday / Deep model tiers",
         "0.1.50: Mind platform: OS AI runtime (Gemini + optional Ollama), mind(…), MSL mind.ask / mind.status",

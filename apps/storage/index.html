@@ -106,7 +106,7 @@
           <header class="page-head">
             <div>
               <h1 data-i18n="service.storage.largeFilesTitle">Large files</h1>
-              <p class="page-sub" data-i18n="service.storage.largeFilesSub">Biggest files on a drive (may take a minute)</p>
+              <p class="page-sub" data-i18n="service.storage.largeFilesSub">Biggest files on a drive</p>
             </div>
             <div class="page-actions">
               <select id="large-drive" class="select">
@@ -146,11 +146,11 @@
           </header>
           <div class="banner" id="cleanup-banner" role="status">
             <strong data-i18n="service.storage.cleanupBannerTitle">Safe cleanup only</strong>
-            <span data-i18n="service.storage.cleanupBannerText">Removes temp files, corrupt quarantine copies, and caches — never live app JSON.</span>
+            <span data-i18n="service.storage.cleanupBannerText">Removes temp files, corrupt quarantine copies, and caches: never live app JSON.</span>
           </div>
           <div class="stat-row" id="cleanup-stats"></div>
           <div class="cleanup-list" id="cleanup-list"></div>
-          <p class="empty-msg hidden" id="cleanup-empty" data-i18n="service.storage.cleanupEmpty">Nothing to clean — userData looks tidy.</p>
+          <p class="empty-msg hidden" id="cleanup-empty" data-i18n="service.storage.cleanupEmpty">Nothing to clean: userData looks tidy.</p>
           <div class="section-head">
             <h2 data-i18n="service.storage.recentCleanup">Recent cleanup</h2>
           </div>
@@ -166,23 +166,23 @@
             </div>
           </header>
           <div class="about-page">
-            <p class="about-lead">
-              Storage is a platform service for disk usage and My Space data hygiene — not a desktop tile
+            <p class="about-lead" data-i18n-html="service.storage.aboutLead">
+              Storage is a platform service for disk usage and My Space data hygiene: not a desktop tile
               and not a full file manager. Use <strong>Files</strong> to browse; use <strong>Backup</strong>
               to export/restore; use <strong>System Info</strong> for deep diagnostics.
             </p>
-            <h2>Status</h2>
-            <p>Drive summary from Windows plus total userData size and path.</p>
-            <h2>Apps</h2>
-            <p>Per-app breakdown mapped from known JSON files and data folders.</p>
-            <h2>Large files</h2>
-            <p>Scans a drive for the biggest files (host-wide, read-only).</p>
-            <h2>Cleanup</h2>
-            <p>Lists safe items inside userData: temp export folders, .tmp, corrupt quarantine, .json.bak when live file exists, metrics cache.</p>
-            <h2>Shell</h2>
+            <h2 data-i18n="service.storage.aboutStatusTitle">Status</h2>
+            <p data-i18n="service.storage.aboutStatusBody">Drive summary from Windows plus total userData size and path.</p>
+            <h2 data-i18n="service.storage.aboutAppsTitle">Apps</h2>
+            <p data-i18n="service.storage.aboutAppsBody">Per-app breakdown mapped from known JSON files and data folders.</p>
+            <h2 data-i18n="service.storage.aboutLargeTitle">Large files</h2>
+            <p data-i18n="service.storage.aboutLargeBody">Scans a drive for the biggest files (host-wide, read-only).</p>
+            <h2 data-i18n="service.storage.aboutCleanupTitle">Cleanup</h2>
+            <p data-i18n="service.storage.aboutCleanupBody">Lists safe items inside userData: temp export folders, .tmp, corrupt quarantine, .json.bak when live file exists, metrics cache.</p>
+            <h2 data-i18n="service.storage.aboutShellTitle">Shell</h2>
             <p>
-              <code>storage(open)</code> · <code>storage(status)</code> · <code>storage(apps)</code> ·
-              <code>storage(large C:)</code> · <code>storage(cleanup)</code> · <code>storage(path)</code> ·
+              <code>storage(open)</code>, <code>storage(status)</code>, <code>storage(apps)</code>,
+              <code>storage(large C:)</code>, <code>storage(cleanup)</code>, <code>storage(path)</code>,
               <code>storage(help)</code>
             </p>
             <p class="muted about-path" id="about-meta"></p>
@@ -192,6 +192,11 @@
     </div>
     <script src="../shared/i18n/locales/en.js"></script>
     <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
     <script src="../shared/i18n/i18n.js"></script>
     <script src="../shared/i18n/sync-boot.js"></script>
     <script src="../shared/i18n/auto-mark.js"></script>

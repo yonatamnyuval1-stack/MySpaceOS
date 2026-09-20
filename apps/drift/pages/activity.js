@@ -121,7 +121,7 @@ window.DriftPages.activity = (function () {
       resultsMeta.textContent =
         lastTotal === 0
           ? "No events yet — add a watch zone and run Scan."
-          : `${lastTotal.toLocaleString()} event(s) · newest first`;
+          : `${lastTotal.toLocaleString()} event(s), newest first`;
 
       if (!events.length) {
         timeline.innerHTML = `<div class="empty-state">

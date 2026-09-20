@@ -1,13 +1,18 @@
 (function (root) {
   "use strict";
 
-  const RTL = new Set(["he", "ar", "fa", "ur"]);
+  const Langs = () => root.MySpaceLanguages;
   let language = "en";
   const listeners = new Set();
 
   function normalizeLang(raw) {
+    if (Langs()?.normalizeLang) return Langs().normalizeLang(raw);
     const s = String(raw || "en").trim().toLowerCase();
-    if (s.startsWith("he")) return "he";
+    if (s.startsWith("he") || s.startsWith("iw")) return "he";
+    if (s.startsWith("ar")) return "ar";
+    if (s.startsWith("fr")) return "fr";
+    if (s.startsWith("ru")) return "ru";
+    if (s.startsWith("es")) return "es";
     return "en";
   }
 
@@ -23,27 +28,33 @@
     );
   }
 
+  function looksHebrew(s) {
+    return /[\u0590-\u05FF]/.test(String(s));
+  }
+
   function t(key, vars) {
     const k = String(key || "").trim();
     if (!k) return "";
     const primary = catalog(language);
     const fallback = catalog("en");
-    let raw = primary[k] != null ? primary[k] : fallback[k] != null ? fallback[k] : k; 
-    if (language === "en" && /[\u0590-\u05FF]/.test(String(raw))) {
-      if (fallback[k] != null && !/[\u0590-\u05FF]/.test(String(fallback[k]))) raw = fallback[k];
+    let raw = primary[k] != null ? primary[k] : fallback[k] != null ? fallback[k] : k;
+    if (language === "en" && looksHebrew(raw)) {
+      if (fallback[k] != null && !looksHebrew(fallback[k])) raw = fallback[k];
       else raw = k;
     }
     return interpolate(raw, vars);
   }
 
   function isRtl(lang) {
-    return RTL.has(normalizeLang(lang || language));
+    if (Langs()?.isRtl) return Langs().isRtl(lang || language);
+    return ["he", "ar", "fa", "ur"].includes(normalizeLang(lang || language));
   }
 
   function applyDocument(doc) {
     const d = doc || (typeof document !== "undefined" ? document : null);
     if (!d?.documentElement) return;
-    d.documentElement.lang = language === "he" ? "he" : "en";
+    const m = Langs()?.meta?.(language);
+    d.documentElement.lang = m?.htmlLang || language || "en";
     d.documentElement.dir = isRtl() ? "rtl" : "ltr";
     d.documentElement.dataset.uiLang = language;
   }
@@ -119,6 +130,7 @@
     applyDom,
     onChange,
     platformField,
+    supportedIds: () => (Langs()?.ids?.() || ["en", "he", "ar", "fr", "ru", "es"]).slice(),
   };
 
   root.MySpaceI18n = api;

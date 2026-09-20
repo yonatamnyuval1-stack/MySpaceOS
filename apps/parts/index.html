@@ -48,7 +48,7 @@
         </div>
 
         <footer class="sidebar-foot">
-          <p id="sidebar-blurb" data-i18n="service.parts.sidebarBlurb">Reusable code modules — adopt into any app without host coupling.</p>
+          <p id="sidebar-blurb" data-i18n="service.parts.sidebarBlurb">Reusable code modules: adopt into any app without host coupling.</p>
         </footer>
       </aside>
 
@@ -148,44 +148,44 @@
         <section class="view view-about hidden" id="view-about">
           <header class="page-head">
             <div>
-              <h1>About Parts</h1>
-              <p class="lede">A forge for clean, reusable modules — GitHub between apps.</p>
+              <h1 data-i18n="service.parts.aboutTitle">About Parts</h1>
+              <p class="lede" data-i18n="service.parts.aboutLede">A forge for clean, reusable modules: GitHub between apps.</p>
             </div>
           </header>
           <div class="about-grid">
             <article class="about-block">
-              <h2>What it is</h2>
-              <p>
-                Parts is a forge of <strong>real reusable modules</strong> extracted from My Space apps —
+              <h2 data-i18n="service.parts.aboutWhatTitle">What it is</h2>
+              <p data-i18n-html="service.parts.aboutWhatBody">
+                Parts is a forge of <strong>real reusable modules</strong> extracted from My Space apps:
                 OHLC analytics, SRS scheduling, timezone meeting slots, file classifiers, and more.
                 Adopt them to build new apps without rewriting the same engines.
               </p>
             </article>
             <article class="about-block">
-              <h2>Clean by design</h2>
-              <p>
+              <h2 data-i18n="service.parts.aboutCleanTitle">Clean by design</h2>
+              <p data-i18n-html="service.parts.aboutCleanBody">
                 Canonical code lives in <code>shared/parts/</code>. Source stays free of host-app
                 identifiers. Publisher credit is catalog metadata only.
               </p>
             </article>
             <article class="about-block">
-              <h2>Link series</h2>
+              <h2 data-i18n="service.parts.aboutLinkTitle">Link series</h2>
               <ul>
-                <li><strong>MSL</strong> — live capability calls</li>
-                <li><strong>Parts</strong> — reusable code modules</li>
-                <li><strong>Pulse</strong> — cross-app messages</li>
+                <li data-i18n="service.parts.aboutLinkMsl">MSL: live capability calls</li>
+                <li data-i18n="service.parts.aboutLinkParts">Parts: reusable code modules</li>
+                <li data-i18n="service.parts.aboutLinkPulse">Pulse: cross-app messages</li>
               </ul>
             </article>
             <article class="about-block">
-              <h2>Layout</h2>
+              <h2 data-i18n="service.parts.aboutLayoutTitle">Layout</h2>
               <ul>
-                <li>Shared forge: <code>shared/parts/&lt;id&gt;/</code></li>
-                <li>Publish from any app: <code>apps/&lt;app&gt;/parts/&lt;id&gt;/</code></li>
-                <li>Adopt dest: <code>apps/&lt;target&gt;/parts/&lt;id&gt;/</code></li>
+                <li data-i18n-html="service.parts.aboutLayoutShared">Shared forge: <code>shared/parts/&lt;id&gt;/</code></li>
+                <li data-i18n-html="service.parts.aboutLayoutPublish">Publish from any app: <code>apps/&lt;app&gt;/parts/&lt;id&gt;/</code></li>
+                <li data-i18n-html="service.parts.aboutLayoutAdopt">Adopt dest: <code>apps/&lt;target&gt;/parts/&lt;id&gt;/</code></li>
               </ul>
             </article>
             <article class="about-block about-wide">
-              <h2>Shell</h2>
+              <h2 data-i18n="service.parts.aboutShellTitle">Shell</h2>
               <pre class="shell-ex">parts(list)
 parts(get finance.ohlc)
 parts(adopt cards.srs into notes)
@@ -195,12 +195,11 @@ parts(panel)</pre>
           </div>
         </section>
 
-        <!-- Publish / upload for any app -->
         <section class="view view-publish hidden" id="view-publish">
           <header class="page-head">
             <div>
               <h1>Publish</h1>
-              <p class="lede">Upload a clean module under any app — it appears in Explore for others to adopt.</p>
+              <p class="lede">Upload a clean module under any app: it appears in Explore for others to adopt.</p>
             </div>
           </header>
 
@@ -247,11 +246,11 @@ parts(panel)</pre>
               </label>
               <label class="field">
                 <span>File contents</span>
-                <textarea id="publish-body" rows="14" spellcheck="false" placeholder="/** Portable helper — no host-app imports */&#10;&#10;function hello() {&#10;  return 'ok';&#10;}&#10;&#10;module.exports = { hello };&#10;"></textarea>
+                <textarea id="publish-body" rows="14" spellcheck="false" placeholder="/** Portable helper: no host-app imports */&#10;&#10;function hello() {&#10;  return 'ok';&#10;}&#10;&#10;module.exports = { hello };&#10;"></textarea>
               </label>
               <label class="check">
                 <input type="checkbox" id="publish-shared" />
-                Also copy into shared/parts (global forge)
+                Also copy into shared/parts
               </label>
               <div class="publish-actions">
                 <button type="button" class="btn btn-primary" id="btn-publish">Publish to app</button>
@@ -275,6 +274,11 @@ parts(panel)</pre>
     </div>
     <script src="../shared/i18n/locales/en.js"></script>
     <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
     <script src="../shared/i18n/i18n.js"></script>
     <script src="../shared/i18n/sync-boot.js"></script>
     <script src="../shared/i18n/auto-mark.js"></script>

@@ -130,9 +130,9 @@ function normalizeEventRow(b) {
 function figureSparql(fromYear, toYear, limit = 200) {
   return `
 SELECT DISTINCT ?person ?personLabel ?birth ?death ?occupationLabel ?image WHERE {
-  ?person wdt:P31 wd:Q5 .
-  ?person wdt:P569 ?birth .
-  ?person wikibase:sitelinks ?sitelinks .
+  ?person wdt:P31 wd:Q5.
+  ?person wdt:P569 ?birth.
+  ?person wikibase:sitelinks ?sitelinks.
   FILTER(?sitelinks >= 15)
   FILTER(YEAR(?birth) >= ${fromYear} && YEAR(?birth) < ${toYear})
   OPTIONAL { ?person wdt:P570 ?death. }

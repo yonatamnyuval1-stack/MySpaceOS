@@ -48,7 +48,7 @@
             <span class="nav-icon" aria-hidden="true">✦</span> <span data-i18n="nav.ai">AI Analysis</span>
           </button>
         </nav>
-        <div class="sidebar-foot">Live quotes · AI research</div>
+        <div class="sidebar-foot">Live quotes, AI research</div>
       </aside>
 
       <main class="main">
@@ -401,7 +401,7 @@
             <p class="muted ai-meta" id="ai-meta"></p>
             <div class="ai-cards" id="ai-cards"></div>
             <p class="ai-disclaimer muted" data-i18n="ai.disclaimer">
-              Not investment advice. AI can be wrong — verify before acting.
+              Not investment advice. AI can be wrong: verify before acting.
             </p>
           </div>
         </section>
@@ -478,9 +478,19 @@
     <script src="pages/stock.js"></script>
     <script src="pages/ai-analysis.js"></script>
     <script src="ai-chat.js"></script>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/app-language.js"></script>
     <script src="../shared/settings-definitions.js"></script>
     <script src="../shared/settings-boot.js"></script>
     <script src="../shared/app-settings-runtime.js"></script>
     <script src="app.js"></script>
+    <script>window.MySpaceAppLanguage && window.MySpaceAppLanguage.boot();</script>
   </body>
 </html>

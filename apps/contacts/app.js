@@ -1,6 +1,6 @@
 (function () {
   const PAGE_META = {
-    browse: { title: "Contacts", subtitle: "People — profiles, phone, email & reminders" },
+    browse: { title: "Contacts", subtitle: "People: profiles, phone, email & reminders" },
     reminders: { title: "Reminders", subtitle: "Birthdays & scheduled notifications" },
     groups: { title: "Groups", subtitle: "Organize your contacts" },
   };

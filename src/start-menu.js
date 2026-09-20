@@ -31,7 +31,6 @@
 
   function ensurePanel() {
     if (panel) return panel;
-
     panel = document.createElement("div");
     panel.className = "start-menu hidden";
     panel.setAttribute("role", "dialog");

@@ -60,7 +60,17 @@
   }
 
   async function notifyTimerDone(label) {
-    await notify("Timer finished", label || "Your countdown has ended.", "timer");
+    function tt(key, fallback, vars) {
+      const I = root.MySpaceI18n;
+      if (!I?.t) return fallback || key;
+      const v = I.t(key, vars);
+      return v === key ? (fallback || key) : v;
+    }
+    await notify(
+      tt("app.worldClock.timer.notifyTitle", "Timer finished"),
+      label || tt("app.worldClock.timer.notifyBody", "Your countdown has ended."),
+      "timer"
+    );
   }
 
   async function notifyPomodoro(title, body) {

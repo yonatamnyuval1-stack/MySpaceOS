@@ -1,4 +1,11 @@
 (function () {
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) return fallback || key;
+    const v = I.t(key, vars);
+    return v === key ? (fallback || key) : v;
+  }
+
   const api = window.myApp;
 
   const SECONDARY_VIEWS = new Set(["someday", "upcoming", "flagged", "all", "done"]);
@@ -73,17 +80,47 @@
     toast: document.getElementById("toast"),
   };
 
-  const VIEW_META = {
-    inbox: { title: "Inbox", sub: "Capture & clarify" },
-    today: { title: "Due today", sub: "Soft deadlines" },
-    upcoming: { title: "Upcoming", sub: "Future due dates" },
-    next: { title: "Next", sub: "Do now" },
-    waiting: { title: "Waiting", sub: "Blocked on someone" },
-    someday: { title: "Someday", sub: "Maybe later" },
-    flagged: { title: "Flagged", sub: "Starred priorities" },
-    all: { title: "All active", sub: "Everything open" },
-    done: { title: "Completed", sub: "Finished work" },
-  };
+  function viewMeta(view) {
+    const map = {
+      inbox: {
+        title: tt("app.tasks.view.inbox", "Inbox"),
+        sub: tt("app.tasks.view.inboxSub", "Capture & clarify"),
+      },
+      today: {
+        title: tt("app.tasks.view.today", "Due today"),
+        sub: tt("app.tasks.view.todaySub", "Soft deadlines"),
+      },
+      upcoming: {
+        title: tt("app.tasks.view.upcoming", "Upcoming"),
+        sub: tt("app.tasks.view.upcomingSub", "Future due dates"),
+      },
+      next: {
+        title: tt("app.tasks.view.next", "Next"),
+        sub: tt("app.tasks.view.nextSub", "Do now"),
+      },
+      waiting: {
+        title: tt("app.tasks.view.waiting", "Waiting"),
+        sub: tt("app.tasks.view.waitingSub", "Blocked on someone"),
+      },
+      someday: {
+        title: tt("app.tasks.view.someday", "Someday"),
+        sub: tt("app.tasks.view.somedaySub", "Maybe later"),
+      },
+      flagged: {
+        title: tt("app.tasks.view.flagged", "Flagged"),
+        sub: tt("app.tasks.view.flaggedSub", "Starred priorities"),
+      },
+      all: {
+        title: tt("app.tasks.view.all", "All active"),
+        sub: tt("app.tasks.view.allSub", "Everything open"),
+      },
+      done: {
+        title: tt("app.tasks.view.done", "Completed"),
+        sub: tt("app.tasks.view.doneSub", "Finished work"),
+      },
+    };
+    return map[view] || map.all;
+  }
 
   const state = {
     projects: [],
@@ -236,14 +273,16 @@
     if (state.listId) {
       const list = listById(state.listId);
       const proj = list?.projectId ? projectById(list.projectId) : null;
-      els.listTitle.textContent = list?.name || "List";
-      els.listSub.textContent = proj ? `Project · ${proj.name}` : "Custom list";
+      els.listTitle.textContent = list?.name || tt("app.tasks.listFallback", "List");
+      els.listSub.textContent = proj
+        ? tt("app.tasks.projectDot", `Project · ${proj.name}`, { name: proj.name })
+        : tt("app.tasks.customList", "Custom list");
     } else if (state.projectId) {
       const proj = projectById(state.projectId);
-      els.listTitle.textContent = proj?.name || "Project";
-      els.listSub.textContent = "All tasks in this project";
+      els.listTitle.textContent = proj?.name || tt("app.tasks.projectFallback", "Project");
+      els.listSub.textContent = tt("app.tasks.projectSub", "All tasks in this project");
     } else {
-      const meta = VIEW_META[state.view] || VIEW_META.all;
+      const meta = viewMeta(state.view);
       els.listTitle.textContent = meta.title;
       els.listSub.textContent = meta.sub;
     }
@@ -271,7 +310,7 @@
       const empty = document.createElement("p");
       empty.className = "sidebar-foot";
       empty.style.margin = "4px 10px";
-      empty.textContent = "No projects yet";
+      empty.textContent = tt("app.tasks.noProjects", "No projects yet");
       root.appendChild(empty);
       return;
     }
@@ -334,7 +373,9 @@
       check.type = "button";
       check.className = "check";
       check.setAttribute("aria-checked", item.status === "done" ? "true" : "false");
-      check.title = item.status === "done" ? "Mark active" : "Complete";
+      check.title = item.status === "done"
+        ? tt("app.tasks.markActive", "Mark active")
+        : tt("app.tasks.complete", "Complete");
       check.textContent = item.status === "done" ? "✓" : "";
       check.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -350,7 +391,11 @@
       meta.className = "task-row-meta";
       const chips = [];
 
-      if (item.flagged) chips.push(`<span class="flag-mark" title="Flagged">★</span>`);
+      if (item.flagged) {
+        chips.push(
+          `<span class="flag-mark" title="${escapeHtml(tt("app.tasks.flaggedTitle", "Flagged"))}">★</span>`
+        );
+      }
 
       const proj = item.projectId ? projectById(item.projectId) : null;
       if (proj) {
@@ -385,7 +430,7 @@
     projSel.replaceChildren();
     const none = document.createElement("option");
     none.value = "";
-    none.textContent = "— None —";
+    none.textContent = tt("app.tasks.noneOption", "— None —");
     projSel.appendChild(none);
     for (const p of state.projects.filter((x) => !x.archived)) {
       const opt = document.createElement("option");
@@ -398,7 +443,7 @@
     listSel.replaceChildren();
     const inbox = state.lists.find((l) => l.id === "list_inbox") || {
       id: "list_inbox",
-      name: "Inbox",
+      name: tt("app.tasks.inboxList", "Inbox"),
     };
     const opts = [inbox, ...listsForProject(item?.projectId || null)];
     const seen = new Set();
@@ -439,7 +484,7 @@
       del.type = "button";
       del.className = "btn btn-ghost btn-sm";
       del.textContent = "×";
-      del.title = "Remove";
+      del.title = tt("app.tasks.remove", "Remove");
       del.addEventListener("click", () => void deleteChecklist(item.id, c.id));
       li.append(btn, span, del);
       els.checklist.appendChild(li);
@@ -486,11 +531,25 @@
     renderChecklist(item);
     syncPropsPanel(item);
 
-    els.btnFlag.textContent = item.flagged ? "Unflag" : "Flag";
-    els.btnComplete.textContent = item.status === "done" ? "Reopen" : "Done";
+    els.btnFlag.textContent = item.flagged
+      ? tt("app.tasks.unflag", "Unflag")
+      : tt("app.tasks.flag", "Flag");
+    els.btnComplete.textContent =
+      item.status === "done" ? tt("app.tasks.reopen", "Reopen") : tt("app.tasks.done", "Done");
     const metaBits = [];
-    if (item.completedAt) metaBits.push(`Done ${formatWhen(item.completedAt)}`);
-    else if (item.updatedAt) metaBits.push(`Updated ${formatWhen(item.updatedAt)}`);
+    if (item.completedAt) {
+      metaBits.push(
+        tt("app.tasks.metaDone", `Done ${formatWhen(item.completedAt)}`, {
+          when: formatWhen(item.completedAt),
+        })
+      );
+    } else if (item.updatedAt) {
+      metaBits.push(
+        tt("app.tasks.metaUpdated", `Updated ${formatWhen(item.updatedAt)}`, {
+          when: formatWhen(item.updatedAt),
+        })
+      );
+    }
     els.editorMeta.textContent = metaBits.join(" · ");
     setSaveStatus("");
   }
@@ -520,7 +579,7 @@
 
     const res = await invoke("items.list", args);
     if (!res?.ok) {
-      toast(res?.error || "Failed to load");
+      toast(res?.error || tt("app.tasks.loadFailed", "Failed to load"));
       return;
     }
     state.items = res.items || [];
@@ -544,7 +603,7 @@
   async function reloadAll() {
     const snap = await invoke("snapshot");
     if (!snap?.ok) {
-      toast(snap?.error || "Failed to load Tasks");
+      toast(snap?.error || tt("app.tasks.loadTasksFailed", "Failed to load Tasks"));
       return;
     }
     state.projects = snap.projects || [];
@@ -565,19 +624,23 @@
     }
     const res = await invoke("item.add", payload);
     if (!res?.ok) {
-      toast(res?.error || "Could not add");
+      toast(res?.error || tt("app.tasks.addFailed", "Could not add"));
       return;
     }
     state.counts = res.counts || state.counts;
     els.captureInput.value = "";
-    toast(`Added · ${res.item?.title || "Task"}`);
+    toast(
+      tt("app.tasks.added", `Added · ${res.item?.title || tt("app.tasks.taskFallback", "Task")}`, {
+        title: res.item?.title || tt("app.tasks.taskFallback", "Task"),
+      })
+    );
     await refreshList();
     if (res.item?.id) selectItem(res.item.id);
   }
 
   function scheduleSave() {
     state.dirty = true;
-    setSaveStatus("Editing…");
+    setSaveStatus(tt("app.tasks.editing", "Editing…"));
     clearTimeout(state.saveTimer);
     state.saveTimer = setTimeout(() => void flushSave(), 450);
   }
@@ -586,7 +649,7 @@
     const item = selectedItem();
     if (!item || state.saving) return;
     state.saving = true;
-    setSaveStatus("Saving…");
+    setSaveStatus(tt("app.tasks.saving", "Saving…"));
     try {
       const res = await invoke("item.update", {
         id: item.id,
@@ -601,8 +664,8 @@
         waitingOn: els.taskWaiting.value,
       });
       if (!res?.ok) {
-        setSaveStatus(res?.error || "Save failed");
-        toast(res?.error || "Save failed");
+        setSaveStatus(res?.error || tt("app.tasks.saveFailed", "Save failed"));
+        toast(res?.error || tt("app.tasks.saveFailed", "Save failed"));
         return;
       }
       state.dirty = false;
@@ -613,7 +676,7 @@
       updateCounts();
       renderList();
       showEditor(res.item);
-      setSaveStatus("Saved");
+      setSaveStatus(tt("app.tasks.saved", "Saved"));
     } finally {
       state.saving = false;
     }
@@ -623,7 +686,7 @@
     clearTimeout(state.doneFadeTimer);
     const res = await invoke("item.toggle", { id });
     if (!res?.ok) {
-      toast(res?.error || "Update failed");
+      toast(res?.error || tt("app.tasks.updateFailed", "Update failed"));
       return;
     }
     state.counts = res.counts || state.counts;
@@ -642,7 +705,7 @@
       state.selectedId = id;
       renderList();
       showEditor(item);
-      toast("Completed — still in Completed (sidebar)");
+      toast(tt("app.tasks.completedToast", "Completed — still in Completed (sidebar)"));
       state.doneFadeTimer = setTimeout(() => {
         if (state.view === "done") return;
         state.items = state.items.filter((i) => i.id !== id);
@@ -655,7 +718,7 @@
     }
 
     if (item?.status === "active" && onDoneView) {
-      toast("Reopened");
+      toast(tt("app.tasks.reopened", "Reopened"));
       await refreshList();
       state.view = item.bucket || "inbox";
       state.projectId = null;
@@ -678,7 +741,7 @@
 
   async function toggleChecklist(taskId, checklistId) {
     const res = await invoke("item.checklist.toggle", { id: taskId, checklistId });
-    if (!res?.ok) return toast(res?.error || "Failed");
+    if (!res?.ok) return toast(res?.error || tt("app.tasks.failed", "Failed"));
     const idx = state.items.findIndex((i) => i.id === taskId);
     if (idx >= 0) state.items[idx] = res.item;
     if (state.selectedId === taskId) showEditor(res.item);
@@ -687,7 +750,7 @@
 
   async function deleteChecklist(taskId, checklistId) {
     const res = await invoke("item.checklist.delete", { id: taskId, checklistId });
-    if (!res?.ok) return toast(res?.error || "Failed");
+    if (!res?.ok) return toast(res?.error || tt("app.tasks.failed", "Failed"));
     const idx = state.items.findIndex((i) => i.id === taskId);
     if (idx >= 0) state.items[idx] = res.item;
     if (state.selectedId === taskId) showEditor(res.item);
@@ -696,7 +759,7 @@
   function askConfirm({ title, copy, okLabel }, action) {
     els.confirmTitle.textContent = title;
     els.confirmCopy.textContent = copy;
-    els.confirmOk.textContent = okLabel || "Delete";
+    els.confirmOk.textContent = okLabel || tt("app.tasks.delete", "Delete");
     state.confirmAction = action;
     els.confirmModal.showModal();
   }
@@ -769,8 +832,8 @@
     if (!name) return;
     const res = await invoke("project.add", { name });
     els.projectModal.close();
-    if (!res?.ok) return toast(res?.error || "Failed");
-    toast(`Project · ${res.project.name}`);
+    if (!res?.ok) return toast(res?.error || tt("app.tasks.failed", "Failed"));
+    toast(tt("app.tasks.projectToast", `Project · ${res.project.name}`, { name: res.project.name }));
     state.projectId = res.project.id;
     state.listId = null;
     state.view = "all";
@@ -790,7 +853,7 @@
     if (!name || !state.projectId) return;
     const res = await invoke("list.add", { name, projectId: state.projectId });
     els.listModal.close();
-    if (!res?.ok) return toast(res?.error || "Failed");
+    if (!res?.ok) return toast(res?.error || tt("app.tasks.failed", "Failed"));
     state.listId = res.list.id;
     await reloadAll();
   });
@@ -822,7 +885,7 @@
     const text = els.checklistInput.value.trim();
     if (!item || !text) return;
     const res = await invoke("item.checklist.add", { id: item.id, text });
-    if (!res?.ok) return toast(res?.error || "Failed");
+    if (!res?.ok) return toast(res?.error || tt("app.tasks.failed", "Failed"));
     els.checklistInput.value = "";
     const idx = state.items.findIndex((i) => i.id === item.id);
     if (idx >= 0) state.items[idx] = res.item;
@@ -834,7 +897,7 @@
     const item = selectedItem();
     if (!item) return;
     const res = await invoke("item.flag", { id: item.id });
-    if (!res?.ok) return toast(res?.error || "Failed");
+    if (!res?.ok) return toast(res?.error || tt("app.tasks.failed", "Failed"));
     state.counts = res.counts || state.counts;
     await refreshList();
     selectItem(item.id);
@@ -850,8 +913,8 @@
     const item = selectedItem();
     if (!item) return;
     const res = await invoke("item.scheduleToday", { id: item.id });
-    if (!res?.ok) return toast(res?.error || "Could not send to Today");
-    toast(`Scheduled on Today · ${item.title}`);
+    if (!res?.ok) return toast(res?.error || tt("app.tasks.scheduleFailed", "Could not send to Today"));
+    toast(tt("app.tasks.scheduledToast", `Scheduled on Today · ${item.title}`, { title: item.title }));
     await refreshList();
     selectItem(item.id);
   });
@@ -861,17 +924,19 @@
     if (!item) return;
     askConfirm(
       {
-        title: "Delete task?",
-        copy: `"${item.title}" will be removed permanently.`,
-        okLabel: "Delete",
+        title: tt("app.tasks.deleteConfirm", "Delete task?"),
+        copy: tt("app.tasks.deleteCopy", `“${item.title}” will be removed permanently.`, {
+          title: item.title,
+        }),
+        okLabel: tt("app.tasks.delete", "Delete"),
       },
       async () => {
         const res = await invoke("item.delete", { id: item.id });
-        if (!res?.ok) return toast(res?.error || "Delete failed");
+        if (!res?.ok) return toast(res?.error || tt("app.tasks.deleteFailed", "Delete failed"));
         closeDetail();
         state.counts = res.counts || state.counts;
         await refreshList();
-        toast("Deleted");
+        toast(tt("app.tasks.deleted", "Deleted"));
       }
     );
   });
@@ -931,7 +996,7 @@
     void (async () => {
       const res = await invoke("item.get", { ref });
       if (!res?.ok) {
-        toast(res?.error || "Not found");
+        toast(res?.error || tt("app.tasks.notFound", "Not found"));
         return;
       }
       state.view = "all";
@@ -964,6 +1029,16 @@
     },
     capture: (text) => capture(text),
   };
+
+  document.addEventListener("myspace-app-i18n-applied", () => {
+    document.title = tt("app.tasks.name", "Tasks");
+    void refreshList().then(() => {
+      if (state.selectedId) {
+        const still = state.items.find((i) => i.id === state.selectedId);
+        if (still) showEditor(still);
+      }
+    });
+  });
 
   void reloadAll();
 })();

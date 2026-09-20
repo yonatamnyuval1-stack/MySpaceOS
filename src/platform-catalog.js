@@ -69,9 +69,9 @@
   }
 
   function tierLabel(tier) {
-    if (tier === "core") return "Core";
-    if (tier === "major") return "Major";
-    return "Service";
+    if (tier === "core") return tt("shell.platform.tier.core", "Core");
+    if (tier === "major") return tt("shell.platform.tier.major", "Major");
+    return tt("shell.platform.tier.service", "Service");
   }
 
   function seriesBadge(service) {
@@ -110,20 +110,30 @@
         return `<button type="button" class="platform-catalog-surface"${sid}${hint}>${label}</button>`;
       })
       .join("");
-    return `<div class="platform-catalog-surfaces" role="group" aria-label="Surfaces">${chips}</div>`;
+    return `<div class="platform-catalog-surfaces" role="group" aria-label="${escapeHtml(
+      tt("shell.platform.surfaces", "Surfaces")
+    )}">${chips}</div>`;
   }
 
   function openModeRow(action) {
     if (!DUAL_MODE_ACTIONS.has(action)) return "";
-    return `<div class="platform-catalog-open-row" role="group" aria-label="Open mode">
-      <button type="button" class="platform-catalog-open-btn is-primary" data-open-mode="full">Open app</button>
-      <button type="button" class="platform-catalog-open-btn" data-open-mode="panel">Quick panel</button>
+    return `<div class="platform-catalog-open-row" role="group" aria-label="${escapeHtml(
+      tt("shell.platform.openMode", "Open mode")
+    )}">
+      <button type="button" class="platform-catalog-open-btn is-primary" data-open-mode="full">${escapeHtml(
+        tt("shell.platform.openApp", "Open app")
+      )}</button>
+      <button type="button" class="platform-catalog-open-btn" data-open-mode="panel">${escapeHtml(
+        tt("shell.platform.quickPanel", "Quick panel")
+      )}</button>
     </div>`;
   }
 
   function panelOnlyBadge(action) {
     if (!PANEL_ONLY_ACTIONS.has(action)) return "";
-    return `<span class="platform-catalog-panel-badge" title="Opens as a platform panel">Panel</span>`;
+    return `<span class="platform-catalog-panel-badge" title="${escapeHtml(
+      tt("shell.platform.panelHint", "Opens as a platform panel")
+    )}">${escapeHtml(tt("shell.platform.panel", "Panel"))}</span>`;
   }
 
   function filterServices(services, query) {
@@ -232,7 +242,9 @@
     if (list) {
       list.innerHTML = services.length
         ? renderList(services)
-        : `<p class="platform-catalog-empty">No services match “${escapeHtml(searchQuery)}”</p>`;
+        : `<p class="platform-catalog-empty">${escapeHtml(
+            tt("shell.platform.empty", "No services match “{q}”", { q: searchQuery })
+          )}</p>`;
       bindCatalogCards(list);
     }
     if (empty) empty.hidden = services.length > 0 || !searchQuery;
@@ -285,6 +297,9 @@
 
   function applyPowerChrome() {
     if (!root) return;
+    root.setAttribute("aria-label", tt("shell.platform.catalogAria", "My Space platform services"));
+    const search = root.querySelector("#platform-catalog-search");
+    if (search) search.placeholder = tt("shell.platform.search", "Search for services");
     const powerBtn = root.querySelector("#platform-catalog-power");
     if (powerBtn) {
       powerBtn.title = tt("shell.power.title", "Power: restart or quit");
@@ -917,6 +932,11 @@
     toggle,
     isOpen,
     loadCatalog,
+    refreshI18n() {
+      if (!root) return;
+      applyPowerChrome();
+      if (open) paintCatalogList();
+    },
     openService(action, surfaceId, options) {
       runAction(action, surfaceId, options || {});
     },
