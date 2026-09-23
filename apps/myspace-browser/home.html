@@ -15,7 +15,6 @@
         <h1>My Space</h1>
         <p>Search apps, Connect, and everything in your Space, or browse the web.</p>
       </header>
-
       <form class="msb-search" id="msb-form" autocomplete="off">
         <input
           id="msb-input"
@@ -26,7 +25,6 @@
         />
         <button type="submit" class="msb-go">Search</button>
       </form>
-
       <div class="msb-chips" id="msb-chips">
         <button type="button" data-q="Today">Today</button>
         <button type="button" data-q="Gmail">Gmail</button>
@@ -34,7 +32,10 @@
         <button type="button" data-q="ChatGPT">ChatGPT</button>
         <button type="button" data-q="Stocks">Stocks</button>
       </div>
-
+      <section class="msb-bookmarks" id="msb-bookmarks" hidden>
+        <h2>Bookmarks</h2>
+        <div class="msb-bookmark-row" id="msb-bookmark-row"></div>
+      </section>
       <section class="msb-results" id="msb-results" hidden>
         <div class="msb-group" data-group="apps" hidden>
           <h2>Apps</h2>

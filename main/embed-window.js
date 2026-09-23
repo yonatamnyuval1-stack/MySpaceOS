@@ -296,10 +296,10 @@ async function waitForProcessWindow(
   return lastAny;
 }
 
-function spawnTracked(exePath) {
+function spawnTracked(exePath, args = []) {
   return new Promise((resolve) => {
     try {
-      const child = spawn(exePath, [], {
+      const child = spawn(exePath, Array.isArray(args) ? args : [], {
         detached: true,
         stdio: "ignore",
         windowsHide: false,
@@ -311,10 +311,82 @@ function spawnTracked(exePath) {
       }
     } catch {
     }
+    if (args && args.length) {
+      resolve({ ok: false, pid: null, spawned: false, error: "Could not start program with arguments" });
+      return;
+    }
     launchExternalApp(exePath).then((r) => {
       resolve({ ok: r.ok, pid: null, spawned: false, error: r.error });
     });
   });
+}
+
+function listProcessTreePids(rootPid) {
+  return new Promise((resolve) => {
+    if (!rootPid || process.platform !== "win32") {
+      resolve(rootPid ? [Number(rootPid)] : []);
+      return;
+    }
+    const ps = `
+$ErrorActionPreference='SilentlyContinue'
+$root=${Number(rootPid)}
+$all=@($root)
+$queue=[System.Collections.Generic.Queue[int]]::new()
+$queue.Enqueue($root)
+while($queue.Count -gt 0){
+  $p=$queue.Dequeue()
+  Get-CimInstance Win32_Process -Filter "ParentProcessId=$p" | ForEach-Object {
+    $id=[int]$_.ProcessId
+    if($all -notcontains $id){ $all+=$id; $queue.Enqueue($id) }
+  }
+}
+$all -join ','
+`;
+    const child = spawn(
+      "powershell.exe",
+      ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", ps],
+      { windowsHide: true }
+    );
+    let out = "";
+    child.stdout.on("data", (c) => {
+      out += c.toString();
+    });
+    child.on("close", () => {
+      const ids = String(out || "")
+        .trim()
+        .split(",")
+        .map((s) => parseInt(s, 10))
+        .filter((n) => Number.isFinite(n) && n > 0);
+      resolve(ids.length ? ids : [Number(rootPid)]);
+    });
+    child.on("error", () => resolve([Number(rootPid)]));
+  });
+}
+
+async function waitForProcessTreeWindow(
+  rootPid,
+  { timeoutMs = 28000, intervalMs = 250, minArea = 20000, exePath = null } = {}
+) {
+  const start = Date.now();
+  let lastAny = null;
+  while (Date.now() - start < timeoutMs) {
+    const pids = await listProcessTreePids(rootPid);
+    const hwnds = [];
+    for (const pid of pids) {
+      hwnds.push(...findWindowsForPid(pid));
+    }
+    const solid = pickBestHwnd(hwnds, { minArea, exePath });
+    if (solid && scoreHwnd(solid, { minArea, exePath }) >= minArea) return solid;
+    const any = pickBestHwnd(hwnds, { minArea: 0, exePath });
+    if (any) lastAny = any;
+    const elapsed = Date.now() - start;
+    if (elapsed > timeoutMs * 0.55) {
+      const medium = pickBestHwnd(hwnds, { minArea: Math.floor(minArea / 4), exePath });
+      if (medium) return medium;
+    }
+    await sleep(intervalMs);
+  }
+  return lastAny;
 }
 
 function killProcessTree(pid) {
@@ -363,28 +435,30 @@ if ($p) { Write-Output $p.Id } else {
   });
 }
 
-function styleAsChild(hwnd) {
+function styleAsChild(hwnd, { preserveFrame = false } = {}) {
   const a = loadApis();
   try {
     let style = Number(a.GetWindowLongPtr(hwnd, GWL_STYLE));
     style |= WS_CHILD | WS_VISIBLE;
     style &= ~WS_POPUP;
-    style &= ~(
-      WS_CAPTION |
-      WS_THICKFRAME |
-      WS_SYSMENU |
-      WS_MINIMIZEBOX |
-      WS_MAXIMIZEBOX |
-      WS_BORDER |
-      WS_DLGFRAME
-    );
+    if (!preserveFrame) {
+      style &= ~(
+        WS_CAPTION |
+        WS_THICKFRAME |
+        WS_SYSMENU |
+        WS_MINIMIZEBOX |
+        WS_MAXIMIZEBOX |
+        WS_BORDER |
+        WS_DLGFRAME
+      );
+    }
     a.SetWindowLongPtr(hwnd, GWL_STYLE, style);
     a.SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
   } catch {
   }
 }
 
-function embedHwnd(childHwnd, parentHwnd, bounds) {
+function embedHwnd(childHwnd, parentHwnd, bounds, { preserveFrame = false } = {}) {
   const a = loadApis();
   if (!a.ok) return { ok: false, error: a.error };
   const child = toNativeHwnd(childHwnd);
@@ -399,7 +473,7 @@ function embedHwnd(childHwnd, parentHwnd, bounds) {
   } catch {
   }
 
-  styleAsChild(child);
+  styleAsChild(child, { preserveFrame });
   a.SetParent(child, parent);
   const x = Math.round(bounds?.x || 0);
   const y = Math.round(bounds?.y || 0);
@@ -527,6 +601,24 @@ function isHwndAlive(childHwnd) {
   }
 }
 
+function positionTopLevelHwnd(hwnd, screenBounds) {
+  const a = loadApis();
+  if (!a.ok) return { ok: false, error: a.error };
+  const child = toNativeHwnd(hwnd);
+  if (child == null || !a.IsWindow(child)) return { ok: false, error: "Window gone", gone: true };
+  try {
+    if (a.IsIconic(child)) a.ShowWindow(child, SW_RESTORE);
+  } catch {
+  }
+  const x = Math.round(screenBounds?.x || 0);
+  const y = Math.round(screenBounds?.y || 0);
+  const w = Math.max(50, Math.round(screenBounds?.width || 800));
+  const h = Math.max(50, Math.round(screenBounds?.height || 600));
+  a.SetWindowPos(child, HWND_TOP, x, y, w, h, SWP_SHOWWINDOW);
+  a.ShowWindow(child, SW_SHOW);
+  return { ok: true };
+}
+
 function detachHwnd(childHwnd, { close = false } = {}) {
   const a = loadApis();
   if (!a.ok) return { ok: false, error: a.error };
@@ -571,9 +663,12 @@ module.exports = {
   spawnTracked,
   findPidByExePath,
   waitForProcessWindow,
+  waitForProcessTreeWindow,
+  listProcessTreePids,
   findWindowsForPid,
   pickBestHwnd,
   embedHwnd,
+  positionTopLevelHwnd,
   updateEmbeddedBounds,
   setEmbeddedVisible,
   focusEmbeddedHwnd,

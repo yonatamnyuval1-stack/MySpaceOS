@@ -6,6 +6,7 @@ const {
   spawnTracked,
   findPidByExePath,
   waitForProcessWindow,
+  waitForProcessTreeWindow,
   embedHwnd,
   updateEmbeddedBounds,
   setEmbeddedVisible,
@@ -17,7 +18,6 @@ const {
   sleep,
 } = require("./embed-window");
 const { launchExternalApp } = require("./launch");
-
 /** @type {Map<string, { id: string, path: string, pid: number|null, hwnd: any, bounds: object|null, spawned: boolean }>} */
 const sessions = new Map();
 
@@ -91,7 +91,7 @@ function storeSession(id, exePath, pid, hwnd, bounds, spawned) {
   });
 }
 
-async function embedPidIntoHost(win, { id, exePath, bounds, pid, spawned, profile }) {
+async function embedPidIntoHost(win, { id, exePath, bounds, pid, spawned, profile, useProcessTree = false, preserveFrame = false }) {
   const parent = getParentHwnd(win);
   if (!parent) {
     return { ok: false, error: "My Space window handle unavailable", suggestExternal: true };
@@ -99,7 +99,8 @@ async function embedPidIntoHost(win, { id, exePath, bounds, pid, spawned, profil
 
   const b = scaleBounds(win, bounds);
   const waitOpts = { ...profile, exePath };
-  const hwnd = await waitForProcessWindow(pid, waitOpts);
+  const waitFn = useProcessTree ? waitForProcessTreeWindow : waitForProcessWindow;
+  const hwnd = await waitFn(pid, waitOpts);
   if (!hwnd) {
     if (spawned) killProcessTree(pid);
     return {
@@ -110,22 +111,21 @@ async function embedPidIntoHost(win, { id, exePath, bounds, pid, spawned, profil
   }
 
   await sleep(isElectronEditorExe(exePath) ? 500 : 350);
-  const settled = await waitForProcessWindow(pid, {
+  const settled = await waitFn(pid, {
     ...waitOpts,
-    timeoutMs: isElectronEditorExe(exePath) ? 4000 : 2500,
+    timeoutMs: isElectronEditorExe(exePath) ? 4000 : useProcessTree ? 5000 : 2500,
   });
   const finalHwnd = settled || hwnd;
-
-  let emb = embedHwnd(finalHwnd, parent, b);
+  let emb = embedHwnd(finalHwnd, parent, b, { preserveFrame });
   if (!emb.ok) {
     await sleep(400);
-    const retryHwnd = await waitForProcessWindow(pid, {
+    const retryHwnd = await waitFn(pid, {
       ...waitOpts,
       timeoutMs: isElectronEditorExe(exePath) ? 5000 : 3000,
       minArea: Math.floor(waitOpts.minArea / 4),
     });
     if (retryHwnd) {
-      emb = embedHwnd(retryHwnd, parent, b);
+      emb = embedHwnd(retryHwnd, parent, b, { preserveFrame });
       if (emb.ok) {
         storeSession(id, exePath, pid, retryHwnd, b, spawned);
         focusEmbeddedHwnd(retryHwnd, parent);
@@ -155,7 +155,6 @@ async function startEmbeddedSession(win, { id, path: exePath, bounds }) {
   }
   if (!exePath) return { ok: false, error: "No program path", suggestExternal: true };
   if (!id) return { ok: false, error: "Embed session id required" };
-
   await prepareHostForEmbed(win);
 
   const existing = sessions.get(id);
@@ -213,6 +212,46 @@ async function startEmbeddedSession(win, { id, path: exePath, bounds }) {
     pid,
     spawned: !!spawned.spawned,
     profile,
+  });
+}
+
+async function startExclusiveSpawnedSession(win, { id, path: exePath, args = [], bounds, profile = null, preserveFrame = false }) {
+  if (!isEmbedAvailable()) {
+    return { ok: false, error: "Window embedding unavailable (koffi/user32)", suggestExternal: true };
+  }
+  if (!exePath) return { ok: false, error: "No program path", suggestExternal: true };
+  if (!id) return { ok: false, error: "Embed session id required" };
+  await prepareHostForEmbed(win);
+  const existing = sessions.get(id);
+  if (existing?.hwnd) {
+    if (isHwndAlive(existing.hwnd)) {
+      detachHwnd(existing.hwnd, { close: true });
+      if (existing.pid) killProcessTree(existing.pid);
+    }
+    sessions.delete(id);
+  }
+
+  const spawned = await spawnTracked(exePath, args);
+  if (!spawned.ok || !spawned.pid) {
+    return { ok: false, error: spawned.error || "Could not start program", suggestExternal: true };
+  }
+
+  const waitProfile = {
+    timeoutMs: 30000,
+    minArea: 12000,
+    intervalMs: 200,
+    ...(profile || {}),
+  };
+
+  return embedPidIntoHost(win, {
+    id,
+    exePath,
+    bounds,
+    pid: spawned.pid,
+    spawned: true,
+    profile: waitProfile,
+    useProcessTree: true,
+    preserveFrame,
   });
 }
 
@@ -287,6 +326,7 @@ async function fallbackExternal(win, { id, path: exePath } = {}) {
 
 module.exports = {
   startEmbeddedSession,
+  startExclusiveSpawnedSession,
   updateSessionBounds,
   setSessionVisible,
   focusSession,

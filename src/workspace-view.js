@@ -7,11 +7,13 @@
   const frameUrl = document.getElementById("frame-url");
   const frameGo = document.getElementById("frame-go");
   const frameRefresh = document.getElementById("frame-refresh");
+  const frameHistBack = document.getElementById("frame-hist-back");
+  const frameHistForward = document.getElementById("frame-hist-forward");
+  const frameHome = document.getElementById("frame-home");
   const tabNewBtn = document.getElementById("tab-new");
   const tabSnapBtn = document.getElementById("tab-snap");
   const appGrid = document.getElementById("app-grid");
   const builtinPanel = document.getElementById("builtin-panel");
-
   const isElectronWebview =
     window.MySpaceDesktop.isFullDesktop() && navigator.userAgent.includes("Electron");
 
@@ -414,13 +416,86 @@
     return !frame.classList.contains("hidden");
   }
 
+  function canUsePageHistory(tab) {
+    return !!(
+      tab &&
+      tab.mode === "webview" &&
+      tab.viewEl &&
+      typeof tab.viewEl.canGoBack === "function"
+    );
+  }
+
+  function readLiveViewUrl(viewEl) {
+    if (!viewEl) return "";
+    try {
+      if (typeof viewEl.getURL === "function") {
+        const u = viewEl.getURL();
+        if (u) return String(u);
+      }
+    } catch {
+    }
+    try {
+      return String(viewEl.src || "");
+    } catch {
+      return "";
+    }
+  }
+
+  function syncTabUrlFromNavigation(tab, url) {
+    if (!tab || !url || url === "about:blank") return;
+    tab.url = url;
+    if (tab.id === activeTabId && document.activeElement !== frameUrl) {
+      frameUrl.value = url;
+    }
+    updateHistoryNavButtons();
+  }
+
+  function updateHistoryNavButtons() {
+    const tab = getActiveTab();
+    let canBack = false;
+    let canFwd = false;
+    if (canUsePageHistory(tab)) {
+      try {
+        canBack = !!tab.viewEl.canGoBack();
+        canFwd = !!tab.viewEl.canGoForward();
+      } catch {
+        canBack = false;
+        canFwd = false;
+      }
+    }
+    if (frameHistBack) frameHistBack.disabled = !canBack;
+    if (frameHistForward) frameHistForward.disabled = !canFwd;
+  }
+
+  function goHistoryBack() {
+    const tab = getActiveTab();
+    if (!canUsePageHistory(tab) || !tab.viewEl.canGoBack()) return;
+    try {
+      tab.viewEl.goBack();
+    } catch {
+    }
+  }
+
+  function goHistoryForward() {
+    const tab = getActiveTab();
+    if (!canUsePageHistory(tab) || !tab.viewEl.canGoForward()) return;
+    try {
+      tab.viewEl.goForward();
+    } catch {
+    }
+  }
+
   function updateNavBar() {
     const tab = getActiveTab();
-    const showUrlBar = tab?.mode === "webview";
+    const showUrlBar = tab?.mode === "webview" || (tab?.mode === "embedded" && tab.connectEdge);
     frameNav.classList.toggle("hidden", !showUrlBar);
-    if (showUrlBar && tab) {
-      frameUrl.value = tab.url && tab.url !== "about:blank" ? tab.url : "";
+    if (showUrlBar && tab && document.activeElement !== frameUrl) {
+      const live = tab.mode === "webview" ? readLiveViewUrl(tab.viewEl) : "";
+      const next = (live && live !== "about:blank" ? live : null) || tab.url || "";
+      frameUrl.value = next && next !== "about:blank" ? next : "";
+      if (live && live !== "about:blank") tab.url = live;
     }
+    updateHistoryNavButtons();
   }
 
   function activateTab(tabId) {
@@ -604,10 +679,6 @@
     return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36";
   }
 
-  function firefoxDesktopUa() {
-    return "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0";
-  }
-
   function needsChromeDesktopUa(url) {
     try {
       const host = new URL(url).hostname.replace(/^www\./, "");
@@ -619,14 +690,7 @@
     }
   }
 
-  function userAgentForUrl(url) {
-    try {
-      const host = new URL(url).hostname.toLowerCase();
-      if (host.includes("google.") || host.includes("gmail.") || host.endsWith("google.com")) {
-        return firefoxDesktopUa();
-      }
-    } catch {
-    }
+  function userAgentForUrl(_url) {
     return chromeDesktopUa();
   }
 
@@ -655,19 +719,19 @@
       if (host.includes("bing.") || host.includes("msn.")) return "persist:connect-edge-v1";
       if (host.includes("chatgpt") || host.includes("openai")) return "persist:connect-chatgpt-v1";
       if (host.includes("claude.ai") || host.includes("anthropic")) return "persist:connect-claude-v1";
-      if (host.includes("gemini.google")) return "persist:connect-gemini-v1";
-      if (host.includes("youtube") || host === "youtu.be") return "persist:connect-youtube-v1";
+      if (host.includes("gemini.google")) return "persist:connect-gemini-v2";
+      if (host.includes("youtube") || host === "youtu.be") return "persist:connect-youtube-v2";
       if (host.includes("spotify")) return "persist:connect-spotify-v1";
       if (host.includes("netflix")) return "persist:connect-netflix-v1";
       if (host.includes("github")) return "persist:connect-github-v1";
       if (host.includes("notion")) return "persist:connect-notion-v1";
-      if (host.includes("drive.google")) return "persist:connect-drive-v1";
+      if (host.includes("drive.google")) return "persist:connect-drive-v2";
       if (host.includes("onedrive") || host.includes("sharepoint")) return "persist:connect-onedrive-v1";
       if (host === "127.0.0.1" || host === "localhost") return "persist:connect-ollama-v1";
       if (host.includes("mail.google") || host.startsWith("gmail.") || host.includes("accounts.google")) {
-        return "persist:connect-gmail-v4";
+        return "persist:connect-gmail-v5";
       }
-      if (host.includes("google")) return "persist:connect-browser-v1";
+      if (host.includes("google")) return "persist:connect-browser-v2";
     } catch {
     }
     return null;
@@ -834,7 +898,6 @@
     }
     return browserHomeCache;
   }
-
   function preloadAttrValue(preload) {
     if (!preload) return null;
     const raw = String(preload);
@@ -937,6 +1000,19 @@
         notifyTabsChanged();
       }
     });
+    el.addEventListener("did-navigate", (e) => {
+      if (tab && e.url) syncTabUrlFromNavigation(tab, e.url);
+    });
+    el.addEventListener("did-navigate-in-page", (e) => {
+      if (e.isMainFrame === false) return;
+      if (tab && e.url) syncTabUrlFromNavigation(tab, e.url);
+    });
+    el.addEventListener("did-finish-load", () => {
+      if (!tab) return;
+      const live = readLiveViewUrl(el);
+      if (live) syncTabUrlFromNavigation(tab, live);
+      else updateHistoryNavButtons();
+    });
     return el;
   }
 
@@ -1011,15 +1087,24 @@
     }
   }
 
+  function embedApiFor(tab) {
+    return tab?.connectEdge ? window.mySpace?.connectEdge : window.mySpace?.embedApp;
+  }
+
   async function syncEmbedBounds(tab) {
-    if (!tab?.embedId || !tab.hostEl || !window.mySpace?.embedApp?.updateBounds) return;
+    const api = embedApiFor(tab);
+    if (!tab?.embedId || !tab.hostEl || !api?.updateBounds) return;
     if (tab.mode !== "embedded" || !tab.embedded) return;
     const bounds = panelBounds(tab.hostEl);
     try {
-      const res = await window.mySpace.embedApp.updateBounds({ id: tab.embedId, bounds });
+      const res = await api.updateBounds({ id: tab.embedId, bounds });
       if (res?.gone) {
         tab.embedded = false;
-        await fallbackEmbeddedToExternal(tab, "The embedded window closed.");
+        if (tab.connectEdge) {
+          await fallbackConnectEdgeToWebview(tab, "The embedded Edge window closed.");
+        } else {
+          await fallbackEmbeddedToExternal(tab, "The embedded window closed.");
+        }
       }
     } catch {
     }
@@ -1062,8 +1147,127 @@
     tab._embedFallingBack = false;
   }
 
+  async function fallbackConnectEdgeToWebview(tab, message) {
+    if (!tab || tab._embedFallingBack) return;
+    tab._embedFallingBack = true;
+    const url = tab.url;
+    const title = tab.title;
+    const appId = tab.appId;
+    const iconSrc = tab.iconSrc;
+    try {
+      if (tab.embedId) await window.mySpace?.connectEdge?.stop?.({ id: tab.embedId, close: true });
+    } catch {
+    }
+    stopEmbedWatch(tab);
+    tab.embedded = false;
+    closeTab(tab.id);
+    if (url) {
+      openWeb(url, title, { appId, reuse: false, iconSrc, forceInApp: true, skipEdge: true });
+    }
+    if (message) window.showMySpaceToast?.(message);
+  }
+
+  function isGoogleConnectUrl(url) {
+    try {
+      const host = new URL(url).hostname.toLowerCase();
+      return (
+        host.includes("google.") ||
+        host.includes("gmail.") ||
+        host.endsWith("google.com") ||
+        host.includes("youtube.") ||
+        host === "youtu.be"
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  function edgeProfileKeyForUrl(url) {
+    const part = persistPartitionForUrl(url) || "persist:connect-browser-v2";
+    return String(part).replace(/^persist:/, "");
+  }
+
+  let _connectEdgeAvail = null;
+  async function connectEdgeIsAvailable() {
+    if (_connectEdgeAvail != null) return _connectEdgeAvail;
+    try {
+      const res = await window.mySpace?.connectEdge?.available?.();
+      _connectEdgeAvail = !!(res && res.available);
+    } catch {
+      _connectEdgeAvail = false;
+    }
+    return _connectEdgeAvail;
+  }
+
+  function openConnectEdge(url, title, options = {}) {
+    const { appId, reuse = true, iconSrc, app } = options;
+    const normalized = normalizeUrl(url) || url;
+    const resolvedIcon =
+      initialIcon(app, iconSrc) ||
+      (normalized ? window.MySpaceIcons?.faviconUrlForSite(normalized) : null);
+    if (reuse && appId) {
+      const existing = findTabForApp(appId, "embedded");
+      if (existing?.connectEdge) {
+        if (existing.url !== normalized && normalized) {
+          existing.url = normalized;
+          existing.edgeProfileKey = edgeProfileKeyForUrl(normalized);
+          void navigateConnectEdgeTab(existing, normalized);
+        }
+        showWebWorkspace(existing.id);
+        return existing;
+      }
+    }
+
+    const tab = {
+      id: createTabId(),
+      title: title || "Google",
+      url: normalized || "",
+      mode: "embedded",
+      connectEdge: true,
+      forceInApp: true,
+      appId: appId || null,
+      iconSrc: resolvedIcon,
+      edgeProfileKey: edgeProfileKeyForUrl(normalized),
+      embedId: `edge-${appId || "google"}`,
+    };
+    addTab(tab, createEmbeddedPanel(tab, app || { id: appId, name: title }, { path: "" }));
+    return tab;
+  }
+
+  async function navigateConnectEdgeTab(tab, url) {
+    if (!tab?.embedId || !window.mySpace?.connectEdge?.navigate) return;
+    const bounds = panelBounds(tab.hostEl || tab.panelEl);
+    if (tab.statusEl) {
+      tab.statusEl.classList.remove("hidden");
+      tab.statusEl.textContent = "Loading…";
+    }
+    try {
+      const res = await window.mySpace.connectEdge.navigate({
+        id: tab.embedId,
+        url,
+        profileKey: tab.edgeProfileKey || edgeProfileKeyForUrl(url),
+        bounds,
+      });
+      if (!res?.ok) {
+        await fallbackConnectEdgeToWebview(tab, res?.error || "Navigation failed.");
+        return;
+      }
+      tab.embedded = true;
+      tab.url = url;
+      if (tab.statusEl) tab.statusEl.classList.add("hidden");
+      await syncEmbedBounds(tab);
+    } catch (err) {
+      await fallbackConnectEdgeToWebview(tab, err?.message || "Navigation failed.");
+    }
+  }
+
   async function attachEmbeddedApp(tab) {
-    if (!tab || tab.mode !== "embedded" || !tab.externalPath) return;
+    if (!tab || tab.mode !== "embedded") return;
+    if (tab.connectEdge) {
+      await attachConnectEdge(tab);
+      return;
+    }
+    if (!tab.externalPath) return;
     if (!window.mySpace?.embedApp?.start) {
       await fallbackEmbeddedToExternal(tab, "Window embedding is unavailable on this system.");
       return;
@@ -1102,27 +1306,75 @@
     }
   }
 
+  async function attachConnectEdge(tab) {
+    if (!tab?.url) return;
+    if (!window.mySpace?.connectEdge?.start) {
+      await fallbackConnectEdgeToWebview(tab, "Edge embedding is unavailable.");
+      return;
+    }
+    if (tab.statusEl) {
+      tab.statusEl.classList.remove("hidden");
+      tab.statusEl.textContent = "Embedding Microsoft Edge…";
+    }
+    const bounds = panelBounds(tab.hostEl || tab.panelEl);
+    const embedId = tab.embedId || `edge-${tab.appId || tab.id}`;
+    tab.embedId = embedId;
+    try {
+      const res = await window.mySpace.connectEdge.start({
+        id: embedId,
+        url: tab.url,
+        profileKey: tab.edgeProfileKey || "browser",
+        bounds,
+      });
+      if (!res?.ok) {
+        await fallbackConnectEdgeToWebview(
+          tab,
+          res?.error || "Could not open Edge inside My Space."
+        );
+        return;
+      }
+      tab.embedded = true;
+      if (tab.statusEl) tab.statusEl.classList.add("hidden");
+      if (tab.hostEl) tab.hostEl.classList.add("is-live");
+      startEmbedWatch(tab);
+      await syncEmbedBounds(tab);
+      if (tab.id === activeTabId) await focusEmbeddedApp(tab);
+      window.showMySpaceToast?.("Google is embedded via Microsoft Edge inside My Space.");
+    } catch (err) {
+      await fallbackConnectEdgeToWebview(
+        tab,
+        err?.message || "Could not open Edge inside My Space."
+      );
+    }
+  }
+
   async function focusEmbeddedApp(tab) {
-    if (!tab?.embedId || !tab.embedded || !window.mySpace?.embedApp?.focus) return;
+    const api = embedApiFor(tab);
+    if (!tab?.embedId || !tab.embedded || !api?.focus) return;
     if (window.MySpaceAiChat?.isOpen?.()) return;
     try {
-      await window.mySpace.embedApp.focus({ id: tab.embedId });
+      await api.focus({ id: tab.embedId });
     } catch {
     }
   }
 
   async function setEmbeddedVisibility(tab, visible, { focus = false } = {}) {
-    if (!tab?.embedId || !window.mySpace?.embedApp?.setVisible) return;
+    const api = embedApiFor(tab);
+    if (!tab?.embedId || !api?.setVisible) return;
     const wantFocus = !!(visible && focus && !window.MySpaceAiChat?.isOpen?.());
     try {
-      const res = await window.mySpace.embedApp.setVisible({
+      const res = await api.setVisible({
         id: tab.embedId,
         visible,
         focus: wantFocus,
       });
       if (res?.gone && visible) {
         tab.embedded = false;
-        await fallbackEmbeddedToExternal(tab, "The embedded window closed.");
+        if (tab.connectEdge) {
+          await fallbackConnectEdgeToWebview(tab, "The embedded Edge window closed.");
+        } else {
+          await fallbackEmbeddedToExternal(tab, "The embedded window closed.");
+        }
         return;
       }
     } catch {
@@ -1135,9 +1387,10 @@
 
   async function destroyEmbeddedApp(tab) {
     stopEmbedWatch(tab);
-    if (!tab?.embedId || !window.mySpace?.embedApp?.stop) return;
+    const api = embedApiFor(tab);
+    if (!tab?.embedId || !api?.stop) return;
     try {
-      await window.mySpace.embedApp.stop({ id: tab.embedId, close: true });
+      await api.stop({ id: tab.embedId, close: true });
     } catch {
     }
     tab.embedded = false;
@@ -1150,10 +1403,11 @@
     tab.mode = "embedded";
     tab.externalPath = result.path || tab.externalPath || "";
     tab.iconSrc = tab.iconSrc || app.iconData || result.iconData;
-    tab.embedId = `embed-${app.id || tab.id}`;
+    tab.embedId = tab.connectEdge
+      ? `edge-${app?.id || tab.appId || tab.id}`
+      : `embed-${app?.id || tab.id}`;
     tab.panelEl = panel;
     tab._anchorApp = app || null;
-
     const host = document.createElement("div");
     host.className = "app-embed-host";
     host.tabIndex = -1;
@@ -1162,10 +1416,11 @@
       if (tab.embedded) focusEmbeddedApp(tab);
     });
     tab.hostEl = host;
-
     const status = document.createElement("div");
     status.className = "app-embed-status";
-    status.textContent = "Opening inside My Space…";
+    status.textContent = tab.connectEdge
+      ? "Embedding Microsoft Edge…"
+      : "Opening inside My Space…";
     tab.statusEl = status;
 
     host.appendChild(status);
@@ -1175,7 +1430,6 @@
 
   function openEmbedded(app, result, options = {}) {
     const { appId, reuse = true } = options;
-
     if (reuse && appId) {
       const existing = findTabForApp(appId, "embedded");
       if (existing) {
@@ -1199,6 +1453,7 @@
     addTab(tab, createEmbeddedPanel(tab, app, result));
     return tab;
   }
+
   function openPanel(options = {}) {
     const {
       appId = null,
@@ -1258,7 +1513,6 @@
   function addTab(tab, panel) {
     tabs.push(tab);
     tabPanels.appendChild(panel);
-
     if (tab.mode === "external") {
       showWebWorkspace(tab.id);
       if (tab.autoLaunch !== false) {
@@ -1365,7 +1619,7 @@
   }
 
   function openWeb(url, title, options = {}) {
-    const { appId, reuse = true, iconSrc, app, forceInApp = false, preload = null } = options;
+    const { appId, reuse = true, iconSrc, app, forceInApp = false, preload = null, skipEdge = false } = options;
     const normalized = normalizeUrl(url) || url;
     const allowInApp =
       forceInApp === true || (appId && String(appId).startsWith("connect-"));
@@ -1379,11 +1633,28 @@
       window.showMySpaceToast?.("Opened in your browser.");
       return null;
     }
+    if (
+      !skipEdge &&
+      allowInApp &&
+      normalized &&
+      isGoogleConnectUrl(normalized) &&
+      window.mySpace?.connectEdge
+    ) {
+
+      if (_connectEdgeAvail === false) {
+      } else {
+        void connectEdgeIsAvailable().then((ok) => {
+          if (!ok) return;
+        });
+        if (_connectEdgeAvail !== false) {
+          return openConnectEdge(normalized, title, { appId, reuse, iconSrc, app });
+        }
+      }
+    }
 
     const resolvedIcon =
       initialIcon(app, iconSrc) ||
       (normalized ? window.MySpaceIcons?.faviconUrlForSite(normalized) : null);
-
     let resolvedPreload = preload || null;
     if (!resolvedPreload && appId === "connect-myspace-browser" && isFileUrl(normalized)) {
       resolvedPreload = browserHomeCache?.preload || null;
@@ -1421,7 +1692,6 @@
   function openMyApp(result, app, options = {}) {
     const { appId, reuse = true, iconSrc, route } = options;
     const nextPreload = result.preload || null;
-
     if (reuse && appId) {
       const existing = findTabForApp(appId, "myapp");
       if (existing) {
@@ -1462,7 +1732,6 @@
 
   function openExternal(app, result, options = {}) {
     const { appId, reuse = true, autoLaunch = true } = options;
-
     if (reuse && appId) {
       const existing = findTabForApp(appId, "external");
       if (existing) {
@@ -1478,7 +1747,6 @@
         return existing;
       }
     }
-
     const tab = {
       id: createTabId(),
       title: app.name,
@@ -1494,6 +1762,39 @@
     };
     addTab(tab, createExternalPanel(tab, app, result, { autoLaunch: tab.autoLaunch }));
     return tab;
+  }
+
+  async function goBrowserHome() {
+    const tab = getActiveTab();
+    const home = await getBrowserHome();
+    if (!home?.ok || !home.url) {
+      window.showMySpaceToast?.("My Space Browser home is missing");
+      return null;
+    }
+    if (tab?.mode === "webview" && tab.appId === "connect-web-search" && tab.viewEl) {
+      tab.url = home.url;
+      tab.appId = "connect-myspace-browser";
+      tab.title = home.name || "My Space Browser";
+      tab.preload = home.preload || null;
+      tab.iconSrc = home.iconUrl || tab.iconSrc || "brand/atom-green.png";
+      loadWebviewUrl(tab.viewEl, home.url);
+      updateNavBar();
+      notifyTabsChanged();
+      frameUrl?.focus();
+      return tab;
+    }
+    if (isMyspaceBrowserTab(tab) && tab.mode === "webview" && tab.viewEl) {
+      if (tab.url !== home.url) {
+        tab.url = home.url;
+        loadWebviewUrl(tab.viewEl, home.url);
+        updateNavBar();
+      }
+      frameUrl?.focus();
+      return tab;
+    }
+    const opened = await openMyspaceBrowserTab({ reuse: true });
+    frameUrl?.focus();
+    return opened;
   }
 
   function openBlankTab() {
@@ -1556,7 +1857,6 @@
     }
     tabPanels.querySelector(`[data-tab-id="${tabId}"]`)?.remove();
     tabs.splice(index, 1);
-
     if (tabs.length === 0) {
       minimizeToDesktop();
       return;
@@ -1643,7 +1943,7 @@
       window.__myspaceAiLaunchApp?.(item.app);
       return;
     }
-    if (item.kind === "app-info" && item.launchAppId) {
+      if (item.kind === "app-info" && item.launchAppId) {
       const app = window.MySpaceConfig?.getApps?.()?.find((a) => a.id === item.launchAppId);
       if (app) window.__myspaceAiLaunchApp?.(app);
       return;
@@ -1708,9 +2008,19 @@
       openInSystemBrowser(url);
       return;
     }
+    if (tab?.mode === "embedded" && tab.connectEdge) {
+      const normalized = normalizeUrl(url) || url;
+      tab.url = normalized;
+      tab.edgeProfileKey = edgeProfileKeyForUrl(normalized);
+      void navigateConnectEdgeTab(tab, normalized);
+      updateNavBar();
+      return;
+    }
+
     if (tab?.mode === "webview") {
       navigateActiveTab(url, { forceInApp: allowInApp });
-    } else {
+    }
+    else {
       openWeb(url, "New tab", { reuse: false, forceInApp: allowInApp });
     }
   }
@@ -1760,6 +2070,11 @@
   }
 
   frameBack?.addEventListener("click", minimizeToDesktop);
+  frameHistBack?.addEventListener("click", () => goHistoryBack());
+  frameHistForward?.addEventListener("click", () => goHistoryForward());
+  frameHome?.addEventListener("click", () => {
+    void goBrowserHome();
+  });
   tabNewBtn?.addEventListener("click", () => openBlankTab());
   tabSnapBtn?.addEventListener("click", () => {
     const ok = toggleSnap();
@@ -1786,9 +2101,23 @@
     }
   });
   frameRefresh?.addEventListener("click", () => refreshActiveTab());
-
   document.addEventListener("keydown", (e) => {
     if (!isFrameVisible()) return;
+    if (e.altKey && e.key === "ArrowLeft") {
+      e.preventDefault();
+      goHistoryBack();
+      return;
+    }
+    if (e.altKey && e.key === "ArrowRight") {
+      e.preventDefault();
+      goHistoryForward();
+      return;
+    }
+    if (e.altKey && e.key === "Home") {
+      e.preventDefault();
+      void goBrowserHome();
+      return;
+    }
     if (e.ctrlKey && e.key === "t") {
       e.preventDefault();
       openBlankTab();
@@ -2026,7 +2355,6 @@
       const selected = String(window.getSelection?.()?.toString?.() || "").trim();
       const truncated = text.length > max;
       if (truncated) text = text.slice(0, max);
-
       const flagRe = /flagcdn\\.com\\/(?:[wh]\\d+\\/)?([a-z]{2})(?:[@./?]|$)/i;
       const countries = window.FlagQuizData?.countries || [];
       const byCode = new Map(countries.map((c) => [c.code, c]));
@@ -2060,7 +2388,6 @@
         }
         return entry;
       }
-
       const media = [];
       const seenSrc = new Set();
       const pushMedia = (entry) => {
@@ -2068,14 +2395,11 @@
         seenSrc.add(entry.src);
         media.push(entry);
       };
-
-      // Always force-include known focal images (flags etc.) even if layout says 0×0 briefly
       for (const sel of ["#quiz-flag", "img.flag-img", ".flag-frame img", "[data-ai-focal] img", "img[data-ai-focal]"]) {
         document.querySelectorAll(sel).forEach((img) => pushMedia(decorateImage(img, true)));
       }
       Array.from(document.querySelectorAll("img")).forEach((img) => pushMedia(decorateImage(img, false)));
       media.sort((a, b) => b.width * b.height - a.width * a.height);
-
       const answerChoices = Array.from(
         document.querySelectorAll(".answer-btn, [data-code].answer-btn, .answers button")
       )
@@ -2084,13 +2408,11 @@
           code: el.dataset?.code || null,
         }))
         .filter((x) => x.label);
-
       const buttons = uniq(
         Array.from(document.querySelectorAll("main button, .page.active button, [role='button']"))
           .map((el) => clean(el.innerText || el.getAttribute("aria-label")))
           .filter((t) => t && t.length < 60)
       ).slice(0, 25);
-
       let quizFlag = null;
       try {
         const live = window.FlagQuizApp?.getCurrentFlag?.();
@@ -2106,7 +2428,6 @@
           };
         }
       } catch (_) {}
-
       const primaryFlag =
         quizFlag ||
         media.find((m) => m.id === "quiz-flag" || (m.className || "").includes("flag-img")) ||
@@ -2177,7 +2498,6 @@
           if (ay !== by) return ay - by;
           return (a.x ?? 1e9) - (b.x ?? 1e9);
         });
-
       return {
         ok: true,
         view: "desktop",
@@ -2194,7 +2514,6 @@
         },
       };
     }
-
     const tab = getActiveTab();
     if (!tab) {
       return { ok: true, view: "desktop", active: null, openTabs };
@@ -2344,7 +2663,6 @@
                 : tab.mode;
 
     let dataUrl = tab.peekDataUrl || null;
-
     if ((tab.mode === "myapp" || tab.mode === "webview") && tab.viewEl) {
       try {
         ensureTabView(tab);
@@ -2409,14 +2727,14 @@
         tab.viewEl.send("myspace-language-changed", { language: next });
       }
     } catch {
-      /* ignore */
+
     }
     try {
       if (typeof tab.viewEl.executeJavaScript === "function") {
         tab.viewEl.executeJavaScript(script, false);
       }
     } catch {
-      /* ignore */
+
     }
   }
 

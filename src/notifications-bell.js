@@ -124,7 +124,6 @@
 
     const bodyEmail = extractEmail(n?.body);
     if (bodyEmail) return bodyEmail;
-
     if (from) {
       const name = from.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().toLowerCase();
       if (name.length >= 2) return name;

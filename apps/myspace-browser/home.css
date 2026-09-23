@@ -138,6 +138,58 @@ body {
   border-color: rgba(61, 139, 253, 0.35);
 }
 
+.msb-bookmarks {
+  margin-top: 28px;
+}
+
+.msb-bookmarks h2 {
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--msb-muted);
+  text-align: center;
+}
+
+.msb-bookmark-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.msb-bookmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 220px;
+  border: 1px solid var(--msb-line);
+  background: var(--msb-card);
+  color: var(--msb-ink);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+
+.msb-bookmark img {
+  flex-shrink: 0;
+  border-radius: 3px;
+}
+
+.msb-bookmark span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.msb-bookmark:hover {
+  background: var(--msb-accent-soft);
+  border-color: rgba(61, 220, 151, 0.35);
+}
+
 .msb-results {
   margin-top: 28px;
   display: grid;

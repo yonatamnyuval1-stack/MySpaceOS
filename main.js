@@ -64,6 +64,12 @@ const {
   fallbackExternal,
   isEmbedAvailable,
 } = require("./main/embed-session");
+const {
+  available: connectEdgeAvailable,
+  startConnectEdge,
+  navigateConnectEdge,
+} = require("./main/connect-edge-session");
+const connectEdgeSession = require("./main/connect-edge-session");
 
 const DEFAULT_CONFIG_PATH = path.join(__dirname, "config", "apps.json");
 const USER_DATA_DIR = path.join(app.getPath("appData"), "my-space");
@@ -777,6 +783,28 @@ ipcMain.handle("embed-app", async (event, action, args = {}) => {
   }
 });
 
+ipcMain.handle("connect-edge", async (event, action, args = {}) => {
+  const win = BrowserWindow.fromWebContents(event.sender) || mainWindow;
+  switch (action) {
+    case "available":
+      return connectEdgeAvailable();
+    case "start":
+      return startConnectEdge(win, args);
+    case "navigate":
+      return navigateConnectEdge(win, args);
+    case "updateBounds":
+      return connectEdgeSession.updateSessionBounds(args.id, win, args.bounds);
+    case "setVisible":
+      return connectEdgeSession.setSessionVisible(args.id, !!args.visible, args.focus ? win : null);
+    case "focus":
+      return connectEdgeSession.focusSession(args.id, win);
+    case "stop":
+      return connectEdgeSession.stopSession(args.id, { close: args.close !== false });
+    default:
+      return { ok: false, error: `Unknown connect-edge action: ${action}` };
+  }
+});
+
 ipcMain.handle("open-system-url", async (_event, url) => {
   const normalized = normalizeUrl(url);
   if (!normalized) {
@@ -985,6 +1013,25 @@ ipcMain.handle("myspace-browser-home", async () => {
   }
 });
 
+ipcMain.handle("myspace-browser-bookmarks", async () => {
+  try {
+    const cfg = loadActiveConfig();
+    const apps = Array.isArray(cfg?.apps) ? cfg.apps : [];
+    const bookmarks = apps
+      .filter((a) => a && a.type === "url" && a.url && !a.hidden)
+      .map((a) => ({
+        id: a.id,
+        name: a.name,
+        url: a.url,
+        iconUrl: a.iconUrl || a.iconData || null,
+      }))
+      .slice(0, 24);
+    return { ok: true, bookmarks };
+  } catch (err) {
+    return { ok: false, error: err?.message || String(err), bookmarks: [] };
+  }
+});
+
 ipcMain.handle("open-new-window", () => {
   const win = createWindow({ secondary: true });
   return { ok: true, id: win.id };
@@ -1106,7 +1153,6 @@ app.whenReady().then(async () => {
   startJobsService();
   startSchedulerService();
   startMindService();
-
   try {
     require("./main/mail/hub-sessions").initConnectSessions();
   } catch (err) {
@@ -1127,24 +1173,29 @@ app.whenReady().then(async () => {
   } catch (err) {
     console.warn("globalShortcut register failed:", err?.message || err);
   }
-
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
   });
 });
-
 app.on("will-quit", () => {
   globalShortcut.unregisterAll();
 });
-
 app.on("window-all-closed", () => {
   stopAllSessions({ close: true });
+  try {
+    connectEdgeSession.stopAllSessions({ close: true });
+  } catch {
+  }
   if (process.platform !== "darwin") {
     app.quit();
   }
 });
 app.on("before-quit", () => {
   stopAllSessions({ close: true });
+  try {
+    connectEdgeSession.stopAllSessions({ close: true });
+  } catch {
+  }
 });

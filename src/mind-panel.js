@@ -252,7 +252,7 @@
     if (askBtn) askBtn.textContent = tt("service.mind.ask", "Ask");
     if (setupBtn) setupBtn.textContent = tt("service.mind.setup", "Setup");
     const foot = root.querySelector(".mind-panel-foot span");
-    if (foot) foot.textContent = tt("service.mind.shellHint", "mind(ask …) · mind(quick …) · mind(think …)");
+    if (foot) foot.textContent = tt("service.mind.shellHint", "mind(ask …), mind(quick …), mind(think …)");
   }
 
   function paint() {
@@ -301,7 +301,7 @@
         </div>
         <div class="mind-panel-list" id="mind-panel-list"></div>
         <footer class="mind-panel-foot">
-          <span>${escapeHtml(tt("service.mind.shellHint", "mind(ask …) · mind(quick …) · mind(think …)"))}</span>
+          <span>${escapeHtml(tt("service.mind.shellHint", "mind(ask …), mind(quick …), mind(think …)"))}</span>
         </footer>
       </div>`;
     root.querySelector(".mind-panel-close").addEventListener("click", hide);

@@ -131,14 +131,17 @@
       </aside>
       <main class="workspace" data-i18n-aria="shell.frame.desktop" aria-label="Desktop">
         <section class="app-grid" id="app-grid"></section>
-
         <section class="app-frame hidden" id="app-frame" data-i18n-aria="shell.frame.application" aria-label="Application">
           <div class="app-frame-chrome" id="app-frame-chrome">
             <button type="button" class="frame-tool-btn frame-tool-btn--back" id="frame-back" data-i18n-title="shell.frame.backDesktop" title="Back to desktop">←</button>
             <div class="app-tab-strip" id="app-tab-strip" role="tablist" data-i18n-aria="shell.frame.tabs" aria-label="Open tabs"></div>
+            <button type="button" class="frame-tool-btn frame-tool-btn--new" id="tab-new" data-i18n-title="shell.frame.newTab" title="New tab (Ctrl+T)" aria-label="New tab">+</button>
             <button type="button" class="frame-tool-btn" id="tab-snap" data-i18n-title="shell.frame.snap" title="Snap side by side">⧉</button>
           </div>
           <div class="app-frame-nav hidden" id="app-frame-nav">
+            <button type="button" class="frame-tool-btn" id="frame-hist-back" data-i18n-title="shell.frame.histBack" title="Back" disabled aria-label="Back">◀</button>
+            <button type="button" class="frame-tool-btn" id="frame-hist-forward" data-i18n-title="shell.frame.histForward" title="Forward" disabled aria-label="Forward">▶</button>
+            <button type="button" class="frame-tool-btn" id="frame-home" data-i18n-title="shell.frame.home" title="My Space Browser home" aria-label="Home">&#8962;</button>
             <div class="frame-omnibox">
               <input
                 type="text"
@@ -152,6 +155,7 @@
               <div class="frame-omni-suggest hidden" id="frame-omni-suggest" role="listbox"></div>
             </div>
             <button type="button" class="frame-tool-btn" id="frame-go" data-i18n="shell.frame.go" data-i18n-title="shell.frame.go" title="Go">Go</button>
+            <button type="button" class="frame-tool-btn frame-tool-btn--bookmark" id="frame-bookmark" data-i18n-title="shell.frame.bookmark" title="Bookmark (Ctrl+D)" aria-label="Bookmark" aria-pressed="false">&#9733;</button>
             <button type="button" class="frame-tool-btn" id="frame-refresh" data-i18n-title="shell.frame.refresh" title="Refresh (F5)">↻</button>
           </div>
           <div class="app-tab-panels" id="app-tab-panels"></div>
@@ -163,7 +167,6 @@
             <div class="taskbar-peek-preview" id="taskbar-peek-preview"></div>
           </div>
         </div>
-
         <section class="panel hidden" id="builtin-panel">
           <button type="button" class="back-btn" id="back-btn" data-i18n="shell.backDesktop">Back to desktop</button>
           <div class="welcome-hub" id="welcome-hub">
@@ -178,9 +181,7 @@
               <h2 id="welcome-title" data-i18n="shell.welcome.title">Command center</h2>
               <p id="welcome-subtitle" data-i18n="shell.welcome.subtitle">Your work environment for code and entrepreneurship.</p>
             </header>
-
             <div class="welcome-status" id="welcome-status" aria-live="polite"></div>
-
             <div class="welcome-layout">
               <section class="welcome-section welcome-section--apps">
                 <div class="welcome-section-head">
@@ -189,7 +190,6 @@
                 </div>
                 <div class="welcome-apps" id="welcome-apps"></div>
               </section>
-
               <div class="welcome-side">
                 <section class="welcome-section">
                   <div class="welcome-section-head">
@@ -203,21 +203,18 @@
                     <button type="button" class="welcome-action" data-welcome-action="sysinfo" data-i18n="shell.welcome.sysinfo">System Info</button>
                   </div>
                 </section>
-
                 <section class="welcome-section">
                   <div class="welcome-section-head">
                     <h3 data-i18n="shell.welcome.openNow">Open now</h3>
                   </div>
                   <div class="welcome-running" id="welcome-running"></div>
                 </section>
-
                 <section class="welcome-section">
                   <div class="welcome-section-head">
                     <h3 data-i18n="shell.welcome.tips">Tips</h3>
                   </div>
                   <ul class="welcome-tips" id="welcome-tips"></ul>
                 </section>
-
                 <section class="welcome-section">
                   <div class="welcome-section-head">
                     <h3 data-i18n="shell.welcome.updates">Last updates</h3>
@@ -229,7 +226,6 @@
           </div>
         </section>
       </main>
-
       <footer class="taskbar" role="toolbar" data-i18n-aria="shell.taskbar" aria-label="Taskbar">
         <div class="taskbar-section taskbar-section--start">
           <button type="button" class="taskbar-start" id="btn-start" data-i18n-title="shell.start.title" title="Start — add programs">
@@ -284,7 +280,6 @@
         </div>
       </footer>
     </div>
-
     <div class="os-account-sheet hidden" id="os-account-sheet" role="dialog" aria-modal="true" aria-labelledby="os-account-title">
       <div class="os-account-backdrop" id="os-account-backdrop"></div>
       <div class="os-account-card">
@@ -314,7 +309,6 @@
         </form>
       </div>
     </div>
-
     <script src="../apps/shared/i18n/locales/en.js"></script>
     <script src="../apps/shared/i18n/locales/he.js"></script>
     <script src="../apps/shared/i18n/locales/ar.js"></script>
@@ -375,4 +369,4 @@
     <script src="ai-chat.js"></script>
     <script src="renderer.js"></script>
   </body>
-</html>
+</html

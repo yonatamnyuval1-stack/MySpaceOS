@@ -370,7 +370,6 @@
       return;
     }
 
-    // Generic open for any module id
     if (verb === "open") {
       const appId = findAppId(target);
       const ok = launch(appId, args?.page ? { page: args.page } : undefined);

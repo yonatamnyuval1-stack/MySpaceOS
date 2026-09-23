@@ -2498,7 +2498,7 @@ async function init() {
     if (!app) return Promise.resolve(null);
     return launchApp(app, options || {});
   };
-
+  window.MySpaceDesktop.refreshDesktop = () => refreshDesktop();
   window.mySpace?.spaceFile?.onOpen?.((data) => {
     openSpacePaths(data?.paths || (data?.path ? [data.path] : []));
   });

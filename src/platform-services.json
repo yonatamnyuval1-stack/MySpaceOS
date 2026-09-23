@@ -1,7 +1,7 @@
 {
   "version": 2,
   "brandMark": "atom",
-  "note": "Every platform service uses the My Space atom. Series: AI = rose (Mind + Flow), Web = green (Browser + Connect), Shell = cyan (Shell atlas + Scripts runtime for My Space Language), Link = violet (MSL + Pulse + Parts + Resolve). Platform = white atom majors without a color series (Files, Jobs, Scheduler, Permissions, Themes, …). My Space Language orchestrates the OS and, with host languages (Python, Node, …), lets users build My Space apps and artifacts — Shell maps it, Scripts runs programs, host(…) runs app logic when wired. Not MSL (My Space Link).",
+  "note": "Every platform service uses the My Space atom. Series: AI = rose , Web = green, Shell = cyan, Link = violet. Platform = white atom majors without a color series, lets users build My Space apps and artifacts: Shell maps it, Scripts runs programs, host(…) runs app logic when wired. Not MSL (My Space Link).",
   "services": [
     {
       "id": "os",
@@ -77,7 +77,7 @@
       "mark": "atom-cyan",
       "action": "open-scripts",
       "tagline": "Runtime for My Space Language programs",
-      "summary": "Save and run multi-line programs written in My Space Language (not a separate language). Scripts is the runtime/library; Shell is the atlas; platform services are what many operations call. Open from Platform → Scripts. Language: scripts(…).",
+      "summary": "Save and run multi-line programs written in My Space Language. Scripts is the runtime/library; Shell is the atlas; platform services are what many operations call. Open from Platform → Scripts. Language: scripts(…).",
       "surfaces": [
         { "id": "library", "label": "Library", "hint": "Saved programs" },
         { "id": "new", "label": "New", "hint": "Create a program" }

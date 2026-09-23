@@ -1603,7 +1603,6 @@ body {
   height: 18px;
   margin: 0 auto;
 }
-
 .taskbar-bell-badge {
   position: absolute;
   top: 4px;
@@ -2003,7 +2002,6 @@ body {
   border-color: #f5c2c0;
   opacity: 1;
 }
-
 .notif-btn-block:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -2418,6 +2416,27 @@ body {
 
 .frame-tool-btn:hover {
   background: rgba(255, 255, 255, 0.12);
+}
+
+.frame-tool-btn:disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.frame-tool-btn--bookmark {
+  min-width: 2rem;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.frame-tool-btn--bookmark.is-inactive {
+  opacity: 0.55;
+}
+
+.frame-tool-btn--bookmark.is-bookmarked {
+  color: #f5c542;
+  opacity: 1;
 }
 
 .app-frame-nav {
@@ -4028,7 +4047,6 @@ body {
   font-size: 0.78rem;
   color: rgba(148, 163, 184, 0.9);
 }
-
 .focus-banner {
   position: absolute;
   top: 12px;
@@ -4655,7 +4673,6 @@ body {
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(20px);
 }
-
 .platform-catalog-tray-user {
   display: flex;
   align-items: center;
@@ -6341,7 +6358,6 @@ body {
   font-size: 0.75rem;
   color: rgba(148, 163, 184, 0.9);
 }
-
 .bridge-panel {
   position: fixed;
   inset: 0;
@@ -6738,8 +6754,6 @@ body {
   cursor: pointer;
 }
 .files-drive:hover { background: rgba(9, 105, 218, 0.1); }
-
-/* OS UI language — RTL layout for Hebrew */
 html[dir="rtl"] .taskbar-section--start {
   flex-direction: row-reverse;
 }

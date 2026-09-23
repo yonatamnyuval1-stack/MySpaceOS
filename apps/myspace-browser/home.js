@@ -201,4 +201,40 @@
     input.focus();
     runSearch(btn.dataset.q);
   });
+
+  async function loadBookmarks() {
+    const section = document.getElementById("msb-bookmarks");
+    const row = document.getElementById("msb-bookmark-row");
+    if (!section || !row || !api?.listBookmarks) return;
+    try {
+      const res = await api.listBookmarks();
+      const list = Array.isArray(res?.bookmarks) ? res.bookmarks : [];
+      if (!list.length) {
+        section.hidden = true;
+        row.innerHTML = "";
+        return;
+      }
+      section.hidden = false;
+      row.innerHTML = list
+        .map((b) => {
+          const name = escapeHtml(b.name || b.url);
+          const url = escapeHtml(b.url);
+          const icon = b.iconUrl
+            ? `<img src="${escapeHtml(b.iconUrl)}" alt="" width="16" height="16" />`
+            : "";
+          return `<button type="button" class="msb-bookmark" data-url="${url}">${icon}<span>${name}</span></button>`;
+        })
+        .join("");
+    } catch {
+      section.hidden = true;
+    }
+  }
+
+  document.getElementById("msb-bookmark-row")?.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-url]");
+    if (!btn || !api?.navigate) return;
+    api.navigate(btn.dataset.url);
+  });
+
+  void loadBookmarks();
 })();
