@@ -26,11 +26,9 @@
     "themes",
   ]);
 
-
   let state = null;
   let api = null;
   const listeners = new Set();
-
   function clone(value) {
     return JSON.parse(JSON.stringify(value));
   }
@@ -91,25 +89,13 @@
 
   function defaultDesktopSpaces() {
     return {
-      activeId: "work",
+      activeId: "desktop-1",
       spaces: [
         {
-          id: "study",
-          name: "Study",
-          wallpaper: "gradient",
-          taskbarPins: ["study-deck", "studies", "day-planner", "world-clock", "flag-quiz"],
-        },
-        {
-          id: "work",
-          name: "Work",
-          wallpaper: "gradient",
-          taskbarPins: ["day-planner", "stocks", "contracts", "builds", "contacts"],
-        },
-        {
-          id: "play",
-          name: "Play",
-          wallpaper: "gradient",
-          taskbarPins: ["flag-quiz", "geography", "space", "world-maps", "history"],
+          id: "desktop-1",
+          name: "Desktop 1",
+          wallpaper: "photo-001",
+          taskbarPins: [],
         },
       ],
     };
@@ -140,27 +126,89 @@
     };
   }
 
+  const LEGACY_SPACE_ORDER = ["study", "work", "play"];
+  const LEGACY_SPACE_NAMES = { study: "Study", work: "Work", play: "Play" };
+  const MAX_DESKTOP_SPACES = 8;
+
+  function migrateLegacyLifestyleSpaces(src, spaces) {
+    if (src?.vdWindowsStyle === true) return spaces;
+    if (spaces.length !== 3) return spaces;
+    const ids = new Set(spaces.map((s) => s.id));
+    if (!LEGACY_SPACE_ORDER.every((id) => ids.has(id))) return spaces;
+    return LEGACY_SPACE_ORDER.map((oldId, i) => {
+      const s = spaces.find((x) => x.id === oldId);
+      const defaultName = LEGACY_SPACE_NAMES[oldId];
+      const keepCustom = s.name && s.name !== defaultName;
+      return {
+        ...s,
+        id: `desktop-${i + 1}`,
+        name: keepCustom ? s.name : `Desktop ${i + 1}`,
+      };
+    });
+  }
+
+  function nextDesktopId(spaces) {
+    let n = 1;
+    const used = new Set(spaces.map((s) => s.id));
+    while (used.has(`desktop-${n}`)) n += 1;
+    return `desktop-${n}`;
+  }
+
+  function nextDesktopName(spaces) {
+    let n = 1;
+    const used = new Set(spaces.map((s) => String(s.name || "").toLowerCase()));
+    while (used.has(`desktop ${n}`)) n += 1;
+    return `Desktop ${n}`;
+  }
+
   function normalizeDesktopSpaces(src) {
     const base = defaultDesktopSpaces();
-    if (!src || typeof src !== "object") return base;
-    const spaces = Array.isArray(src.spaces) && src.spaces.length
-      ? src.spaces
-          .map((s) => ({
-            id: String(s.id || "").trim(),
-            name: String(s.name || s.id || "Space").trim(),
-            wallpaper: s.wallpaper || "gradient",
-            taskbarPins: Array.isArray(s.taskbarPins)
-              ? [...new Set(s.taskbarPins.map((id) => String(id)).filter(Boolean))]
-              : [],
-            positions:
-              s.positions && typeof s.positions === "object" ? { ...s.positions } : {},
-            session: normalizeSpaceSession(s.session),
-          }))
-          .filter((s) => s.id)
-          .slice(0, 4)
-      : base.spaces;
-    const activeId = spaces.some((s) => s.id === src.activeId) ? src.activeId : spaces[0].id;
-    return { activeId, spaces };
+    if (!src || typeof src !== "object") return { ...base, vdWindowsStyle: true };
+    let spaces =
+      Array.isArray(src.spaces) && src.spaces.length
+        ? src.spaces
+            .map((s) => ({
+              id: String(s.id || "").trim(),
+              name: String(s.name || s.id || "Desktop").trim() || "Desktop",
+              wallpaper: s.wallpaper || "gradient",
+              taskbarPins: Array.isArray(s.taskbarPins)
+                ? [...new Set(s.taskbarPins.map((id) => String(id)).filter(Boolean))]
+                : [],
+              positions:
+                s.positions && typeof s.positions === "object" ? { ...s.positions } : {},
+              session: normalizeSpaceSession(s.session),
+            }))
+            .filter((s) => s.id)
+            .slice(0, MAX_DESKTOP_SPACES)
+        : base.spaces.slice();
+    spaces = migrateLegacyLifestyleSpaces(src, spaces);
+    if (!spaces.length) spaces = base.spaces.slice();
+    let activeId = src.activeId;
+    if (activeId === "study") activeId = "desktop-1";
+    else if (activeId === "work") activeId = "desktop-2";
+    else if (activeId === "play") activeId = "desktop-3";
+    if (!spaces.some((s) => s.id === activeId)) activeId = spaces[0].id;
+    return { activeId, spaces, vdWindowsStyle: true, vdPositionsSeeded: !!src.vdPositionsSeeded };
+  }
+
+  function seedDesktopPositionsFromGlobal(pack, globalPositions) {
+    if (!pack || pack.vdPositionsSeeded) return pack;
+    const pos =
+      globalPositions && typeof globalPositions === "object" ? { ...globalPositions } : {};
+    if (!Object.keys(pos).length) {
+      return { ...pack, vdPositionsSeeded: true };
+    }
+    return {
+      ...pack,
+      vdPositionsSeeded: true,
+      spaces: pack.spaces.map((space) => ({
+        ...space,
+        positions:
+          space.positions && Object.keys(space.positions).length
+            ? space.positions
+            : { ...pos },
+      })),
+    };
   }
 
   function normalizeWidgets(src) {
@@ -193,6 +241,21 @@
       }));
   }
 
+  function defaultPhotoWallpaperIds() {
+    try {
+      const fromModule = window.MySpaceWallpaperPhotos?.defaultPlaylist?.();
+      if (Array.isArray(fromModule) && fromModule.length >= 2) {
+        return fromModule.map(String).slice(0, 120);
+      }
+    } catch {
+    }
+    const out = [];
+    for (let i = 1; i <= 85; i += 1) {
+      out.push(`photo-${String(i).padStart(3, "0")}`);
+    }
+    return out;
+  }
+
   function normalizeConfig(config) {
     const src = config && typeof config === "object" ? config : {};
     let timezone = src.timezone;
@@ -218,14 +281,43 @@
         (id) => !RETIRED_APP_IDS.has(id) && id !== "welcome"
       ),
     }));
+
+    const hasCustomPlaylist =
+      Array.isArray(src.wallpaperPlaylist) && src.wallpaperPlaylist.length > 0;
+    let wallpaperPhotoRotateDefault = src.wallpaperPhotoRotateDefault === true;
+    let wallpaperPlaylist;
+    let wallpaper = src.wallpaper || "gradient";
+
+    if (hasCustomPlaylist) {
+      wallpaperPlaylist = [
+        ...new Set(src.wallpaperPlaylist.map((id) => String(id).trim()).filter(Boolean)),
+      ].slice(0, 120);
+      wallpaperPhotoRotateDefault = true;
+      if (!wallpaper || wallpaper === "gradient") wallpaper = wallpaperPlaylist[0] || wallpaper;
+    } else if (!wallpaperPhotoRotateDefault) {
+      // Default: rotate through photographic wallpapers. Settings can still override.
+      wallpaperPlaylist = defaultPhotoWallpaperIds();
+      wallpaperPhotoRotateDefault = true;
+      if (!wallpaper || wallpaper === "gradient") {
+        wallpaper = wallpaperPlaylist[0] || "gradient";
+      }
+      desktopSpaces.spaces = desktopSpaces.spaces.map((space) => ({
+        ...space,
+        wallpaper:
+          !space.wallpaper || space.wallpaper === "gradient" ? wallpaper : space.wallpaper,
+      }));
+    } else {
+      wallpaperPlaylist = [];
+    }
+
     return {
       title: src.title || "My Space",
       subtitle: src.subtitle || "",
-      wallpaper: src.wallpaper || "gradient",
-      wallpaperPlaylist: Array.isArray(src.wallpaperPlaylist)
-        ? [...new Set(src.wallpaperPlaylist.map((id) => String(id).trim()).filter(Boolean))].slice(0, 80)
-        : [],
+      wallpaper,
+      wallpaperPlaylist,
       wallpaperRotatedAt: Number(src.wallpaperRotatedAt) > 0 ? Number(src.wallpaperRotatedAt) : null,
+      wallpaperPhotoRotateDefault,
+      desktopIconLayoutVersion: Number(src.desktopIconLayoutVersion) > 0 ? Number(src.desktopIconLayoutVersion) : 0,
       language: src.language || "en",
       locale: src.locale || "en-US",
       timeFormat: src.timeFormat === "24h" ? "24h" : "12h",
@@ -234,7 +326,21 @@
       weekStartsOn: src.weekStartsOn === "monday" ? "monday" : "sunday",
       timezone,
       confirmCloseApps: src.confirmCloseApps !== false,
-      openWelcomeOnStart: src.openWelcomeOnStart !== false,
+      openWelcomeOnStart: src.welcomeDesktopHomeV2 === true ? src.openWelcomeOnStart === true : false,
+      welcomeDesktopHomeV2: true,
+      welcomeIntroSeen:
+        src.welcomeIntroSeen === true ||
+        src.welcomeIntroSeen === false
+          ? !!src.welcomeIntroSeen
+          : Boolean(
+              src.welcomeDesktopHomeV2 ||
+                src.openWelcomeOnStart !== undefined ||
+                (src.desktopSpaces &&
+                  Array.isArray(src.desktopSpaces.spaces) &&
+                  src.desktopSpaces.spaces.length > 0) ||
+                (src.positions && Object.keys(src.positions).length > 0) ||
+                (src.wallpaper && src.wallpaper !== "gradient")
+            ),
       hotCorners: src.hotCorners !== false,
       focusDesktopOnly: src.focusDesktopOnly !== false,
       widgets: normalizeWidgets(src.widgets),
@@ -293,7 +399,9 @@
     }
     const base = normalizeConfig(raw || {});
     const stored = skipLocalMerge ? null : loadFromStorage();
-
+    const alreadySeeded = !!(
+      raw?.desktopSpaces?.vdPositionsSeeded || stored?.desktopSpaces?.vdPositionsSeeded
+    );
     if (api?.saveUserData) {
       state = base;
       if (stored?.positions && Object.keys(stored.positions).length) {
@@ -306,6 +414,28 @@
       state = normalizeConfig(stored);
     } else {
       state = { ...base, positions: stored?.positions || base.positions || {} };
+    }
+
+    if (!alreadySeeded) {
+      state.desktopSpaces = seedDesktopPositionsFromGlobal(
+        { ...(state.desktopSpaces || {}), vdPositionsSeeded: false },
+        state.positions
+      );
+      const active =
+        state.desktopSpaces.spaces.find((s) => s.id === state.desktopSpaces.activeId) ||
+        state.desktopSpaces.spaces[0];
+      if (active?.positions && Object.keys(active.positions).length) {
+        state.positions = { ...active.positions };
+      }
+      await persist();
+    } else if (
+      state.wallpaperPhotoRotateDefault &&
+      Array.isArray(state.wallpaperPlaylist) &&
+      state.wallpaperPlaylist.length >= 2 &&
+      !(Array.isArray(raw?.wallpaperPlaylist) && raw.wallpaperPlaylist.length)
+    ) {
+      // Persist newly seeded default photo rotation for existing profiles.
+      await persist();
     }
 
     notify();
@@ -340,6 +470,8 @@
       wallpaper: s.wallpaper,
       wallpaperPlaylist: Array.isArray(s.wallpaperPlaylist) ? [...s.wallpaperPlaylist] : [],
       wallpaperRotatedAt: s.wallpaperRotatedAt || null,
+      wallpaperPhotoRotateDefault: s.wallpaperPhotoRotateDefault === true,
+      desktopIconLayoutVersion: Number(s.desktopIconLayoutVersion) || 0,
       language: s.language,
       locale: s.locale,
       timeFormat: s.timeFormat,
@@ -348,7 +480,9 @@
       weekStartsOn: s.weekStartsOn,
       timezone: s.timezone,
       confirmCloseApps: s.confirmCloseApps,
-      openWelcomeOnStart: s.openWelcomeOnStart,
+      openWelcomeOnStart: !!s.openWelcomeOnStart,
+      welcomeDesktopHomeV2: true,
+      welcomeIntroSeen: !!s.welcomeIntroSeen,
       hotCorners: s.hotCorners !== false,
       focusDesktopOnly: s.focusDesktopOnly !== false,
       widgets: normalizeWidgets(s.widgets),
@@ -393,11 +527,15 @@
     }
 
     pack.activeId = space.id;
+    pack.vdWindowsStyle = true;
     state.desktopSpaces = pack;
     state.wallpaper = space.wallpaper || "gradient";
     state.taskbarPins = [...(space.taskbarPins || [])];
     if (space.positions && typeof space.positions === "object" && Object.keys(space.positions).length) {
       state.positions = { ...space.positions };
+    } else if (state.positions && Object.keys(state.positions).length) {
+      // Inherit current layout onto a desktop that never had its own icon map.
+      space.positions = { ...state.positions };
     }
     persist();
     return {
@@ -407,6 +545,84 @@
       taskbarPins: [...state.taskbarPins],
       session: null,
       positions: { ...(state.positions || {}) },
+    };
+  }
+
+  function createDesktopSpace(opts = {}) {
+    const pack = normalizeDesktopSpaces(state.desktopSpaces);
+    if (pack.spaces.length >= MAX_DESKTOP_SPACES) {
+      return { ok: false, error: `Maximum ${MAX_DESKTOP_SPACES} desktops` };
+    }
+    const id = String(opts.id || nextDesktopId(pack.spaces)).trim();
+    if (!id || pack.spaces.some((s) => s.id === id)) {
+      return { ok: false, error: "Desktop id unavailable" };
+    }
+    const name = String(opts.name || nextDesktopName(pack.spaces)).trim() || nextDesktopName(pack.spaces);
+    const space = {
+      id,
+      name,
+      wallpaper: opts.wallpaper || state.wallpaper || "gradient",
+      taskbarPins: Array.isArray(opts.taskbarPins)
+        ? [...new Set(opts.taskbarPins.map((x) => String(x)).filter(Boolean))]
+        : [],
+      positions:
+        state.positions && typeof state.positions === "object"
+          ? { ...state.positions }
+          : {},
+      session: null,
+    };
+    const afterId = opts.afterId || pack.activeId;
+    const idx = Math.max(0, pack.spaces.findIndex((s) => s.id === afterId));
+    pack.spaces.splice(idx + 1, 0, space);
+    pack.spaces = pack.spaces.slice(0, MAX_DESKTOP_SPACES);
+    pack.vdWindowsStyle = true;
+    state.desktopSpaces = pack;
+    persist();
+    return { ok: true, space: { ...space }, spaces: pack.spaces.map((s) => ({ ...s })) };
+  }
+
+  function renameDesktopSpace(spaceId, name) {
+    const pack = normalizeDesktopSpaces(state.desktopSpaces);
+    const space = pack.spaces.find((s) => s.id === spaceId);
+    if (!space) return { ok: false, error: "Space not found" };
+    const next = String(name || "").trim();
+    if (!next) return { ok: false, error: "Name required" };
+    space.name = next.slice(0, 40);
+    pack.vdWindowsStyle = true;
+    state.desktopSpaces = pack;
+    persist();
+    return { ok: true, space: { ...space } };
+  }
+
+  function removeDesktopSpace(spaceId) {
+    const pack = normalizeDesktopSpaces(state.desktopSpaces);
+    if (pack.spaces.length <= 1) {
+      return { ok: false, error: "Keep at least one desktop" };
+    }
+    const idx = pack.spaces.findIndex((s) => s.id === spaceId);
+    if (idx < 0) return { ok: false, error: "Space not found" };
+    const removed = pack.spaces[idx];
+    pack.spaces.splice(idx, 1);
+    let switchedTo = null;
+    if (pack.activeId === spaceId) {
+      switchedTo = pack.spaces[Math.min(idx, pack.spaces.length - 1)];
+      pack.activeId = switchedTo.id;
+      state.wallpaper = switchedTo.wallpaper || "gradient";
+      state.taskbarPins = [...(switchedTo.taskbarPins || [])];
+      if (switchedTo.positions && Object.keys(switchedTo.positions).length) {
+        state.positions = { ...switchedTo.positions };
+      }
+    }
+    pack.vdWindowsStyle = true;
+    state.desktopSpaces = pack;
+    persist();
+    return {
+      ok: true,
+      removedId: removed.id,
+      activeId: pack.activeId,
+      switchedTo: switchedTo ? { ...switchedTo } : null,
+      wallpaper: state.wallpaper,
+      taskbarPins: [...(state.taskbarPins || [])],
     };
   }
 
@@ -467,8 +683,17 @@
     return { ...state.positions };
   }
 
+  function syncActiveSpacePositions() {
+    const pack = normalizeDesktopSpaces(state.desktopSpaces);
+    const active = pack.spaces.find((s) => s.id === pack.activeId);
+    if (!active) return;
+    active.positions = { ...(state.positions || {}) };
+    state.desktopSpaces = pack;
+  }
+
   function setPosition(appId, x, y) {
     state.positions[appId] = { x: Math.round(x), y: Math.round(y) };
+    syncActiveSpacePositions();
     saveToStorage();
     if (api?.saveUserData) {
       api.saveUserData(state);
@@ -477,11 +702,39 @@
 
   async function resetPositions() {
     state.positions = {};
+    const pack = normalizeDesktopSpaces(state.desktopSpaces);
+    pack.spaces = pack.spaces.map((s) => ({ ...s, positions: {} }));
+    state.desktopSpaces = pack;
+    state.desktopIconLayoutVersion = 0;
     await persist();
+  }
+
+  function applyPositionsToAllDesktops(positions, layoutVersion) {
+    const next = positions && typeof positions === "object" ? { ...positions } : {};
+    state.positions = next;
+    if (layoutVersion != null) {
+      state.desktopIconLayoutVersion = Number(layoutVersion) || 0;
+    }
+    const pack = normalizeDesktopSpaces(state.desktopSpaces);
+    pack.spaces = pack.spaces.map((s) => ({ ...s, positions: { ...next } }));
+    state.desktopSpaces = pack;
+    persist();
+    return { ok: true };
   }
 
   function updateSettings(patch) {
     Object.assign(state, patch);
+    const pack = normalizeDesktopSpaces(state.desktopSpaces);
+    const active = pack.spaces.find((s) => s.id === pack.activeId);
+    if (active && patch && typeof patch === "object") {
+      if (Object.prototype.hasOwnProperty.call(patch, "wallpaper")) {
+        active.wallpaper = state.wallpaper || active.wallpaper;
+      }
+      if (Object.prototype.hasOwnProperty.call(patch, "positions")) {
+        active.positions = { ...(state.positions || {}) };
+      }
+      state.desktopSpaces = pack;
+    }
     persist();
   }
 
@@ -513,7 +766,6 @@
     if (data.icon !== undefined) app.icon = data.icon.trim() || undefined;
     if (data.iconUrl !== undefined) app.iconUrl = data.iconUrl.trim() || undefined;
     if (data.iconData !== undefined) app.iconData = data.iconData || undefined;
-
     if (app.type === "url" && data.url !== undefined) {
       app.url = data.url.trim();
     }
@@ -626,7 +878,6 @@
     persist();
     return { ok: true };
   }
-
   async function resetToDefaults() {
     if (!api) return;
     localStorage.removeItem(STORAGE_KEY);
@@ -666,6 +917,9 @@
     getWidgets,
     getDesktopSpaces,
     switchDesktopSpace,
+    createDesktopSpace,
+    renameDesktopSpace,
+    removeDesktopSpace,
     getPaletteRecents,
     pushPaletteRecent,
     getPositions,
@@ -675,6 +929,7 @@
     unpinFromTaskbar,
     toggleTaskbarPin,
     setPosition,
+    applyPositionsToAllDesktops,
     resetPositions,
     updateSettings,
     addApp,

@@ -610,7 +610,45 @@
 
   function normalizePlaylist(ids) {
     const known = knownIds();
-    return [...new Set((Array.isArray(ids) ? ids : []).map((id) => String(id)).filter((id) => known.has(id)))];
+    return [
+      ...new Set(
+        (Array.isArray(ids) ? ids : [])
+          .map((id) => String(id))
+          .filter((id) => known.has(id) || /^photo-\d+$/i.test(id))
+      ),
+    ].slice(0, 120);
+  }
+
+  function getDefaultPhotoPlaylist() {
+    const fromModule = window.MySpaceWallpaperPhotos?.defaultPlaylist?.();
+    if (Array.isArray(fromModule) && fromModule.length) return fromModule.slice(0, 120);
+    return WALLPAPERS.filter((w) => w.photo || /^photo-\d+$/i.test(w.id))
+      .map((w) => w.id)
+      .slice(0, 120);
+  }
+
+  function pickRandomFromPlaylist(list) {
+    const pl = Array.isArray(list) ? list : [];
+    if (!pl.length) return null;
+    return pl[Math.floor(Math.random() * pl.length)];
+  }
+
+  function ensureDefaultPhotoRotation() {
+    const pl = getPlaylist();
+    if (pl.length < 2) {
+      syncRotation();
+      return pl;
+    }
+    const pick = pickRandomFromPlaylist(pl);
+    if (pick) {
+      applyWallpaper(pick);
+      window.MySpaceConfig?.updateSettings?.({
+        wallpaper: pick,
+        wallpaperRotatedAt: Date.now(),
+      });
+    }
+    syncRotation();
+    return pl;
   }
 
   function getPlaylist() {
@@ -665,11 +703,9 @@
     clearRotationTimers();
     syncedPlaylistKey = key;
     if (!key) return;
-
     const last = Number(window.MySpaceConfig?.getSettings?.()?.wallpaperRotatedAt) || 0;
     const elapsed = last > 0 ? Date.now() - last : 0;
     const delay = Math.max(1000, ROTATE_MS - Math.min(elapsed, ROTATE_MS));
-
     rotateDelayTimer = setTimeout(() => {
       rotateNext();
       rotateTimer = setInterval(rotateNext, ROTATE_MS);
@@ -688,7 +724,6 @@
     const idx = list.indexOf(id);
     if (idx >= 0) list.splice(idx, 1);
     else list.push(id);
-
     const patch = { wallpaperPlaylist: list };
     if (idx < 0) {
       applyWallpaper(id);
@@ -699,7 +734,6 @@
       patch.wallpaper = list[0];
       patch.wallpaperRotatedAt = Date.now();
     }
-
     window.MySpaceConfig?.updateSettings?.(patch);
     syncRotation();
     return list;
@@ -720,7 +754,6 @@
     syncRotation();
     return list;
   }
-
   window.MySpaceWallpapers = {
     list: WALLPAPERS,
     get: getWallpaper,
@@ -731,6 +764,8 @@
     togglePlaylist,
     setPlaylist,
     syncRotation,
+    getDefaultPhotoPlaylist,
+    ensureDefaultPhotoRotation,
     ROTATE_MS,
   };
 })();

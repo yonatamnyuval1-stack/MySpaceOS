@@ -5,10 +5,8 @@ const backBtn = document.getElementById("back-btn");
 const clockEl = document.getElementById("clock");
 const taskbarTitle = document.getElementById("taskbar-title");
 const welcomeSubtitle = document.getElementById("welcome-subtitle");
-
 let selectedAppId = null;
 let welcomeBound = false;
-
 function tt(key, fallback, vars) {
   const I = window.MySpaceI18n;
   const fill = (s) => {
@@ -48,7 +46,7 @@ function welcomeChangelog() {
       tag: tt("shell.welcome.changelog.chat.tag", "Chat"),
       text: tt(
         "shell.welcome.changelog.chat.text",
-        "New Chat app: ChatGPT-style history powered by Mind. run chat, chat(new). Mind Chat (side panel) saves here too."
+        "New Chat app: ChatGPT-style history powered by Mind. run chat, chat(new)."
       ),
     },
     {
@@ -105,7 +103,6 @@ function updateClock() {
     return;
   }
   clockEl.classList.remove("hidden");
-
   const locale = settings.locale || "en-US";
   const timeZone = settings.timezone || undefined;
   const hour12 = settings.timeFormat !== "24h";
@@ -198,7 +195,7 @@ function renderWelcomeHub() {
         : hour < 18
           ? tt("shell.welcome.greeting.afternoon", "Good afternoon")
           : tt("shell.welcome.greeting.evening", "Good evening");
-    const locale = settings.locale || "en-US";
+          const locale = settings.locale || "en-US";
     let dateLabel = "";
     try {
       dateLabel = new Date().toLocaleDateString(locale, {
@@ -218,7 +215,6 @@ function renderWelcomeHub() {
 
   const countEl = document.getElementById("welcome-apps-count");
   if (countEl) countEl.textContent = tt("shell.welcome.available", "{n} available", { n: apps.length });
-
   const appsEl = document.getElementById("welcome-apps");
   if (appsEl) {
     appsEl.innerHTML = apps
@@ -334,8 +330,19 @@ function applyHeader() {
     }
   }
   document.title = title;
-  window.MySpaceWallpapers?.apply?.(wallpaper || "gradient");
-  window.MySpaceWallpapers?.syncRotation?.();
+  if (!window.__myspaceWallpaperBootDone) {
+    window.__myspaceWallpaperBootDone = true;
+    const pl = window.MySpaceWallpapers?.getPlaylist?.() || [];
+    if (pl.length >= 2 && window.MySpaceWallpapers?.ensureDefaultPhotoRotation) {
+      window.MySpaceWallpapers.ensureDefaultPhotoRotation();
+    } else {
+      window.MySpaceWallpapers?.apply?.(wallpaper || "gradient");
+      window.MySpaceWallpapers?.syncRotation?.();
+    }
+  } else {
+    window.MySpaceWallpapers?.apply?.(wallpaper || "gradient");
+    window.MySpaceWallpapers?.syncRotation?.();
+  }
   updateClock();
   if (!builtinPanel.classList.contains("hidden")) renderWelcomeHub();
 }
@@ -390,13 +397,11 @@ async function createAppTile(app, index) {
   btn.className = "app-tile";
   btn.dataset.appId = app.id;
   btn.setAttribute("aria-label", app.name);
-
   btn.appendChild(buildIconElement(app, await resolveTileIcon(app)));
   const nameEl = document.createElement("span");
   nameEl.className = "name";
   nameEl.textContent = app.name;
   btn.appendChild(nameEl);
-
   btn.addEventListener("click", async () => {
     if (window.MySpaceDrag.shouldSuppressClick(btn)) {
       return;
@@ -448,6 +453,7 @@ function handleAppMenuAction(action, app) {
       showToast("Open another app first, then use Open split");
       return;
     }
+
     const other = window.MySpaceConfig.getApps().find((a) => a.id === otherTab.appId);
     if (!other) {
       showToast("Could not find the other open app");
@@ -544,7 +550,7 @@ function buildShellContext() {
     },
     resetLayout: () => {
       window.MySpaceConfig.resetPositions();
-      refreshDesktop();
+      refreshDesktop({ relayout: "groups" });
     },
     pinApp: (appId) => {
       const result = window.MySpaceConfig.pinToTaskbar(appId);
@@ -624,7 +630,6 @@ async function logShellHistory(line, result, source) {
   } catch {
   }
 }
-
 let shellHotkeyLock = false;
 
 function openShellLine(x, y) {
@@ -656,11 +661,9 @@ function openCommandPalette() {
   setTimeout(() => {
     shellHotkeyLock = false;
   }, 250);
-
   if (window.MySpaceShellLine?.isOpen?.()) window.MySpaceShellLine.hide();
   if (window.MySpaceStartMenu?.isOpen?.()) window.MySpaceStartMenu.close();
   if (window.MySpaceShortcutsHelp?.isOpen?.()) window.MySpaceShortcutsHelp.hide();
-
   window.MySpaceCommandPalette?.show({
     onLaunch: (app) => launchApp(app),
     onLaunchById: (appId, options) => {
@@ -674,7 +677,9 @@ function openCommandPalette() {
     onShell: () => openShellLine(),
     onShortcuts: () => window.MySpaceShortcutsHelp?.show?.(),
     onFocusToggle: () => window.MySpaceFocus?.toggle?.(),
-    onSpaceCycle: () => window.MySpaceDesktopSpaces?.cycle?.(),
+    onSpaceCycle: () => window.MySpaceDesktopSpaces?.cycle?.(1),
+    onTaskView: () => window.MySpaceDesktopSpaces?.toggleOverview?.(),
+    onNewDesktop: () => window.MySpaceDesktopSpaces?.createDesktop?.(),
     onAskAi: (opts) => {
       window.MySpaceAiChat?.open?.(opts || {});
     },
@@ -783,7 +788,6 @@ async function restoreSession(session) {
   if (!session?.tabs?.length) return false;
   let restored = 0;
   let activeTabAfter = null;
-
   for (const entry of session.tabs) {
     try {
       if (entry.mode === "webview" && entry.url && !entry.appId) {
@@ -801,7 +805,6 @@ async function restoreSession(session) {
       if (!entry.appId) continue;
       const app = window.MySpaceConfig.getApps().find((a) => a.id === entry.appId);
       if (!app) continue;
-
       if (entry.mode === "webview" && entry.url && app.type === "url") {
         window.MySpaceWorkspace.openWeb(entry.url, app.name, {
           appId: app.id,
@@ -814,7 +817,6 @@ async function restoreSession(session) {
         await launchApp(app, { route, reuse: true });
       }
       restored += 1;
-
       if (
         session.activeAppId === entry.appId &&
         (!session.activeMode || session.activeMode === entry.mode)
@@ -861,23 +863,25 @@ async function launchStartupApps() {
   }
 }
 
+let desktopIntroBound = false;
+
+function dismissDesktopIntro() {
+  window.MySpaceDesktopIntro?.hide?.();
+}
+
+function maybeShowDesktopIntro() {
+  // Owned by desktop-intro.js — always shows after splash.
+  void window.MySpaceDesktopIntro?.show?.();
+}
 
 async function runStartupSequence() {
-  const settings = window.MySpaceConfig.getSettings();
   const session = loadSession();
   const ageMs = session?.savedAt ? Date.now() - session.savedAt : Infinity;
   const sessionFresh = session?.tabs?.length && ageMs < 7 * 24 * 60 * 60 * 1000;
-
   if (sessionFresh) {
     await restoreSession(session);
   }
-
   await launchStartupApps();
-
-  const openTabs = window.MySpaceWorkspace?.getTabs?.() || [];
-  if (settings.openWelcomeOnStart !== false && openTabs.length === 0) {
-    await showBuiltin();
-  }
 }
 
 let jobsRuntimeDepth = 0;
@@ -928,7 +932,6 @@ window.MySpaceShellBridge = {
       await logShellHistory(trimmed, { ok, message, error }, source);
       return { ok, message: message || error, error };
     }
-
     directWorkInFlight += 1;
     try {
       const ctx = buildShellContext();
@@ -958,7 +961,6 @@ window.MySpaceShellBridge = {
         jobsRuntimeDepth -= 1;
       }
     }
-
     const useJobs =
       !!window.mySpace?.jobs?.run && shouldQueueThroughJobs(source, opts);
     if (useJobs) {
@@ -980,7 +982,6 @@ window.MySpaceShellBridge = {
         error: ok ? null : job?.error || res?.error,
       };
     }
-
     directWorkInFlight += 1;
     try {
       const ctx = buildShellContext();
@@ -999,7 +1000,6 @@ window.MySpaceShellBridge = {
     }
   },
 };
-
 window.MySpaceJobsRuntime = {
   async performLaunch(payload = {}) {
     const appId = String(payload.appId || "").trim();
@@ -1342,7 +1342,6 @@ window.MySpacePermissions = {
     }
   },
 };
-
 window.MySpaceJobs = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1368,7 +1367,6 @@ window.MySpaceJobs = {
     }
   },
 };
-
 window.MySpaceScheduler = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1394,7 +1392,6 @@ window.MySpaceScheduler = {
     }
   },
 };
-
 window.MySpaceResolve = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1420,7 +1417,6 @@ window.MySpaceResolve = {
     }
   },
 };
-
 window.MySpaceUpdates = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1446,7 +1442,6 @@ window.MySpaceUpdates = {
     }
   },
 };
-
 window.MySpaceNetwork = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1472,7 +1467,6 @@ window.MySpaceNetwork = {
     }
   },
 };
-
 window.MySpaceInfo = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1498,7 +1492,6 @@ window.MySpaceInfo = {
     }
   },
 };
-
 window.MySpaceBackup = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1524,7 +1517,6 @@ window.MySpaceBackup = {
     }
   },
 };
-
 window.MySpaceStorage = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1550,7 +1542,6 @@ window.MySpaceStorage = {
     }
   },
 };
-
 window.MySpaceThemes = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1576,7 +1567,6 @@ window.MySpaceThemes = {
     }
   },
 };
-
 window.MySpaceBrowser = {
   async open() {
     try {
@@ -1614,7 +1604,6 @@ async function launchAppDirect(app, options = {}) {
     window.MySpaceBridgePanel?.show?.(page);
     return null;
   }
-
   if ((app?.id === "files" || app?.module === "files") && options.full !== true && !options.route?.path) {
     const page = ["browse", "recent", "favorites", "downloads", "documents"].includes(options.route?.page)
       ? options.route.page
@@ -1622,31 +1611,25 @@ async function launchAppDirect(app, options = {}) {
     window.MySpaceFilesPanel?.show?.(page);
     return null;
   }
-
   if ((app.type === "external" || app.type === "myapp") && !window.MySpaceDesktop.isFullDesktop()) {
     showToast("Use open.bat (not the browser). Close any localhost tab.");
     return null;
   }
-
   if (!window.MySpaceWorkspace) {
     showToast("Workspace failed to load");
     return null;
   }
-
   const reuse = options.reuse !== false;
   let route = options.route || null;
-
   if (!route && app.type === "myapp") {
     const prefs = window.MySpaceAppPrefs?.get?.(app.id) || {};
     if (prefs.restorePage !== false && prefs.lastPage) {
       route = { page: prefs.lastPage };
     }
   }
-
   if (route?.page && app.id) {
     window.MySpaceAppPrefs?.set?.(app.id, { lastPage: route.page });
   }
-
   try {
     const prefs = window.MySpaceAppPrefs?.get?.(app.id) || {};
     const launchPayload = { ...app, openMode: prefs.openMode || "workspace" };
@@ -1655,7 +1638,6 @@ async function launchAppDirect(app, options = {}) {
       showToast(result.error || "Could not open the app");
       return null;
     }
-
     window.MySpaceConfig?.pushPaletteRecent?.({
       kind: "app",
       id: "app:" + app.id,
@@ -1667,14 +1649,11 @@ async function launchAppDirect(app, options = {}) {
           : window.MySpaceIcons?.emojiFallback?.(app) || "📦",
       appId: app.id,
     });
-
     if (app.id && app.id !== "welcome" && !app.hidden) {
       window.MySpaceRecentApps?.record?.(app.id);
     }
-
     const iconSrc = initialLaunchIcon(app);
     let tab = null;
-
     if (result.mode === "webview") {
       tab = window.MySpaceWorkspace.openWeb(result.url, app.name, {
         appId: app.id,
@@ -1706,7 +1685,6 @@ async function launchAppDirect(app, options = {}) {
       showToast(`Unknown app type: ${app.type || "?"}`);
       return null;
     }
-
     resolveLaunchIcon(app)
       .then((resolved) => {
         if (!resolved || !result.mode) return;
@@ -1721,7 +1699,6 @@ async function launchAppDirect(app, options = {}) {
         if (mode) window.MySpaceWorkspace.updateTabIcon(app.id, mode, resolved);
       })
       .catch(() => {});
-
     return tab || window.MySpaceAppMenu?.findOpenTab?.(app) || null;
   } catch (err) {
     console.error("launchApp:", err);
@@ -1744,7 +1721,6 @@ async function openAppsSplit(leftApp, rightApp) {
     showToast("Split works with My Space apps, websites, and embedded Windows apps");
     return;
   }
-
   const leftTab = await launchApp(leftApp, { reuse: true });
   const rightTab = await launchApp(rightApp, { reuse: true });
   const left =
@@ -1780,11 +1756,9 @@ function openBesidePicker(leftApp) {
     showToast("No other apps available to open beside");
     return;
   }
-
   const options = candidates
     .map((a) => `<option value="${a.id}">${escapeHtmlLite(a.name)}</option>`)
     .join("");
-
   window.MySpaceModals?.open?.({
     title: `Open beside ${leftApp.name}`,
     bodyHtml: `
@@ -1821,7 +1795,6 @@ function escapeHtmlLite(s) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
-
 async function saveNewApp(data) {
   if (data.type === "external" && window.mySpace?.validateExternalApp) {
     const check = await window.mySpace.validateExternalApp(data);
@@ -1892,7 +1865,7 @@ function resetLayout() {
     () => {
       window.MySpaceConfig.resetPositions();
       showToast("Icon positions reset");
-      refreshDesktop();
+      refreshDesktop({ relayout: "groups" });
     }
   );
 }
@@ -1913,18 +1886,30 @@ async function refreshDesktop(options = {}) {
   }
   const built = await Promise.all(apps.map((app, index) => createAppTile(app, index)));
   appGrid.replaceChildren(...built.map((x) => x.btn));
-
-  requestAnimationFrame(() => {
-    built.forEach(({ btn, index, app }) => {
-      window.MySpaceDrag.applyPosition(btn, app.id, index, appGrid);
+  const layoutOnce = () => {
+    const ids = built.map((x) => x.app.id);
+    const force = options.relayout === "groups" || options.relayout === true;
+    const incomplete = window.MySpaceDrag?.positionsNeedRelayout?.(ids);
+    const layoutVer = Number(window.MySpaceConfig?.getSettings?.()?.desktopIconLayoutVersion) || 0;
+    const LAYOUT_VERSION = 4;
+    if (force || incomplete || layoutVer < LAYOUT_VERSION) {
+      window.MySpaceDrag.applyLayout(appGrid, ids, {
+        persist: true,
+        layoutVersion: LAYOUT_VERSION,
+      });
+    } else {
+      built.forEach(({ btn, index, app }) => {
+        window.MySpaceDrag.applyPosition(btn, app.id, index, appGrid, null);
+      });
+    }
+    built.forEach(({ btn, app }) => {
       window.MySpaceDrag.enableDrag(btn, app.id, appGrid);
       if (selectedAppId === app.id) btn.classList.add("selected");
     });
-    if (options.relayout) {
-      window.MySpaceDrag.relayoutFromAppOrder(appGrid);
-    }
     refreshOpenIndicators();
-  });
+  };
+
+  requestAnimationFrame(() => requestAnimationFrame(layoutOnce));
 }
 
 function refreshOpenIndicators() {
@@ -1979,7 +1964,6 @@ function setupAccountChip() {
   const tabRegister = document.getElementById("os-account-tab-register");
   const sheetSub = document.getElementById("os-account-sub");
   if (!btn || !menu || !window.mySpace?.identity) return;
-
   let registerMode = false;
   let currentUser = null;
 
@@ -2065,7 +2049,6 @@ function setupAccountChip() {
       ? `My Space — ${user.username}`
       : t("shell.account.title", null, "My Space account");
   }
-
   window.__myspaceRefreshAccountI18n = () => refreshAccountUi(currentUser);
 
   async function reloadDesktopForProfile() {
@@ -2089,17 +2072,14 @@ function setupAccountChip() {
       await refreshAccountUi(null);
     }
   }
-
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
     if (menu.classList.contains("hidden")) openMenu();
     else closeMenu();
   });
-
   document.addEventListener("click", (e) => {
     if (!e.target.closest("#taskbar-account-wrap")) closeMenu();
   });
-
   btnSignIn?.addEventListener("click", () => openSheet(false));
   btnCreate?.addEventListener("click", () => openSheet(true));
   btnSwitch?.addEventListener("click", async () => {
@@ -2119,12 +2099,10 @@ function setupAccountChip() {
     await reloadDesktopForProfile();
     showToast(t("shell.account.signedOutToast", null, "Signed out of My Space"));
   });
-
   tabSignIn?.addEventListener("click", () => setSheetMode(false));
   tabRegister?.addEventListener("click", () => setSheetMode(true));
   backdrop?.addEventListener("click", closeSheet);
   cancel?.addEventListener("click", closeSheet);
-
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     errorEl?.classList.add("hidden");
@@ -2166,7 +2144,6 @@ function setupAccountChip() {
       if (submit) submit.disabled = false;
     }
   });
-
   window.mySpace.identity.onChanged?.(async (data) => {
     await refreshAccountUi(data?.user || null);
     await reloadDesktopForProfile();
@@ -2207,6 +2184,31 @@ function setupKeyboard() {
       window.mySpace?.openNewWindow?.().catch(() => showToast("Could not open window"));
       return;
     }
+    if (mod && e.altKey && !e.shiftKey && (e.key === "ArrowLeft" || e.key === "Left")) {
+      e.preventDefault();
+      void window.MySpaceDesktopSpaces?.cycle?.(-1);
+      return;
+    }
+    if (mod && e.altKey && !e.shiftKey && (e.key === "ArrowRight" || e.key === "Right")) {
+      e.preventDefault();
+      void window.MySpaceDesktopSpaces?.cycle?.(1);
+      return;
+    }
+    if (mod && e.altKey && !e.shiftKey && (e.key === "d" || e.key === "D")) {
+      e.preventDefault();
+      void window.MySpaceDesktopSpaces?.createDesktop?.();
+      return;
+    }
+    if (mod && e.altKey && !e.shiftKey && (e.key === "F4" || e.key === "w" || e.key === "W")) {
+      e.preventDefault();
+      void window.MySpaceDesktopSpaces?.closeDesktop?.();
+      return;
+    }
+    if (mod && e.altKey && !e.shiftKey && (e.key === "Tab" || e.key === "t" || e.key === "T")) {
+      e.preventDefault();
+      window.MySpaceDesktopSpaces?.toggleOverview?.();
+      return;
+    }
     if (mod && e.key === "\\" && !e.altKey) {
       e.preventDefault();
       const ok = window.MySpaceWorkspace?.toggleSnap?.();
@@ -2225,6 +2227,10 @@ function setupKeyboard() {
     }
     if (e.key === "Escape") {
       window.MySpaceTaskbar?.hidePeek?.();
+      if (window.MySpaceDesktopSpaces?.isOverviewOpen?.()) {
+        window.MySpaceDesktopSpaces.hideOverview();
+        return;
+      }
       if (window.MySpaceCommandPalette?.isOpen?.()) {
         window.MySpaceCommandPalette.hide();
         return;
@@ -2236,6 +2242,7 @@ function setupKeyboard() {
       if (window.MySpaceShellLine?.isOpen?.()) {
         window.MySpaceShellLine.hide();
         return;
+      }
       }
       if (window.MySpaceStartMenu?.isOpen?.()) {
         window.MySpaceStartMenu.close();
@@ -2274,7 +2281,6 @@ function tickBootSplashPct() {
     bootSplashPctRaf = 0;
     return;
   }
-
   const elapsed = performance.now() - bootSplashStartedAt;
   let pct;
   if (bootSplashReady) {
@@ -2285,7 +2291,6 @@ function tickBootSplashPct() {
     pct = (elapsed / BOOT_SPLASH_MIN_MS) * 99;
   }
   setBootSplashPct(pct);
-
   if (pct < 100) {
     bootSplashPctRaf = requestAnimationFrame(tickBootSplashPct);
   } else {
@@ -2294,53 +2299,60 @@ function tickBootSplashPct() {
 }
 
 async function dismissBootSplash() {
-  if (document.documentElement.classList.contains("boot-splash-skip")) {
-    document.documentElement.classList.remove("booting");
-    return;
-  }
-  const el = document.getElementById("boot-splash");
-  if (!el || el.classList.contains("is-done") || el.dataset.dismissing === "1") return;
-  el.dataset.dismissing = "1";
-
-  const wait = Math.max(0, BOOT_SPLASH_MIN_MS - (performance.now() - bootSplashStartedAt));
-  if (wait > 0) {
-    await new Promise((resolve) => setTimeout(resolve, wait));
-  }
-
-  bootSplashReady = true;
-  window.__bootSplashReady = true;
-  setBootSplashPct(100);
-  await new Promise((resolve) => setTimeout(resolve, 180));
-
-  if (!el.isConnected) return;
-  document.documentElement.classList.remove("booting");
-  el.classList.add("is-done");
-  el.setAttribute("aria-busy", "false");
-  const remove = () => {
-    if (bootSplashPctRaf) cancelAnimationFrame(bootSplashPctRaf);
-    bootSplashPctRaf = 0;
-    if (el.isConnected) el.remove();
+  const unlockShell = () => {
+    try {
+      document.documentElement.classList.remove("booting");
+    } catch {
+    }
   };
-  el.addEventListener("transitionend", remove, { once: true });
-  setTimeout(remove, 800);
+  try {
+    if (document.documentElement.classList.contains("boot-splash-skip")) {
+      return;
+    }
+    const el = document.getElementById("boot-splash");
+    if (!el || el.classList.contains("is-done")) {
+      return;
+    }
+    if (el.dataset.dismissing === "1") {
+      return;
+    }
+    el.dataset.dismissing = "1";
+    const wait = Math.max(0, BOOT_SPLASH_MIN_MS - (performance.now() - bootSplashStartedAt));
+    if (wait > 0) {
+      await new Promise((resolve) => setTimeout(resolve, wait));
+    }
+    bootSplashReady = true;
+    window.__bootSplashReady = true;
+    setBootSplashPct(100);
+    await new Promise((resolve) => setTimeout(resolve, 180));
+    if (el.isConnected) {
+      el.classList.add("is-done");
+      el.setAttribute("aria-busy", "false");
+      const remove = () => {
+        if (bootSplashPctRaf) cancelAnimationFrame(bootSplashPctRaf);
+        bootSplashPctRaf = 0;
+        if (el.isConnected) el.remove();
+      };
+      el.addEventListener("transitionend", remove, { once: true });
+      setTimeout(remove, 800);
+    }
+  } finally {
+    unlockShell();
+  }
 }
 
 async function init() {
   window.showMySpaceToast = showToast;
   window.launchMySpaceApp = launchApp;
-
   window.addEventListener("unhandledrejection", (e) => {
     console.error("My Space:", e.reason);
   });
-
   if (navigator.userAgent.includes("Electron") && !window.MySpaceDesktop.isFullDesktop()) {
     showToast("Desktop bridge failed.", 8000);
   }
-
   updateClock();
   setInterval(updateClock, 1000);
   backBtn.addEventListener("click", showDesktop);
-
   await window.MySpaceConfig.init(window.mySpace);
   window.MySpaceI18nBoot?.boot?.();
   window.addEventListener("myspace-i18n-applied", () => {
@@ -2368,7 +2380,6 @@ async function init() {
   setupTaskbar();
   window.MySpaceNotificationsBell?.refresh?.();
   setupKeyboard();
-
   workspace.addEventListener("contextmenu", (e) => {
     if (e.target.closest(".app-tile")) return;
     e.preventDefault();
@@ -2376,16 +2387,14 @@ async function init() {
     clearSelection();
     openShellLine(e.clientX, e.clientY);
   });
-
   workspace.addEventListener("click", (e) => {
     if (!e.target.closest(".app-tile")) clearSelection();
   });
-
   await refreshDesktop();
   window.MySpaceTaskbar?.refresh();
   window.MySpaceAppRail?.refresh?.();
   window.__myspaceAiLaunchApp = (app, options) => launchApp(app, options || {});
-  window.__myspaceAiRefreshDesktop = () => refreshDesktop();
+  window.__myspaceAiRefreshDesktop = (opts) => refreshDesktop(opts || {});
   window.__myspaceLaunchById = (appId, options) => {
     const app = window.MySpaceConfig.getApps().find((a) => a.id === appId);
     if (app) launchApp(app, options || {});
@@ -2411,7 +2420,6 @@ async function init() {
     refreshDesktop: () => refreshDesktop(),
   });
   window.MySpaceAiChat?.init();
-
   window.mySpace?.onMailEvent?.((data) => {
     if (data?.channel !== "connect-open-web" || !data.url) return;
     void (async () => {
@@ -2439,7 +2447,6 @@ async function init() {
       }
     })();
   });
-
   window.addEventListener("myspace-tabs-change", () => {
     refreshOpenIndicators();
     scheduleSessionSave();
@@ -2447,14 +2454,12 @@ async function init() {
   });
   window.addEventListener("beforeunload", saveSessionNow);
   window.addEventListener("pagehide", saveSessionNow);
-
   window.mySpace?.onShellHotkey?.(() => {
     openCommandPalette();
   });
   window.mySpace?.onShortcutsHotkey?.(() => {
     window.MySpaceShortcutsHelp?.toggle?.();
   });
-
   window.MySpaceHotCorners?.init({
     onDesktop: showDesktop,
     onPalette: openCommandPalette,
@@ -2491,7 +2496,6 @@ async function init() {
       else showToast(result?.error || "Could not open .space file");
     }
   }
-
   window.MySpaceDesktop.launchApp = (app, options) => launchApp(app, options);
   window.MySpaceDesktop.launchAppById = (appId, options) => {
     const app = window.MySpaceConfig.getApps().find((a) => a.id === appId);
@@ -2518,13 +2522,18 @@ async function init() {
   });
 
   const isSecondaryWindow = new URLSearchParams(window.location.search).get("secondary") === "1";
+  let startupSettings = null;
   if (!isSecondaryWindow) {
-    await runStartupSequence();
+    startupSettings = await runStartupSequence();
   }
   scheduleSessionSave();
   await dismissBootSplash();
+  try {
+    applyHeader();
+    window.MySpaceDesktopSpaces?.hideOverview?.();
+  } catch {
+  }
 }
-
 init().catch(async (err) => {
   console.error(err);
   try {
@@ -2532,5 +2541,6 @@ init().catch(async (err) => {
   } catch {
   }
   await dismissBootSplash();
-  showToast("Startup error: check the console (F12)");
+  const detail = err && err.message ? String(err.message).slice(0, 120) : "";
+  showToast(detail ? `Startup error: ${detail}` : "Startup error: check the console (F12)");
 });

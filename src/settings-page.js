@@ -17,7 +17,6 @@
     const v = I.t(key, vars);
     return v === key ? fill(fallback || key) : v;
   }
-
   const SETTINGS_ICON_GRAY =
     "data:image/svg+xml," +
     encodeURIComponent(
@@ -118,12 +117,10 @@
       logo.textContent = "⚙";
     }
     header.appendChild(logo);
-
     const titleBlock = el("div", "appset-title-block");
     titleBlock.appendChild(el("h2", "appset-name", title));
     titleBlock.appendChild(el("p", "appset-meta", meta));
     header.appendChild(titleBlock);
-
     if (badgeText) {
       const badge = el("span", `appset-status ${badgeClass || "is-visible"}`, badgeText);
       badge.setAttribute("aria-hidden", "true");
@@ -162,7 +159,6 @@
       try {
         window.MySpaceSettingsPage?.open?.();
       } catch {
-        /* ignore */
       }
     }
   }
@@ -221,9 +217,12 @@
     );
     desktop.appendChild(
       kit.row(
-        tt("settings.general.showWelcome", "Show Welcome on startup"),
-        tt("settings.general.showWelcomeHint", "Open the Welcome command center when My Space launches. Welcome is a startup screen, not a desktop app."),
-        kit.toggle(cur.openWelcomeOnStart !== false, (on) => {
+        tt("settings.general.showWelcome", "Show Welcome panel on startup"),
+        tt(
+          "settings.general.showWelcomeHint",
+          "Open the Welcome panel when My Space launches — even if apps or a session were restored."
+        ),
+        kit.toggle(!!cur.openWelcomeOnStart, (on) => {
           patchSettings({ openWelcomeOnStart: on });
         })
       )
@@ -258,39 +257,81 @@
       )
     );
 
-    const spaces = kit.section(tt("settings.general.section.spaces", "Desktop spaces"));
-    const liveSpaces = () => window.MySpaceDesktopSpaces?.spaces?.() || window.MySpaceConfig?.getDesktopSpaces?.() || { spaces: [], activeId: "" };
-    const pack = liveSpaces();
-    const spaceRow = el("div", "appset-actions");
-    pack.spaces.forEach((sp) => {
-      const b = kit.actionBtn(
-        (sp.id === pack.activeId ? "● " : "") + sp.name,
-        sp.id === pack.activeId ? "primary" : "ghost",
-        async () => {
-          await window.MySpaceDesktopSpaces?.switchTo?.(sp.id);
-          const next = liveSpaces();
-          spaceRow.querySelectorAll("button[data-space-id]").forEach((btn) => {
-            const id = btn.getAttribute("data-space-id");
-            const active = id === next?.activeId;
-            const name = next?.spaces?.find((x) => x.id === id)?.name || btn.dataset.spaceName || id;
-            btn.classList.toggle("appset-action--primary", active);
-            btn.classList.toggle("appset-action--ghost", !active);
-            btn.textContent = (active ? "● " : "") + name;
-          });
-        }
+    const spaces = kit.section(tt("settings.general.section.spaces", "Virtual desktops"));
+    const liveSpaces = () =>
+      window.MySpaceDesktopSpaces?.spaces?.() ||
+      window.MySpaceConfig?.getDesktopSpaces?.() || { spaces: [], activeId: "" };
+
+    function paintSpaceManager(host) {
+      host.innerHTML = "";
+      const pack = liveSpaces();
+      const list = el("div", "vd-settings-list");
+      pack.spaces.forEach((sp) => {
+        const row = el("div", "vd-settings-row");
+        const active = sp.id === pack.activeId;
+        const label = el("span", "vd-settings-name");
+        label.textContent = (active ? "● " : "") + sp.name;
+        const actions = el("div", "appset-actions");
+        const switchBtn = kit.actionBtn(
+          tt("settings.general.switchDesktop", "Switch"),
+          active ? "primary" : "ghost",
+          async () => {
+            await window.MySpaceDesktopSpaces?.switchTo?.(sp.id);
+            paintSpaceManager(host);
+          }
+        );
+        const renameBtn = kit.actionBtn(
+          tt("settings.general.renameDesktop", "Rename"),
+          "ghost",
+          () => {
+            window.MySpaceDesktopSpaces?.renameDesktop?.(sp.id);
+            paintSpaceManager(host);
+          }
+        );
+        const closeBtn = kit.actionBtn(
+          tt("settings.general.closeDesktop", "Close"),
+          "danger",
+          async () => {
+            await window.MySpaceDesktopSpaces?.closeDesktop?.(sp.id);
+            paintSpaceManager(host);
+          }
+        );
+        if (pack.spaces.length <= 1) closeBtn.disabled = true;
+        actions.appendChild(switchBtn);
+        actions.appendChild(renameBtn);
+        actions.appendChild(closeBtn);
+        row.appendChild(label);
+        row.appendChild(actions);
+        list.appendChild(row);
+      });
+      const footer = el("div", "appset-actions");
+      footer.appendChild(
+        kit.actionBtn(tt("settings.general.newDesktop", "New desktop"), "primary", async () => {
+          await window.MySpaceDesktopSpaces?.createDesktop?.();
+          paintSpaceManager(host);
+        })
       );
-      b.dataset.spaceId = sp.id;
-      b.dataset.spaceName = sp.name;
-      spaceRow.appendChild(b);
-    });
+      footer.appendChild(
+        kit.actionBtn(tt("settings.general.openTaskView", "Task View"), "ghost", () => {
+          window.MySpaceDesktopSpaces?.showOverview?.();
+        })
+      );
+      host.appendChild(list);
+      host.appendChild(footer);
+    }
+
+    const spaceHost = el("div", "vd-settings-host");
+    paintSpaceManager(spaceHost);
     spaces.appendChild(
       kit.row(
-        tt("settings.general.activeDesktop", "Active desktop"),
-        tt("settings.general.activeDesktopHint", "Each My Space window has its own Study / Work / Play desktops."),
-        spaceRow
+        tt("settings.general.activeDesktop", "Virtual desktops"),
+        tt(
+          "settings.general.activeDesktopHint",
+          "Windows-style boards: each keeps its own open apps, pins, and wallpaper."
+        ),
+        spaceHost
       )
     );
-
     const maintenance = kit.section(tt("settings.general.section.maintenance", "Maintenance"));
     const resetWrap = el("div", "appset-actions");
     resetWrap.appendChild(
@@ -300,7 +341,11 @@
         );
         if (!ok) return;
         await window.MySpaceConfig?.resetPositions?.();
-        window.__myspaceAiRefreshDesktop?.();
+        if (typeof window.__myspaceAiRefreshDesktop === "function") {
+          window.__myspaceAiRefreshDesktop({ relayout: "groups" });
+        } else {
+          window.MySpaceDrag?.relayoutDefaultGroups?.(document.getElementById("app-grid"));
+        }
         window.showMySpaceToast?.(tt("settings.general.resetPositionsDone", "Desktop icon positions reset"));
       })
     );
@@ -325,7 +370,7 @@
     backupWrap.appendChild(
       kit.actionBtn(tt("settings.general.restoreBackup", "Restore backup"), "danger", async () => {
         const ok = window.confirm(
-          tt("settings.general.restoreConfirm", "Restore will replace your My Space data from a zip, then restart. Continue?")
+          tt("settings.general.restoreConfirm", "Restore will replace your MySpace data from a zip, then restart. Continue?")
         );
         if (!ok) return;
         const res = await window.mySpace?.backup?.import?.();
@@ -580,7 +625,10 @@
     pane.appendChild(
       settingsHeader({
         title: tt("settings.backgrounds.title", "Backgrounds"),
-        meta: tt("settings.backgrounds.meta", "Pick several wallpapers: My Space rotates them every 5 minutes"),
+        meta: tt(
+          "settings.backgrounds.meta",
+          "By default My Space rotates photo wallpapers every 5 minutes. Click to customize."
+        ),
         badgeText: tt("settings.backgrounds.badge", "Desktop"),
         badgeClass: "is-visible",
         iconSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#5b6b82" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 14l4-4 3 3 4-5 7 6"/></svg>`,
@@ -617,7 +665,6 @@
       const persisted = window.MySpaceWallpapers?.getPlaylist?.() || [];
       const selectedSet = persisted.length ? new Set(persisted) : selected;
       const currentId = window.MySpaceWallpapers?.getCurrentId?.() || "gradient";
-
       grid.querySelectorAll(".settings-wallpaper-card").forEach((card) => {
         const id = card.dataset.wallpaperId;
         card.classList.toggle("is-selected", selectedSet.has(id));
@@ -642,17 +689,14 @@
       btn.title = wp.name;
       btn.setAttribute("aria-label", wp.name);
       btn.setAttribute("aria-pressed", "false");
-
       const preview = el("div", "settings-wallpaper-preview");
       window.MySpaceWallpapers.applyStyles(preview, wp);
       const mark = el("span", "settings-wallpaper-check", "✓");
       mark.setAttribute("aria-hidden", "true");
       preview.appendChild(mark);
       btn.appendChild(preview);
-
       const label = el("span", "settings-wallpaper-name", wp.name);
       btn.appendChild(label);
-
       btn.addEventListener("click", () => {
         window.MySpaceWallpapers?.togglePlaylist?.(wp.id);
         const persisted = window.MySpaceWallpapers?.getPlaylist?.() || [];
@@ -667,7 +711,6 @@
     pane.appendChild(status);
     pane.appendChild(grid);
     paintCards();
-
     const onRotated = () => paintCards();
     window.addEventListener("myspace-wallpaper-rotated", onRotated);
     pane.addEventListener(
@@ -682,7 +725,6 @@
   function buildToolRow(tool, onToggle) {
     const row = el("div", "settings-tool-row");
     row.dataset.tool = tool.name;
-
     const left = el("div", "settings-tool-left");
     left.appendChild(el("span", "settings-tool-name", tool.name));
     const tag = el(
@@ -691,7 +733,6 @@
       tool.active ? tt("settings.tools.active", "active") : tt("settings.tools.inactive", "inactive")
     );
     left.appendChild(tag);
-
     const btn = el(
       "button",
       `settings-tool-toggle ${tool.active ? "is-stop" : "is-start"}`,
@@ -699,7 +740,6 @@
     );
     btn.type = "button";
     btn.addEventListener("click", () => onToggle(tool, btn, tag, row));
-
     row.appendChild(left);
     row.appendChild(btn);
     return row;
@@ -709,7 +749,6 @@
     const pane = el("div", "settings-pane settings-pane--tools");
     const list = el("div", "settings-tool-list");
     pane.appendChild(list);
-
     const status = el("div", "settings-tool-status");
     list.appendChild(status);
 
@@ -717,7 +756,6 @@
       status.textContent = tt("settings.tools.loading", "Loading tools…");
       status.classList.remove("hidden");
       list.querySelectorAll(".settings-tool-row").forEach((n) => n.remove());
-
       if (!window.mySpace?.aiChat?.listTools) {
         status.textContent = tt("settings.tools.unavailable", "Tools API unavailable.");
         return;
@@ -784,18 +822,14 @@
   function buildAppSettingsPane(app, ctx = {}) {
     const getLive = () =>
       window.MySpaceConfig?.getApps?.()?.find((a) => a.id === app.id) || app;
-
     const pane = el("div", "settings-pane settings-pane--app-settings");
     const live = getLive();
     const isHidden = !!live.hidden;
-
     const header = el("header", "appset-header");
-
     const logo = el("div", "appset-logo");
     const emoji = window.MySpaceIcons?.emojiFallback?.(live) || "📦";
     logo.textContent = emoji;
     header.appendChild(logo);
-
     resolveAppIconSrc(live).then((src) => {
       if (!src || !logo.isConnected) return;
       const img = document.createElement("img");
@@ -816,7 +850,6 @@
       el("p", "appset-meta", metaBits.slice(0, 2).join(" · ") || tt("settings.apps.application", "Application"))
     );
     header.appendChild(titleBlock);
-
     const statusBtn = el(
       "button",
       `appset-status ${isHidden ? "is-hidden" : "is-visible"}`,
@@ -831,7 +864,6 @@
       ctx.onOpenAppSettings?.(getLive());
     });
     header.appendChild(statusBtn);
-
     pane.appendChild(header);
 
     function section(title) {
@@ -916,7 +948,6 @@
       return next;
     }
     let prefs = loadPrefs();
-
     const desktop = section(tt("settings.apps.section.desktop", "Desktop"));
     desktop.appendChild(
       row(
@@ -947,7 +978,6 @@
         })
       )
     );
-
     const launch = section(tt("settings.apps.section.launch", "Launch"));
     launch.appendChild(
       row(
@@ -1156,7 +1186,6 @@
       aboutGrid.appendChild(item);
     });
     about.appendChild(aboutGrid);
-
     return pane;
   }
 
@@ -1164,28 +1193,23 @@
     const pane = el("div", "settings-pane settings-pane--apps");
     const grid = el("div", "settings-apps-grid");
     pane.appendChild(grid);
-
     const apps = (window.MySpaceConfig?.getApps?.() || []).filter((a) => a.id !== "welcome");
-
     apps.forEach((app) => {
       const btn = el("button", "settings-app-card");
       btn.type = "button";
       btn.title = app.name;
       btn.setAttribute("aria-label", tt("settings.apps.settingsAria", "{name} settings", { name: app.name }));
       if (app.hidden) btn.classList.add("is-hidden-app");
-
       const iconWrap = el("div", "settings-app-card-icon");
       const emoji = window.MySpaceIcons?.emojiFallback?.(app) || "📦";
       iconWrap.textContent = emoji;
       btn.appendChild(iconWrap);
-
       btn.appendChild(el("span", "settings-app-card-name", app.name || app.id));
       if (app.hidden) {
         btn.appendChild(el("span", "settings-app-card-badge", tt("settings.apps.hidden", "Hidden")));
       }
 
       btn.addEventListener("click", () => onOpenAppSettings?.(app));
-
       resolveAppIconSrc(app).then((src) => {
         if (!src || !btn.isConnected) return;
         const img = document.createElement("img");
@@ -1232,18 +1256,14 @@
     const root = el("div", "settings-page");
     root.setAttribute("role", "application");
     root.setAttribute("aria-label", tt("settings.aria", "Settings"));
-
     const nav = el("aside", "settings-nav");
     nav.setAttribute("aria-label", tt("settings.nav.aria", "Settings categories"));
-
     const list = el("nav", "settings-nav-list");
     list.setAttribute("role", "tablist");
     nav.appendChild(list);
-
     const main = el("main", "settings-main");
     const mainInner = el("div", "settings-main-inner");
     main.appendChild(mainInner);
-
     let activeId = CATEGORIES[0]?.id || "general";
     let appSettingsApp = null;
 
@@ -1268,7 +1288,6 @@
         btn.setAttribute("aria-selected", on ? "true" : "false");
       });
     }
-
     CATEGORIES.forEach((cat) => {
       const btn = el("button", "settings-nav-item");
       btn.type = "button";
@@ -1282,13 +1301,11 @@
       });
       list.appendChild(btn);
     });
-
     root.appendChild(nav);
     root.appendChild(main);
     renderMain();
     return root;
   }
-
   function open() {
     if (!window.MySpaceWorkspace?.openPanel) {
       console.error("MySpaceWorkspace.openPanel is unavailable");
@@ -1304,7 +1321,8 @@
       buildContent: () => buildPage(),
     });
   }
-
+  function opendd() {
+  }
   window.MySpaceSettingsPage = {
     open,
     isOpen() {

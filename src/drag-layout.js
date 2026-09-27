@@ -1,35 +1,183 @@
 (function () {
-  const TILE_W = 76;
-  const TILE_H = 80;
-  const GAP = 8;
+  const TILE_W = 88;
+  const TILE_H = 92;
+  const GAP_X = 10;
+  const GAP_Y = 8;
+  const MARGIN_X = 20;
+  const MARGIN_Y = 16;
   const DRAG_THRESHOLD = 5;
+  const DEFAULT_ORDER = [
+    "notes",
+    "tasks",
+    "day-planner",
+    "world-clock",
+    "contacts",
+    "translate",
+    "docs",
+    "studies",
+    "study-deck",
+    "code-lexicon",
+    "builds",
+    "drift",
+    "geography",
+    "world-maps",
+    "history",
+    "space",
+    "flag-quiz",
+    "pi-digits",
+    "stocks",
+    "profiles",
+    "coupons",
+    "contracts",
+    "remote-hub",
+    "icon-library",
+    "edge",
+    "vscode",
+    "cursor",
+    "terminal",
+    "docker",
+    "github",
+  ];
 
   function getPositions() {
     return window.MySpaceConfig?.getPositions() || {};
   }
 
-  function defaultPosition(index, gridEl) {
-    const height = gridEl.clientHeight || 600;
-    const width = gridEl.clientWidth || 800;
-    const rows = Math.max(1, Math.floor((height - 16) / (TILE_H + GAP)));
-    const col = Math.floor(index / rows);
-    const row = index % rows;
-    const x = width - (col + 1) * (TILE_W + GAP) - 12;
-    const y = 12 + row * (TILE_H + GAP);
-    return { x: Math.max(8, x), y };
+  function measureGrid(gridEl) {
+    let w = gridEl?.clientWidth || 0;
+    let h = gridEl?.clientHeight || 0;
+    if (w < 120) {
+      w =
+        gridEl?.parentElement?.clientWidth ||
+        document.getElementById("desktop")?.clientWidth ||
+        window.innerWidth ||
+        1280;
+    }
+    if (h < 120) {
+      h =
+        gridEl?.parentElement?.clientHeight ||
+        document.getElementById("desktop")?.clientHeight ||
+        Math.max(480, (window.innerHeight || 800) - 64);
+    }
+    return { width: Math.max(320, w), height: Math.max(320, h) };
   }
 
-  function applyPosition(btn, appId, index, gridEl) {
+  function rowsForHeight(height) {
+    const usable = Math.max(1, height - MARGIN_Y * 2);
+    return Math.max(4, Math.min(10, Math.floor(usable / (TILE_H + GAP_Y))));
+  }
+  function cellAt(col, row) {
+    return {
+      x: MARGIN_X + col * (TILE_W + GAP_X),
+      y: MARGIN_Y + row * (TILE_H + GAP_Y),
+    };
+  }
+
+  function sortIdsForDefault(appIds) {
+    const set = new Set(appIds.map(String));
+    const ordered = [];
+    for (const id of DEFAULT_ORDER) {
+      if (set.has(id)) {
+        ordered.push(id);
+        set.delete(id);
+      }
+    }
+    for (const id of appIds) {
+      const s = String(id);
+      if (set.has(s)) {
+        ordered.push(s);
+        set.delete(s);
+      }
+    }
+    return ordered;
+  }
+
+  function defaultPositionsForApps(appIds, gridEl) {
+    const { height } = measureGrid(gridEl);
+    const rows = rowsForHeight(height);
+    const ordered = sortIdsForDefault(appIds);
+    const map = new Map();
+    ordered.forEach((id, index) => {
+      map.set(id, cellAt(Math.floor(index / rows), index % rows));
+    });
+    return map;
+  }
+
+  function defaultPosition(index, gridEl) {
+    const { height } = measureGrid(gridEl);
+    const rows = rowsForHeight(height);
+    return cellAt(Math.floor(index / rows), index % rows);
+  }
+
+  function positionsNeedRelayout(appIds) {
+    const positions = getPositions();
+    const pts = [];
+    for (const id of appIds) {
+      const p = positions[id];
+      if (!p || !Number.isFinite(Number(p.x)) || !Number.isFinite(Number(p.y))) {
+        return true;
+      }
+      pts.push({ x: Number(p.x), y: Number(p.y) });
+    }
+    if (!pts.length) return true;
+    let overlaps = 0;
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        if (Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y) < 40) {
+          overlaps += 1;
+          if (overlaps >= 2) return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  function applyLayout(gridEl, appIds, { persist, layoutVersion } = {}) {
+    const defaults = defaultPositionsForApps(appIds, gridEl);
+    const nextPositions = persist ? {} : null;
+    appIds.forEach((id, index) => {
+      const key = String(id);
+      const btn = gridEl?.querySelector?.(`[data-app-id="${CSS.escape(key)}"]`);
+      const pos = defaults.get(key) || defaultPosition(index, gridEl);
+      if (btn) {
+        btn.style.position = "absolute";
+        btn.style.left = `${pos.x}px`;
+        btn.style.top = `${pos.y}px`;
+      }
+      if (nextPositions) {
+        nextPositions[key] = { x: Math.round(pos.x), y: Math.round(pos.y) };
+      }
+    });
+    if (nextPositions) {
+      if (typeof window.MySpaceConfig?.applyPositionsToAllDesktops === "function") {
+        window.MySpaceConfig.applyPositionsToAllDesktops(nextPositions, layoutVersion);
+      } else {
+        const patch = { positions: nextPositions };
+        if (layoutVersion != null) patch.desktopIconLayoutVersion = layoutVersion;
+        window.MySpaceConfig?.updateSettings?.(patch);
+      }
+    }
+    return defaults;
+  }
+
+  function applyPosition(btn, appId, index, gridEl, defaultsMap) {
     btn.style.position = "absolute";
     const saved = getPositions()[appId];
-    const pos = saved || defaultPosition(index, gridEl);
+    let pos = null;
+    if (saved && Number.isFinite(Number(saved.x)) && Number.isFinite(Number(saved.y))) {
+      pos = { x: Number(saved.x), y: Number(saved.y) };
+    } else if (defaultsMap instanceof Map) {
+      pos = defaultsMap.get(appId) || null;
+    }
+    if (!pos) pos = defaultPosition(index, gridEl);
     btn.style.left = `${pos.x}px`;
     btn.style.top = `${pos.y}px`;
   }
 
   function clampPosition(left, top, btn, gridEl) {
-    const maxL = Math.max(0, gridEl.clientWidth - btn.offsetWidth);
-    const maxT = Math.max(0, gridEl.clientHeight - btn.offsetHeight);
+    const { width, height } = measureGrid(gridEl);
+    const maxL = Math.max(0, width - (btn.offsetWidth || TILE_W));
+    const maxT = Math.max(0, height - (btn.offsetHeight || TILE_H));
     return {
       x: Math.min(maxL, Math.max(0, left)),
       y: Math.min(maxT, Math.max(0, top)),
@@ -45,13 +193,14 @@
   }
 
   function enableDrag(btn, appId, gridEl) {
+    if (btn.__myspaceDragBound) return;
+    btn.__myspaceDragBound = true;
     let pointerActive = false;
     let dragging = false;
     let startX = 0;
     let startY = 0;
     let originX = 0;
     let originY = 0;
-
     btn.addEventListener("pointerdown", (e) => {
       if (e.button !== 0) return;
       pointerActive = true;
@@ -68,12 +217,10 @@
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
       if (!dragging && Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
-
       if (!dragging) {
         dragging = true;
         btn.classList.add("dragging");
       }
-
       const next = clampPosition(originX + dx, originY + dy, btn, gridEl);
       btn.style.left = `${next.x}px`;
       btn.style.top = `${next.y}px`;
@@ -100,15 +247,18 @@
   }
 
   function relayoutFromAppOrder(gridEl) {
-    const apps = window.MySpaceConfig?.getApps?.() || [];
-    apps.forEach((app, index) => {
-      const btn = gridEl.querySelector(`[data-app-id="${CSS.escape(app.id)}"]`);
-      if (!btn) return;
-      const pos = defaultPosition(index, gridEl);
-      btn.style.left = `${pos.x}px`;
-      btn.style.top = `${pos.y}px`;
-      window.MySpaceConfig.setPosition(app.id, pos.x, pos.y);
-    });
+    const apps = (window.MySpaceConfig?.getApps?.() || []).filter(
+      (a) => a && a.id !== "welcome" && !a.hidden
+    );
+    applyLayout(
+      gridEl,
+      apps.map((a) => a.id),
+      { persist: true }
+    );
+  }
+
+  function relayoutDefaultGroups(gridEl) {
+    relayoutFromAppOrder(gridEl);
   }
 
   window.MySpaceDrag = {
@@ -116,5 +266,10 @@
     enableDrag,
     shouldSuppressClick,
     relayoutFromAppOrder,
+    relayoutDefaultGroups,
+    defaultPositionsForApps,
+    positionsAreBroken: positionsNeedRelayout,
+    positionsNeedRelayout,
+    applyLayout,
   };
 })();

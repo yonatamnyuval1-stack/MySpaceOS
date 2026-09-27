@@ -92,7 +92,6 @@ function salvageJson(text) {
   let out = base;
   out = out.replace(/,\s*$/, "");
   while (st.length) out += st.pop();
-
   const parsed = tryParse(out);
   if (parsed) return { ok: true, data: parsed, method: "brace-close" };
 
@@ -111,7 +110,6 @@ function extractProjectsFallback(text) {
     while (i < text.length && /[\s,]/.test(text[i])) i++;
     if (text[i] === "]") break;
     if (text[i] !== "{") break;
-
     let depth = 0;
     let inString = false;
     let escape = false;

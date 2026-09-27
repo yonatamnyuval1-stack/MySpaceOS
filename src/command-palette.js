@@ -30,32 +30,34 @@
 
   function staticActions() {
     return [
-      { id: "action:ask-ai", kind: "action", title: tt("shell.palette.action.askAi.title", "Mind Chat…"), subtitle: tt("shell.palette.action.askAi.subtitle", "Side assistant · tools · or type ? your question"), icon: "✦", keywords: "ask ai mind chat gemini assistant help" },
+      { id: "action:ask-ai", kind: "action", title: tt("shell.palette.action.askAi.title", "Mind Chat…"), subtitle: tt("shell.palette.action.askAi.subtitle", "Side assistant, tools, or type ? your question"), icon: "✦", keywords: "ask ai mind chat gemini assistant help" },
       { id: "action:add", kind: "action", title: tt("shell.palette.action.add.title", "Add program"), subtitle: tt("shell.palette.action.add.subtitle", "Install a shortcut"), icon: "＋", keywords: "add install program shortcut" },
       { id: "action:settings", kind: "action", title: tt("shell.palette.action.settings.title", "Settings"), subtitle: tt("shell.palette.action.settings.subtitle", "My Space settings"), icon: "⚙", keywords: "settings preferences" },
       { id: "action:desktop", kind: "action", title: tt("shell.palette.action.desktop.title", "Show desktop"), subtitle: tt("shell.palette.action.desktop.subtitle", "Minimize windows"), icon: "⌂", keywords: "desktop home minimize" },
-      { id: "action:focus", kind: "action", title: tt("shell.palette.action.focus.title", "Toggle Focus mode"), subtitle: tt("shell.palette.action.focus.subtitle", "Silence notifications · Today + active app"), icon: "◎", keywords: "focus pomodoro mute silence" },
-      { id: "action:space-cycle", kind: "action", title: tt("shell.palette.action.spaceCycle.title", "Switch desktop space"), subtitle: tt("shell.palette.action.spaceCycle.subtitle", "Cycle Study / Work / Play"), icon: "⧉", keywords: "space profile study work play" },
+      { id: "action:focus", kind: "action", title: tt("shell.palette.action.focus.title", "Toggle Focus mode"), subtitle: tt("shell.palette.action.focus.subtitle", "Silence notifications, Today + active app"), icon: "◎", keywords: "focus pomodoro mute silence" },
+      { id: "action:space-cycle", kind: "action", title: tt("shell.palette.action.spaceCycle.title", "Next desktop"), subtitle: tt("shell.palette.action.spaceCycle.subtitle", "Switch to the next virtual desktop"), icon: "⧉", keywords: "space desktop virtual task view switch cycle" },
+      { id: "action:task-view", kind: "action", title: tt("shell.palette.action.taskView.title", "Task View"), subtitle: tt("shell.palette.action.taskView.subtitle", "Overview of virtual desktops, Ctrl+Alt+Tab"), icon: "▦", keywords: "task view desktops spaces virtual overview" },
+      { id: "action:new-desktop", kind: "action", title: tt("shell.palette.action.newDesktop.title", "New desktop"), subtitle: tt("shell.palette.action.newDesktop.subtitle", "Create a virtual desktop, Ctrl+Alt+D"), icon: "＋", keywords: "new desktop space virtual create" },
       { id: "action:new-window", kind: "action", title: tt("shell.palette.action.newWindow.title", "New My Space window"), subtitle: tt("shell.palette.action.newWindow.subtitle", "Open a second desktop window"), icon: "⧉", keywords: "window new second dual" },
       { id: "action:shortcuts", kind: "action", title: tt("shell.palette.action.shortcuts.title", "Keyboard shortcuts"), subtitle: tt("shell.palette.action.shortcuts.subtitle", "Ctrl+/ cheat sheet"), icon: "⌨", keywords: "shortcuts keys help" },
-      { id: "action:msl", kind: "action", title: tt("shell.palette.action.msl.title", "MSL — My Space Link"), subtitle: tt("shell.palette.action.msl.subtitle", "Capability bus · panel"), icon: "⛓", keywords: "msl link protocol capability bus inject" },
-      { id: "action:parts", kind: "action", title: tt("shell.palette.action.parts.title", "Parts — GitHub between apps"), subtitle: tt("shell.palette.action.parts.subtitle", "Link · explore & adopt embeddable modules"), icon: "⛓", keywords: "parts forge modules catalog adopt embed reusable link github" },
-      { id: "action:jobs", kind: "action", title: tt("shell.palette.action.jobs.title", "Jobs — OS compute runtime"), subtitle: tt("shell.palette.action.jobs.subtitle", "Queue · capacity · full app"), icon: "⚙", keywords: "jobs compute queue capacity contract budget shell script launch runtime" },
-      { id: "action:scheduler", kind: "action", title: tt("shell.palette.action.scheduler.title", "Scheduler — OS time runtime"), subtitle: tt("shell.palette.action.scheduler.subtitle", "Active schedules · history · schedule(…)"), icon: "⏱", keywords: "scheduler schedule cron timer every daily jobs scripts time runtime" },
-      { id: "action:mind", kind: "action", title: tt("shell.palette.action.mind.title", "Mind Chat"), subtitle: tt("shell.palette.action.mind.subtitle", "AI series · conversations · history"), icon: "✦", keywords: "mind ai gemini ollama llm model chat ask cloud gpu quick think deep" },
-      { id: "action:mind-setup", kind: "action", title: tt("shell.palette.action.mindSetup.title", "Mind Setup"), subtitle: tt("shell.palette.action.mindSetup.subtitle", "API key · Quick / Everyday / Deep models"), icon: "✦", keywords: "mind setup key gemini ollama model task" },
-      { id: "action:flow", kind: "action", title: tt("shell.palette.action.flow.title", "Model Flow"), subtitle: tt("shell.palette.action.flow.subtitle", "AI series · plan · approve · run"), icon: "✦", keywords: "flow model flow zapier automation plan approve tools lab" },
+      { id: "action:msl", kind: "action", title: tt("shell.palette.action.msl.title", "MSL: My Space Link"), subtitle: tt("shell.palette.action.msl.subtitle", "Capability bus · panel"), icon: "⛓", keywords: "msl link protocol capability bus inject" },
+      { id: "action:parts", kind: "action", title: tt("shell.palette.action.parts.title", "Parts: GitHub between apps"), subtitle: tt("shell.palette.action.parts.subtitle", "Link, explore & adopt embeddable modules"), icon: "⛓", keywords: "parts forge modules catalog adopt embed reusable link github" },
+      { id: "action:jobs", kind: "action", title: tt("shell.palette.action.jobs.title", "Jobs: OS compute runtime"), subtitle: tt("shell.palette.action.jobs.subtitle", "Queue, capacity, full app"), icon: "⚙", keywords: "jobs compute queue capacity contract budget shell script launch runtime" },
+      { id: "action:scheduler", kind: "action", title: tt("shell.palette.action.scheduler.title", "Scheduler: OS time runtime"), subtitle: tt("shell.palette.action.scheduler.subtitle", "Active schedules, history, schedule(…)"), icon: "⏱", keywords: "scheduler schedule cron timer every daily jobs scripts time runtime" },
+      { id: "action:mind", kind: "action", title: tt("shell.palette.action.mind.title", "Mind Chat"), subtitle: tt("shell.palette.action.mind.subtitle", "AI series, conversations, history"), icon: "✦", keywords: "mind ai gemini ollama llm model chat ask cloud gpu quick think deep" },
+      { id: "action:mind-setup", kind: "action", title: tt("shell.palette.action.mindSetup.title", "Mind Setup"), subtitle: tt("shell.palette.action.mindSetup.subtitle", "API key, Quick / Everyday / Deep models"), icon: "✦", keywords: "mind setup key gemini ollama model task" },
+      { id: "action:flow", kind: "action", title: tt("shell.palette.action.flow.title", "Model Flow"), subtitle: tt("shell.palette.action.flow.subtitle", "AI series, plan, approve, run"), icon: "✦", keywords: "flow model flow zapier automation plan approve tools lab" },
       { id: "action:connect", kind: "action", title: tt("shell.palette.action.connect.title", "Connect"), subtitle: tt("shell.palette.action.connect.subtitle", "Web series · mail, messaging, browsers"), icon: "🔍", keywords: "connect mail gmail whatsapp telegram browser hub catalog web" },
-      { id: "action:shell-atlas", kind: "action", title: tt("shell.palette.action.shellAtlas.title", "Shell — command atlas"), subtitle: tt("shell.palette.action.shellAtlas.subtitle", "Full map of live shell commands"), icon: "〉", keywords: "shell atlas console commands help reference language" },
+      { id: "action:shell-atlas", kind: "action", title: tt("shell.palette.action.shellAtlas.title", "Shell: command atlas"), subtitle: tt("shell.palette.action.shellAtlas.subtitle", "Full map of live shell commands"), icon: "〉", keywords: "shell atlas console commands help reference language" },
       { id: "action:shell", kind: "action", title: tt("shell.palette.action.shell.title", "Shell command…"), subtitle: tt("shell.palette.action.shell.subtitle", "Open classic command line · or type >"), icon: ">", keywords: "shell console command run" },
       { id: "action:snap", kind: "action", title: tt("shell.palette.action.snap.title", "Snap side by side"), subtitle: tt("shell.palette.action.snap.subtitle", "Split two open apps"), icon: "▣", keywords: "snap split side dual" },
     ];
   }
 
   const SHELL_SUGGESTIONS = [
-    { cmd: "run ", title: "run <app>(…)", subtitle: "Launch · page · key:value", keywords: "run launch open app goto" },
-    { cmd: "run stocks(", title: "run stocks(AAPL)", subtitle: "symbol · mode:crypto · page:portfolio", keywords: "stocks ticker symbol" },
-    { cmd: "run geography(", title: "run geography(Togo)", subtitle: "country · learn:TG · page:explore", keywords: "geography country geo" },
+    { cmd: "run ", title: "run <app>(…)", subtitle: "Launch, page, key:value", keywords: "run launch open app goto" },
+    { cmd: "run stocks(", title: "run stocks(AAPL)", subtitle: "symbol, mode:crypto, page:portfolio", keywords: "stocks ticker symbol" },
+    { cmd: "run geography(", title: "run geography(Togo)", subtitle: "country, learn:TG, page:explore", keywords: "geography country geo" },
     { cmd: "run translate(", title: "run translate(text:…, to:he)", subtitle: "Translate with keys", keywords: "translate text language" },
     { cmd: "help ", title: "help <app>", subtitle: "Pages, keys, examples", keywords: "help routes grammar" },
     { cmd: "close ", title: "close <app|all>", subtitle: "Close a window", keywords: "close quit exit" },
@@ -89,7 +91,7 @@
     root.setAttribute("aria-label", tt("shell.palette.aria", "Command palette"));
     if (input) input.placeholder = tt("shell.palette.placeholder", "Search everything in My Space…");
     if (hintEl && !open) {
-      hintEl.textContent = tt("shell.palette.hint", "Type to search · ? AI (can run actions) · > shell");
+      hintEl.textContent = tt("shell.palette.hint", "Type to search, ? AI (can run actions), > shell");
     }
   }
 
@@ -363,7 +365,6 @@
     const appId = tab?.appId;
     const out = [];
     if (!appId) return out;
-
     if (appId === "day-planner") {
       out.push({
         id: "ctx:mark-next-done",
@@ -473,7 +474,6 @@
     const trimmed = String(raw || "").trim().replace(/^>\s*/, "");
     const q = trimmed.toLowerCase();
     const out = [];
-
     out.push({
       id: "shell:" + trimmed,
       kind: "shell",
@@ -531,7 +531,6 @@
   function buildItems(query) {
     const raw = String(query || "");
     const q = raw.trim().toLowerCase();
-
     if (isAiQuery(raw)) {
       const prompt = aiPromptFrom(raw);
       return [
@@ -555,9 +554,7 @@
     }
 
     const out = [];
-
     out.push(...quickActionItems(q));
-
     if (!q) {
       out.push(...contextActions());
       out.push(...recentItems(""));
@@ -617,7 +614,7 @@
     }
     const extra =
       contentTotal > contentResults.length
-        ? tt("shell.palette.matchedExtra", " · {n} matched", { n: contentTotal })
+        ? tt("shell.palette.matchedExtra", ", {n} matched", { n: contentTotal })
         : "";
     hintEl.textContent = tt("shell.palette.hintResults", "{n} results{extra}, ↑↓ Enter, Esc, > shell, ? AI", {
       n,
@@ -633,7 +630,6 @@
     let end = Math.min(items.length, Math.ceil((scrollTop + viewH) / ROW_HEIGHT) + VIRTUAL_OVERSCAN);
     if (activeIndex < start) start = Math.max(0, activeIndex - VIRTUAL_OVERSCAN);
     if (activeIndex >= end) end = Math.min(items.length, activeIndex + VIRTUAL_OVERSCAN + 1);
-
     const topPad = start * ROW_HEIGHT;
     const bottomPad = Math.max(0, (items.length - end) * ROW_HEIGHT);
     const slice = items.slice(start, end);
@@ -873,6 +869,8 @@
     else if (item.id === "action:shortcuts") handlers?.onShortcuts?.();
     else if (item.id === "action:focus") handlers?.onFocusToggle?.();
     else if (item.id === "action:space-cycle") handlers?.onSpaceCycle?.();
+    else if (item.id === "action:task-view") handlers?.onTaskView?.();
+    else if (item.id === "action:new-desktop") handlers?.onNewDesktop?.();
   }
 
   function onKeyDown(e) {
@@ -950,6 +948,5 @@
     if (root && open) refresh();
     else if (root) applyChrome();
   });
-
   window.MySpaceCommandPalette = { show, hide, isOpen, refresh };
 })();

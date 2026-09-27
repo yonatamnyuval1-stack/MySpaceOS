@@ -1,7 +1,6 @@
 (function () {
   let root = null;
   let open = false;
-
   const SHORTCUTS = [
     { keys: "Ctrl+K", desc: "Command palette" },
     { keys: "> …", desc: "Palette: run shell command" },
@@ -11,7 +10,11 @@
     { keys: "Ctrl+Shift+F", desc: "Open Files" },
     { keys: "Ctrl+Shift+N", desc: "New My Space window" },
     { keys: "Ctrl+\\", desc: "Snap side by side" },
-    { keys: "Tray space label", desc: "Cycle Study / Work / Play spaces" },
+    { keys: "Ctrl+Alt+Tab", desc: "Task View (virtual desktops)" },
+    { keys: "Ctrl+Alt+← / →", desc: "Previous / next desktop" },
+    { keys: "Ctrl+Alt+D", desc: "New desktop" },
+    { keys: "Ctrl+Alt+W", desc: "Close current desktop" },
+    { keys: "Tray desktop label", desc: "Open Task View" },
     { keys: "Pomodoro Start", desc: "Enter Focus (silence notifications)" },
     { keys: "Ctrl+T", desc: "New tab (in app)" },
     { keys: "Ctrl+W", desc: "Close tab (in app)" },

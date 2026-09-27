@@ -16,7 +16,6 @@
   const builtinPanel = document.getElementById("builtin-panel");
   const isElectronWebview =
     window.MySpaceDesktop.isFullDesktop() && navigator.userAgent.includes("Electron");
-
   let tabs = [];
   let activeTabId = null;
   let tabCounter = 0;
@@ -183,12 +182,10 @@
       btn.title = `${tab.title || "Tab"} — drag to reorder`;
       btn.draggable = false;
       btn.dataset.tabId = tab.id;
-
       const label = document.createElement("span");
       label.className = "app-tab-label";
       label.textContent = tab.title || "Tab";
       btn.appendChild(label);
-
       const close = document.createElement("span");
       close.className = "app-tab-close";
       close.setAttribute("aria-label", "Close tab");
@@ -199,7 +196,6 @@
         closeTab(tab.id);
       });
       btn.appendChild(close);
-
       btn.addEventListener("click", (e) => {
         if (tabDragMoved) {
           e.preventDefault();
@@ -336,7 +332,6 @@
       const rank = scoreOmni(`${a.title} ${a.subtitle} ${a.keywords}`, q);
       if (!q || rank > 0) out.push({ ...a, kind: "action", rank });
     }
-
     for (const item of extraResults || []) {
       if (!item?.title) continue;
       out.push({
@@ -497,7 +492,6 @@
     }
     updateHistoryNavButtons();
   }
-
   function activateTab(tabId) {
     if (!tabs.some((t) => t.id === tabId)) return;
     const prevId = activeTabId;
@@ -508,7 +502,6 @@
     applyPanelVisibility();
     updateNavBar();
     notifyTabsChanged();
-
     tabs.forEach((t) => {
       if (t.mode !== "embedded") return;
       const on =
@@ -652,7 +645,6 @@
     }
     const script = window.MySpaceShellCommands?.buildRouteScript(moduleId, route);
     if (!script || !tab.viewEl) return;
-
     const run = () => {
       try {
         if (typeof tab.viewEl.executeJavaScript === "function") {
@@ -1798,14 +1790,9 @@
   }
 
   function openBlankTab() {
-    const active = getActiveTab();
-    if (isMyspaceBrowserTab(active)) {
-      void openMyspaceBrowserTab({ reuse: false });
+    void openMyspaceBrowserTab({ reuse: false }).then(() => {
       frameUrl?.focus();
-      return getActiveTab();
-    }
-    openWeb("", "New tab", { reuse: false });
-    frameUrl?.focus();
+    });
     return getActiveTab();
   }
 
@@ -1825,7 +1812,7 @@
   }
 
   function closeAllTabs() {
-    while (tabs.length) {
+        while (tabs.length) {
       closeTab(tabs[tabs.length - 1].id);
     }
   }
@@ -2661,7 +2648,6 @@
               : tab.mode === "panel"
                 ? "Panel"
                 : tab.mode;
-
     let dataUrl = tab.peekDataUrl || null;
     if ((tab.mode === "myapp" || tab.mode === "webview") && tab.viewEl) {
       try {

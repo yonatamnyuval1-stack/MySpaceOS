@@ -89,12 +89,10 @@
     ["photo-084", "Blue lagoon", "photo-1682687220063-4742bd7fd538"],
     ["photo-085", "Cliffside view", "photo-1682687220742-aba13b6e50ba"],
   ];
-
   const FALLBACK = "#1a2332";
   const seenId = new Set();
   const seenPath = new Set();
   const entries = [];
-
   for (const [id, name, path] of PHOTOS) {
     if (seenId.has(id) || seenPath.has(path)) continue;
     seenId.add(id);
@@ -130,5 +128,10 @@
     }
   }
 
+  window.MySpaceWallpaperPhotos = {
+    ids: () => entries.map((e) => e.id),
+    defaultPlaylist: () => entries.map((e) => e.id),
+    count: () => entries.length,
+  };
   install();
 })();

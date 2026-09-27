@@ -118,6 +118,39 @@ function persistMindChat(conversationId, userMessages, result) {
   }
 }
 
+async function chatViaMindFallback(normalized) {
+  try {
+    const engine = require("../mind/engine");
+    const snap = engine.snapshot?.() || {};
+    if (!snap.ready && !snap.hasKey) return null;
+    const result = await engine.chat({
+      task: "chat",
+      messages: normalized,
+      includeMemory: true,
+    });
+    if (!result?.ok) {
+      return {
+        ok: false,
+        error: result?.error || "Mind fallback failed",
+        model: result?.model || "mind",
+      };
+    }
+    return {
+      ok: true,
+      content: String(result.text || result.content || "").trim() || "(empty response)",
+      model: result.model || "mind",
+      toolsUsed: [],
+      via: "mind-fallback",
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err?.message || String(err),
+      model: "mind",
+    };
+  }
+}
+
 async function chatCompletions(messages, conversationId, windowGetter) {
   const normalized = normalizeMessages(messages);
   if (!normalized.length) {
@@ -186,6 +219,27 @@ async function chatCompletions(messages, conversationId, windowGetter) {
           };
         }
       } catch {
+      }
+
+      const mind = await chatViaMindFallback(normalized);
+      if (mind?.ok) {
+        persistMindChat(convId, normalized, mind);
+        return {
+          ...mind,
+          conversationId: convId,
+          projectId: LAB_PROJECT_ID,
+          program: LAB_PROGRAM,
+          labError: err.message || String(err),
+        };
+      }
+      if (mind && !mind.ok && mind.error) {
+        return {
+          ok: false,
+          error: `${friendlyLabError(err)} · Mind: ${mind.error}`,
+          status: err.status || 0,
+          conversationId: convId,
+          program: LAB_PROGRAM,
+        };
       }
     }
     return {

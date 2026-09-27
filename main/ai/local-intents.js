@@ -363,13 +363,19 @@ function friendlyLabError(err) {
   if (/billing/i.test(raw)) {
     return (
       "Model Lab billing isn't available right now. " +
-      "Clear actions still work offline — try: “open stocks”, “תראה לי את המניה AAPL”, or use Ctrl+K. " +
+      "Clear actions still work offline: try: “open stocks”, “תראה לי את המניה AAPL”, or use Ctrl+K. " +
+      `(${raw})`
+    );
+  }
+  if (/fetch failed|econnrefused|econnreset|etimedout|network|enotfound|127\.0\.0\.1:8080/i.test(raw)) {
+    return (
+      "Model Lab isn’t running (localhost:8080), so Mind Chat can’t reach it. " +
+      "Start the Lab server, or add a Gemini key in Mind → Setup so chat can fall back. " +
       `(${raw})`
     );
   }
   return raw;
 }
-
 module.exports = {
   parseLocalIntent,
   tryLocalIntent,
