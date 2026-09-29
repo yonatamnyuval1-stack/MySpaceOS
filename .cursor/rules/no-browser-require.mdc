@@ -1,0 +1,21 @@
+---
+description: Never put Node require/import in browser app.js (Runtime crash)
+globs: apps/**/app.js
+alwaysApply: true
+---
+
+# Browser app.js — no Node requires (CRITICAL)
+
+Files under `apps/*/app.js` run in Electron **webview/renderer**, not Node.
+
+**NEVER** add anywhere near the top of these files (before or outside the IIFE):
+- `require("...")` — including `@composio/core`, `lucide-static`, `fs`, `path`, or any Node module
+- `import ... from "..."`
+- Any line that references main-process code
+
+A single top-level `require` throws `require is not defined`, the IIFE never runs, and Runtime looks **empty with dead buttons** (data is usually still on disk — the UI just never loads).
+
+If you see a stray `require`/`import` at the top of `apps/scripts/app.js` or any `apps/*/app.js`, **delete that line immediately** before doing anything else.
+
+Use existing in-page APIs (`window.myApp`, DOM, shared browser scripts) instead.
+Do not "helpfully" import helpers from Node packages into these files.

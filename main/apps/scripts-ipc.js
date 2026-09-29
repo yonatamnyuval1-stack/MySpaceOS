@@ -1,11 +1,18 @@
 const path = require("path");
 const fs = require("fs");
-const { app } = require("electron");
+const { app, dialog, BrowserWindow } = require("electron");
 const { loadJsonFile, saveJsonFile } = require("./safe-json-store");
 const { reportLoadFailure, reportSaveFailure } = require("../resolve/report-helper");
+const { validateHeaderValue } = require("http");
 function dataPath() {
   const profile = require("../myspace-profile");
   return profile.profileScopedPath("scripts.json");
+}
+
+function getParentWindow() {
+  const focused = BrowserWindow.getFocusedWindow();
+  if (focused && !focused.isDestroyed()) return focused;
+  return BrowserWindow.getAllWindows().find((w) => w && !w.isDestroyed()) || null;
 }
 
 function uid() {
@@ -24,12 +31,31 @@ function stripProgramExt(name) {
 function ensureProgramExt(name) {
   let base = String(name || "").trim();
   if (!base) base = "untitled";
-  base = stripProgramExt(base).replace(/[<>:"|?*\u0000-\u001f]/g, "").slice(0, 72);
+  base = base.replace(/[<>:"|?*\u0000-\u001f]/g, "").slice(0, 120);
   if (!base) base = "untitled";
-  return `${base}${PROGRAM_EXT}`;
+  // Keep existing extension (.py, .txt, .msos, …); only default bare names to .msos
+  if (/\.[A-Za-z0-9]{1,16}$/.test(base)) return base;
+  const stem = stripProgramExt(base) || "untitled";
+  return `${stem}${PROGRAM_EXT}`;
+}
+
+function sanitizeImportedName(name) {
+  let base = String(name || "")
+    .trim()
+    .replace(/[<>:"|?*\u0000-\u001f]/g, "")
+    .replace(/[/\\]+/g, "");
+  base = base.slice(0, 120);
+  if (!base || base === "." || base === "..") base = `imported${PROGRAM_EXT}`;
+  return base;
 }
 
 function namesMatch(a, b) {
+  const na = String(a || "").trim().toLowerCase();
+  const nb = String(b || "").trim().toLowerCase();
+  if (na === nb) return true;
+  const aHasOtherExt = /\.[A-Za-z0-9]{1,16}$/.test(na) && !na.endsWith(PROGRAM_EXT);
+  const bHasOtherExt = /\.[A-Za-z0-9]{1,16}$/.test(nb) && !nb.endsWith(PROGRAM_EXT);
+  if (aHasOtherExt || bHasOtherExt) return false;
   return ensureProgramExt(a).toLowerCase() === ensureProgramExt(b).toLowerCase();
 }
 
@@ -43,13 +69,62 @@ function findScriptByRef(scripts, ref) {
 
 function uniqueProgramName(scripts, desired) {
   let name = ensureProgramExt(desired);
-  const stem = stripProgramExt(name);
+  const dot = name.lastIndexOf(".");
+  const stem = dot > 0 ? name.slice(0, dot) : name;
+  const ext = dot > 0 ? name.slice(dot) : PROGRAM_EXT;
   let n = 2;
-  while ((scripts || []).some((s) => namesMatch(s.name, name))) {
-    name = ensureProgramExt(`${stem}-${n}`);
+  let candidate = name;
+  while ((scripts || []).some((s) => namesMatch(s.name, candidate))) {
+    candidate = `${stem}-${n}${ext}`;
     n += 1;
   }
-  return name;
+  return candidate;
+}
+
+function uniqueImportedName(scripts, desired) {
+  let name = sanitizeImportedName(desired);
+  if (!/\.[A-Za-z0-9]{1,16}$/.test(name)) name = ensureProgramExt(name);
+  const dot = name.lastIndexOf(".");
+  const stem = dot > 0 ? name.slice(0, dot) : name;
+  const ext = dot > 0 ? name.slice(dot) : "";
+  let n = 2;
+  let candidate = name;
+  while ((scripts || []).some((s) => String(s.name || "").toLowerCase() === candidate.toLowerCase())) {
+    candidate = `${stem}-${n}${ext}`;
+    n += 1;
+  }
+  return candidate;
+}
+
+const IMPORT_MAX_BYTES = 1024 * 1024;
+
+function readImportableFile(filePath) {
+  let stat;
+  try {
+    stat = fs.statSync(filePath);
+  } catch (err) {
+    return { ok: false, error: err?.message || "Could not read file" };
+  }
+  if (!stat.isFile()) return { ok: false, error: "Not a file" };
+  if (stat.size > IMPORT_MAX_BYTES) return { ok: false, error: "File too large (max 1 MB)" };
+  if (stat.size === 0) {
+    return { ok: true, name: sanitizeImportedName(path.basename(filePath)), body: "" };
+  }
+  let buf;
+  try {
+    buf = fs.readFileSync(filePath);
+  } catch (err) {
+    return { ok: false, error: err?.message || "Could not read file" };
+  }
+  const sample = buf.subarray(0, Math.min(buf.length, 8192));
+  if (sample.includes(0)) return { ok: false, error: "Binary file skipped" };
+  let body = buf.toString("utf8");
+  if (body.charCodeAt(0) === 0xfeff) body = body.slice(1);
+  return {
+    ok: true,
+    name: sanitizeImportedName(path.basename(filePath)),
+    body: String(body),
+  };
 }
 
 function normalizeFolder(raw) {
@@ -438,7 +513,6 @@ async function handleScriptsInvoke(channel, args = {}) {
     if (!script) return { ok: false, error: "Script not found" };
     return { ok: true, script, settings: loaded.data.settings };
   }
-
   if (ch === "scripts.create") {
     const loaded = await loadState();
     if (!loaded.ok) return loaded;
@@ -459,9 +533,159 @@ async function handleScriptsInvoke(channel, args = {}) {
     };
     loaded.data.scripts.unshift(script);
     await saveState(loaded.data);
-    return { ok: true, script };
+    return { ok: true, script, settings: loaded.data.settings };
+  }
+  if (ch === "scripts.importFile") {
+    const loaded = await loadState();
+    if (!loaded.ok) return loaded;
+    const folder = normalizeFolder(args?.folder);
+    const win = getParentWindow();
+    const picked = await dialog.showOpenDialog(win || undefined, {
+      title: "Import file",
+      properties: ["openFile"],
+      filters: [
+        { name: "Code & programs", extensions: ["msos", "txt", "py", "js", "ts", "json", "md"] },
+        { name: "All files", extensions: ["*"] },
+      ],
+    });
+    if (picked.canceled || !picked.filePaths?.length) {
+      return { ok: false, cancelled: true };
+    }
+    const filePath = picked.filePaths[0];
+    const one = readImportableFile(filePath);
+    if (!one.ok) return one;
+    if (folder) {
+      loaded.data.settings.folders = collectFolders(loaded.data.scripts, [
+        ...(loaded.data.settings.folders || []),
+        folder,
+      ]);
+      const expanded = new Set(loaded.data.settings.expandedFolders || []);
+      folderAncestors(folder).forEach((a) => expanded.add(a));
+      expanded.add(folder);
+      loaded.data.settings.expandedFolders = [...expanded];
+    }
+    const name = uniqueImportedName(loaded.data.scripts, one.name);
+    const script = {
+      id: uid(),
+      name,
+      body: one.body,
+      folder,
+      updatedAt: new Date().toISOString(),
+    };
+    loaded.data.scripts.unshift(script);
+    await saveState(loaded.data);
+    return { ok: true, script, settings: loaded.data.settings, path: filePath };
   }
 
+  if (ch === "scripts.importFolder") {
+    const loaded = await loadState();
+    if (!loaded.ok) return loaded;
+    const parent = normalizeFolder(args?.folder);
+    const win = getParentWindow();
+    const picked = await dialog.showOpenDialog(win || undefined, {
+      title: "Import folder",
+      properties: ["openDirectory"],
+    });
+    if (picked.canceled || !picked.filePaths?.length) {
+      return { ok: false, cancelled: true };
+    }
+    const rootPath = picked.filePaths[0];
+    let rootStat;
+    try {
+      rootStat = fs.statSync(rootPath);
+    } catch (err) {
+      return { ok: false, error: err?.message || "Could not open folder" };
+    }
+    if (!rootStat.isDirectory()) return { ok: false, error: "Not a folder" };
+    const rootName = sanitizeImportedName(path.basename(rootPath)) || "imported";
+    const baseFolder = normalizeFolder(parent ? `${parent}/${rootName}` : rootName);
+    if (!baseFolder) return { ok: false, error: "Invalid folder name" };
+    const SKIP_DIRS = new Set([
+      "node_modules",
+      ".git",
+      ".svn",
+      ".hg",
+      "__pycache__",
+      ".venv",
+      "venv",
+      "dist",
+      "build",
+      ".next",
+      ".cache",
+    ]);
+    const MAX_FILES = 200;
+    const MAX_DEPTH = 8;
+    const found = [];
+
+    function walk(dir, relParts, depth) {
+      if (found.length >= MAX_FILES || depth > MAX_DEPTH) return;
+      let entries;
+      try {
+        entries = fs.readdirSync(dir, { withFileTypes: true });
+      } catch {
+        return;
+      }
+      for (const ent of entries) {
+        if (found.length >= MAX_FILES) break;
+        const name = String(ent.name || "");
+        if (!name || name === "." || name === "..") continue;
+        if (name.startsWith(".")) continue;
+        const full = path.join(dir, name);
+        if (ent.isDirectory()) {
+          if (SKIP_DIRS.has(name.toLowerCase())) continue;
+          walk(full, relParts.concat(name), depth + 1);
+          continue;
+        }
+        if (!ent.isFile()) continue;
+        const one = readImportableFile(full);
+        if (!one.ok) continue;
+        const relFolder = normalizeFolder(relParts.join("/"));
+        const folder = normalizeFolder(relFolder ? `${baseFolder}/${relFolder}` : baseFolder);
+        found.push({ name: one.name, body: one.body, folder });
+      }
+    }
+
+    walk(rootPath, [], 0);
+    if (!found.length) {
+      return { ok: false, error: "No importable files found in that folder" };
+    }
+
+    const created = [];
+    const namePool = [...loaded.data.scripts];
+    for (const item of found) {
+      const name = uniqueImportedName(namePool, item.name);
+      const script = {
+        id: uid(),
+        name,
+        body: item.body,
+        folder: item.folder,
+        updatedAt: new Date().toISOString(),
+      };
+      namePool.unshift(script);
+      created.push(script);
+      loaded.data.scripts.unshift(script);
+    }
+
+    const folderList = created.map((s) => s.folder);
+    loaded.data.settings.folders = collectFolders(loaded.data.scripts, [
+      ...(loaded.data.settings.folders || []),
+      baseFolder,
+      ...folderList,
+    ]);
+    const expanded = new Set(loaded.data.settings.expandedFolders || []);
+    folderAncestors(baseFolder).forEach((a) => expanded.add(a));
+    expanded.add(baseFolder);
+    loaded.data.settings.expandedFolders = [...expanded];
+    await saveState(loaded.data);
+    return {
+      ok: true,    
+      scripts: created,
+      settings: loaded.data.settings,
+      folder: baseFolder,
+      imported: created.length,
+      path: rootPath,
+    };
+  }
   if (ch === "scripts.update") {
     const loaded = await loadState();
     if (!loaded.ok) return loaded;
@@ -567,15 +791,17 @@ async function handleScriptsInvoke(channel, args = {}) {
     await saveState(loaded.data);
     return { ok: true };
   }
-
   if (ch === "scripts.duplicate") {
     const loaded = await loadState();
     if (!loaded.ok) return loaded;
     const id = String(args?.id || "").trim();
     const src = loaded.data.scripts.find((s) => s.id === id);
     if (!src) return { ok: false, error: "Script not found" };
-    const stem = stripProgramExt(src.name);
-    const name = uniqueProgramName(loaded.data.scripts, `${stem}-copy`);
+    const srcName = String(src.name || "untitled");
+    const dot = srcName.lastIndexOf(".");
+    const stem = dot > 0 ? srcName.slice(0, dot) : stripProgramExt(srcName);
+    const ext = dot > 0 ? srcName.slice(dot) : PROGRAM_EXT;
+    const name = uniqueProgramName(loaded.data.scripts, `${stem}-copy${ext}`);
     const script = {
       id: uid(),
       name,

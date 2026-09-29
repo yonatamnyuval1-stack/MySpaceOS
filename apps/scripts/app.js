@@ -1,3 +1,4 @@
+/* Runtime UI - browser/webview only. NEVER add require()/import at top-level. */
 (function () {
   function tt(key, fallback, vars) {
     const I = window.MySpaceI18n;
@@ -5,7 +6,6 @@
     const v = I.t(key, vars);
     return v === key ? fallback || key : v;
   }
-
   const state = {
     scripts: [],
     settings: { stopOnError: true, folders: [], expandedFolders: [] },
@@ -15,13 +15,13 @@
     running: false,
     mode: "programs",
     session: [],
-    terminalOpen: true,
-    creatingFolder: null, // { parent: string }
-    creatingFile: null, // { parent: string }
-    renaming: null, // { kind: "file", id } | { kind: "folder", folder }
+    terminalOpen: false,
+    creatingFolder: null, 
+    creatingFile: null,  
+    renaming: null, 
     openTabIds: [],
-    dirtyIds: {}, // { [id]: true }
-    savedSnap: {}, // { [id]: { name, body } }
+    dirtyIds: {}, 
+    savedSnap: {}, 
   };
 
   const MAX_SESSION = 200;
@@ -53,12 +53,20 @@
   function ensureProgramExt(name) {
     let base = String(name || "").trim();
     if (!base) base = "untitled";
-    base = stripProgramExt(base);
+    base = base.replace(/[<>:"|?*\u0000-\u001f]/g, "").slice(0, 120);
     if (!base) base = "untitled";
-    return `${base}${PROGRAM_EXT}`;
+    if (/\.[A-Za-z0-9]{1,16}$/.test(base)) return base;
+    const stem = stripProgramExt(base) || "untitled";
+    return `${stem}${PROGRAM_EXT}`;
   }
 
   function namesMatch(a, b) {
+    const na = String(a || "").trim().toLowerCase();
+    const nb = String(b || "").trim().toLowerCase();
+    if (na === nb) return true;
+    const aHasOtherExt = /\.[A-Za-z0-9]{1,16}$/.test(na) && !na.endsWith(PROGRAM_EXT);
+    const bHasOtherExt = /\.[A-Za-z0-9]{1,16}$/.test(nb) && !nb.endsWith(PROGRAM_EXT);
+    if (aHasOtherExt || bHasOtherExt) return false;
     return ensureProgramExt(a).toLowerCase() === ensureProgramExt(b).toLowerCase();
   }
 
@@ -106,6 +114,7 @@
   }
 
   function renderTabs() {
+    ensureEditorChrome();
     const bar = $("editor-tabs");
     if (!bar) return;
     state.openTabIds = state.openTabIds.filter((id) =>
@@ -158,6 +167,7 @@
         state.activeId = null;
         if ($("script-name")) $("script-name").value = "";
         if ($("script-body")) $("script-body").value = "";
+        syncLineNumbers();
         markDirty(false);
         renderList();
         renderTabs();
@@ -167,7 +177,6 @@
       renderList();
     }
   }
-
 
   function formatWhen(iso) {
     try {
@@ -246,6 +255,16 @@
     state.settings.expandedFolders = [...set];
   }
 
+  async function collapseAllFolders() {
+    if (!(state.settings.expandedFolders || []).length) {
+      renderList();
+      return;
+    }
+    state.settings.expandedFolders = [];
+    renderList();
+    await persistExpanded();
+  }
+
   async function toggleFolder(folder) {
     const f = normalizeFolder(folder);
     if (!f) return;
@@ -295,13 +314,11 @@
       if (!byParent.has(folder)) byParent.set(folder, { folders: [], files: [] });
       byParent.get(parent).folders.push(folder);
     }
-
     for (const script of state.scripts) {
       const parent = normalizeFolder(script.folder);
       if (!byParent.has(parent)) byParent.set(parent, { folders: [], files: [] });
       byParent.get(parent).files.push(script);
     }
-
     for (const bucket of byParent.values()) {
       bucket.folders.sort((a, b) =>
         folderBasename(a).localeCompare(folderBasename(b), undefined, { sensitivity: "base" })
@@ -312,10 +329,10 @@
     }
     return byParent;
   }
+
   function treeRowsHtml(parent, depth, byParent) {
     const bucket = byParent.get(parent) || { folders: [], files: [] };
     let html = "";
-
     if (
       state.creatingFolder &&
       normalizeFolder(state.creatingFolder.parent) === normalizeFolder(parent)
@@ -328,7 +345,6 @@
         </div>
       </div>`;
     }
-
     for (const folder of bucket.folders) {
       const expanded = isFolderExpanded(folder);
       const child = byParent.get(folder) || { folders: [], files: [] };
@@ -374,7 +390,6 @@
         </div>
       </div>`;
     }
-
     for (const script of bucket.files) {
       const active = script.id === state.activeId ? " is-active" : "";
       const dirty = isScriptDirty(script.id) ? " is-dirty" : "";
@@ -515,6 +530,223 @@
     return "language";
   }
 
+  function ensureTreeToolbarButtons() {
+    const actions = document.querySelector(".tree-toolbar-actions");
+    if (!actions) return;
+    if (!$("btn-import-file")) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tree-action";
+      btn.id = "btn-import-file";
+      btn.title = tt("service.scripts.importFile", "Import file");
+      btn.setAttribute("aria-label", btn.title);
+      btn.setAttribute("data-i18n-title", "service.scripts.importFile");
+      btn.setAttribute("data-i18n-aria", "service.scripts.importFile");
+      btn.innerHTML = `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+        <path fill="currentColor" d="M8.5 1.5v7.793l2.146-2.147.708.708L8 11.207 4.646 7.854l.708-.708L7.5 9.293V1.5h1zM3 12.5h10V14H3v-1.5z"/>
+      </svg>`;
+      const collapse = $("btn-collapse-all");
+      if (collapse) actions.insertBefore(btn, collapse);
+      else actions.appendChild(btn);
+    }
+    if (!$("btn-import-folder")) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tree-action";
+      btn.id = "btn-import-folder";
+      btn.title = tt("service.scripts.importFolder", "Import folder");
+      btn.setAttribute("aria-label", btn.title);
+      btn.setAttribute("data-i18n-title", "service.scripts.importFolder");
+      btn.setAttribute("data-i18n-aria", "service.scripts.importFolder");
+      btn.innerHTML = `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+        <path fill="currentColor" d="M1.5 3A1.5 1.5 0 0 1 3 1.5h3.172a1.5 1.5 0 0 1 1.06.44L8.5 3H13A1.5 1.5 0 0 1 14.5 4.5v.75H2v7.25A.5.5 0 0 0 2.5 13h11a.5.5 0 0 0 .5-.5V6H15v6.5A1.5 1.5 0 0 1 13.5 14h-11A1.5 1.5 0 0 1 1 12.5v-9z"/>
+        <path fill="currentColor" d="M8.5 5.5v3.793l1.146-1.147.708.708L8 11.207 5.646 8.854l.708-.708L7.5 9.293V5.5h1z"/>
+      </svg>`;
+      const collapse = $("btn-collapse-all");
+      if (collapse) actions.insertBefore(btn, collapse);
+      else actions.appendChild(btn);
+    }
+    if (!$("btn-collapse-all")) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tree-action";
+      btn.id = "btn-collapse-all";
+      btn.title = tt("service.scripts.collapseAll", "Collapse All");
+      btn.setAttribute("aria-label", btn.title);
+      btn.setAttribute("data-i18n-title", "service.scripts.collapseAll");
+      btn.setAttribute("data-i18n-aria", "service.scripts.collapseAll");
+      btn.innerHTML = `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+        <path fill="currentColor" d="M1 4.5 8 1l7 3.5v1.25L8 2.25 1 5.75V4.5zm0 4L8 5.5l7 3v1.25L8 6.75 1 9.75V8.5zm0 4L8 9.5l7 3V13.75L8 10.75 1 13.75V12.5z"/>
+      </svg>`;
+      actions.appendChild(btn);
+    }
+  }
+
+  function ensureEditorChrome() {
+    const pane = document.querySelector(".editor-pane");
+    const ta = $("script-body");
+    if (!pane || !ta) return;
+    if (!$("editor-tabs")) {
+      const tabs = document.createElement("div");
+      tabs.className = "editor-tabs";
+      tabs.id = "editor-tabs";
+      tabs.setAttribute("role", "tablist");
+      tabs.setAttribute("aria-label", "Open editors");
+      pane.insertBefore(tabs, pane.firstChild);
+    }
+    if (!$("editor-breadcrumbs")) {
+      const crumbs = document.createElement("nav");
+      crumbs.className = "editor-breadcrumbs";
+      crumbs.id = "editor-breadcrumbs";
+      crumbs.setAttribute("aria-label", "Breadcrumb");
+      crumbs.hidden = true;
+      const tabsEl = $("editor-tabs");
+      const codeEl = $("editor-code");
+      if (tabsEl && tabsEl.nextSibling) pane.insertBefore(crumbs, tabsEl.nextSibling);
+      else if (codeEl) pane.insertBefore(crumbs, codeEl);
+      else pane.appendChild(crumbs);
+    }
+    let code = $("editor-code");
+    if (!code) {
+      code = document.createElement("div");
+      code.className = "editor-code";
+      code.id = "editor-code";
+      const label = pane.querySelector('label[for="script-body"]');
+      if (label) code.appendChild(label);
+      ta.parentElement?.insertBefore(code, ta);
+      code.appendChild(ta);
+    }
+    ta.setAttribute("wrap", "off");
+    if (!$("editor-gutter")) {
+      const gutter = document.createElement("div");
+      gutter.className = "editor-gutter";
+      gutter.id = "editor-gutter";
+      gutter.setAttribute("aria-hidden", "true");
+      code.insertBefore(gutter, code.firstChild);
+    }
+
+    const workspace = $("programs-workspace");
+    if (workspace && !$("editor-statusbar")) {
+      const bar = document.createElement("footer");
+      bar.className = "editor-statusbar";
+      bar.id = "editor-statusbar";
+      bar.setAttribute("role", "status");
+      bar.setAttribute("aria-live", "polite");
+      bar.innerHTML = `<div class="statusbar-left"><span class="statusbar-item" id="statusbar-path"></span></div>
+        <div class="statusbar-right">
+          <span class="statusbar-item" id="statusbar-cursor">Ln 1, Col 1</span>
+          <span class="statusbar-item" id="statusbar-lang">MSOS</span>
+        </div>`;
+      workspace.appendChild(bar);
+    }
+  }
+
+  function cursorLineCol(ta) {
+    if (!ta) return { line: 1, col: 1 };
+    const pos = Math.max(0, Number(ta.selectionStart) || 0);
+    const before = String(ta.value || "").slice(0, pos);
+    const parts = before.split("\n");
+    return {
+      line: parts.length || 1,
+      col: String(parts[parts.length - 1] || "").length + 1,
+    };
+  }
+
+  function syncBreadcrumbs() {
+    ensureEditorChrome();
+    const bar = $("editor-breadcrumbs");
+    if (!bar) return;
+    const s = activeScript();
+    if (!s) {
+      bar.innerHTML = "";
+      bar.hidden = true;
+      return;
+    }
+    bar.hidden = false;
+    const folder = normalizeFolder(s.folder);
+    const parts = folder ? folder.split("/").filter(Boolean) : [];
+    let html = `<button type="button" class="breadcrumb-item" data-crumb-root="1" title="${escapeHtml(
+      tt("service.scripts.treeRoot", "Programs")
+    )}">${escapeHtml(tt("service.scripts.treeRoot", "Programs"))}</button>`;
+    let acc = "";
+    for (const part of parts) {
+      acc = acc ? `${acc}/${part}` : part;
+      html += `<span class="breadcrumb-sep" aria-hidden="true">›</span>`;
+      html += `<button type="button" class="breadcrumb-item" data-crumb-folder="${escapeHtml(
+        acc
+      )}" title="${escapeHtml(acc)}">${escapeHtml(part)}</button>`;
+    }
+    html += `<span class="breadcrumb-sep" aria-hidden="true">›</span>`;
+    html += `<button type="button" class="breadcrumb-item is-current" data-crumb-file="${escapeHtml(
+      s.id
+    )}" title="${escapeHtml(s.name)}" disabled>
+      <img class="breadcrumb-icon" src="msos-mark.png" alt="" width="12" height="12" />
+      <span>${escapeHtml(s.name)}</span>
+    </button>`;
+    bar.innerHTML = html;
+  }
+
+  function revealCrumbFolder(folder) {
+    const f = normalizeFolder(folder);
+    if (f) expandFolderPath(f);
+    state.activeFolder = f;
+    renderList();
+    void persistExpanded();
+  }
+
+  function syncStatusBar() {
+    ensureEditorChrome();
+    syncBreadcrumbs();
+    const pathEl = $("statusbar-path");
+    const cursorEl = $("statusbar-cursor");
+    const langEl = $("statusbar-lang");
+    const ta = $("script-body");
+    const s = activeScript();
+    if (pathEl) {
+      if (s) {
+        const folder = normalizeFolder(s.folder);
+        pathEl.textContent = folder ? `${folder}/${s.name}` : s.name;
+        pathEl.title = pathEl.textContent;
+      } else {
+        pathEl.textContent = "";
+        pathEl.removeAttribute("title");
+      }
+    }
+    if (langEl) langEl.textContent = s ? "MSOS" : "";
+    if (cursorEl) {
+      if (ta && s) {
+        const { line, col } = cursorLineCol(ta);
+        cursorEl.textContent = `Ln ${line}, Col ${col}`;
+      } else {
+        cursorEl.textContent = "";
+      }
+    }
+  }
+
+  function syncLineNumbers() {
+    ensureEditorChrome();
+    const ta = $("script-body");
+    const gutter = $("editor-gutter");
+    if (!ta || !gutter) {
+      syncStatusBar();
+      return;
+    }
+    const text = String(ta.value || "");
+    const count = text.length ? text.split("\n").length : 1;
+    const digits = String(count).length;
+    gutter.style.minWidth = `${Math.max(2.75, 1.1 + digits * 0.65)}rem`;
+    if (Number(gutter.dataset.lines || 0) !== count) {
+      gutter.dataset.lines = String(count);
+      let html = "";
+      for (let i = 1; i <= count; i += 1) {
+        html += `<span class="editor-gutter-line">${i}</span>`;
+      }
+      gutter.innerHTML = html;
+    }
+    gutter.scrollTop = ta.scrollTop;
+    syncStatusBar();
+  }
+
   function markDirty(on = true) {
     const next = !!on;
     const wasDirty = state.activeId ? isScriptDirty(state.activeId) : state.dirty;
@@ -626,6 +858,7 @@
       state.activeId = null;
       if ($("script-name")) $("script-name").value = "";
       if ($("script-body")) $("script-body").value = "";
+      syncLineNumbers();
       renderList();
       markDirty(false);
     } catch (err) {
@@ -634,14 +867,15 @@
     }
   }
 
-
   function focusRenameInput(input) {
     if (!input) return;
     input.focus();
     const kind = input.getAttribute("data-rename-kind");
     if (kind === "file") {
-      const stem = stripProgramExt(input.value);
-      input.setSelectionRange(0, stem.length);
+      const val = String(input.value || "");
+      const m = val.match(/^(.*)(\.[A-Za-z0-9]{1,16})$/);
+      const end = m ? m[1].length : stripProgramExt(val).length;
+      input.setSelectionRange(0, Math.max(0, end));
     } else {
       input.select();
     }
@@ -763,8 +997,6 @@
       window.alert(err?.message || "Rename failed");
     }
   }
-
-
   function cancelInlineFile() {
     if (!state.creatingFile) return;
     state.creatingFile = null;
@@ -865,6 +1097,14 @@
       await createNew(folder);
       return;
     }
+    if (action === "import-file") {
+      await importFile(folder);
+      return;
+    }
+    if (action === "import-folder") {
+      await importFolder(folder);
+      return;
+    }
     if (action === "new-folder") {
       createFolder(folder);
       return;
@@ -933,6 +1173,8 @@
     }
     showContextMenu(e.clientX, e.clientY, [
       { action: "new-program", label: tt("service.scripts.new", "New program") },
+      { action: "import-file", label: tt("service.scripts.importFile", "Import file…") },
+      { action: "import-folder", label: tt("service.scripts.importFolder", "Import folder…") },
       { action: "new-folder", label: tt("service.scripts.newFolder", "New folder") },
       { action: "rename", label: tt("service.scripts.rename", "Rename") },
       { sep: true },
@@ -955,6 +1197,8 @@
     }
     showContextMenu(e.clientX, e.clientY, [
       { action: "new-program", label: tt("service.scripts.new", "New program") },
+      { action: "import-file", label: tt("service.scripts.importFile", "Import file…") },
+      { action: "import-folder", label: tt("service.scripts.importFolder", "Import folder…") },
       { action: "new-folder", label: tt("service.scripts.newFolder", "New folder") },
     ]);
   }
@@ -968,7 +1212,6 @@
   function selectScript(id) {
     const s = state.scripts.find((x) => x.id === id);
     if (!s) return;
-    // Keep current buffer in memory before switching (VS Code keeps dirty tabs).
     if (state.activeId && state.activeId !== s.id) {
       readEditorIntoState();
     }
@@ -985,6 +1228,8 @@
     renderList();
     renderTabs();
     markDirty(state.dirty);
+    syncLineNumbers();
+    syncStatusBar();
   }
 
   function readEditorIntoState() {
@@ -1032,6 +1277,7 @@
       renderTabs();
       if ($("script-name")) $("script-name").value = "";
       if ($("script-body")) $("script-body").value = "";
+      syncLineNumbers();
       markDirty(false);
     }
   }
@@ -1059,6 +1305,80 @@
     markDirty(false);
   }
 
+  async function importFile(parentOverride) {
+    if (state.renaming) cancelRename();
+    if (state.creatingFolder) cancelInlineFolder();
+    if (state.creatingFile) cancelInlineFile();
+    if (state.activeId) readEditorIntoState();
+    setMode("programs");
+    const parent =
+      parentOverride != null ? normalizeFolder(parentOverride) : normalizeFolder(state.activeFolder);
+    hideContextMenu();
+    try {
+      const res = await invoke("scripts.importFile", { folder: parent });
+      if (res?.cancelled) return;
+      if (!res?.ok) {
+        window.alert(res?.error || tt("service.scripts.importFailed", "Import failed"));
+        return;
+      }
+      if (res.settings) state.settings = { ...state.settings, ...res.settings };
+      if (parent) {
+        expandFolderPath(parent);
+        state.settings.folders = [...new Set([...(state.settings.folders || []), parent])];
+      }
+      if (res.script) {
+        const idx = state.scripts.findIndex((s) => s.id === res.script.id);
+        if (idx >= 0) state.scripts[idx] = res.script;
+        else state.scripts.unshift(res.script);
+        selectScript(res.script.id);
+      } else {
+        renderList();
+      }
+    } catch (err) {
+      window.alert(err?.message || tt("service.scripts.importFailed", "Import failed"));
+    }
+  }
+
+  async function importFolder(parentOverride) {
+    if (state.renaming) cancelRename();
+    if (state.creatingFolder) cancelInlineFolder();
+    if (state.creatingFile) cancelInlineFile();
+    if (state.activeId) readEditorIntoState();
+    setMode("programs");
+    const parent =
+      parentOverride != null ? normalizeFolder(parentOverride) : normalizeFolder(state.activeFolder);
+    hideContextMenu();
+    try {
+      const res = await invoke("scripts.importFolder", { folder: parent });
+      if (res?.cancelled) return;
+      if (!res?.ok) {
+        window.alert(res?.error || tt("service.scripts.importFailed", "Import failed"));
+        return;
+      }
+      if (res.settings) state.settings = { ...state.settings, ...res.settings };
+      const imported = Array.isArray(res.scripts) ? res.scripts : [];
+      for (const script of imported) {
+        const idx = state.scripts.findIndex((s) => s.id === script.id);
+        if (idx >= 0) state.scripts[idx] = script;
+        else state.scripts.unshift(script);
+      }
+      if (res.folder) {
+        expandFolderPath(res.folder);
+        state.activeFolder = normalizeFolder(res.folder);
+        state.settings.folders = [
+          ...new Set([...(state.settings.folders || []), res.folder]),
+        ];
+      }
+      if (imported[0]) selectScript(imported[0].id);
+      else {
+        renderList();
+        renderTabs();
+      }
+    } catch (err) {
+      window.alert(err?.message || tt("service.scripts.importFailed", "Import failed"));
+    }
+  }
+
   async function createNew(parentOverride) {
     if (state.renaming) cancelRename();
     if (state.creatingFolder) cancelInlineFolder();
@@ -1072,6 +1392,7 @@
     state.activeId = null;
     if ($("script-name")) $("script-name").value = "";
     if ($("script-body")) $("script-body").value = "";
+    syncLineNumbers();
     hideContextMenu();
     renderList();
     renderTabs();
@@ -1121,6 +1442,7 @@
         renderTabs();
         if ($("script-name")) $("script-name").value = "";
         if ($("script-body")) $("script-body").value = "";
+        syncLineNumbers();
         markDirty(false);
       }
     } else {
@@ -1177,16 +1499,13 @@
       else {
         if ($("script-name")) $("script-name").value = "";
         if ($("script-body")) $("script-body").value = "";
+        syncLineNumbers();
         markDirty(false);
       }
     }
     renderList();
     renderTabs();
   }
-
-  function kuparashit(seasons,characters) {
-    characters = ShieldAlert, 
-
   function paintLog(results, summary) {
     const log = $("output-log");
     if (!log) return;
@@ -1257,7 +1576,6 @@
       } catch {
       }
     }
-
     const stopOnError = $("stop-on-error")?.checked !== false;
     state.running = true;
     const btn = $("btn-run");
@@ -1271,7 +1589,7 @@
       const res = await invoke("scripts.run", {
         id: s.id,
         name: s.name,
-        body: $("script-body")?.value ?? s.body,
+        body: $("script-body")?.value ?? s.body, 
         stopOnError,
       });
       const payload = res?.results != null || res?.ran != null ? res : res?.data || res || {};
@@ -1321,7 +1639,6 @@
     selectScript(hit.id);
     return true;
   }
-
   async function openAndRun(nameOrId) {
     const ok = openScript(nameOrId);
     if (!ok) return { ok: false, error: "Script not found" };
@@ -1380,7 +1697,47 @@
     }
   }
 
+  function moveEditorLines(ta, dir) {
+    if (!ta || (dir !== -1 && dir !== 1)) return false;
+    const text = String(ta.value || "");
+    let a = ta.selectionStart;
+    let b = ta.selectionEnd;
+    if (b < a) {
+      const t = a;
+      a = b;
+      b = t;
+    }
+    let endPos = b;
+    if (b > a && text[b - 1] === "\n") endPos = b - 1;
+    const blockStart = text.lastIndexOf("\n", a - 1) + 1;
+    const blockEndNl = text.indexOf("\n", endPos);
+    const blockEnd = blockEndNl === -1 ? text.length : blockEndNl + 1;
+    if (dir === -1) {
+      if (blockStart === 0) return false;
+      const prevStart = text.lastIndexOf("\n", blockStart - 2) + 1;
+      const prev = text.slice(prevStart, blockStart);
+      const block = text.slice(blockStart, blockEnd);
+      ta.value = text.slice(0, prevStart) + block + prev + text.slice(blockEnd);
+      const delta = -prev.length;
+      ta.selectionStart = a + delta;
+      ta.selectionEnd = b + delta;
+    } else {
+      if (blockEnd >= text.length) return false;
+      const nextNl = text.indexOf("\n", blockEnd);
+      const nextEnd = nextNl === -1 ? text.length : nextNl + 1;
+      const block = text.slice(blockStart, blockEnd);
+      const next = text.slice(blockEnd, nextEnd);
+      ta.value = text.slice(0, blockStart) + next + block + text.slice(nextEnd);
+      const delta = next.length;
+      ta.selectionStart = a + delta;
+      ta.selectionEnd = b + delta;
+    }
+    ta.dispatchEvent(new Event("input"));
+    return true;
+  }
+
   function bind() {
+    ensureTreeToolbarButtons();
     $("mode-strip")?.addEventListener("click", (e) => {
       const tab = e.target.closest("[data-mode]");
       if (!tab) return;
@@ -1402,9 +1759,29 @@
         window.alert(err?.message || String(err));
       }
     });
+    $("btn-import-file")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      Promise.resolve(importFile()).catch((err) =>
+        window.alert(err?.message || String(err))
+      );
+    });
+    $("btn-import-folder")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      Promise.resolve(importFolder()).catch((err) =>
+        window.alert(err?.message || String(err))
+      );
+    });
+    $("btn-collapse-all")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      Promise.resolve(collapseAllFolders()).catch((err) =>
+        window.alert(err?.message || String(err))
+      );
+    });
     $("btn-clear-log")?.addEventListener("click", () => paintLog([], null));
     $("btn-clear-session")?.addEventListener("click", () => clearSession());
-
     const onStopChange = async (e) => {
       const on = !!e.target.checked;
       state.settings.stopOnError = on;
@@ -1413,11 +1790,9 @@
     };
     $("stop-on-error")?.addEventListener("change", onStopChange);
     $("stop-on-error-ui")?.addEventListener("change", onStopChange);
-
     const shell = document.getElementById("app-shell");
     shell?.addEventListener("click", (e) => {
       if (!e.target.closest("#tree-context-menu")) hideContextMenu();
-
       if (e.target.closest("#btn-close-terminal")) {
         e.preventDefault();
         setTerminalOpen(false);
@@ -1426,6 +1801,43 @@
       if (e.target.closest("#btn-show-terminal")) {
         e.preventDefault();
         setTerminalOpen(!state.terminalOpen);
+        return;
+      }
+      if (e.target.closest("#btn-collapse-all")) {
+        e.preventDefault();
+        e.stopPropagation();
+        Promise.resolve(collapseAllFolders()).catch((err) =>
+          window.alert(err?.message || String(err))
+        );
+        return;
+      }
+      if (e.target.closest("#btn-import-file")) {
+        e.preventDefault();
+        e.stopPropagation();
+        Promise.resolve(importFile()).catch((err) =>
+          window.alert(err?.message || String(err))
+        );
+        return;
+      }
+      if (e.target.closest("#btn-import-folder")) {
+        e.preventDefault();
+        e.stopPropagation();
+        Promise.resolve(importFolder()).catch((err) =>
+          window.alert(err?.message || String(err))
+        );
+        return;
+      }
+      const crumbRoot = e.target.closest("[data-crumb-root]");
+      if (crumbRoot) {
+        e.preventDefault();
+        state.activeFolder = "";
+        renderList();
+        return;
+      }
+      const crumbFolder = e.target.closest("[data-crumb-folder]");
+      if (crumbFolder) {
+        e.preventDefault();
+        revealCrumbFolder(crumbFolder.getAttribute("data-crumb-folder"));
         return;
       }
       const closeTabBtn = e.target.closest("[data-close-tab]");
@@ -1541,39 +1953,78 @@
       e.stopPropagation();
       runContextAction(btn.getAttribute("data-action"));
     });
-    document.addEventListener("keydown", (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+    function cycleEditorTab(delta) {
+      const ids = state.openTabIds.filter((id) => state.scripts.some((s) => s.id === id));
+      if (ids.length < 2) return;
+      const cur = ids.indexOf(state.activeId);
+      const from = cur >= 0 ? cur : 0;
+      const next = ids[(from + delta + ids.length) % ids.length];
+      if (next) {
+        if (state.mode !== "programs") setMode("programs");
+        selectScript(next);
+      }
+    }
+
+    document.addEventListener(
+      "keydown",
+      (e) => {
+        const mod = e.ctrlKey || e.metaKey;
+        const keyS = e.code === "KeyS" || e.key?.toLowerCase?.() === "s";
+        const keyW = e.code === "KeyW" || e.key?.toLowerCase?.() === "w";
+        const isTab = e.key === "Tab" || e.code === "Tab";
+        if (mod && !e.altKey && !e.shiftKey && keyS) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (state.renaming || state.creatingFile || state.creatingFolder) return;
+          if (state.mode !== "programs") setMode("programs");
+          if (!activeScript()) return;
+          Promise.resolve(save()).catch((err) => window.alert(err?.message || String(err)));
+          return;
+        }
+
+        if (mod && !e.altKey && !e.shiftKey && keyW) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (state.renaming || state.creatingFile || state.creatingFolder) return;
+          if (!state.activeId || !state.openTabIds.includes(state.activeId)) return;
+          if (state.mode !== "programs") setMode("programs");
+          closeTab(state.activeId);
+          return;
+        }
+        if (mod && !e.altKey && isTab) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (state.renaming || state.creatingFile || state.creatingFolder) return;
+          cycleEditorTab(e.shiftKey ? -1 : 1);
+          return;
+        }
+        if (e.key === "Escape") {
+          hideContextMenu();
+          if (state.renaming) {
+            e.preventDefault();
+            cancelRename();
+            return;
+          }
+          if (state.creatingFile) {
+            e.preventDefault();
+            cancelInlineFile();
+            return;
+          }
+          if (state.creatingFolder) {
+            e.preventDefault();
+            cancelInlineFolder();
+          }
+          return;
+        }
+        if (e.key !== "F2") return;
+        const tag = String(e.target?.tagName || "").toLowerCase();
+        if (tag === "textarea" || (tag === "input" && e.target?.id !== "tree-rename-input")) return;
+        if (state.renaming || state.creatingFolder || state.creatingFile) return;
         e.preventDefault();
-        if (state.renaming || state.creatingFile || state.creatingFolder) return;
-        if (state.mode !== "programs") return;
-        Promise.resolve(save()).catch((err) => window.alert(err?.message || String(err)));
-        return;
-      }
-      if (e.key === "Escape") {
-        hideContextMenu();
-        if (state.renaming) {
-          e.preventDefault();
-          cancelRename();
-          return;
-        }
-        if (state.creatingFile) {
-          e.preventDefault();
-          cancelInlineFile();
-          return;
-        }
-        if (state.creatingFolder) {
-          e.preventDefault();
-          cancelInlineFolder();
-        }
-        return;
-      }
-      if (e.key !== "F2") return;
-      const tag = String(e.target?.tagName || "").toLowerCase();
-      if (tag === "textarea" || (tag === "input" && e.target?.id !== "tree-rename-input")) return;
-      if (state.renaming || state.creatingFolder || state.creatingFile) return;
-      e.preventDefault();
-      beginRenameSelection();
-    });
+        beginRenameSelection();
+      },
+      true
+    );
     shell?.addEventListener("keydown", (e) => {
       if (e.target?.id === "tree-rename-input") {
         if (e.key === "Enter") {
@@ -1594,7 +2045,6 @@
           e.preventDefault();
           cancelInlineFile();
         }
-
         return;
       }
       if (e.target?.id !== "tree-folder-input") return;
@@ -1652,11 +2102,34 @@
       s.body = $("script-body").value;
       markDirty(true);
       renderList();
+      syncLineNumbers();
+      syncStatusBar();
     });
+    $("script-body")?.addEventListener("scroll", () => {
+      const gutter = $("editor-gutter");
+      const ta = $("script-body");
+      if (gutter && ta) gutter.scrollTop = ta.scrollTop;
+    });
+    const syncCursor = () => syncStatusBar();
+    $("script-body")?.addEventListener("keyup", syncCursor);
+    $("script-body")?.addEventListener("click", syncCursor);
+    $("script-body")?.addEventListener("select", syncCursor);
     $("script-body")?.addEventListener("keydown", (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
         e.preventDefault();
         run();
+        return;
+      }
+      if (
+        e.altKey &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        (e.code === "ArrowUp" || e.code === "ArrowDown" || e.key === "ArrowUp" || e.key === "ArrowDown")
+      ) {
+        e.preventDefault();
+        const dir = e.code === "ArrowUp" || e.key === "ArrowUp" ? -1 : 1;
+        moveEditorLines(e.target, dir);
+        return;
       }
       if (e.key === "Tab") {
         e.preventDefault();
@@ -1667,13 +2140,23 @@
         ta.selectionStart = ta.selectionEnd = start + 2;
         ta.dispatchEvent(new Event("input"));
       }
+      requestAnimationFrame(syncCursor);
     });
+    window.addEventListener("resize", () => {
+      syncLineNumbers();
+      syncStatusBar();
+    });
+    syncLineNumbers();
+    syncStatusBar();
   }
 
   async function init() {
+    ensureEditorChrome();
     bind();
     setMode("programs");
-    setTerminalOpen(true);
+    setTerminalOpen(false);
+    syncLineNumbers();
+    syncStatusBar();
     try {
       await refresh();
     } catch (err) {

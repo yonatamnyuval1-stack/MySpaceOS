@@ -78,7 +78,59 @@
                 <path fill="currentColor" d="M8.75 7.25v1.5h1.5v1h-1.5v1.5h-1v-1.5h-1.5v-1h1.5v-1.5h1z" />
               </svg>
             </button>
-          </div> 
+            <button
+              type="button"
+              class="tree-action"
+              id="btn-import-file"
+              title="Import file"
+              data-i18n-title="service.scripts.importFile"
+              data-i18n-aria="service.scripts.importFile"
+              aria-label="Import file"
+            >
+              <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M8.5 1.5v7.793l2.146-2.147.708.708L8 11.207 4.646 7.854l.708-.708L7.5 9.293V1.5h1zM3 12.5h10V14H3v-1.5z"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="tree-action"
+              id="btn-import-folder"
+              title="Import folder"
+              data-i18n-title="service.scripts.importFolder"
+              data-i18n-aria="service.scripts.importFolder"
+              aria-label="Import folder"
+            >
+              <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M1.5 3A1.5 1.5 0 0 1 3 1.5h3.172a1.5 1.5 0 0 1 1.06.44L8.5 3H13A1.5 1.5 0 0 1 14.5 4.5v.75H2v7.25A.5.5 0 0 0 2.5 13h11a.5.5 0 0 0 .5-.5V6H15v6.5A1.5 1.5 0 0 1 13.5 14h-11A1.5 1.5 0 0 1 1 12.5v-9z"
+                />
+                <path
+                  fill="currentColor"
+                  d="M8.5 5.5v3.793l1.146-1.147.708.708L8 11.207 5.646 8.854l.708-.708L7.5 9.293V5.5h1z"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="tree-action"
+              id="btn-collapse-all"
+              title="Collapse All"
+              data-i18n-title="service.scripts.collapseAll"
+              data-i18n-aria="service.scripts.collapseAll"
+              aria-label="Collapse All"
+            >
+              <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M1 4.5 8 1l7 3.5v1.25L8 2.25 1 5.75V4.5zm0 4L8 5.5l7 3v1.25L8 6.75 1 9.75V8.5zm0 4L8 9.5l7 3V13.75L8 10.75 1 13.75V12.5z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
         <nav class="script-list file-tree" id="script-list" aria-label="Saved programs"></nav>
         <footer class="sidebar-foot">
@@ -89,33 +141,38 @@
         <div class="mode-panel is-active" id="panel-programs" data-panel="programs" role="tabpanel">
           <input type="hidden" id="script-name" value="" />
           <input type="checkbox" id="stop-on-error" checked hidden />
-          <div class="workspace" id="programs-workspace">
+          <div class="workspace is-terminal-closed" id="programs-workspace">
             <section class="editor-pane">
               <div class="editor-tabs" id="editor-tabs" role="tablist" aria-label="Open editors"></div>
-              <label class="sr-only" for="script-body">Program body</label>
-              <textarea
-                id="script-body"
-                class="script-editor"
-                spellcheck="false"
-                autocomplete="off"
-                data-i18n-placeholder="service.scripts.bodyPlaceholder"
-                placeholder="# One Language command per line"
-              ></textarea>
+              <nav class="editor-breadcrumbs" id="editor-breadcrumbs" aria-label="Breadcrumb" hidden></nav>
+              <div class="editor-code" id="editor-code">
+                <div class="editor-gutter" id="editor-gutter" aria-hidden="true"></div>
+                <label class="sr-only" for="script-body">Program body</label>
+                <textarea
+                  id="script-body"
+                  class="script-editor"
+                  spellcheck="false"
+                  autocomplete="off"
+                  wrap="off"
+                  data-i18n-placeholder="service.scripts.bodyPlaceholder"
+                  placeholder="# One Language command per line"
+                ></textarea>
+              </div>
             </section>
             <div class="panel-bar" role="tablist" aria-label="Panels">
               <button
                 type="button"
-                class="panel-tab is-active"
+                class="panel-tab"
                 id="btn-show-terminal"
                 role="tab"
-                aria-selected="true"
+                aria-selected="false"
                 data-i18n="service.scripts.showTerminal"
                 data-i18n-aria="service.scripts.showTerminal"
               >
                 Terminal
               </button>
             </div>
-            <section class="output-pane" id="output-pane">
+            <section class="output-pane is-closed" id="output-pane" hidden>
               <div class="output-head">
                 <h2 data-i18n="service.scripts.output">Terminal</h2>
                 <div class="output-head-actions">
@@ -139,6 +196,15 @@
                 <p class="output-empty" data-i18n="service.scripts.outputEmpty">Run a program to see each step here.</p>
               </div>
             </section>
+            <footer class="editor-statusbar" id="editor-statusbar" role="status" aria-live="polite">
+              <div class="statusbar-left">
+                <span class="statusbar-item" id="statusbar-path"></span>
+              </div>
+              <div class="statusbar-right">
+                <span class="statusbar-item" id="statusbar-cursor">Ln 1, Col 1</span>
+                <span class="statusbar-item" id="statusbar-lang">MSOS</span>
+              </div>
+            </footer>
           </div>
         </div>
         <div class="mode-panel" id="panel-session" data-panel="session" role="tabpanel" hidden>
