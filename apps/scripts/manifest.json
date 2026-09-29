@@ -1,6 +1,6 @@
 {
   "id": "scripts",
-  "name": "Scripts",
-  "version": "1.0.0",
-  "description": "Runtime for saved My Space Language programs"
+  "name": "Runtime",
+  "version": "1.1.0",
+  "description": "OS runtime studio: My Space Language programs and host tools that become apps"
 }

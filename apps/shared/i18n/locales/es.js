@@ -1318,7 +1318,7 @@
   "service.scripts.meta": "Nombre de la línea de comando: escríbalo después de hacer clic derecho en el escritorio",
   "service.scripts.metaHint": "Nombre de la línea de comando: escríbalo después de hacer clic derecho en el escritorio",
   "service.scripts.metaLine": "{steps} pasos, {status}",
-  "service.scripts.namePlaceholder": "Nombre del guión",
+  "service.scripts.namePlaceholder": "untitled.msos",
   "service.scripts.new": "Nuevo guión",
   "service.scripts.noScripts": "Aún no hay guiones.",
   "service.scripts.output": "Producción",

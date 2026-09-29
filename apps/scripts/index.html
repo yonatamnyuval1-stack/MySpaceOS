@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scripts</title>
+    <title>Runtime</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="../shared/theme-chrome.css?v=20260825v3" />
     <link rel="stylesheet" href="../shared/settings-panel.css" />
@@ -12,80 +12,162 @@
     <div class="app-shell" id="app-shell">
       <aside class="sidebar">
         <div class="brand">
-          <span class="brand-icon" aria-hidden="true">📜</span>
+          <span class="brand-mark" aria-hidden="true"></span>
           <div>
-            <strong data-i18n="platform.scripts.name">Scripts</strong>
-            <span class="brand-sub" data-i18n="platform.scripts.tagline">Language runtime</span>
+            <strong data-i18n="platform.scripts.name">Runtime</strong>
+            <span class="brand-sub" data-i18n="platform.scripts.tagline">OS language &amp; host tools</span>
           </div>
         </div>
-        <button type="button" class="btn btn-primary btn-new" id="btn-new" data-i18n="service.scripts.new">New script</button>
-        <nav class="script-list" id="script-list" aria-label="Saved scripts"></nav>
+        <nav class="mode-strip" id="mode-strip" role="tablist" aria-label="Runtime modes">
+          <button
+            type="button"
+            class="mode-tab is-active"
+            role="tab"
+            id="mode-programs"
+            data-mode="programs"
+            aria-selected="true"
+            data-i18n="service.scripts.modePrograms"
+          >
+            Programs
+          </button>
+          <button
+            type="button"
+            class="mode-tab"
+            role="tab"
+            id="mode-session"
+            data-mode="session"
+            aria-selected="false"
+            data-i18n="service.scripts.modeSession"
+          >
+            Session
+          </button>
+        </nav>
+        <div class="tree-toolbar">
+          <span class="tree-root-label" data-i18n="service.scripts.treeRoot">Programs</span>
+          <div class="tree-toolbar-actions">
+            <button
+              type="button"
+              class="tree-action"
+              id="btn-new"
+              title="New program"
+              data-i18n-title="service.scripts.new"
+              aria-label="New program"
+            >
+              <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M4 1.5A1.5 1.5 0 0 0 2.5 3v10A1.5 1.5 0 0 0 4 14.5h8A1.5 1.5 0 0 0 13.5 13V5.207L10.293 2H4A.5.5 0 0 0 3.5 2.5v11A.5.5 0 0 0 4 14h8a.5.5 0 0 0 .5-.5V5.5H9.5A1.5 1.5 0 0 1 8 4V1.5H4zm5 .207V4a.5.5 0 0 0 .5.5h2.293L9 1.707z"
+                />
+                <path fill="currentColor" d="M8.5 8.5V7h-1v1.5H6v1h1.5V11h1V9.5H10v-1H8.5z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="tree-action"
+              id="btn-new-folder"
+              title="New folder"
+              data-i18n-title="service.scripts.newFolder"
+              data-i18n-aria="service.scripts.newFolder"
+              aria-label="New folder"
+            >
+              <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M1.5 3A1.5 1.5 0 0 1 3 1.5h3.172a1.5 1.5 0 0 1 1.06.44L8.5 3H13A1.5 1.5 0 0 1 14.5 4.5v.5H2v7.5A.5.5 0 0 0 2.5 13h11a.5.5 0 0 0 .5-.5V5H15v7.5A1.5 1.5 0 0 1 13.5 14h-11A1.5 1.5 0 0 1 1 12.5v-9z"
+                />
+                <path fill="currentColor" d="M8.75 7.25v1.5h1.5v1h-1.5v1.5h-1v-1.5h-1.5v-1h1.5v-1.5h1z" />
+              </svg>
+            </button>
+          </div> 
+        </div>
+        <nav class="script-list file-tree" id="script-list" aria-label="Saved programs"></nav>
         <footer class="sidebar-foot">
-          <p data-i18n="service.scripts.foot">My Space Language programs</p>
+          <p data-i18n="service.scripts.foot">Language programs that drive My Space</p>
         </footer>
       </aside>
-
       <main class="main">
-        <header class="topbar">
-          <div class="topbar-text">
-            <input
-              type="text"
-              id="script-name"
-              class="script-name-input"
-              data-i18n-placeholder="service.scripts.namePlaceholder"
-              placeholder="Script name"
-              spellcheck="false"
-              autocomplete="off"
-            />
-            <p class="subtitle" id="script-meta" data-i18n="service.scripts.metaHint">Command-line name: type it after right-click on the desktop</p>
-          </div>
-          <div class="topbar-actions">
-            <label class="check-row" title="Stop when a step fails">
-              <input type="checkbox" id="stop-on-error" checked />
-              <span data-i18n="service.scripts.stopOnError">Stop on error</span>
-            </label>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-duplicate" data-i18n="service.scripts.duplicate">Duplicate</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-delete" data-i18n="service.scripts.delete">Delete</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-export-space" data-i18n="service.scripts.export">Export .space</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="btn-save" data-i18n="service.scripts.save">Save</button>
-            <button type="button" class="btn btn-primary btn-sm" id="btn-run" data-i18n="service.scripts.run">Run</button>
-          </div>
-        </header>
-
-        <div class="workspace">
-          <section class="editor-pane">
-            <label class="sr-only" for="script-body">Script body</label>
-            <textarea
-              id="script-body"
-              class="script-editor"
-              spellcheck="false"
-              autocomplete="off"
-              placeholder="# Comments start with #
-run today
-run builds
-check running
-loop 2 then refresh"
-            ></textarea>
-            <p class="editor-hint">
-              Desktop command line: type this script's <strong>name</strong> (e.g.
-              <code>morning</code>) after right-click · One command per line ·
-              <code>#</code> comments · <code>a</code> / <code>close all</code> closes every
-              open app (including Scripts)
-            </p>
-          </section>
-
-          <section class="output-pane">
-            <div class="output-head">
-              <h2 data-i18n="service.scripts.output">Output</h2>
-              <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-log" data-i18n="service.scripts.clear">Clear</button>
+        <div class="mode-panel is-active" id="panel-programs" data-panel="programs" role="tabpanel">
+          <input type="hidden" id="script-name" value="" />
+          <input type="checkbox" id="stop-on-error" checked hidden />
+          <div class="workspace" id="programs-workspace">
+            <section class="editor-pane">
+              <div class="editor-tabs" id="editor-tabs" role="tablist" aria-label="Open editors"></div>
+              <label class="sr-only" for="script-body">Program body</label>
+              <textarea
+                id="script-body"
+                class="script-editor"
+                spellcheck="false"
+                autocomplete="off"
+                data-i18n-placeholder="service.scripts.bodyPlaceholder"
+                placeholder="# One Language command per line"
+              ></textarea>
+            </section>
+            <div class="panel-bar" role="tablist" aria-label="Panels">
+              <button
+                type="button"
+                class="panel-tab is-active"
+                id="btn-show-terminal"
+                role="tab"
+                aria-selected="true"
+                data-i18n="service.scripts.showTerminal"
+                data-i18n-aria="service.scripts.showTerminal"
+              >
+                Terminal
+              </button>
             </div>
-            <div class="output-log" id="output-log" aria-live="polite">
-              <p class="output-empty" data-i18n="service.scripts.outputEmpty">Run a script to see each step here.</p>
+            <section class="output-pane" id="output-pane">
+              <div class="output-head">
+                <h2 data-i18n="service.scripts.output">Terminal</h2>
+                <div class="output-head-actions">
+                  <label class="check-row check-row-compact" title="Stop when a step fails">
+                    <input type="checkbox" id="stop-on-error-ui" checked />
+                    <span data-i18n="service.scripts.stopOnError">Stop on error</span>
+                  </label>
+                  <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-log" data-i18n="service.scripts.clear">Clear</button>
+                  <button
+                    type="button"
+                    class="btn btn-ghost btn-sm"
+                    id="btn-close-terminal"
+                    data-i18n="service.scripts.closeTerminal"
+                    aria-label="Close terminal"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+              <div class="output-log" id="output-log" aria-live="polite">
+                <p class="output-empty" data-i18n="service.scripts.outputEmpty">Run a program to see each step here.</p>
+              </div>
+            </section>
+          </div>
+        </div>
+        <div class="mode-panel" id="panel-session" data-panel="session" role="tabpanel" hidden>
+          <header class="topbar session-topbar">
+            <div class="topbar-text">
+              <h1 class="session-title" data-i18n="service.scripts.sessionTitle">Session</h1>
+              <p class="subtitle" data-i18n="service.scripts.sessionSubtitle">
+                Language runs and host tool output for this OS.
+              </p>
             </div>
-          </section>
+            <div class="topbar-actions">
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-session" data-i18n="service.scripts.clearSession">
+                Clear session
+              </button>
+            </div>
+          </header>
+          <div class="session-body">
+            <div class="session-log" id="session-log" aria-live="polite">
+              <div class="session-empty" id="session-empty">
+                <p data-i18n="service.scripts.sessionEmpty">
+                  Output from Language and host runs will appear here.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
+    <div id="tree-context-menu" class="tree-context-menu" hidden role="menu"></div>
     <script src="../shared/i18n/locales/en.js"></script>
     <script src="../shared/i18n/locales/he.js"></script>
     <script src="../shared/i18n/locales/ar.js"></script>

@@ -1318,7 +1318,7 @@
   "service.scripts.meta": "Имя для командной строки: введите после правого клика на рабочем столе",
   "service.scripts.metaHint": "Имя в командной строке: введите его после правого щелчка на рабочем столе",
   "service.scripts.metaLine": "{steps} шагов, {status}",
-  "service.scripts.namePlaceholder": "Имя скрипта",
+  "service.scripts.namePlaceholder": "untitled.msos",
   "service.scripts.new": "Новый скрипт",
   "service.scripts.noScripts": "Скриптов пока нет.",
   "service.scripts.output": "Вывод",

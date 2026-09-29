@@ -1318,7 +1318,7 @@
   "service.scripts.meta": "Nom de la ligne de commande: saisissez-le après un clic droit sur le bureau",
   "service.scripts.metaHint": "Nom de la ligne de commande: saisissez-le après un clic droit sur le bureau",
   "service.scripts.metaLine": "{steps} pas, {status}",
-  "service.scripts.namePlaceholder": "Nom du script",
+  "service.scripts.namePlaceholder": "untitled.msos",
   "service.scripts.new": "Nouveau scénario",
   "service.scripts.noScripts": "Pas encore de scripts.",
   "service.scripts.output": "Sortir",

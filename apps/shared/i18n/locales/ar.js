@@ -1318,7 +1318,7 @@
   "service.scripts.meta": "Command-line name: type it after right-click on the desktop",
   "service.scripts.metaHint": "Command-line name: type it after right-click on the desktop",
   "service.scripts.metaLine": "{steps} steps, {status}",
-  "service.scripts.namePlaceholder": "Script name",
+  "service.scripts.namePlaceholder": "untitled.msos",
   "service.scripts.new": "New script",
   "service.scripts.noScripts": "No scripts yet.",
   "service.scripts.output": "Output",

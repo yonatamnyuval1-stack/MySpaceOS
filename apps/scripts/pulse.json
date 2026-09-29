@@ -1,8 +1,8 @@
 {
   "profile": {
-    "tagline": "Runtime for My Space Language programs",
+    "tagline": "OS language & host tools",
     "icon": "📜",
-    "color": "#22d3ee"
+    "color": "#2dd4d8"
   },
   "commands": [
     {
@@ -112,8 +112,8 @@
     },
     {
       "verb": "open",
-      "title": "Open Scripts",
-      "description": "Open Scripts UI",
+      "title": "Open Runtime",
+      "description": "Open Runtime (Scripts) UI",
       "delivery": "ui",
       "input": {
         "id": "string?"
