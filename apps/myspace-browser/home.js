@@ -6,12 +6,26 @@
   const api = window.myspaceBrowser;
   const logoImg = document.querySelector(".msb-mark img");
 
+  function tt(key, fallback, vars) {
+    const I = window.MySpaceI18n;
+    if (!I?.t) {
+      if (!vars) return fallback || key;
+      return String(fallback || key).replace(/\{(\w+)\}/g, (_, k) =>
+        vars[k] != null ? String(vars[k]) : ""
+      );
+    }
+    const v = I.t(key, vars);
+    return v === key ? fallback || key : v;
+  }
+
   if (!api?.navigate || !api?.search) {
     const warn = document.createElement("p");
     warn.className = "msb-empty";
     warn.style.display = "block";
-    warn.textContent =
-      "Browser bridge missing — close this tab and reopen My Space Browser (or restart My Space).";
+    warn.textContent = tt(
+      "msb.bridgeMissing",
+      "Browser bridge missing: close this tab and reopen My Space Browser."
+    );
     document.querySelector(".msb-home")?.appendChild(warn);
   } else {
     void api.getHome?.().then((home) => {
@@ -75,7 +89,6 @@
     for (const item of flat) {
       groups[groupOf(item)].push(item);
     }
-
     let any = false;
     resultsEl.querySelectorAll(".msb-group").forEach((section) => {
       const key = section.dataset.group;
@@ -94,9 +107,11 @@
         })
         .join("");
     });
-
     resultsEl.hidden = !query;
     emptyEl.hidden = !query || any;
+    if (emptyEl && !emptyEl.hidden) {
+      emptyEl.textContent = tt("msb.empty", "No matches");
+    }
     listBind();
   }
 
@@ -126,8 +141,8 @@
       extras.push({
         kind: "url",
         id: "url:" + q,
-        title: `Open ${q}`,
-        subtitle: "Website",
+        title: tt("msb.openUrl", "Open {q}", { q }),
+        subtitle: tt("msb.website", "Website"),
         url: normalizeUrl(q),
         rank: 200,
       });
@@ -135,7 +150,7 @@
       extras.push({
         kind: "web",
         id: "web:" + q,
-        title: `Search the web for “${q}”`,
+        title: tt("msb.searchWeb", "Search the web for “{q}”", { q }),
         subtitle: "Google",
         url: `https://www.google.com/search?q=${encodeURIComponent(q)}`,
         rank: 15,
@@ -168,7 +183,7 @@
     if (!q) return;
     if (!api?.navigate) {
       emptyEl.hidden = false;
-      emptyEl.textContent = "Search unavailable.";
+      emptyEl.textContent = tt("msb.searchUnavailable", "Search unavailable.");
       resultsEl.hidden = false;
       return;
     }
@@ -229,12 +244,10 @@
       section.hidden = true;
     }
   }
-
   document.getElementById("msb-bookmark-row")?.addEventListener("click", (e) => {
     const btn = e.target.closest("button[data-url]");
     if (!btn || !api?.navigate) return;
     api.navigate(btn.dataset.url);
   });
-
   void loadBookmarks();
 })();

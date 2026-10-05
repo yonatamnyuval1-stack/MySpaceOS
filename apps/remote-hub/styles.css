@@ -976,6 +976,49 @@ body {
   background: var(--bg-panel);
 }
 
+.script-card--risk {
+  border-color: rgba(251, 191, 36, 0.35);
+}
+
+.script-risk {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: #fcd34d;
+}
+
+.script-optin {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.script-optin input {
+  margin-top: 2px;
+}
+
+.script-safe {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+}
+
+.enable-security-warn {
+  margin-bottom: 14px;
+  border-color: rgba(251, 191, 36, 0.35);
+}
+
+.enable-security-warn strong {
+  color: #fcd34d;
+}
+
+.enable-security-warn p {
+  margin: 6px 0 0;
+}
+
 .script-card h3 {
   margin: 0 0 8px;
   font-size: 0.95rem;
@@ -1253,6 +1296,26 @@ body {
 .control-hint {
   flex: 1 1 100%;
   margin: 0;
+  font-size: 0.78rem;
+}
+
+.control-token-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.control-token-input {
+  width: 180px;
+  max-width: 36vw;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  font: inherit;
   font-size: 0.78rem;
 }
 

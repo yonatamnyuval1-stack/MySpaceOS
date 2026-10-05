@@ -1,58 +1,73 @@
-#!/usr/bin/env node
-/**
- * Browser app entry files must not use Node require()/import at top level.
- * A single require() crashes the whole Runtime UI (empty tree, dead buttons).
- *
- * Also auto-strips a few known accidental inject patterns so `npm start` can
- * recover without a manual edit when autocomplete re-inserts them.
- */
 const fs = require("fs");
 const path = require("path");
-
-const roots = [path.join(__dirname, "..", "apps")];
+const ROOT = path.join(__dirname, "..");
 const bad = [];
 const stripped = [];
 const re = /^\s*(?:const|let|var)\s+.*=\s*require\s*\(|^\s*require\s*\(|^\s*import\s+/m;
 const autoStripRe =
-  /^\s*(?:const|let|var)\s*\{[^}]*\}\s*=\s*require\s*\(\s*["']@composio\/core["']\s*\)\s*;?\s*\r?\n/gm;
+  /^\s*(?:const|let|var)\s*(?:\{[^}]*\}|\w+)\s*=\s*require\s*\(\s*["'](?:@composio\/core|lucide-static|electron\/main)["']\s*\)\s*;?\s*\r?\n/gm;
 
-function walk(dir) {
+function rel(full) {
+  return path.relative(ROOT, full).replace(/\\/g, "/");
+}
+
+function scanFile(full, { autoStrip = true, failOnRequire = true } = {}) {
+  let text = fs.readFileSync(full, "utf8");
+  const fileRel = rel(full);
+  if (autoStrip && autoStripRe.test(text)) {
+    text = text.replace(autoStripRe, "");
+    text = text.replace(/^(?:\r?\n)+/, "");
+    fs.writeFileSync(full, text, "utf8");
+    stripped.push(fileRel);
+  }
+  if (!failOnRequire) return;
+  const head = text.slice(0, 2000);
+  if (re.test(head)) bad.push(fileRel);
+}
+
+function walkApps(dir) {
   for (const name of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, name.name);
     if (name.isDirectory()) {
       if (name.name === "node_modules") continue;
-      walk(full);
+      walkApps(full);
       continue;
     }
-    if (name.name !== "app.js") continue;
-    let text = fs.readFileSync(full, "utf8");
-    const rel = path.relative(path.join(__dirname, ".."), full).replace(/\\/g, "/");
-
-    if (autoStripRe.test(text)) {
-      text = text.replace(autoStripRe, "");
-      // collapse leftover blank lines at top
-      text = text.replace(/^(?:\r?\n)+/, "");
-      fs.writeFileSync(full, text, "utf8");
-      stripped.push(rel);
-    }
-
-    const head = text.slice(0, 1200);
-    if (re.test(head)) {
-      bad.push(rel);
-    }
+    if (!name.name.endsWith(".js")) continue;
+    const base = name.name;
+    const parent = path.basename(path.dirname(full));
+    const isBrowserLikely =
+      base === "app.js" ||
+      parent === "lib" ||
+      parent === "pages" ||
+      parent === "scripts" ||
+      parent === "shared";
+    if (!isBrowserLikely) continue;
+    scanFile(full, { autoStrip: true, failOnRequire: base === "app.js" || parent === "lib" || parent === "pages" });
   }
 }
 
-for (const root of roots) walk(root);
-
+function walkSrc(dir) {
+  for (const name of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, name.name);
+    if (name.isDirectory()) {
+      if (name.name === "node_modules") continue;
+      walkSrc(full);
+      continue;
+    }
+    if (!name.name.endsWith(".js")) continue;
+    scanFile(full, { autoStrip: true, failOnRequire: true });
+  }
+}
+walkApps(path.join(ROOT, "apps"));
+walkSrc(path.join(ROOT, "src"));
 if (stripped.length) {
-  console.warn("Auto-stripped accidental @composio require from:");
+  console.warn("Auto-stripped accidental Node requires from:");
   for (const f of stripped) console.warn(" -", f);
 }
-
 if (bad.length) {
-  console.error("Browser app.js files must not use require()/import (kills the UI):");
+  console.error("Browser/renderer JS must not use require()/import (kills the UI):");
   for (const f of bad) console.error(" -", f);
   process.exit(1);
 }
-console.log("OK: no top-level require/import in apps/*/app.js");
+console.log("OK: no top-level require/import in src/ and browser app scripts");

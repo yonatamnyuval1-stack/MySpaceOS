@@ -6,9 +6,7 @@ const { promisify } = require("util");
 const jobsStore = require("../jobs/store");
 const { ensureWorkspaceRoot, resolveWorkspacePath } = require("./files-ipc");
 const { userAppsRoot, userAppDir, isUserAppModule } = require("./user-app-ipc");
-
 const execFileAsync = promisify(execFile);
-
 const REGISTRY_FILE = () => {
   const profile = require("../myspace-profile");
   return profile.profileScopedPath("user-apps-registry.json");
@@ -161,13 +159,15 @@ contextBridge.exposeInMainWorld("myApp", {
       <main class="main">
         <header class="topbar">
           <h1>${display}</h1>
-          <p class="subtitle">Your app shell: extend app.js and tools/${id}/</p>
+          <p class="subtitle">UI in this window, logic in tools/${id}/ (Node or Python)</p>
         </header>
         <section class="panel">
           <div class="toolbar">
             <button type="button" class="btn primary" id="btn-add">+ Add item</button>
+            <button type="button" class="btn" id="btn-refresh">Refresh</button>
           </div>
-          <p class="hint">Host tool: run from Shell: host(run node file:tools/${id}/main.js)</p>
+          <ul class="item-list" id="item-list"></ul>
+          <p class="hint">Host tools (from Shell):\nhost(run node file:tools/${id}/main.js)\nhost(run python file:tools/${id}/main.py)</p>
         </section>
       </main>
     </div>
@@ -217,10 +217,11 @@ html, body { margin: 0; height: 100%; font-family: var(--font); color: var(--tex
   }
 
   async function refresh() {
+    if (!listEl) return;
     const res = await invoke("items.list");
     const items = res?.items || [];
     if (!items.length) {
-      listEl.innerHTML = "<li><span>No items yet: add one or extend this app.</span></li>";
+      listEl.innerHTML = "<li><span>No items yet. Add one here, or extend tools/${id}/ with Node/Python.</span></li>";
       return;
     }
     listEl.innerHTML = items
@@ -249,18 +250,61 @@ html, body { margin: 0; height: 100%; font-family: var(--font); color: var(--tex
     });
     refresh();
   });
-
+  document.getElementById("btn-refresh")?.addEventListener("click", () => refresh());
   window.${toAppGlobal(id)} = { refresh };
   refresh();
 })();
 `;
 
-  const hostMainJs =
-    template === "full"
-      ? `console.log("${display} host tool ready");
-console.log("Args:", process.argv.slice(2).join(" ") || "(none)");
-`
-      : `console.log("Hello from ${display}");
+  const hostMainJs = `/**
+ * Host logic for ${display} (Node).
+ * Edit this file, then from My Space Shell:
+ *   host(run node file:tools/${id}/main.js)
+ *
+ * The My Space UI lives in user-apps/${id}/ (index.html + app.js).
+ * This script is where you put real work in a language you already know.
+ */
+const args = process.argv.slice(2);
+console.log("[${id}] host ready");
+if (args.length) console.log("[${id}] args:", args.join(" "));
+else console.log("[${id}] tip: pass args after --  e.g. host(run node file:tools/${id}/main.js -- hello)");
+`;
+
+  const hostMainPy = `#!/usr/bin/env python3
+"""Host logic for ${display} (Python).
+Edit this file, then from My Space Shell:
+  host(run python file:tools/${id}/main.py)
+
+UI: user-apps/${id}/  |  Host: this script
+"""
+import sys
+
+print(f"[${id}] host ready (python)")
+if len(sys.argv) > 1:
+    print(f"[${id}] args:", " ".join(sys.argv[1:]))
+else:
+    print(f"[${id}] tip: host(run python file:tools/${id}/main.py -- hello)")
+`;
+
+  const readme = `# ${display}
+
+User-built My Space app.
+
+## Layout
+- \`index.html\` / \`app.js\` / \`styles.css\`: window UI inside My Space
+- \`tools/${id}/main.js\`: Node host logic
+- \`tools/${id}/main.py\`: Python host logic
+
+## Ritual (My Space Language)
+\`\`\`
+app(scaffold ${id} name:${display})
+host(run node file:tools/${id}/main.js)
+host(run python file:tools/${id}/main.py)
+run ${id}
+pack(build ${id})
+\`\`\`
+
+My Space Language wires the app into the desktop. Node/Python own the heavy logic.
 `;
 
   return {
@@ -271,6 +315,8 @@ console.log("Args:", process.argv.slice(2).join(" ") || "(none)");
     styles,
     appJs,
     hostMainJs,
+    hostMainPy,
+    readme,
   };
 }
 
@@ -281,16 +327,13 @@ function toAppGlobal(id) {
 async function scaffoldApp(args = {}) {
   const gate = assertAppBuildAllowed();
   if (!gate.ok) return gate;
-
   const id = normalizeId(args.id || args.name);
   const valid = validateId(id);
   if (!valid.ok) return valid;
-
   const name = String(args.name || id).trim().slice(0, 60);
   const template = String(args.template || "minimal").toLowerCase();
   const icon = String(args.icon || "📦").slice(0, 4);
   const register = args.register !== false;
-
   const repoAppDir = path.join(__dirname, "..", "..", "apps", id);
   if (fs.existsSync(repoAppDir)) {
     return { ok: false, error: `App id "${id}" already exists in built-in apps/` };
@@ -303,7 +346,6 @@ async function scaffoldApp(args = {}) {
 
   const files = templateFiles(id, name, template, icon);
   fs.mkdirSync(dest, { recursive: true });
-
   const writeMap = {
     "manifest.json": JSON.stringify(files.manifest, null, 2),
     "pulse.json": JSON.stringify(files.pulse, null, 2),
@@ -311,6 +353,7 @@ async function scaffoldApp(args = {}) {
     "index.html": files.indexHtml,
     "styles.css": files.styles,
     "app.js": files.appJs,
+    "README.md": files.readme,
   };
 
   for (const [rel, content] of Object.entries(writeMap)) {
@@ -321,7 +364,7 @@ async function scaffoldApp(args = {}) {
   const toolDir = path.join(workspace, "tools", id);
   fs.mkdirSync(toolDir, { recursive: true });
   fs.writeFileSync(path.join(toolDir, "main.js"), files.hostMainJs, "utf8");
-
+  fs.writeFileSync(path.join(toolDir, "main.py"), files.hostMainPy, "utf8");
   const entry = {
     id,
     name,
@@ -340,7 +383,6 @@ async function scaffoldApp(args = {}) {
   reg.apps = reg.apps.filter((a) => a.id !== id);
   reg.apps.push(entry);
   writeRegistry(reg);
-
   let registered = false;
   if (register) {
     const regRes = await registerApp({ id });
@@ -356,6 +398,7 @@ async function scaffoldApp(args = {}) {
     next: [
       `run ${id}`,
       `host(run node file:tools/${id}/main.js)`,
+      `host(run python file:tools/${id}/main.py)`,
       `app(list)`,
       register ? null : `app(register ${id})`,
     ].filter(Boolean),
@@ -365,11 +408,9 @@ async function scaffoldApp(args = {}) {
 async function registerApp(args = {}) {
   const gate = assertAppBuildAllowed();
   if (!gate.ok) return gate;
-
   const id = normalizeId(args.id);
   const valid = validateId(id);
   if (!valid.ok) return valid;
-
   if (!isUserAppModule(id)) {
     return { ok: false, error: `User app not found: ${id}. Run app(scaffold ${id}) first.` };
   }
@@ -395,9 +436,7 @@ async function registerApp(args = {}) {
   const idx = cfg.apps.findIndex((a) => a.id === id);
   if (idx >= 0) cfg.apps[idx] = { ...cfg.apps[idx], ...entry };
   else cfg.apps.push(entry);
-
   writeUserConfig(cfg);
-
   return { ok: true, app: entry, configPath: getUserConfigPath() };
 }
 
@@ -442,11 +481,9 @@ async function compressFolderToZip(folder, zipPath) {
 async function buildAppPack(args = {}) {
   const gate = assertAppBuildAllowed();
   if (!gate.ok) return gate;
-
   const id = normalizeId(args.id || args.app);
   const valid = validateId(id);
   if (!valid.ok) return valid;
-
   if (!isUserAppModule(id)) {
     return { ok: false, error: `User app not found: ${id}` };
   }
@@ -456,10 +493,8 @@ async function buildAppPack(args = {}) {
   const exportsDir = profile.profileScopedPath("exports");
   fs.mkdirSync(exportsDir, { recursive: true });
   const zipPath = path.join(exportsDir, `${id}.myapp.zip`);
-
   const staging = path.join(exportsDir, `.staging-${id}-${Date.now()}`);
   fs.mkdirSync(staging, { recursive: true });
-
   try {
     await fs.promises.cp(srcDir, path.join(staging, id), { recursive: true });
     const reg = readRegistry();
@@ -504,6 +539,182 @@ async function buildAppPack(args = {}) {
   };
 }
 
+async function expandZipToFolder(zipPath, destFolder) {
+  fs.mkdirSync(destFolder, { recursive: true });
+  if (process.platform === "win32") {
+    const ps = path.join(
+      process.env.WINDIR || "C:\\Windows",
+      "System32",
+      "WindowsPowerShell",
+      "v1.0",
+      "powershell.exe"
+    );
+    const src = zipPath.replace(/'/g, "''");
+    const dst = destFolder.replace(/'/g, "''");
+    await execFileAsync(
+      ps,
+      [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        `$ErrorActionPreference='Stop'; Expand-Archive -LiteralPath '${src}' -DestinationPath '${dst}' -Force`,
+      ],
+      { windowsHide: true, timeout: 120000, maxBuffer: 20 * 1024 * 1024 }
+    );
+  } else {
+    await execFileAsync("unzip", ["-o", zipPath, "-d", destFolder], { timeout: 120000 });
+  }
+}
+
+function readJsonSafe(filePath) {
+  try {
+    if (fs.existsSync(filePath)) return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch {
+  }
+  return null;
+}
+
+function findAppRootInExtract(extractRoot) {
+  const pkg = readJsonSafe(path.join(extractRoot, "package.json"));
+  const pkgId = normalizeId(pkg?.id);
+  if (pkgId && fs.existsSync(path.join(extractRoot, pkgId, "index.html"))) {
+    return { id: pkgId, appDir: path.join(extractRoot, pkgId), meta: pkg };
+  }
+  if (pkgId && fs.existsSync(path.join(extractRoot, "index.html"))) {
+    return { id: pkgId, appDir: extractRoot, meta: pkg };
+  }
+  const entries = fs.readdirSync(extractRoot, { withFileTypes: true });
+  for (const ent of entries) {
+    if (!ent.isDirectory() || ent.name === "tools") continue;
+    const cand = path.join(extractRoot, ent.name);
+    if (fs.existsSync(path.join(cand, "index.html")) || fs.existsSync(path.join(cand, "manifest.json"))) {
+      const id = normalizeId(ent.name);
+      const valid = validateId(id);
+      if (valid.ok) return { id, appDir: cand, meta: pkg || { id, name: id } };
+    }
+  }
+  if (fs.existsSync(path.join(extractRoot, "index.html"))) {
+    const man = readJsonSafe(path.join(extractRoot, "manifest.json"));
+    const id = normalizeId(man?.id || path.basename(extractRoot));
+    const valid = validateId(id);
+    if (valid.ok) return { id, appDir: extractRoot, meta: man || pkg || { id } };
+  }
+  return null;
+}
+
+async function installAppPack(args = {}) {
+  const gate = assertAppBuildAllowed();
+  if (!gate.ok) return gate;
+  let zipPath = String(args.path || args.file || args.zip || "").trim();
+  if (!zipPath) {
+    const picked = await dialog.showOpenDialog(getParentWindow() || undefined, {
+      title: "Install My Space app (.myapp.zip)",
+      filters: [
+        { name: "My Space App", extensions: ["zip"] },
+        { name: "All files", extensions: ["*"] },
+      ],
+      properties: ["openFile"],
+    });
+    if (picked.canceled || !picked.filePaths?.[0]) {
+      return { ok: false, cancelled: true, error: "Cancelled" };
+    }
+    zipPath = picked.filePaths[0];
+  }
+
+  if (!fs.existsSync(zipPath)) {
+    return { ok: false, error: `Zip not found: ${zipPath}` };
+  }
+  if (!/\.zip$/i.test(zipPath)) {
+    return { ok: false, error: "Expected a .zip / .myapp.zip file" };
+  }
+
+  const profile = require("../myspace-profile");
+  const extractRoot = path.join(
+    profile.profileScopedPath("exports"),
+    `.install-${Date.now()}`
+  );
+
+  try {
+    await expandZipToFolder(zipPath, extractRoot);
+    const found = findAppRootInExtract(extractRoot);
+    if (!found) {
+      return {
+        ok: false,
+        error: "Not a My Space app pack (missing package.json / app folder with index.html)",
+      };
+    }
+    const { id, appDir, meta } = found;
+    const valid = validateId(id);
+    if (!valid.ok) return valid;
+    const repoAppDir = path.join(__dirname, "..", "..", "apps", id);
+    if (fs.existsSync(repoAppDir)) {
+      return { ok: false, error: `App id "${id}" is reserved for a built-in app` };
+    }
+    const dest = userAppDir(id);
+    if (fs.existsSync(dest)) {
+      if (!args.force && args.overwrite !== true) {
+        return {
+          ok: false,
+          error: `User app "${id}" already exists. Use pack(install … force:true) to replace.`,
+        };
+      }
+      await fs.promises.rm(dest, { recursive: true, force: true });
+    }
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    await fs.promises.cp(appDir, dest, { recursive: true });
+    const toolsSrc = path.join(extractRoot, "tools", id);
+    if (fs.existsSync(toolsSrc)) {
+      const workspace = ensureWorkspaceRoot();
+      const toolsDest = path.join(workspace, "tools", id);
+      fs.mkdirSync(path.dirname(toolsDest), { recursive: true });
+      if (fs.existsSync(toolsDest)) {
+        await fs.promises.rm(toolsDest, { recursive: true, force: true });
+      }
+      await fs.promises.cp(toolsSrc, toolsDest, { recursive: true });
+    }
+    const man = readJsonSafe(path.join(dest, "manifest.json")) || {};
+    const name = String(meta?.name || man.name || id).slice(0, 60);
+    const icon = String(man.icon || meta?.icon || "📦").slice(0, 4);
+    const entry = {
+      id,
+      name,
+      type: "myapp",
+      module: id,
+      icon,
+      description: man.description || `User-built app — ${name}`,
+      userBuilt: true,
+      installedAt: new Date().toISOString(),
+      installedFrom: zipPath,
+      path: dest,
+      workspaceTool: `tools/${id}/main.js`,
+    };
+    const reg = readRegistry();
+    reg.apps = reg.apps.filter((a) => a.id !== id);
+    reg.apps.push(entry);
+    writeRegistry(reg);
+    let registered = false;
+    if (args.register !== false) {
+      const regRes = await registerApp({ id });
+      registered = !!regRes?.ok;
+    }
+    return {
+      ok: true,
+      app: entry,
+      id,
+      path: dest,
+      registered,
+      message: `Installed ${name} (${id})${registered ? " · on desktop" : ""}`,
+      next: [`run ${id}`, `app(list)`, `host(run node file:tools/${id}/main.js)`],
+    };
+  } finally {
+    try {
+      await fs.promises.rm(extractRoot, { recursive: true, force: true });
+    } catch {
+    }
+  }
+}
+
 function getParentWindow() {
   const focused = BrowserWindow.getFocusedWindow();
   if (focused && !focused.isDestroyed()) return focused;
@@ -512,20 +723,16 @@ function getParentWindow() {
 
 async function handleAppBuilderInvoke(channel, args = {}) {
   const ch = String(channel || "").trim();
-
   switch (ch) {
     case "app.scaffold":
     case "scaffold":
       return scaffoldApp(args);
-
     case "app.register":
     case "register":
       return registerApp(args);
-
     case "app.list":
     case "list":
       return listApps();
-
     case "app.status":
     case "status":
       return {
@@ -534,12 +741,14 @@ async function handleAppBuilderInvoke(channel, args = {}) {
         registry: readRegistry(),
         count: readRegistry().apps?.length || 0,
       };
-
     case "app.pack.build":
     case "pack.build":
     case "build":
       return buildAppPack(args);
-
+    case "app.pack.install":
+    case "pack.install":
+    case "install":
+      return installAppPack(args);
     case "app.pack.pick":
     case "pack.pick": {
       const picked = await dialog.showOpenDialog(getParentWindow() || undefined, {
@@ -550,17 +759,16 @@ async function handleAppBuilderInvoke(channel, args = {}) {
       if (picked.canceled || !picked.filePaths?.[0]) return { ok: false, error: "Cancelled" };
       return { ok: true, path: picked.filePaths[0] };
     }
-
     default:
       return { ok: false, error: `Unknown app-builder channel: ${ch}` };
   }
 }
-
 module.exports = {
   handleAppBuilderInvoke,
   scaffoldApp,
   registerApp,
   buildAppPack,
+  installAppPack,
   readRegistry,
   assertAppBuildAllowed,
 };

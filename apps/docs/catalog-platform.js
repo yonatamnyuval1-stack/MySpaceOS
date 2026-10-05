@@ -507,7 +507,7 @@
       p("Who it is for: people who want Google / docs / GitHub beside Notes without alt-tabbing to a system browser (unless a site cannot run in-app)."),
       p("How it fits: green Web series with Connect. Platform action open-browser. No browser(…) route registry module — open from Platform → Browser / Web, Connect catalog, or Pulse browser verbs."),
       h2("Open it"),
-      code(["Platform → Browser (home)", "Platform → Web (new tab)", "Connect → Browser → My Space Browser", "pulse(send browser openHome)", "pulse(send browser openWeb url=https://example.com)"]),
+      code(["Platform → My Space Browser (home)", "Platform → Web (new tab)", "Connect → New web tab", "pulse(send browser openHome)", "pulse(send browser openWeb url=https://example.com)"]),
       h2("Surfaces / pages"),
       table(["Surface","What it is","Notes"], [["Home","Unified search: apps, connect, content, web","myspace-browser home"],["Web tab","In-app webview + address bar","Workspace tab"],["New tab","Returns to Browser home when this browser is active","+ in tab bar"]]),
       h2("Shell commands"),

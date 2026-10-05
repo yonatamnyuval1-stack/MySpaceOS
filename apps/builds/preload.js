@@ -1,5 +1,4 @@
 const { contextBridge, ipcRenderer } = require("electron");
-
 const myApp = {
   moduleId: "builds",
   invoke: (channel, args) => ipcRenderer.invoke("myapp-invoke", "builds", channel, args || {}),
@@ -16,7 +15,6 @@ try {
 } catch (err) {
   console.error("[builds preload] Local auth bridge failed:", err);
 }
-
 try {
   const { attachOsI18n } = require("../shared/i18n/preload-bridge");
   attachOsI18n(contextBridge, ipcRenderer);

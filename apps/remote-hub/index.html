@@ -157,6 +157,14 @@
               This turns on built-in Windows features: <strong>no RustDesk, no extra apps required</strong>.
             </p>
           </div>
+          <div class="enable-security-warn card-panel" role="note">
+            <strong>Security</strong>
+            <p class="muted">
+              RDP, WinRM, SSH, and <code>TrustedHosts=*</code> open remote access on your network.
+              Copy those scripts only after the opt-in checkbox (and confirm). Remote Agent asks separately
+              before opening the firewall or listening on <code>0.0.0.0</code>.
+            </p>
+          </div>
           <div class="enable-steps">
             <article class="step-card">
               <span class="step-num">1</span>
@@ -182,7 +190,7 @@
           </div>
           <div class="enable-agent-row card-panel">
             <h3>Remote Agent files</h3>
-            <p class="muted">Copy this folder to the target PC, then run <code>install.ps1</code> as Administrator for full mouse & keyboard control.</p>
+            <p class="muted">Copy this folder to the target PC, run <code>install.ps1</code> as Administrator (answer <strong>Y</strong> only if you want LAN + firewall), then paste the printed Agent token into the machine’s Agent token field.</p>
             <button type="button" class="btn btn-primary btn-sm" id="btn-open-agent-folder">Open agent folder</button>
           </div>
           <div class="script-grid" id="enable-scripts"></div>
@@ -226,6 +234,10 @@
           <button type="button" class="btn btn-ghost btn-sm" id="control-rdp" title="Full desktop via RDP">RDP</button>
           <button type="button" class="btn btn-ghost btn-sm" id="control-view-only" title="View only via WinRM">View only</button>
           <button type="button" class="btn btn-ghost btn-sm" id="control-agent-folder" title="Open agent folder to copy to target PC">Agent folder</button>
+          <label class="control-token-label">
+            <span>Agent token</span>
+            <input type="password" id="control-agent-token" class="control-token-input" placeholder="From install.ps1" autocomplete="off" spellcheck="false" />
+          </label>
           <div class="control-status muted" id="control-status"></div>
           <p class="control-hint muted" id="control-hint"></p>
         </div>

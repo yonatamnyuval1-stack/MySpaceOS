@@ -469,12 +469,17 @@
         ),
         kit.select(
           (window.MySpaceLanguages?.list?.() || [
-            { id: "en", name: "English" },
-            { id: "he", name: "Hebrew" },
-          ]).map((l) => ({
-            value: l.id,
-            label: tt(`settings.language.${l.id}`, l.nativeName || l.name),
-          })),
+            { id: "en", name: "English", complete: true },
+            { id: "he", name: "Hebrew", complete: true },
+          ]).map((l) => {
+            const base = tt(`settings.language.${l.id}`, l.nativeName || l.name);
+            return {
+              value: l.id,
+              label: l.complete
+                ? base
+                : tt("settings.language.partialLabel", "{name} (preview)", { name: base }),
+            };
+          }),
           cur.language || "en",
           (v) => patchSettings({ language: v })
         )

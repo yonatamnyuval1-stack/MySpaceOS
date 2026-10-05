@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Space Browser</title>
+    <title data-i18n="msb.title">My Space Browser</title>
     <link rel="stylesheet" href="home.css" />
   </head>
   <body>
@@ -13,49 +13,60 @@
           <img src="logo.png" alt="" width="52" height="52" />
         </div>
         <h1>My Space</h1>
-        <p>Search apps, Connect, and everything in your Space, or browse the web.</p>
+        <p data-i18n="msb.subtitle">Search apps, Connect, and everything in your Space, or browse the web.</p>
       </header>
       <form class="msb-search" id="msb-form" autocomplete="off">
         <input
           id="msb-input"
           type="search"
           placeholder="Apps, contacts, Connect, websites…"
+          data-i18n-placeholder="msb.placeholder"
           spellcheck="false"
           autofocus
         />
-        <button type="submit" class="msb-go">Search</button>
+        <button type="submit" class="msb-go" data-i18n="msb.search">Search</button>
       </form>
       <div class="msb-chips" id="msb-chips">
-        <button type="button" data-q="Today">Today</button>
-        <button type="button" data-q="Gmail">Gmail</button>
-        <button type="button" data-q="Contacts">Contacts</button>
-        <button type="button" data-q="ChatGPT">ChatGPT</button>
-        <button type="button" data-q="Stocks">Stocks</button>
+        <button type="button" data-q="Today" data-i18n="msb.chip.today">Today</button>
+        <button type="button" data-q="Gmail" data-i18n="msb.chip.gmail">Gmail</button>
+        <button type="button" data-q="Contacts" data-i18n="msb.chip.contacts">Contacts</button>
+        <button type="button" data-q="ChatGPT" data-i18n="msb.chip.chatgpt">ChatGPT</button>
+        <button type="button" data-q="Stocks" data-i18n="msb.chip.stocks">Stocks</button>
       </div>
       <section class="msb-bookmarks" id="msb-bookmarks" hidden>
-        <h2>Bookmarks</h2>
+        <h2 data-i18n="msb.bookmarks">Bookmarks</h2>
         <div class="msb-bookmark-row" id="msb-bookmark-row"></div>
       </section>
       <section class="msb-results" id="msb-results" hidden>
         <div class="msb-group" data-group="apps" hidden>
-          <h2>Apps</h2>
+          <h2 data-i18n="msb.group.apps">Apps</h2>
           <div class="msb-list"></div>
         </div>
         <div class="msb-group" data-group="connect" hidden>
-          <h2>Connect</h2>
+          <h2 data-i18n="msb.group.connect">Connect</h2>
           <div class="msb-list"></div>
         </div>
         <div class="msb-group" data-group="content" hidden>
-          <h2>In My Space</h2>
+          <h2 data-i18n="msb.group.content">In My Space</h2>
           <div class="msb-list"></div>
         </div>
         <div class="msb-group" data-group="web" hidden>
-          <h2>Web</h2>
+          <h2 data-i18n="msb.group.web">Web</h2>
           <div class="msb-list"></div>
         </div>
-        <p class="msb-empty" id="msb-empty" hidden>No matches</p>
+        <p class="msb-empty" id="msb-empty" hidden data-i18n="msb.empty">No matches</p>
       </section>
     </main>
+    <script src="../shared/i18n/locales/en.js"></script>
+    <script src="../shared/i18n/locales/he.js"></script>
+    <script src="../shared/i18n/locales/ar.js"></script>
+    <script src="../shared/i18n/locales/fr.js"></script>
+    <script src="../shared/i18n/locales/ru.js"></script>
+    <script src="../shared/i18n/locales/es.js"></script>
+    <script src="../shared/i18n/languages.js"></script>
+    <script src="../shared/i18n/i18n.js"></script>
+    <script src="../shared/i18n/sync-boot.js"></script>
+    <script src="../shared/i18n/boot-service.js"></script>
     <script src="home.js"></script>
   </body>
 </html>

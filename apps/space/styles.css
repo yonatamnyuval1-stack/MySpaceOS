@@ -220,6 +220,16 @@ html, body { margin: 0; height: 100%; font-family: var(--font); font-size: 14px;
   background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.35);
   color: #fcd34d; font-size: 0.88rem;
 }
+.nasa-demo-note {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(126, 184, 255, 0.1);
+  border: 1px solid rgba(126, 184, 255, 0.28);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
 .apod-head { margin-bottom: 12px; }
 .apod-head h2 { margin: 0 0 4px; color: var(--accent); }
 .apod-date { font-size: 0.85rem; color: var(--text-muted); }

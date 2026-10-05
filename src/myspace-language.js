@@ -11,13 +11,10 @@
   const SHORT = "Language";
   const DOC_ID = "shell-language";
   const ATLAS_LANGUAGE_ID = "language";
-
   const PURPOSE =
     "Orchestrate My Space: connect the OS to apps inside it, drive platform services, automate the surroundings, and coordinate other languages when building real things. Not a general-purpose app language: other languages own app-internal logic.";
-
   const VISION =
     "Together with Python, JavaScript, and other host languages, My Space Language lets users build My Space apps, automations, and portable artifacts, without leaving the OS contract. The language wires; host languages implement; platform services enforce permissions and capacity.";
-
   const DIVISION_OF_LABOR = [
     {
       owner: NAME,
@@ -52,7 +49,7 @@
     },
     {
       id: "scripts",
-      name: "Scripts",
+      name: "Runtime",
       role: "Runtime and library for saved programs written in the language",
     },
     {
@@ -71,7 +68,6 @@
       role: "Python, Node, PowerShell: app logic invoked by host(…) under Permissions",
     },
   ];
-
   const CREATE_LADDER = [
     {
       id: "objects",
@@ -84,7 +80,7 @@
       id: "programs",
       title: "Language programs",
       status: "live",
-      blurb: "Scripts as first-class artifacts the language can write",
+      blurb: "Runtime programs as first-class artifacts the language can write",
       ops: ["scripts(set …)", "scripts(append …)", "scripts(run …)"],
     },
     {
@@ -116,26 +112,25 @@
       ops: ["pack(export script …)", "pack(open file.space)"],
     },
   ];
-
   const APP_PACKAGE = {
     summary:
       "A My Space app = manifest (glue) + core (host language) + optional MSL/Pulse profiles. The language scaffolds and wires; host code fills logic.",
     parts: [
       { id: "manifest", path: "apps/<id>/manifest.json", role: "Identity, version, module id" },
       { id: "glue", path: "apps/<id>/pulse.json, preload, index.html", role: "How the app talks to My Space" },
-      { id: "core", path: "apps/<id>/lib/ or tools/<id>/", role: "Python/JS/etc. — product logic" },
+      { id: "core", path: "apps/<id>/lib/ or tools/<id>/", role: "Python/JS/etc.: product logic" },
       { id: "msl", path: "Declared capabilities", role: "msl(expose …) from the language" },
       { id: "register", path: "config/apps.json entry", role: "Desktop / Platform visibility" },
     ],
     exampleFlow: [
       "app(scaffold todo template:minimal)",
-      "host(run node -- file:tools/todo/scaffold-ui.js)",
-      "msl(expose todo.list)",
-      "pack(build todo)",
+      "host(run node file:tools/todo/main.js)",
+      "host(run python file:tools/todo/main.py)",
       "run todo",
+      "pack(build todo)",
+      "pack(install)",
     ],
   };
-
   const OPERATION_FAMILIES = [
     {
       id: "apps",
@@ -197,7 +192,7 @@
       id: "automate",
       title: "Shortcuts & reactions",
       blurb: "Personal automation in the language engine",
-      examples: ["alias …", "macro …", "when … then …"],
+      examples: ["alias", "macro", "when, then"],
       status: "live",
     },
   ];
@@ -211,7 +206,7 @@
       `${NAME} is the orchestration language of My Space OS.`,
       VISION,
       PURPOSE,
-      "Every live module verb: notes(…), jobs(…), schedule(…), msl(…), scripts(set …), and the rest of ROUTE_REGISTRY, is a language operation. Shell Atlas maps them; Scripts runs long programs; platform services enforce runtime; host languages fill app logic when host(…) is wired.",
+      "Every live module verb: notes(…), jobs(…), schedule(…), msl(…), scripts(set …), and the rest of ROUTE_REGISTRY, is a language operation. Shell Atlas maps them; Runtime runs long programs; platform services enforce runtime; host languages fill app logic when host(…) is wired.",
     ];
   }
 
@@ -240,7 +235,6 @@
     rows.sort((a, b) => a.alias.localeCompare(b.alias));
     return rows;
   }
-
   return {
     NAME,
     SHORT,

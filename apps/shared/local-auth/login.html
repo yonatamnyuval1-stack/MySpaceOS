@@ -33,8 +33,10 @@
               <img class="login-myspace-logo" src="myspace-mark.png" alt="" width="22" height="22" />
               <span class="login-myspace-label" id="btn-myspace-label">Continue with My Space</span>
             </button>
-            <p class="login-myspace-hint" id="myspace-hint">Use your My Space account across apps</p>
-            <div class="login-divider" role="presentation"><span>or use an app account</span></div>
+            <p class="login-myspace-hint" id="myspace-hint">
+              My Space is your OS sign-in (desktop + apps). Continue uses that account here — not a separate password for this app.
+            </p>
+            <div class="login-divider" role="presentation"><span>or local account for this app only</span></div>
           </div>
 
           <div class="login-tabs" id="login-tabs">
@@ -68,7 +70,7 @@
               class="login-input"
               autocomplete="current-password"
               required
-              minlength="6"
+              minlength="8"
             />
 
             <label class="login-label hidden" for="login-password2" id="label-password2">Confirm password</label>
@@ -77,11 +79,11 @@
               id="login-password2"
               class="login-input hidden"
               autocomplete="new-password"
-              minlength="6"
+              minlength="8"
             />
 
             <label class="login-check" id="remember-wrap">
-              <input type="checkbox" id="login-remember" checked />
+              <input type="checkbox" id="login-remember" />
               <span>Keep me signed in</span>
             </label>
 
@@ -97,21 +99,13 @@
 
           <footer class="login-foot">
             <span class="login-foot-note"
-              >Continue with My Space asks once for access.</span
+              >My Space account = whole OS. App account below = this app only. Continue asks once to link them.</span
             >
-          </footer>
-        </div>
-      </main>
-    </div>
-
-    <div class="os-sheet hidden" id="os-sheet" role="dialog" aria-modal="true" aria-labelledby="os-sheet-title">
-      <div class="os-sheet-backdrop" id="os-sheet-backdrop"></div>
-      <div class="os-sheet-card">
-        <h2 id="os-sheet-title" class="os-sheet-title">
-          <img class="login-myspace-logo" src="myspace-mark.png" alt="" width="28" height="28" />
-          <span>My Space account</span>
         </h2>
-        <p class="os-sheet-sub" id="os-sheet-sub">Sign in to continue into this app</p>
+        <p class="os-sheet-sub" id="os-sheet-sub">Sign in to your My Space OS account, then approve this app</p>
+        <p class="os-guest-note hidden" id="os-guest-note" role="note">
+          First My Space account on this PC inherits current Guest desktop settings and local data into that profile.
+        </p>
         <div class="login-tabs" id="os-tabs">
           <button type="button" class="login-tab active" id="os-tab-signin">Sign in</button>
           <button type="button" class="login-tab" id="os-tab-register">Create account</button>
@@ -120,11 +114,11 @@
           <label class="login-label" for="os-username">Username</label>
           <input type="text" id="os-username" class="login-input" autocomplete="username" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9_]+" />
           <label class="login-label" for="os-password">Password</label>
-          <input type="password" id="os-password" class="login-input" autocomplete="current-password" required minlength="6" />
+          <input type="password" id="os-password" class="login-input" autocomplete="current-password" required minlength="8" />
           <label class="login-label hidden" for="os-password2" id="os-label-password2">Confirm password</label>
-          <input type="password" id="os-password2" class="login-input hidden" autocomplete="new-password" minlength="6" />
+          <input type="password" id="os-password2" class="login-input hidden" autocomplete="new-password" minlength="8" />
           <label class="login-check">
-            <input type="checkbox" id="os-remember" checked />
+            <input type="checkbox" id="os-remember" />
             <span>Keep me signed in on this PC</span>
           </label>
           <p class="login-error hidden" id="os-error" role="alert"></p>

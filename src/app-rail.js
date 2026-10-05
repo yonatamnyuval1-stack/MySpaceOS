@@ -20,22 +20,20 @@
     const v = I.t(key, vars);
     return v === key ? fill(fallback || key) : v;
   }
-
   const SERIES_DEFS = [
     { id: "ai", labelKey: "shell.series.ai", label: "AI", hintKey: "shell.series.ai.hint", hint: "Mind · Flow", mark: "atom-rose" },
     { id: "web", labelKey: "shell.series.web", label: "Web", hintKey: "shell.series.web.hint", hint: "Browser · Connect", mark: "atom-green" },
-    { id: "shell", labelKey: "shell.series.shell", label: "Shell", hintKey: "shell.series.shell.hint", hint: "Language atlas · Scripts runtime", mark: "atom-cyan" },
+    { id: "shell", labelKey: "shell.series.shell", label: "Shell", hintKey: "shell.series.shell.hint", hint: "Language atlas · Runtime", mark: "atom-cyan" },
     { id: "link", labelKey: "shell.series.link", label: "Link", hintKey: "shell.series.link.hint", hint: "MSL · Parts · Pulse · Resolve", mark: "atom-violet" },
     {
       id: "platform",
       labelKey: "shell.series.platform",
       label: "Platform",
       hintKey: "shell.series.platform.hint",
-      hint: "Files · Jobs · Scheduler · Themes · more",
+      hint: "Files, Jobs, Scheduler, Themes, more...",
       mark: "atom-white",
     },
   ];
-
   const APP_SERIES = {
     chat: "ai",
     mind: "ai",
@@ -263,10 +261,8 @@
     if (!container) return;
     container.replaceChildren();
     if (!apps.length) return;
-
     const token = renderToken;
     const active = activeTabInfo();
-
     for (const app of apps) {
       if (token !== renderToken) return;
       const focused = isFocusedApp(app, active);
@@ -278,14 +274,12 @@
       btn.title = app.name || app.id;
       btn.setAttribute("aria-label", app.name || app.id);
       btn.setAttribute("aria-current", focused ? "true" : "false");
-
       const iconWrap = document.createElement("span");
       iconWrap.className = "app-rail-icon";
       iconWrap.textContent = "…";
       btn.appendChild(iconWrap);
       btn.addEventListener("click", () => launch(app));
       container.appendChild(btn);
-
       const src = await resolveIconSrc(app);
       if (token !== renderToken) return;
       applyIcon(iconWrap, app, src);
@@ -297,11 +291,9 @@
     const allEl = document.getElementById("app-rail-all");
     const divider = document.getElementById("app-rail-recent-divider");
     if (!allEl) return;
-
     const recent = recentApps();
     const recentIds = new Set(recent.map((a) => a.id));
     const rest = desktopApps().filter((a) => !recentIds.has(a.id));
-
     if (recentEl) {
       await renderAppButtons(recentEl, recent);
     }
@@ -341,7 +333,6 @@
     menuEl.hidden = true;
     menuEl.setAttribute("role", "menu");
     document.body.appendChild(menuEl);
-
     menuEl.addEventListener("click", (e) => {
       const surf = e.target.closest("[data-surface]");
       const svc = e.target.closest("[data-service-action]");
@@ -405,7 +396,6 @@
     menu.style.left = `${Math.round(rect.right + gap)}px`;
     menu.style.top = `${Math.round(rect.top + rect.height / 2)}px`;
     menu.style.transform = "translateY(-50%)";
-
     requestAnimationFrame(() => {
       const m = menu.getBoundingClientRect();
       let top = rect.top + rect.height / 2 - m.height / 2;
@@ -421,10 +411,8 @@
     const menu = ensureSeriesMenu();
     menu.dataset.series = seriesDef.id;
     menu.replaceChildren();
-
     const label = tt(seriesDef.labelKey, seriesDef.label);
     const hint = tt(seriesDef.hintKey, seriesDef.hint || "");
-
     const head = document.createElement("div");
     head.className = "app-rail-series-menu-head";
     const title = document.createElement("span");
@@ -435,7 +423,6 @@
     sub.textContent = hint;
     head.append(title, sub);
     menu.appendChild(head);
-
     if (!services.length) {
       const empty = document.createElement("p");
       empty.className = "app-rail-series-menu-empty";
@@ -443,14 +430,11 @@
       menu.appendChild(empty);
       return;
     }
-
     const list = document.createElement("div");
     list.className = "app-rail-series-menu-list";
-
     for (const service of services) {
       const row = document.createElement("div");
       row.className = "app-rail-series-menu-item";
-
       const openBtn = document.createElement("button");
       openBtn.type = "button";
       openBtn.className = "app-rail-series-menu-open";
@@ -461,7 +445,6 @@
         service.tagline ||
         service.name ||
         "";
-
       const mark = document.createElement("img");
       mark.src = serviceMarkSrc(service);
       mark.alt = "";
@@ -471,7 +454,6 @@
       mark.addEventListener("error", () => {
         mark.src = MARK_SRC[service.mark] || MARK_SRC["atom-white"];
       });
-
       const text = document.createElement("span");
       text.className = "app-rail-series-menu-text";
       const name = document.createElement("strong");
@@ -487,7 +469,6 @@
       text.append(name, tag);
       openBtn.append(mark, text);
       row.appendChild(openBtn);
-
       const surfaces = Array.isArray(service.surfaces) ? service.surfaces : [];
       if (surfaces.length) {
         const surfRow = document.createElement("div");
@@ -504,10 +485,8 @@
         }
         row.appendChild(surfRow);
       }
-
       list.appendChild(row);
     }
-
     menu.appendChild(list);
   }
 
@@ -516,18 +495,15 @@
       closeSeriesMenu();
       return;
     }
-
     const catalog = await loadCatalog();
     const services = servicesForSeries(seriesDef.id, catalog);
     openSeriesId = seriesDef.id;
     paintSeriesMenu(seriesDef, services);
-
     document.querySelectorAll(".app-rail-series-btn").forEach((b) => {
       const on = b.dataset.seriesId === seriesDef.id;
       b.classList.toggle("is-open", on);
       b.setAttribute("aria-expanded", on ? "true" : "false");
     });
-
     const menu = ensureSeriesMenu();
     menu.hidden = false;
     positionSeriesMenu(anchor);
@@ -544,7 +520,6 @@
     if (!container) return;
     container.replaceChildren();
     closeSeriesMenu();
-
     for (const def of SERIES_DEFS) {
       const label = tt(def.labelKey, def.label);
       const hint = tt(def.hintKey, def.hint || "");
@@ -556,7 +531,6 @@
       btn.setAttribute("aria-label", tt("shell.rail.seriesAria", "{name} series", { name: label }));
       btn.setAttribute("aria-haspopup", "menu");
       btn.setAttribute("aria-expanded", "false");
-
       const img = document.createElement("img");
       img.src = MARK_SRC[def.mark] || MARK_SRC["atom-white"];
       img.alt = "";
@@ -564,16 +538,13 @@
       img.height = 28;
       img.draggable = false;
       btn.appendChild(img);
-
       btn.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
         void toggleSeriesMenu(def, btn);
       });
-
       container.appendChild(btn);
     }
-
     updateSeriesCurrentHint();
   }
 
@@ -612,7 +583,6 @@
     document.documentElement.classList.toggle("has-app-rail", visible);
     if (!visible) closeSeriesMenu();
   }
-
   let lastAppsSignature = "";
   let lastRecentSignature = "";
 
@@ -625,7 +595,6 @@
   async function refresh() {
     const rail = document.getElementById("app-rail");
     if (!rail) return;
-
     const visible = isWorkspaceOpen();
     setVisible(visible);
     if (!visible) {
@@ -636,13 +605,11 @@
       lastRecentSignature = "";
       return;
     }
-
     const sig = appsSignature();
     const recentSig = recentSignature();
     const servicesEl = document.getElementById("app-rail-services");
     const needsAppsRerender = sig !== lastAppsSignature || recentSig !== lastRecentSignature;
     const needsSeriesRerender = !servicesEl?.childElementCount;
-
     if (needsAppsRerender) {
       renderToken += 1;
       lastAppsSignature = sig;
@@ -651,15 +618,12 @@
     } else {
       updateAppActiveStates();
     }
-
     if (needsSeriesRerender) {
       renderSeries(servicesEl);
     } else {
       updateSeriesCurrentHint();
     }
-
     void loadCatalog();
-
     requestAnimationFrame(() => {
       updateScrollControls();
       requestAnimationFrame(updateScrollControls);
@@ -671,7 +635,6 @@
     const up = document.getElementById("app-rail-up");
     const down = document.getElementById("app-rail-down");
     if (!list || !up || !down) return;
-
     up.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -714,7 +677,6 @@
     window.MySpaceRecentApps = { record: recordRecent, list: readRecentIds };
     window.MySpaceAppRail = { refresh, updateScrollControls, scrollApps, closeSeriesMenu, recordRecent };
   }
-
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init, { once: true });
   } else {

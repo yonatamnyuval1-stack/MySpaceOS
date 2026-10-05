@@ -1,7 +1,3 @@
-const { deduplicateJsonSchemaRequiredArrays } = require("@composio/core");
-const { Tray } = require("electron/main");
-const { HandHeart, DotSquare, Square } = require("lucide-static");
-
 window.OsBridgePages = window.OsBridgePages || {};
 
 window.OsBridgePages.actions = (function () {
@@ -40,7 +36,6 @@ window.OsBridgePages.actions = (function () {
       `<option value="">All connected phones</option>`,
       ...devices.map((d) => `<option value="${esc(d.id)}">${esc(d.name || "Phone")}</option>`),
     ].join("");
-
     root.innerHTML = `
       <div class="hero-grid">
         <div class="card">
@@ -85,7 +80,6 @@ window.OsBridgePages.actions = (function () {
           </div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-head">
           <h2>Clipboard history</h2>
@@ -118,7 +112,6 @@ window.OsBridgePages.actions = (function () {
             : `<p class="muted">Recent clipboard items appear here. text and images from PC or phone.</p>`
         }
       </div>
-
       <div class="card">
         <h2>Recent</h2>
         ${
@@ -139,7 +132,6 @@ window.OsBridgePages.actions = (function () {
         }
       </div>
     `;
-
     root.querySelector("#btn-write-clip")?.addEventListener("click", async () => {
       try {
         const text = root.querySelector("#clip-area")?.value ?? "";
@@ -242,7 +234,6 @@ window.OsBridgePages.actions = (function () {
       }
     });
   }
-
   return {
     async mount(el) {
       root = el;

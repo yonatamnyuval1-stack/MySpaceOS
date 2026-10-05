@@ -792,11 +792,27 @@
     const drafting =
       !!state.creatingFolder || !!state.creatingFile || !!state.renaming;
     if (!root.folders.length && !root.files.length && !drafting) {
-      list.innerHTML = `<div class="tree-empty">
-        <p>${escapeHtml(tt("service.scripts.noScripts", "No programs yet."))}</p>
-        <p class="tree-empty-hint">${escapeHtml(
-          tt("service.scripts.treeEmptyHint", "Create a folder or a program to begin.")
+      list.innerHTML = `<div class="tree-empty" role="status">
+        <p class="tree-empty-title">${escapeHtml(
+          tt("service.scripts.emptyTitle", "No programs yet")
         )}</p>
+        <p class="tree-empty-hint">${escapeHtml(
+          tt(
+            "service.scripts.emptyBody",
+            "Write My Space Language programs here, then run them from the desktop or Session."
+          )
+        )}</p>
+        <div class="tree-empty-actions">
+          <button type="button" class="tree-empty-btn tree-empty-btn-primary" data-empty-action="new-program">
+            ${escapeHtml(tt("service.scripts.new", "New program"))}
+          </button>
+          <button type="button" class="tree-empty-btn" data-empty-action="new-folder">
+            ${escapeHtml(tt("service.scripts.newFolder", "New folder"))}
+          </button>
+          <button type="button" class="tree-empty-btn" data-empty-action="import-file">
+            ${escapeHtml(tt("service.scripts.importFile", "Import file…"))}
+          </button>
+        </div>
       </div>`;
       return;
     }
@@ -1825,6 +1841,28 @@
         Promise.resolve(importFolder()).catch((err) =>
           window.alert(err?.message || String(err))
         );
+        return;
+      }
+      const emptyAction = e.target.closest("[data-empty-action]");
+      if (emptyAction) {
+        e.preventDefault();
+        e.stopPropagation();
+        const action = emptyAction.getAttribute("data-empty-action");
+        if (action === "new-program") {
+          Promise.resolve(createNew()).catch((err) =>
+            window.alert(err?.message || String(err))
+          );
+        } else if (action === "new-folder") {
+          try {
+            createFolder();
+          } catch (err) {
+            window.alert(err?.message || String(err));
+          }
+        } else if (action === "import-file") {
+          Promise.resolve(importFile()).catch((err) =>
+            window.alert(err?.message || String(err))
+          );
+        }
         return;
       }
       const crumbRoot = e.target.closest("[data-crumb-root]");

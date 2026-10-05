@@ -19,14 +19,14 @@
     },
     {
       "id": "browser",
-      "name": "Browser",
+      "name": "My Space Browser",
       "tier": "major",
       "series": "web",
       "seriesLabel": "Web",
       "accent": "green",
       "mark": "atom-green",
       "action": "open-browser",
-      "tagline": "In-app browsing and unified search",
+      "tagline": "My Space Browser — search apps and the web",
       "summary": "Workspace web tabs, address bar, and My Space Browser: browse without leaving the shell.",
       "surfaces": [
         { "id": "home", "label": "Home", "hint": "My Space Browser" },
@@ -59,7 +59,7 @@
       "mark": "atom-cyan",
       "action": "open-shell",
       "tagline": "Atlas for My Space Language",
-      "summary": "Entry map for My Space Language: the OS orchestration language. Browse grammar (let, fn, if) and every live operation (notes(…), jobs(…), schedule(…), msl(…), …). Type on the desktop line or palette; author long programs in Scripts. Shell is not the language itself and not the Scripts runtime.",
+      "summary": "Entry map for My Space Language: the OS orchestration language. Browse grammar (let, fn, if) and every live operation (notes(…), jobs(…), schedule(…), msl(…), …). Type on the desktop line or palette; author long programs in Runtime. Shell is not the language itself and not the Runtime app.",
       "surfaces": [
         { "id": "overview", "label": "Overview", "hint": "Language, Scripts, Shell" },
         { "id": "language", "label": "Language", "hint": "My Space Language" },
@@ -69,17 +69,18 @@
     },
     {
       "id": "scripts",
-      "name": "Scripts",
+      "name": "Runtime",
       "tier": "major",
       "series": "shell",
       "seriesLabel": "Shell",
       "accent": "cyan",
       "mark": "atom-cyan",
       "action": "open-scripts",
-      "tagline": "Runtime for My Space Language programs",
-      "summary": "Save and run multi-line programs written in My Space Language (not a separate language). Scripts is the runtime/library; Shell is the atlas; platform services are what many operations call. Open from Platform → Scripts. Language: scripts(…).",
+      "tagline": "OS language & host tools",
+      "summary": "Runtime studio for My Space Language programs and host tools that become apps. Modes: Programs and Session. Shell is the atlas; this is the runner. Open from Platform → Runtime. Language: scripts(…).",
       "surfaces": [
-        { "id": "library", "label": "Library", "hint": "Saved programs" },
+        { "id": "programs", "label": "Programs", "hint": "Edit & run Language programs" },
+        { "id": "session", "label": "Session", "hint": "Language & host transcript" },
         { "id": "new", "label": "New", "hint": "Create a program" }
       ]
     },
@@ -180,7 +181,7 @@
       "mark": "atom-white",
       "action": "open-scheduler",
       "tagline": "OS time runtime: when work fires",
-      "summary": "Platform time contracts (not a desktop tile): active schedules, history, and create. Triggers: every / daily / in / at. Actions enqueue to Jobs by default (or run shell direct). Same store as schedule(…) in Shell and Scripts. Complements Jobs (compute) and Shell when (events). Shell: schedule(open) · schedule(list) · schedule(add every 1h …).",
+      "summary": "Platform time contracts (not a desktop tile): active schedules, history, and create. Triggers: every / daily / in / at. Actions enqueue to Jobs by default (or run shell direct). Same store as schedule(…) in Shell and Runtime. Complements Jobs (compute) and Shell when (events). Shell: schedule(open) · schedule(list) · schedule(add every 1h …).",
       "surfaces": [
         { "id": "active", "label": "Active", "hint": "Enabled schedules" },
         { "id": "all", "label": "All", "hint": "Including paused" },

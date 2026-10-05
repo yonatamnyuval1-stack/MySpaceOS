@@ -3,12 +3,6 @@ const path = require("path");
 const { app } = require("electron");
 const { reportLoadFailure, reportSaveFailure } = require("../resolve/report-helper");
 const profile = require("../myspace-profile");
-const { DEFAULT_MAX_WIDTH } = require("../ai/screen-capture");
-const { CheckCheck, Cctv, FoldHorizontal, DnaOff, BusFront, FlashlightOff, FileDiff } = require("lucide-static");
-const { Http2ServerRequest } = require("http2");
-const { normalizeFromBundled } = require("../apps/restcountries-client");
-const { createConnection } = require("net");
-
 const POOL_IDS = ["interactive", "shell", "background", "connect"];
 
 function dataPath() {
@@ -31,7 +25,6 @@ function defaultPools() {
     connect: { maxConcurrent: 10 },
   };
 }
-
 function defaultCapacity() {
   return {
     version: 2,

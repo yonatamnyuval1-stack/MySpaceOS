@@ -1,21 +1,13 @@
 ---
-description: Never put Node require/import in browser app.js (Runtime crash)
-globs: apps/**/app.js
+description: Never put Node require/import in renderer or browser app scripts
+globs: "{src/**/*.js,apps/**/*.js}"
 alwaysApply: true
 ---
-
-# Browser app.js — no Node requires (CRITICAL)
-
-Files under `apps/*/app.js` run in Electron **webview/renderer**, not Node.
-
-**NEVER** add anywhere near the top of these files (before or outside the IIFE):
-- `require("...")` — including `@composio/core`, `lucide-static`, `fs`, `path`, or any Node module
+# Renderer / browser JS  no Node requires (CRITICAL)
+Files under `src/*.js` and most `apps/**/*.js` run in Electron **webview/renderer**, not Node.
+**NEVER** add at the top of these files:
+- `require("...")` — including `lucide-static`, `@composio/core`, `electron`, `electron/main`, `fs`, `path`
 - `import ... from "..."`
-- Any line that references main-process code
-
-A single top-level `require` throws `require is not defined`, the IIFE never runs, and Runtime looks **empty with dead buttons** (data is usually still on disk — the UI just never loads).
-
-If you see a stray `require`/`import` at the top of `apps/scripts/app.js` or any `apps/*/app.js`, **delete that line immediately** before doing anything else.
-
-Use existing in-page APIs (`window.myApp`, DOM, shared browser scripts) instead.
-Do not "helpfully" import helpers from Node packages into these files.
+A single top-level `require` throws `require is not defined`. That script never runs. Symptoms: empty Runtime, dead buttons, broken shell language, broken OS Bridge, half-working desktop.
+If you see a stray `require`/`import` at the top of `src/shell-commands.js`, `apps/scripts/app.js`, or any browser script, **delete that line immediately**.
+`npm start` runs `scripts/check-browser-apps.js`, which auto-strips known bad injects and fails on remaining top-level requires.

@@ -2,16 +2,13 @@ const fs = require("fs");
 const path = require("path");
 const { app } = require("electron");
 const identity = require("./myspace-identity");
-
 const INSTALL_WIDE_FILES = [
   "mail-oauth.json", 
   "updates-state.json", 
 ];
-
 const INSTALL_WIDE_DIRS = [
   "myspace-identity", 
 ];
-
 const PROFILE_FILES = [
   "user-config.json",
   "app-settings.json",
@@ -19,7 +16,6 @@ const PROFILE_FILES = [
   "notifications-prefs.json",
   "shell-engine.json",
 ];
-
 const SERVICE_FILES = [
   "files-service.json",
   "jobs-platform.json",
@@ -141,16 +137,42 @@ async function ensureProfileDir(userId) {
 }
 
 async function copyIfMissing(src, dest) {
+  return copyIfBetter(src, dest, { onlyMissing: true });
+}
+
+async function fileSizeOrNeg(filePath) {
   try {
-    await fs.promises.mkdir(path.dirname(dest), { recursive: true });
-    await fs.promises.copyFile(src, dest, fs.constants.COPYFILE_EXCL);
-    return true;
-  } catch (err) {
-    if (err.code === "EEXIST" || err.code === "ENOENT") {
-      return false;
-    }
-    throw err;
+    return (await fs.promises.stat(filePath)).size;
+  } catch {
+    return -1;
   }
+}
+async function copyIfBetter(src, dest, opts = {}) {
+  let srcSize = 0;
+  try {
+    const srcStat = await fs.promises.stat(src);
+    if (!srcStat.isFile() || srcStat.size <= 0) return false;
+    srcSize = srcStat.size;
+  } catch {
+    return false;
+  }
+
+  const destSize = await fileSizeOrNeg(dest);
+  if (opts.onlyMissing) {
+    if (destSize >= 0) return false;
+  } else if (destSize >= srcSize) {
+    return false;
+  }
+
+  await fs.promises.mkdir(path.dirname(dest), { recursive: true });
+  if (destSize >= 0) {
+    try {
+      await fs.promises.copyFile(dest, `${dest}.pre-heal.bak`);
+    } catch {
+    }
+  }
+  await fs.promises.copyFile(src, dest);
+  return true;
 }
 
 async function copyDirIfMissing(src, dest) {
@@ -168,6 +190,47 @@ async function copyDirIfMissing(src, dest) {
     await fs.promises.cp(src, dest, { recursive: true, force: false, errorOnExist: true });
     return true;
   }
+}
+
+async function healLocalAuthAppData(userId) {
+  const id = String(userId || "").trim();
+  if (!id) return [];
+  const root = app.getPath("userData");
+  const dir = profileDir(id);
+  if (!dir) return [];
+  const copied = [];
+  for (const appName of LOCAL_AUTH_APP_DIRS) {
+    const destPath = path.join(dir, appName, "users", id, "data.json");
+    const destSize = await fileSizeOrNeg(destPath);
+    const candidates = [];
+    for (const base of [root, dir]) {
+      const usersDir = path.join(base, appName, "users");
+      try {
+        const entries = await fs.promises.readdir(usersDir, { withFileTypes: true });
+        for (const ent of entries) {
+          if (!ent.isDirectory()) continue;
+          const candidate = path.join(usersDir, ent.name, "data.json");
+          const size = await fileSizeOrNeg(candidate);
+          if (size > 0) candidates.push({ path: candidate, size });
+        }
+      } catch {
+      }
+      const flat = path.join(base, `${appName}.json`);
+      const flatSize = await fileSizeOrNeg(flat);
+      if (flatSize > 0) candidates.push({ path: flat, size: flatSize });
+    }
+
+    if (!candidates.length) continue;
+    candidates.sort((a, b) => b.size - a.size);
+    const best = candidates[0];
+    if (best.size > destSize) {
+      if (await copyIfBetter(best.path, destPath)) {
+        copied.push(`${appName}/users/${id}/data.json`);
+      }
+    }
+  }
+
+  return copied;
 }
 
 async function readMigrateMarker() {
@@ -193,47 +256,41 @@ async function migrateInstallDataToProfile(userId) {
   const already = markerData.migratedProfiles.includes(id);
   const copied = [];
   const root = app.getPath("userData");
-
   if (!already) {
     for (const candidate of legacyUserConfigCandidates()) {
       const dest = path.join(dir, "user-config.json");
-      if (await copyIfMissing(candidate, dest)) {
+      if (await copyIfBetter(candidate, dest)) {
         copied.push("user-config.json");
         break;
       }
     }
-
     for (const name of PROFILE_FILES) {
       if (name === "user-config.json") continue;
       const src = path.join(root, name);
       const dest = path.join(dir, name);
-      if (await copyIfMissing(src, dest)) copied.push(name);
+      if (await copyIfBetter(src, dest)) copied.push(name);
     }
-
     markerData.migratedProfiles.push(id);
   }
-
-  let servicesCopied = false;
-  if (!markerData.servicesMigratedTo) {
-    for (const name of SERVICE_FILES) {
-      const src = path.join(root, name);
-      const dest = path.join(dir, name);
-      if (await copyIfMissing(src, dest)) copied.push(name);
-    }
-    const dirs = [...new Set([...SERVICE_DIRS, ...LOCAL_AUTH_APP_DIRS])];
-    for (const name of dirs) {
-      const src = path.join(root, name);
-      const dest = path.join(dir, name);
-      if (await copyDirIfMissing(src, dest)) copied.push(`${name}/`);
-    }
-    markerData.servicesMigratedTo = id;
-    servicesCopied = true;
+  for (const name of [...PROFILE_FILES, ...SERVICE_FILES]) {
+    const src = path.join(root, name);
+    const dest = path.join(dir, name);
+    if (await copyIfBetter(src, dest)) copied.push(name);
   }
-
-  if (!already || servicesCopied) {
+  const dirs = [...new Set([...SERVICE_DIRS, ...LOCAL_AUTH_APP_DIRS])];
+  for (const name of dirs) {
+    const src = path.join(root, name);
+    const dest = path.join(dir, name);
+    if (await copyDirIfMissing(src, dest)) copied.push(`${name}/`);
+  }
+  const localAuthCopied = await healLocalAuthAppData(id);
+  copied.push(...localAuthCopied);
+  if (!markerData.servicesMigratedTo) {
+    markerData.servicesMigratedTo = id;
+  }
+  if (!already || copied.length) {
     await writeMigrateMarker(markerData);
   }
-
   return {
     ok: true,
     profileDir: dir,
@@ -248,6 +305,17 @@ async function onIdentitySignedIn(user) {
   return migrateInstallDataToProfile(user.id);
 }
 
+async function guestInheritStatus() {
+  const markerData = await readMigrateMarker();
+  if (markerData.servicesMigratedTo) {
+    return {
+      willInheritGuestData: false,
+      inheritedBy: markerData.servicesMigratedTo,
+    };
+  }
+  return { willInheritGuestData: true, inheritedBy: null };
+}
+
 function notifyProfileSwitched() {
   const hooks = [];
   const tryHook = (loader, method) => {
@@ -260,7 +328,6 @@ function notifyProfileSwitched() {
       console.error(`Failed to load or execute hook for method ${method}.`, err);
     }
   };
-
   tryHook(() => require("./apps/profiles-ipc"), "lockVaultForProfileSwitch");
   tryHook(() => require("./jobs/engine"), "reloadForProfileSwitch");
   tryHook(() => require("./scheduler/engine"), "reloadForProfileSwitch");
@@ -273,7 +340,6 @@ function notifyProfileSwitched() {
     return null;
   })));
 }
-
 module.exports = {
   INSTALL_WIDE_FILES,
   INSTALL_WIDE_DIRS,
@@ -290,6 +356,7 @@ module.exports = {
   ensureProfileDir,
   migrateInstallDataToProfile,
   onIdentitySignedIn,
+  guestInheritStatus,
   notifyProfileSwitched,
   legacyUserConfigCandidates,
 };

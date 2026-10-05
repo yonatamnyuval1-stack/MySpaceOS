@@ -522,9 +522,13 @@ async function sendMessage(args = {}) {
   }
 
   if (!result?.ok) {
+    const raw = String(result?.error || "Mind request failed");
+    const friendly = /ollama|gemini key|mind → setup|budget|provider/i.test(raw)
+      ? raw
+      : `Mind request failed: ${raw}`;
     const errMsg = normalizeMessage({
       role: "assistant",
-      content: `Error: ${result?.error || "Mind request failed"}`,
+      content: friendly,
       createdAt: nowIso(),
     });
     conv.messages.push(errMsg);
@@ -532,7 +536,7 @@ async function sendMessage(args = {}) {
     save();
     return {
       ok: false,
-      error: result?.error || "Mind request failed",
+      error: friendly,
       conversation: conv,
     };
   }

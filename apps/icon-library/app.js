@@ -1,7 +1,6 @@
 (() => {
   const Data = window.IconLibraryData;
   const api = () => window.myApp;
-
   const state = {
     pack: "all",
     query: "",
@@ -13,7 +12,6 @@
     stroke: 2,
     color: "#e8f0ea",
   };
-
   const $ = (id) => document.getElementById(id);
 
   function toast(msg) {
@@ -196,18 +194,15 @@
       renderGrid();
       publishFacts();
     });
-
     $("btn-favorites-only")?.addEventListener("click", () => {
       state.favoritesOnly = !state.favoritesOnly;
       $("btn-favorites-only")?.classList.toggle("is-active", state.favoritesOnly);
       renderGrid();
     });
-
     $("btn-about")?.addEventListener("click", () => {
       $("about-note").textContent = Data.ATTRIBUTION || "";
       $("about-dialog")?.showModal();
     });
-
     $("ctrl-size")?.addEventListener("input", (e) => {
       state.size = Number(e.target.value) || 48;
       renderPreview();
@@ -220,7 +215,6 @@
       state.color = e.target.value || "#e8f0ea";
       renderPreview();
     });
-
     $("btn-copy-svg")?.addEventListener("click", () => {
       const icon = Data.getById(state.selectedId);
       if (!icon) return;
@@ -247,11 +241,6 @@
       renderPreview();
       publishFacts();
     });
-
-    $("btn-ai")?.addEventListener("click", () => {
-      toast("AI icon generation comes next");
-    });
-
     const mark = Data.getById("sparkles") || Data.getById("house") || Data.ICONS[0];
     if (mark && $("brand-mark")) {
       $("brand-mark").innerHTML = Data.toSvg(mark, { size: 22, strokeWidth: 2 });
@@ -276,7 +265,6 @@
     if (first) selectIcon(first);
     else publishFacts();
   }
-
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {

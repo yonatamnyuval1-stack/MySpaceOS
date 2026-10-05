@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const net = require("net");
 const os = require("os");
+const crypto = require("crypto");
 const { exec, spawn } = require("child_process");
 const { promisify } = require("util");
 const { app, clipboard } = require("electron");
@@ -62,12 +63,14 @@ const TAILSCALE_PATHS = [
 const WINRS_PATH = path.join(process.env.WINDIR || "C:\\Windows", "System32", "winrs.exe");
 
 const ENABLE_SCRIPTS = {
-  rdp: `# Run once on TARGET PC as Administrator: enables Remote Desktop (no extra app install)
+  rdp: `# SECURITY: opens Remote Desktop (firewall) on this PC.
+# Run once on TARGET PC as Administrator only if you trust your network.
 Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -Value 0
 Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'
 Write-Host 'RDP enabled. Note: Windows Home cannot accept incoming RDP.'`,
 
-  winrm: `# Run on TARGET PC as Administrator
+  winrm: `# SECURITY: enables WinRM + firewall on this PC (Live View).
+# Run on TARGET PC as Administrator only if you trust your network.
 Enable-PSRemoting -Force -SkipNetworkProfileCheck
 Set-Item WSMan:\\localhost\\Service\\Auth\\Basic -Value $true -Force
 Set-Item WSMan:\\localhost\\Service\\AllowUnencrypted -Value $true -Force
@@ -77,18 +80,22 @@ Start-Service WinRM
 Set-Service WinRM -StartupType Automatic
 Write-Host 'WinRM ready on port 5985'`,
 
-  ssh: `# Run once on TARGET PC as Administrator: installs OpenSSH Server
+  ssh: `# SECURITY: installs OpenSSH Server and opens port 22.
+# Run once on TARGET PC as Administrator only if you trust your network.
 Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 Start-Service sshd
 Set-Service -Name sshd -StartupType Automatic
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 Write-Host 'SSH server running on port 22'`,
 
-  client: `# Run on THIS PC as Administrator: allows connecting to other PCs
+  client: `# SECURITY: sets TrustedHosts=* on THIS PC (WinRM client trusts any host).
+# Prefer listing specific IPs instead of * when you can.
+# Run on YOUR My Space computer as Administrator only after opt-in in Remote Hub.
 Set-Item WSMan:\\localhost\\Client\\TrustedHosts -Value '*' -Force
-Write-Host 'This PC can now connect via WinRM to other machines on your network.'`,
+Write-Host 'TrustedHosts=* set. This PC can connect via WinRM to other machines on your network.'`,
 
-  all: `# Run on TARGET PC as Administrator: enables RDP + WinRM + OpenSSH (built-in Windows only)
+  all: `# SECURITY: enables RDP + WinRM + OpenSSH (firewall) on TARGET PC.
+# Run as Administrator only if you trust your network.
 Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -Value 0
 Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'
 Enable-PSRemoting -Force -SkipNetworkProfileCheck
@@ -109,8 +116,11 @@ Write-Host 'Done. Live View needs WinRM (5985). RDP uses 3389. Full control uses
 # STEP 4: On TARGET PC: PowerShell as Administrator:
 #   cd C:\\path\\to\\agent
 #   .\\install.ps1
-# STEP 5: In Remote Hub click Control on that machine
-Write-Host 'Agent listens on port 8765. Use Remote Hub -> Control to connect.'`,
+# STEP 5: When prompted, answer Y only if you want LAN + firewall (required for Control from another PC).
+#         Answer N to keep the agent on localhost only.
+# STEP 6: Copy the Agent token printed by install.ps1 into Remote Hub → machine → Agent token
+# STEP 7: In Remote Hub click Control on that machine
+Write-Host 'Agent install asks before opening firewall / binding 0.0.0.0. Token is in agent-config.json.'`,
 };
 
 function dataPath() {
@@ -146,6 +156,7 @@ function normalizeMachine(raw) {
     wolPort: Math.min(65535, Math.max(1, parseInt(raw.wolPort, 10) || 9)),
     psUser: String(raw.psUser || "").trim(),
     customCommand: String(raw.customCommand || "").trim(),
+    agentToken: String(raw.agentToken || "").trim(),
     notes: String(raw.notes || "").trim(),
     favorite: Boolean(raw.favorite),
     tags: Array.isArray(raw.tags) ? raw.tags.map(String) : [],
@@ -940,7 +951,29 @@ function getAgentDir() {
 }
 
 const AGENT_DEFAULT_PORT = 8765;
-const AGENT_DEFAULT_TOKEN = "myspace";
+
+function agentConfigPath() {
+  return path.join(getAgentDir(), "agent-config.json");
+}
+
+function ensureLocalAgentToken() {
+  const configPath = agentConfigPath();
+  try {
+    const cfg = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    const existing = String(cfg?.token || "").trim();
+    if (existing && existing !== "myspace") return existing;
+  } catch {
+    /* create below */
+  }
+  const token = crypto.randomBytes(24).toString("base64url");
+  fs.mkdirSync(path.dirname(configPath), { recursive: true });
+  fs.writeFileSync(
+    configPath,
+    JSON.stringify({ token, createdAt: new Date().toISOString() }, null, 2),
+    "utf8"
+  );
+  return token;
+}
 
 async function probeAgent(args) {
   const host = String(args?.host || "").trim();
@@ -955,9 +988,9 @@ async function probeAgent(args) {
   let hint = "";
   if (!agentPortOpen) {
     hint =
-      "Agent not running. Copy the agent folder to the target PC and run install.ps1 as Administrator (Enable access → Remote Agent).";
+      "Agent not running. Copy the agent folder to the target PC and run install.ps1 as Administrator (Enable access → Remote Agent). Paste the printed Agent token into the machine settings.";
   } else {
-    hint = "Agent ready: full mouse and keyboard control.";
+    hint = "Agent port open. Connect with the Agent token from install.ps1 / agent-config.json.";
   }
 
   return {
@@ -968,7 +1001,6 @@ async function probeAgent(args) {
     latencyMs: ping.ms,
     agentReady: agentPortOpen,
     ready: agentPortOpen,
-    token: AGENT_DEFAULT_TOKEN,
     hint,
   };
 }
@@ -996,8 +1028,19 @@ async function startLocalAgent() {
       error: "Agent dependencies missing. Run: cd apps/remote-hub/agent && npm install",
     };
   }
-  spawn("node", [server], { cwd: dir, detached: true, stdio: "ignore", windowsHide: true }).unref();
-  return { ok: true, message: `Agent starting on port ${AGENT_DEFAULT_PORT}` };
+  const token = ensureLocalAgentToken();
+  spawn("node", [server], {
+    cwd: dir,
+    detached: true,
+    stdio: "ignore",
+    windowsHide: true,
+    env: { ...process.env, RH_AGENT_TOKEN: token },
+  }).unref();
+  return {
+    ok: true,
+    message: `Agent starting on port ${AGENT_DEFAULT_PORT}. Token saved in agent-config.json (not logged).`,
+    token,
+  };
 }
 
 async function captureRemoteScreen(args) {

@@ -129,7 +129,7 @@
     P("desktop", "Desktop & windows", "Layout, pins, focus, and launching", ["desktop", "ui"], [
       kicker("Start"),
       p(
-        "The desktop is the hub surface: wallpaper, pinned apps, running My Space windows, and a command line reachable from empty space. Think of it as your always-on control plane. The taskbar bell opens Notifications; Connect (Mail) opens the web-app catalog and My Space Browser."
+        "The desktop is the hub surface: wallpaper, pinned apps, running My Space windows, and a command line reachable from empty space. Think of it as your always-on control plane. The taskbar bell opens Notifications; Connect opens the web-app catalog (Gmail and more) and My Space Browser."
       ),
       h2("Launch & focus"),
       code([
@@ -1288,7 +1288,7 @@
       ]),
       h2("Practice"),
       ol([
-        "Confirm the event actually fires (e.g. create a Drift event and watch).",
+        "Confirm the event actually fires.",
         "Start with notify only: prove the trigger before adding work.",
         "Escalate to one silent verb, then a small macro if needed.",
         "Remove unused rules promptly: every rule is permanent load.",
@@ -1305,17 +1305,21 @@
   );
 
   add(
-    P("scripts-app", "Scripts app", "Runtime for My Space Language programs", ["automation", "scripts", "language"], [
-      kicker("Scripts"),
+    P("scripts-app", "Runtime (Scripts)", "OS studio for Language programs and host tools", ["automation", "scripts", "language", "runtime"], [
+      kicker("Runtime"),
       p(
-        "Scripts stores and runs named multi-line programs written in My Space Language. It is the language runtime/library — not a second language. Use Scripts when a ritual is longer than a comfortable macro, needs structure, or you want a reusable program you edit visually."
+        "Runtime (app id scripts) is the studio where you write and run My Space Language programs, and where host tools (Node/Python) for user-built apps are meant to surface. It is not a general system terminal: it is scoped to OS orchestration and turning code into My Space apps."
+      ),
+      p(
+        "Modes: Programs (edit/run named Language programs) and Session (transcript of Language and host-related output). Shell Atlas remains the map; the desktop > line remains quick entry."
       ),
       h2("How it fits"),
       ul([
         "My Space Language: the grammar and operations you write",
-        "Scripts: where long programs live and execute",
+        "Runtime / Scripts: where long programs live and execute",
         "Shell: atlas/map of the language (Platform → Shell)",
-        "Scheduler / Jobs: time and capacity around language runs (schedule(…), jobs(…))",
+        "Host: node/python tools under tools/<app>/ for app logic",
+        "Scheduler / Jobs: time and capacity around language runs (schedule(), jobs())",
       ]),
       h2("When to use Scripts vs macros"),
       table(
@@ -1323,7 +1327,7 @@
         [
           ["Alias", "One command, memorable name", "No chaining"],
           ["Macro", "Short rituals (≈2–6 steps)", "Hard to edit long strings"],
-          ["Script", "Long procedures, weekly packs", "One program scope; test before shipping"],
+          ["Program (Runtime)", "Long procedures, weekly packs", "One program scope; test before shipping"],
           ["When", "Event-driven reactions", "Not for manual rituals"],
         ]
       ),
@@ -1622,10 +1626,9 @@
       ]),
       tip("Schedule a monthly backup(export) alias if this desktop holds real work."),
       warn("Prefer backup(import) over hand-copying while My Space is running: mid-write JSON can corrupt."),
-      note("help backup · docs(open backups)"),
+      note("help backup, docs(open backups)"),
     ])
   );
-
   add(
     P("recipe-morning", "Recipe, Morning", "Start the day in one macro", ["recipes"], [
       kicker("Recipes"),
@@ -1664,9 +1667,8 @@
       note("If morning feels slow, trim to today(list); drift(list today) and run the rest on demand."),
     ])
   );
-
   add(
-    P("recipe-focus", "Recipe · Focus block", "Timer + quiet desktop", ["recipes"], [
+    P("recipe-focus", "Recipe, Focus block", "Timer + quiet desktop", ["recipes"], [
       kicker("Recipes"),
       p(
         "Focus blocks work when the desktop stops competing for attention. Close noise, start a named timer, and leave one breadcrumb task for the end."
@@ -1695,7 +1697,6 @@
       warn("Do not put vault(copy …) inside an auto-start focus macro on shared machines."),
     ])
   );
-
   add(
     P("recipe-dev", "Recipe, Dev session", "Projects, drift, and lexicon", ["recipes"], [
       kicker("Recipes"),
@@ -1725,7 +1726,6 @@
       note("Ambiguous project names → pass a longer Builds title or open Builds UI once."),
     ])
   );
-
   add(
     P("recipe-travel", "Recipe, Travel planning", "Geo + translate + contacts", ["recipes"], [
       kicker("Recipes"),
@@ -1761,7 +1761,6 @@
       note("Detect + flip behavior: if source equals target, Translate may flip: override with explicit to:."),
     ])
   );
-
   add(
     P("recipe-eod", "Recipe, End of day", "Review, then clear the slate", ["recipes"], [
       kicker("Recipes"),
@@ -1779,7 +1778,6 @@
       warn("today(clear done) removes completed tasks: keep it out of morning scripts."),
     ])
   );
-
   add(
     P("recipe-weekly", "Recipe · Weekly review", "Clear, reflect, rescan", ["recipes"], [
       kicker("Recipes"),
@@ -1815,7 +1813,6 @@
       warn("today(clear done) is intentional cleanup: do not put it in morning macros by accident."),
     ])
   );
-
   add(
     P("recipe-remote", "Recipe, Remote day", "Machines, checks, and wake", ["recipes"], [
       kicker("Recipes"),
@@ -1853,7 +1850,6 @@
       tip("Keep machine display names short and unique so remote(check Office) never ambiguously matches."),
     ])
   );
-
   add(
     P("command-index", "Command index", "Jump table from app → handbook page → live help", ["reference", "commands"], [
       kicker("Reference"),
@@ -1914,7 +1910,6 @@
       note("Pi Digits / Icon Library / Welcome / Info remain UI-first. help lists every commands:true app automatically."),
     ])
   );
-
   add(
     P("settings-index", "Settings catalog", "What each app can configure", ["data", "settings"], [
       kicker("Data"),
@@ -1967,7 +1962,6 @@
       p("settings, settings-complete, i18n-languages, app-ui-language, accounts-local-auth."),
     ])
   );
-
   add(
     P("glossary", "Glossary", "Shared vocabulary", ["reference"], [
       kicker("Reference"),
@@ -1992,7 +1986,6 @@
       ),
     ])
   );
-
   add(
     P("faq", "FAQ", "Common questions", ["reference"], [
       kicker("Reference"),
@@ -2010,7 +2003,6 @@
       p("Click Restart & Update, then help <app>."),
     ])
   );
-
   add(
     P("troubleshooting", "Troubleshooting", "Symptom → cause → fix", ["reference"], [
       kicker("Reference"),
@@ -2029,7 +2021,6 @@
       tip("docs(search error) often lands near shell-errors."),
     ])
   );
-
   add(
     P("changelog", "Changelog highlights", "Docs-relevant shell & protocol evolution", ["reference", "updates"], [
       kicker("Reference"),
@@ -2037,7 +2028,7 @@
         "2026-09: Docs expansion + multi-language OS: en/he/ar/fr/ru/es display languages, RTL for he/ar, per-app uiLanguage (system default), legacy language → uiLanguage migration; handbook pages i18n-languages / app-ui-language / accounts-local-auth",
         "0.1.52: Chat app: ChatGPT-style AI history powered by Mind",
         "0.1.51: Mind by task: Quick / Everyday / Deep model tiers",
-        "0.1.50: Mind platform: OS AI runtime (Gemini + optional Ollama), mind(…), MSL mind.ask / mind.status",
+        "0.1.50: Mind platform: OS AI runtime, mind, MSL mind.ask / mind.status",
         "0.1.49: Jobs Connect boost pool",
         "0.1.48: Jobs capacity pools (Interactive / Shell / Background)",
         "0.1.47: Jobs becomes the OS runtime for launches & shell",
@@ -2076,7 +2067,6 @@
       if (PAGES[pid]) PAGES[pid].group = g.id;
     });
   });
-
   window.DOCS_PAGES = PAGES;
   window.DOCS_PAGE_LIST = Object.keys(PAGES).map((id) => PAGES[id]);
 })();

@@ -1,7 +1,6 @@
 const { executeTool } = require("./tools-registry");
 const { needsConfirm, requestActionConfirm, describeAction } = require("./action-confirm");
 const { resolveCountryRef, isKnownCountryName } = require("./country-resolve");
-
 const APP_WORD_ALIASES = {
   שעון: "clock",
   clock: "clock",
@@ -43,7 +42,6 @@ const APP_WORD_ALIASES = {
   maps: "world-maps",
   "world maps": "world-maps",
 };
-
 const TICKER_STOP = new Set([
   "OPEN",
   "SHOW",
@@ -64,7 +62,6 @@ const TICKER_STOP = new Set([
   "RUN",
   "GET",
 ]);
-
 function lastUserText(messages) {
   if (!Array.isArray(messages)) return "";
   for (let i = messages.length - 1; i >= 0; i--) {
@@ -72,7 +69,6 @@ function lastUserText(messages) {
   }
   return "";
 }
-
 function cleanTicker(raw) {
   const sym = String(raw || "")
     .trim()
@@ -87,21 +83,18 @@ function cleanTicker(raw) {
 
 function extractCountry(text) {
   const t = String(text || "").trim();
-
   let   m = t.match(/run\s+geography\s*\(\s*([^)]+)\s*\)/i);
   if (m) {
     const inner = m[1].replace(/^(?:explore|learn|country)\s*:\s*/i, "").trim();
     const code = resolveCountryRef(inner);
     if (code) return code;
   }
-
   m = t.match(/geography\s*\(\s*([^)]+)\s*\)/i);
   if (m) {
     const inner = m[1].replace(/^(?:explore|learn|country)\s*:\s*/i, "").trim();
     const code = resolveCountryRef(inner);
     if (code) return code;
   }
-
   m = t.match(
     /(?:geography|גאוגרפיה|מדינה|country)\s*(?::|of\s+|של\s+)?\s*([A-Za-z][A-Za-z\s\-']{1,40})$/i
   );
@@ -109,7 +102,6 @@ function extractCountry(text) {
     const code = resolveCountryRef(m[1].trim());
     if (code) return code;
   }
-
   m = t.match(
     /(?:תראה|הצג|פתח|show|open|view)\s+(?:me\s+|לי\s+)?(?:את\s+|the\s+)?(?:המדינה\s+|country\s+)?([A-Za-z][A-Za-z\s\-']{1,40})$/i
   );
@@ -120,35 +112,27 @@ function extractCountry(text) {
       if (code && (isKnownCountryName(candidate) || candidate.length <= 3)) return code;
     }
   }
-
   return null;
 }
 
 function extractTicker(text) {
   const t = String(text || "").trim();
-
   let m = t.match(/run\s+stocks?\s*\(\s*([A-Za-z0-9.^=-]{1,12})\s*\)/i);
   if (m) return cleanTicker(m[1]);
-
   m = t.match(
     /(?:תראה|הצג|פתח)\s+(?:לי\s+)?(?:את\s+)?(?:המניה\s+)([A-Za-z][A-Za-z0-9.]{0,11})\b/i
   );
   if (m) return cleanTicker(m[1]);
-
   m = t.match(
     /(?:show|view|open)\s+(?:me\s+)?(?:the\s+)?(?:stock\s+)([A-Za-z][A-Za-z0-9.]{0,11})\b/i
   );
   if (m) return cleanTicker(m[1]);
-
   m = t.match(/\b(?:stock|ticker|symbol)\b\s*(?:of\s+|for\s+|:=\s*)?([A-Za-z][A-Za-z0-9.]{0,11})\b/i);
   if (m) return cleanTicker(m[1]);
-
   m = t.match(/\bמניה\b\s*(?:של\s+)?([A-Za-z][A-Za-z0-9.]{0,11})\b/i);
   if (m) return cleanTicker(m[1]);
-
   m = t.match(/\b([A-Za-z][A-Za-z0-9.]{0,11})\b\s*(?:\bstock\b|\bמניה\b)/i);
   if (m) return cleanTicker(m[1]);
-
   return null;
 }
 
@@ -183,7 +167,6 @@ function hasVerb(text, verbs) {
 function parseLocalIntent(text) {
   const t = String(text || "").trim();
   if (!t || t.length > 240) return null;
-
   const country = extractCountry(t);
   if (country) {
     return {
@@ -192,7 +175,6 @@ function parseLocalIntent(text) {
       steps: [{ name: "shell_open_country", arguments: { country } }],
     };
   }
-
   const ticker = extractTicker(t);
   if (ticker) {
     return {
@@ -206,7 +188,6 @@ function parseLocalIntent(text) {
       ],
     };
   }
-
   if (hasVerb(t, ["close", "סגור"])) {
     if (/(?:^|\s)(?:all|הכל|הכול)(?=\s|$)/i.test(t) || /סגור\s+(?:את\s+)?הכל/.test(t)) {
       return {
@@ -224,7 +205,6 @@ function parseLocalIntent(text) {
       };
     }
   }
-
   if (hasVerb(t, ["focus"]) || /(?:^|\s)מקד(?=\s|$)/.test(t)) {
     const app = extractAppRef(t, ["focus", "מקד"]);
     if (app) {
@@ -235,7 +215,6 @@ function parseLocalIntent(text) {
       };
     }
   }
-
   if (hasVerb(t, ["open", "פתח", "הפעל"])) {
     const app = extractAppRef(t, ["open", "פתח", "הפעל"]);
     if (app) {
@@ -253,7 +232,6 @@ function parseLocalIntent(text) {
       };
     }
   }
-
   if (/(?:הצג|show)\s+(?:את\s+)?(?:ה)?(?:desktop|שולחן)/i.test(t) || /^desktop$/i.test(t)) {
     return {
       autoApprove: true,
@@ -261,7 +239,6 @@ function parseLocalIntent(text) {
       steps: [{ name: "shell_run_command", arguments: { command: "desktop" } }],
     };
   }
-
   return null;
 }
 
@@ -269,12 +246,10 @@ async function runLocalIntent(plan, getMainWindow) {
   if (!plan?.steps?.length) return null;
   const ctx = { getMainWindow };
   const toolsUsed = [];
-
   for (const step of plan.steps) {
     const name = step.name;
     const args = step.arguments || {};
     let result;
-
     if (needsConfirm(name) && !plan.autoApprove) {
       const decision = await requestActionConfirm(getMainWindow, { name, arguments: args });
       if (!decision.approved) {
@@ -291,7 +266,6 @@ async function runLocalIntent(plan, getMainWindow) {
     } else {
       result = await executeTool(name, args, ctx);
     }
-
     toolsUsed.push({
       name,
       arguments: args,
@@ -309,7 +283,6 @@ async function runLocalIntent(plan, getMainWindow) {
       label: describeAction(name, args),
       declined: !!result?.declined,
     });
-
     if (result?.declined) {
       return {
         ok: true,
@@ -327,7 +300,6 @@ async function runLocalIntent(plan, getMainWindow) {
       };
     }
   }
-
   return {
     ok: true,
     content: plan.reply || "Done.",
@@ -353,8 +325,18 @@ function isLabInfraError(err) {
     msg.includes("402") ||
     msg.includes("403") ||
     msg.includes("econnrefused") ||
+    msg.includes("econnreset") ||
+    msg.includes("etimedout") ||
+    msg.includes("enotfound") ||
     msg.includes("fetch failed") ||
-    msg.includes("network")
+    msg.includes("network") ||
+    msg.includes("api key missing") ||
+    msg.includes("timed out") ||
+    msg.includes("aborted") ||
+    msg.includes("aborterror") ||
+    msg.includes("not reachable") ||
+    msg.includes("isn't running") ||
+    msg.includes("isn’t running")
   );
 }
 
@@ -363,18 +345,46 @@ function friendlyLabError(err) {
   if (/billing/i.test(raw)) {
     return (
       "Model Lab billing isn't available right now. " +
-      "Clear actions still work offline: try: “open stocks”, “תראה לי את המניה AAPL”, or use Ctrl+K. " +
+      "Clear actions still work offline: try “open stocks”, “תראה לי את המניה AAPL”, or use Ctrl+K. " +
       `(${raw})`
     );
   }
-  if (/fetch failed|econnrefused|econnreset|etimedout|network|enotfound|127\.0\.0\.1:8080/i.test(raw)) {
+  if (/api key missing/i.test(raw)) {
     return (
-      "Model Lab isn’t running (localhost:8080), so Mind Chat can’t reach it. " +
+      "Model Lab isn’t configured (no API key). " +
+      "Add a Gemini key in Mind → Setup so chat works without Lab, " +
+      "or set a Lab key in config/lab.local.json / LAYER0_LAB_API_KEY."
+    );
+  }
+  if (
+    /timed out|aborted|aborterror/i.test(raw) ||
+    /fetch failed|econnrefused|econnreset|etimedout|network|enotfound|127\.0\.0\.1:8080|not reachable|isn['’]t running/i.test(
+      raw
+    )
+  ) {
+    return (
+      "Model Lab isn’t reachable (expected on localhost:8080). " +
+      "This is normal if Lab isn’t installed: the OS is fine. " +
       "Start the Lab server, or add a Gemini key in Mind → Setup so chat can fall back. " +
       `(${raw})`
     );
   }
   return raw;
+}
+
+function friendlyOfflineAiError(labErr, mindErr) {
+  const lab = friendlyLabError(labErr);
+  const mind = String(mindErr || "").trim();
+  if (!mind) {
+    return (
+      `${lab} ` +
+      "No Mind fallback either: add a Gemini key in Mind → Setup, or enable Ollama for local tasks."
+    );
+  }
+  if (/ollama/i.test(mind)) {
+    return `${lab} Mind fallback: ${mind}`;
+  }
+  return `${lab} Mind fallback: ${mind}`;
 }
 module.exports = {
   parseLocalIntent,
@@ -383,5 +393,6 @@ module.exports = {
   extractTicker,
   isLabInfraError,
   friendlyLabError,
+  friendlyOfflineAiError,
   lastUserText,
 };

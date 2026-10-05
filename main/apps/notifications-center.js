@@ -1,9 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { app, BrowserWindow, Notification } = require("electron");
-
 const MAX_ITEMS = 80;
-
 const profile = require("../myspace-profile");
 
 function dataPath() {
@@ -19,8 +17,15 @@ function defaultState() {
 }
 
 function load() {
+  const file = dataPath();
   try {
-    const raw = JSON.parse(fs.readFileSync(dataPath(), "utf8"));
+    const text = fs.readFileSync(file, "utf8");
+    if (!String(text || "").trim()) {
+      const healed = defaultState();
+      save(healed);
+      return healed;
+    }
+    const raw = JSON.parse(text);
     const items = Array.isArray(raw?.items) ? raw.items : [];
     const cleaned = items
       .filter((n) => n && n.id && n.title)
@@ -47,7 +52,13 @@ function load() {
     };
   } catch (err) {
     if (err && err.code === "ENOENT") return defaultState();
-    return defaultState();
+    try {
+      const healed = defaultState();
+      save(healed);
+      return healed;
+    } catch {
+      return defaultState();
+    }
   }
 }
 
@@ -56,8 +67,24 @@ function save(state) {
     items: (state.items || []).slice(0, MAX_ITEMS),
     updatedAt: new Date().toISOString(),
   };
-  fs.mkdirSync(path.dirname(dataPath()), { recursive: true });
-  fs.writeFileSync(dataPath(), JSON.stringify(next, null, 2), "utf8");
+  const file = dataPath();
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  const payload = JSON.stringify(next, null, 2);
+  const tmp = `${file}.${process.pid}.tmp`;
+  try {
+    fs.writeFileSync(tmp, payload, "utf8");
+    fs.renameSync(tmp, file);
+  } catch (err) {
+    try {
+      fs.writeFileSync(file, payload, "utf8");
+    } finally {
+      try {
+        fs.unlinkSync(tmp);
+      } catch {
+      }
+    }
+    if (!fs.existsSync(file) || fs.statSync(file).size <= 0) throw err;
+  }
   return next;
 }
 
@@ -82,7 +109,6 @@ function broadcast(state) {
 function push(args = {}, opts = {}) {
   const title = String(args.title || "").trim();
   if (!title) return { ok: false, error: "Missing title" };
-
   const state = load();
   const dedupeKey = args.dedupeKey ? String(args.dedupeKey) : null;
   if (dedupeKey) {
@@ -91,7 +117,6 @@ function push(args = {}, opts = {}) {
       return { ok: true, item: existing, duplicate: true, ...snapshot(state) };
     }
   }
-
   const item = {
     id: uid(),
     appId: String(args.appId || "system"),
@@ -104,11 +129,9 @@ function push(args = {}, opts = {}) {
     route: args.route && typeof args.route === "object" ? args.route : null,
     priority: args.priority === "high" ? "high" : "normal",
   };
-
   state.items.unshift(item);
   const saved = save(state);
   const snap = broadcast(saved);
-
   const showOs = opts.showOs !== false;
   if (showOs) {
     try {
@@ -199,7 +222,6 @@ async function handleNotificationsInvoke(channel, args = {}) {
       return { ok: false, error: `Unknown notifications channel: ${channel}` };
   }
 }
-
 module.exports = {
   push,
   list,

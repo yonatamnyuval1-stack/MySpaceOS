@@ -2,7 +2,6 @@
   function tt(key, vars) {
     return window.MySpaceI18n?.t?.(key, vars) ?? key;
   }
-
   const FOLDER_I18N = {
     INBOX: "service.mail.folder.inbox",
     STARRED: "service.mail.folder.starred",
@@ -18,7 +17,6 @@
     const key = FOLDER_I18N[label?.id];
     return key ? tt(key) : label.displayName || label.name || label.id || "";
   }
-
   const api = window.mailApi;
   const els = {
     setup: document.getElementById("mail-setup"),
@@ -54,7 +52,6 @@
     readerDate: document.getElementById("reader-date"),
     readerBody: document.getElementById("reader-body"),
   };
-
   const MAIN_LABELS = new Set([
     "INBOX",
     "__ALL__",
@@ -70,7 +67,6 @@
     "SPAM",
     "TRASH",
   ]);
-
   let state = {
     shell: "hub",
     accounts: [],
@@ -311,8 +307,8 @@
         ${count ? `<span class="mail-folder-count">${count}</span>` : ""}
       </button>`;
     };
+    // Compose hidden until real send exists (release checklist #13 / #58).
     els.sidebar.innerHTML = `
-      <button type="button" class="mail-sidebar-compose" id="btn-compose" disabled data-i18n-title="service.mail.composeSoon" title="Coming soon">${escapeHtml(tt("service.mail.compose"))}</button>
       <div class="mail-sidebar-section">
         ${folders.map(renderBtn).join("")}
       </div>
@@ -476,7 +472,6 @@
       q: folder.q || undefined,
       pageToken: reset ? undefined : state.nextPageToken,
     };
-
     if (reset) {
       const cached = await api.listMessages({ ...listArgs, cacheOnly: true });
       if (cached?.ok && cached.messages?.length) {
@@ -490,7 +485,6 @@
         els.listEmpty.textContent = tt("service.mail.loading");
       }
     }
-
     const res = await api.listMessages(listArgs);
     if (!res?.ok) {
       toast(res?.error || "Could not load messages");
@@ -524,7 +518,6 @@
     state.activeMessageId = messageId;
     renderMessageList();
     showReadingMode(true);
-
     const preview = state.messages.find((m) => m.id === messageId);
     if (preview) {
       renderReader(
@@ -539,7 +532,6 @@
     } else {
       focusReaderTop();
     }
-
     try {
       const res = await api.getMessage({ accountId: state.accountId, messageId });
       if (!res?.ok) {
@@ -571,18 +563,14 @@
         : tt("service.mail.connectPrompt")
     );
     renderSetupAccounts();
-
     if (state.shell !== "mail" && !openFirst) {
       try {
         await window.MySpaceConnectHub?.refreshConnections?.();
       } catch {
-        /* ignore */
       }
       return;
     }
-
     if (openFirst) state.shell = "mail";
-
     if (!state.accounts.length) {
       showSetup();
       return;
@@ -711,7 +699,6 @@
     await loadLabels();
     await loadFolder(true);
   });
-
   els.searchForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
     state.searchQuery = String(els.search?.value || "").trim();
@@ -720,9 +707,7 @@
     clearReader();
     await loadFolder(true);
   });
-
   els.btnLoadMore?.addEventListener("click", () => loadMore());
-
   window.MailWorkspace = {
     enter: () => {
       state.shell = "mail";

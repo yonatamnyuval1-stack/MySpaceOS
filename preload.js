@@ -930,6 +930,7 @@ contextBridge.exposeInMainWorld("mySpace", {
     list: () => ipcRenderer.invoke("app-builder", "app.list", {}),
     status: () => ipcRenderer.invoke("app-builder", "app.status", {}),
     build: (args) => ipcRenderer.invoke("app-builder", "app.pack.build", args || {}),
+    install: (args) => ipcRenderer.invoke("app-builder", "app.pack.install", args || {}),
     pickPack: () => ipcRenderer.invoke("app-builder", "app.pack.pick", {}),
   },
   resolve: {

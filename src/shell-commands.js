@@ -19,7 +19,6 @@
   const IF_ELSE = " else ";
   const MAX_LOOP_COUNT = 25;
   const MAX_WHILE_ITERATIONS = 25;
-
   const ROUTE_REGISTRY = {
     "system-info": {
       app: "SysInfoApp",
@@ -945,7 +944,6 @@
   function findAppByRef(ref, apps) {
     const key = normalizeRefKey(ref);
     if (!key) return null;
-
     const moduleId = resolveModule(ref);
     if (moduleId) {
       const byModule =
@@ -962,7 +960,6 @@
       apps.find((a) => a.module && normalizeRefKey(a.module) === key) ||
       null;
     if (exact) return exact;
-
     const scored = [];
     for (const a of apps || []) {
       const candidates = [a.id, a.name, a.module].filter(Boolean).map(normalizeRefKey);
@@ -2120,7 +2117,7 @@
 
   async function openScripts(ctx, route) {
     const app = findScriptsApp(ctx.getApps?.() || []);
-    if (!app) return { ok: false, error: "Scripts app not found" };
+    if (!app) return { ok: false, error: "Runtime app not found" };
     await ctx.launchApp?.(app, { route: route || {} });
     return { ok: true };
   }
@@ -2945,9 +2942,9 @@
 
   function formatStorageCommandHelp() {
     return [
-      "storage(open) · storage(status) · storage(apps) · storage(cleanup)",
-      "storage(large C:) · storage(drives) · storage(path) · storage(settings)",
-      "storage(cancel) · storage(about) · storage(help)",
+      "storage(open), storage(status), storage(apps), storage(cleanup)",
+      "storage(large C:), storage(drives), storage(path), storage(settings)",
+      "storage(cancel), storage(about), storage(help)",
     ].join(" · ");
   }
 
@@ -2964,7 +2961,6 @@
     }
 
     const verb = lower.split(/\s+/)[0];
-
     if (["panel", "open", "home"].includes(verb)) {
       await openStorage(ctx || {}, { page: "status" });
       return { ok: true, message: "Opened Storage · status" };
@@ -3183,7 +3179,7 @@
     }
     if (verb === "about") {
       await openThemes(ctx || {}, { page: "about" });
-      return { ok: true, message: "Opened Themes · about" };
+      return { ok: true, message: "Opened Themes, about" };
     }
     if (verb === "list" || verb === "ls") {
       const res = await window.mySpace.themes.catalog();
@@ -3193,7 +3189,7 @@
         const label = th.isDefault ? "default" : `${th.mode}/${th.buttons}`;
         return `${a.name} (${label})`;
       });
-      return { ok: true, message: lines.join(" · ") || "No themed apps" };
+      return { ok: true, message: lines.join(": ") || "No themed apps" };
     }
     if (verb === "reset") {
       const appId = resolveThemesAppRef(parts.slice(1).join(" "));
@@ -3242,9 +3238,10 @@
       "pack(open path\\file.space): import a My Space document and open it",
       "pack(inspect file.space): show kind/title without importing",
       "pack(pick): choose a .space file",
-      "pack(export script morning) · pack(export flow Title) · pack(export note Title) · pack(export deck Name)",
+      "pack(export script morning), pack(export flow Title), pack(export note Title), pack(export deck Name)",
       "pack(build todo): zip user-built app for share",
-      "Also: open file.space · Scripts/Flow Export .space · docs(open space-files)",
+      "pack(install): pick a .myapp.zip. pack(install path\\file.myapp.zip), force:true to replace",
+      "Also: open file.space, Scripts/Flow Export .space, docs(open space-files)",
     ].join(" · ");
   }
 
@@ -3281,7 +3278,6 @@
       await launchImportedSpaceFile(res, ctx);
       return { ok: true, message: res.message || `Imported ${res.kind} “${res.title}”` };
     }
-
     if (/^inspect(\s|$)/i.test(t)) {
       const filePath = t.replace(/^inspect\s*/i, "").trim().replace(/^["']+|["']+$/g, "");
       if (!filePath) return { ok: false, error: "Usage: pack(inspect file.space)" };
@@ -3326,6 +3322,34 @@
       const res = await window.mySpace.appBuilder.build({ id });
       if (!res?.ok) return { ok: false, error: res?.error || "Pack build failed" };
       return { ok: true, message: res.message || `Built ${res.path}` };
+    }
+
+    if (/^install(\s|$)/i.test(t)) {
+      if (!window.mySpace?.appBuilder?.install) {
+        return { ok: false, error: "App install API unavailable" };
+      }
+      const rest = t.replace(/^install\s*/i, "").trim();
+      const force = /\bforce\s*:\s*(1|true|yes|on)\b/i.test(rest);
+      let filePath = rest
+        .replace(/\bforce\s*:\s*(1|true|yes|on)\b/gi, "")
+        .trim()
+        .replace(/^["']+|["']+$/g, "");
+      const res = await window.mySpace.appBuilder.install({
+        path: filePath || undefined,
+        force,
+      });
+      if (res?.cancelled) return { ok: true, message: "Cancelled" };
+      if (!res?.ok) return { ok: false, error: res?.error || "Install failed" };
+      try {
+        await ctx.reloadFromProfile?.();
+        ctx.refreshDesktop?.();
+      } catch {
+      }
+      const next = (res.next || []).join(" · ");
+      return {
+        ok: true,
+        message: `${res.message || `Installed ${res.id}`}${next ? `\nNext: ${next}` : ""}`,
+      };
     }
 
     const asPath = extractSpaceFilePath(t);
@@ -3492,20 +3516,20 @@
       lines.push(`examples: ${def.examples.join(" · ")}`);
     }
     if (def.commands) {
-      lines.push("commands: app(verb args). e.g. clock(timer 25m) · no run needed");
+      lines.push("commands: app(verb args). e.g. clock(timer 25m), no run needed");
       const cmdHelp = getCommandHelpForModule(moduleId);
       if (cmdHelp) lines.push(cmdHelp);
     }
-    lines.push("grammar: run app · app · app(page) · app(verb args) · chain with ; or |");
-    return { ok: true, message: lines.join(" · ") };
+    lines.push("grammar: run app, app, app(page), app(verb args), chain with ; or |");
+    return { ok: true, message: lines.join(": ") };
   }
 
   function formatCheckHelp() {
     return [
-      "check running · check apps · check drift",
-      "check routes · check routes space · help stocks",
-      "check aliases · check macros · check when",
-    ].join(" · ");
+      "check running, check apps, check drift",
+      "check routes, check routes space, help stocks",
+      "check aliases, check macros, check when",
+    ].join(": ");
   }
 
   function formatIfHelp() {
@@ -3524,7 +3548,7 @@
       "while check running then close",
       "for builds drift space then run $item",
       "for ocean earth cosmos then run space($item)",
-      "loop help · while help · for help",
+      "loop help, while help, for help",
     ].join(" · ");
   }
 
@@ -3689,11 +3713,9 @@
   function escapeRegex(s) {
     return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
-
   function substituteVars(template, scope) {
     let out = String(template ?? "");
     out = out.replace(/\$\$/g, "\u0000");
-
     out = out.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*)\.(ok|text|message|data)\b/g, (match, name, field) => {
       const entry = lookupVar(scope, name);
       if (!entry) return match;
@@ -3703,7 +3725,6 @@
       if (field === "data") return valueToText(entry.data);
       return match;
     });
-
     out = out.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*)\b/g, (match, name) => {
       const entry = lookupVar(scope, name);
       if (!entry) return match;
@@ -3918,7 +3939,7 @@
       return { ok: true, message: "Variables cleared (current scope)" };
     }
     if (lower !== "vars" && lower !== "variables") {
-      return { ok: false, error: "Usage: vars · vars clear · unset name" };
+      return { ok: false, error: "Usage: vars, vars clear, unset name" };
     }
     const names = Object.keys(scope.vars);
     if (!names.length) return { ok: true, message: "No variables in current scope" };
@@ -3986,7 +4007,7 @@
     if (open < 0) {
       return {
         ok: false,
-        error: "Usage: fn name(a, b) { … } · fn list · fn remove name",
+        error: "Usage: fn name(a, b) { … }, fn list, fn remove name",
       };
     }
     const head = trimmed.slice(0, open).trim();
@@ -4120,7 +4141,7 @@
     if (!m) return null;
     const rest = (m[1] || "").trim();
     if (!rest) {
-      return { ok: false, error: "Usage: wait 5s · wait 2m · wait until 14:30" };
+      return { ok: false, error: "Usage: wait 5s, wait 2m, wait until 14:30" };
     }
 
     const untilMatch = rest.match(/^until\s+(\d{1,2}):(\d{2})$/i);
@@ -4184,9 +4205,9 @@
 
   function formatClockCommandHelp() {
     return [
-      "clock(timer 25m) · clock(timer 90s Focus) · clock(timer pause|stop|status)",
-      "clock(pomodoro start) · clock(pomodoro work:45) · clock(pomodoro pause)",
-      "clock(stopwatch) · clock(world) · clock(meetings)",
+      "clock(timer 25m), clock(timer 90s Focus), clock(timer pause|stop|status)",
+      "clock(pomodoro start), clock(pomodoro work:45), clock(pomodoro pause)",
+      "clock(stopwatch), clock(world), clock(meetings)",
     ].join(" · ");
   }
 
@@ -4247,7 +4268,6 @@
     if (!appHasCommands(call.moduleId)) return null;
     if (!call.inner) return null;
     if (isClassicRouteArgs(call.inner) && call.moduleId !== "translate") return null;
-
     if (call.moduleId === "world-clock") {
       return executeClockCommands(call.inner, ctx);
     }
@@ -4470,23 +4490,19 @@
   function parseTodayAddArgs(rest) {
     let title = String(rest || "").trim();
     if (!title) return { error: "Usage: today(add Buy milk)" };
-
     let priority = null;
     let dueTime = null;
     let when = null;
-
     const pri = title.match(/\s+priority\s*:\s*(low|normal|high|urgent)\s*$/i);
     if (pri) {
       priority = pri[1].toLowerCase();
       title = title.slice(0, pri.index).trim();
     }
-
     const timeM = title.match(/\s+(\d{1,2}:\d{2})\s*$/);
     if (timeM) {
       dueTime = timeM[1];
       title = title.slice(0, timeM.index).trim();
     }
-
     const whenM = title.match(/\s+(today|tomorrow|later)\s*$/i);
     if (whenM) {
       when = whenM[1].toLowerCase();
@@ -4494,13 +4510,11 @@
     }
 
     if (!title) return { error: "Usage: today(add Buy milk)" };
-
     const today = localTodayISO();
     let dueDate = today;
     if (when === "tomorrow") dueDate = addDaysISO(today, 1);
     else if (when === "later") dueDate = addDaysISO(today, 3);
     else if (when === "today") dueDate = today;
-
     const args = { title, dueDate };
     if (dueTime) {
       args.dueTime = dueTime;
@@ -4513,7 +4527,6 @@
   async function executeTodayCommands(inner, ctx) {
     const t = String(inner || "").trim();
     const lower = t.toLowerCase();
-
     if (!window.mySpace?.today) {
       return { ok: false, error: "Today shell API unavailable" };
     }
@@ -4615,7 +4628,7 @@
 
     if (/^snooze(\s|$)/i.test(t)) {
       const rest = t.replace(/^snooze\s*/i, "").trim();
-      if (!rest) return { ok: false, error: "Usage: today(snooze Buy milk 15m) · today(snooze … tomorrow)" };
+      if (!rest) return { ok: false, error: "Usage: today(snooze Buy milk 15m), today(snooze … tomorrow)" };
       let target = rest;
       let snoozeArgs = { minutes: 15 };
       const tom = rest.match(/\s+tomorrow(?:-am)?\s*$/i);
@@ -4654,11 +4667,11 @@
 
   function formatStocksCommandHelp() {
     return [
-      "stocks(AAPL) · stocks(open TSLA) · stocks(quote NVDA)",
-      "stocks(watch AAPL) · stocks(unwatch AAPL) · stocks(list)",
-      "stocks(alert AAPL > 200) · stocks(alert rm AAPL) · stocks(list alerts)",
-      "stocks(mode crypto) · stocks(portfolio) · stocks(hold AAPL 10 @ 180)",
-      "stocks(buylist) · stocks(alerts) · stocks(help)",
+      "stocks(AAPL), stocks(open TSLA), stocks(quote NVDA)",
+      "stocks(watch AAPL), stocks(unwatch AAPL), stocks(list)",
+      "stocks(alert AAPL > 200), stocks(alert rm AAPL), stocks(list alerts)",
+      "stocks(mode crypto), stocks(portfolio), stocks(hold AAPL 10 @ 180)",
+      "stocks(buylist), stocks(alerts), stocks(help)",
     ].join(" · ");
   }
 
@@ -5144,7 +5157,6 @@
   async function executeVaultCommands(inner, ctx) {
     const t = String(inner || "").trim();
     const lower = t.toLowerCase();
-
     if (!window.mySpace?.vault) {
       return { ok: false, error: "Vault shell API unavailable" };
     }
@@ -5249,7 +5261,6 @@
       if (!rest) return { ok: false, error: "Usage: vault(add Gmail) · vault(add name:Gmail user:me)" };
       const gate = await ensureUnlocked();
       if (!gate.ok) return gate;
-
       const entry = { name: rest };
       const { map, keys, positional } = parseArgStructure(rest);
       if (keys.length) {
@@ -5281,7 +5292,6 @@
         entry.name = title;
       }
       if (!entry.name) return { ok: false, error: "Usage: vault(add Gmail)" };
-
       const res = await window.mySpace.vault.save(entry);
       if (!res?.ok) return { ok: false, error: res?.error || "Could not save entry" };
       const saved = res.entry;
@@ -5330,24 +5340,23 @@
 
   function formatDriftCommandHelp() {
     return [
-      "drift(scan) · drift(list) · drift(list today|week) · drift(search …)",
-      "drift(zones) · drift(insights) · drift(pause|resume) · drift(status)",
-      "drift(open <eventId>) · drift(activity|zones|insights)",
-    ].join(" · ");
+      "drift(scan), drift(list), drift(list today|week), drift(search …)",
+      "drift(zones), drift(insights), drift(pause|resume), drift(status)",
+      "drift(open <eventId>), drift(activity|zones|insights)",
+    ].join(": ");
   }
 
   function formatStudyDeckCommandHelp() {
     return [
-      "decks(list) · decks(new Biology) · decks(delete Biology)",
-      "decks(add Biology | front | back) · studydeck(open Biology)",
-      "studydeck(study Biology) · decks(help)",
+      "decks(list), decks(new Biology), decks(delete Biology)",
+      "decks(add Biology | front | back), studydeck(open Biology)",
+      "studydeck(study Biology), decks(help)",
     ].join(" · ");
   }
 
   async function executeDriftCommands(inner, ctx) {
     const t = String(inner || "").trim();
     const lower = t.toLowerCase();
-
     if (!window.mySpace?.drift) {
       return { ok: false, error: "Drift shell API unavailable" };
     }
@@ -5367,9 +5376,8 @@
         return { ok: false, error: "Usage: drift(page activity|zones|insights)" };
       }
       await openDrift(ctx, { page });
-      return { ok: true, message: `Opened Drift · ${page}` };
+      return { ok: true, message: `Opened Drift, ${page}` };
     }
-
     if (lower === "status") {
       const zones = await window.mySpace.drift.zones();
       if (!zones?.ok) return { ok: false, error: zones?.error || "Could not load status" };
@@ -5384,7 +5392,6 @@
         message: `Drift ${paused} · ${enabled}/${list.length} zones${last}`,
       };
     }
-
     if (lower === "pause") {
       const res = await window.mySpace.drift.settings({ paused: true });
       if (!res?.ok) return { ok: false, error: res?.error || "Could not pause" };
@@ -5658,7 +5665,7 @@
         action: "openDeck",
         param: deckId,
       });
-      return { ok: true, message: `Card added · ${deckRef}` };
+      return { ok: true, message: `Card added, ${deckRef}` };
     }
 
     if (/^(open|deck)(\s|$)/i.test(t)) {
@@ -5671,7 +5678,7 @@
         action: "openDeck",
         param: resolved.deck.id,
       });
-      return { ok: true, message: `Opened · ${resolved.deck.name}` };
+      return { ok: true, message: `Opened, ${resolved.deck.name}` };
     }
 
     if (/^study(\s|$)/i.test(t)) {
@@ -5685,10 +5692,10 @@
           param: resolved.deck.id,
         });
         await openStudyDeck(ctx, { page: "study" });
-        return { ok: true, message: `Studying · ${resolved.deck.name}` };
+        return { ok: true, message: `Studying, ${resolved.deck.name}` };
       }
       await openStudyDeck(ctx, { page: "study" });
-      return { ok: true, message: "Opened Study Deck · study" };
+      return { ok: true, message: "Opened Study Deck, study" };
     }
 
     if (t && !/^(list|new|add|help|study|create|delete|rm)/i.test(t)) {
@@ -5699,7 +5706,7 @@
           action: "openDeck",
           param: resolved.deck.id,
         });
-        return { ok: true, message: `Opened · ${resolved.deck.name}` };
+        return { ok: true, message: `Opened, ${resolved.deck.name}` };
       }
     }
 
@@ -5730,17 +5737,17 @@
     if (includes.length === 1) return { contact: includes[0].c };
     const amb = (exact.length > 1 ? exact : starts.length > 1 ? starts : includes).slice(0, 5);
     if (amb.length > 1) {
-      return { error: `Ambiguous — match one of: ${amb.map((x) => x.label).join(" · ")}` };
+      return { error: `Ambiguous: match one of: ${amb.map((x) => x.label).join(" · ")}` };
     }
     return { error: `Not found: ${ref}` };
   }
 
   function formatContactsCommandHelp() {
     return [
-      "contacts(list) · contacts(search Dana) · contacts(upcoming)",
-      "contacts(add Dana | dana@mail.com | +972…) · contacts(delete Dana)",
-      "contacts(email Dana) · contacts(phone Dana) · contacts(sms Dana)",
-      "contacts(open Dana) · contacts(groups) · contacts(browse)",
+      "contacts(list), contacts(search Dana), contacts(upcoming)",
+      "contacts(add Dana | dana@mail.com | +972…), contacts(delete Dana)",
+      "contacts(email Dana), contacts(phone Dana), contacts(sms Dana)",
+      "contacts(open Dana), contacts(groups), contacts(browse)",
     ].join(" · ");
   }
 
@@ -5948,10 +5955,10 @@
 
   function formatNotesCommandHelp() {
     return [
-      "notes(list) · notes(search meeting) · notes(pinned) · notes(archive)",
-      "notes(add Buy milk #errands) · notes(add Title | body text)",
-      "notes(pin Buy milk) · notes(archive Buy milk) · notes(delete Buy milk)",
-      "notes(open Buy milk) · notes(get Buy milk) · notes(help)",
+      "notes(list), notes(search meeting), notes(pinned), notes(archive)",
+      "notes(add Buy milk #errands), notes(add Title | body text)",
+      "notes(pin Buy milk), notes(archive Buy milk), notes(delete Buy milk)",
+      "notes(open Buy milk), notes(get Buy milk), notes(help)",
     ].join(" · ");
   }
 
@@ -6006,7 +6013,7 @@
         message: `Found ${notes.length}: ${notes
           .slice(0, 12)
           .map((n) => n.title || "Untitled")
-          .join(" · ")}`,
+          .join(": ")}`,
       };
     }
 
@@ -6024,7 +6031,7 @@
       return {
         ok: true,
         message: `${n.title || "Untitled"}${tags ? ` ${tags}` : ""}${
-          preview ? ` — ${preview}` : ""
+          preview ? `: ${preview}` : ""
         }`,
       };
     }
@@ -6038,10 +6045,9 @@
       const tags = (res.note?.tags || []).map((x) => `#${x}`).join(" ");
       return {
         ok: true,
-        message: `Added · ${res.note?.title || "Untitled"}${tags ? ` ${tags}` : ""}`,
+        message: `Added, ${res.note?.title || "Untitled"}${tags ? ` ${tags}` : ""}`,
       };
     }
-
     if (/^pin(\s|$)/i.test(t) || /^unpin(\s|$)/i.test(t)) {
       const unpin = /^unpin/i.test(t);
       const ref = t.replace(/^(un)?pin\s*/i, "").trim();
@@ -6104,7 +6110,7 @@
         action: "openNote",
         param: res.note.id,
       });
-      return { ok: true, message: `Opened · ${res.note.title || "Untitled"}` };
+      return { ok: true, message: `Opened, ${res.note.title || "Untitled"}` };
     }
 
     return {
@@ -6115,11 +6121,11 @@
 
   function formatTasksCommandHelp() {
     return [
-      "tasks(list) · tasks(inbox) · tasks(next) · gtd(today) · todo(flagged)",
-      "tasks(add Buy milk @next #errands) · tasks(add Title | notes +Project due:tomorrow)",
-      "tasks(done Buy milk) · tasks(flag Buy milk) · tasks(move Buy milk waiting)",
-      "tasks(schedule Buy milk) · tasks(project Website) · tasks(delete Buy milk)",
-      "tasks(open Buy milk) · tasks(help)",
+      "tasks(list), tasks(inbox), tasks(next), gtd(today), todo(flagged)",
+      "tasks(add Buy milk @next #errands), tasks(add Title | notes +Project due:tomorrow)",
+      "tasks(done Buy milk), tasks(flag Buy milk), tasks(move Buy milk waiting)",
+      "tasks(schedule Buy milk), tasks(project Website), tasks(delete Buy milk)",
+      "tasks(open Buy milk), tasks(help)",
       "Note: Today (timed agenda) is today(…): Tasks is projects & next actions",
     ].join(" · ");
   }
@@ -6151,7 +6157,7 @@
     if (pages.includes(lower)) {
       const page = lower === "home" ? "inbox" : lower;
       await openTasks(ctx, { page });
-      return { ok: true, message: `Opened Tasks · ${page}` };
+      return { ok: true, message: `Opened Tasks, ${page}` };
     }
 
     if (lower === "open" || lower === "browse" || lower === "panel") {
@@ -6171,7 +6177,7 @@
         const prio = i.priority ? ` P${i.priority}` : "";
         return `${flag}${i.title || "Untitled"}${prio}`;
       });
-      const more = items.length > 20 ? ` · +${items.length - 20} more` : "";
+      const more = items.length > 20 ? `, +${items.length - 20} more` : "";
       return { ok: true, message: `Tasks · ${view} (${items.length}): ${lines.join(" · ")}${more}` };
     }
 
@@ -6220,7 +6226,7 @@
       await syncTasksIfOpen(ctx, { page: res.item?.bucket || "inbox", itemId: res.item?.id });
       return {
         ok: true,
-        message: `Added · ${res.item?.title || "Task"} · ${res.item?.bucket || "inbox"}`,
+        message: `Added · ${res.item?.title || "Task"}, ${res.item?.bucket || "inbox"}`,
       };
     }
 
@@ -6232,10 +6238,9 @@
       await syncTasksIfOpen(ctx, { page: "all", itemId: res.item?.id });
       return {
         ok: true,
-        message: `${res.item?.status === "done" ? "Done" : "Reopened"} · ${res.item?.title || ref}`,
+        message: `${res.item?.status === "done" ? "Done" : "Reopened"}, ${res.item?.title || ref}`,
       };
     }
-
     if (/^flag(\s|$)/i.test(t) || /^unflag(\s|$)/i.test(t)) {
       const un = /^unflag/i.test(t);
       const ref = t.replace(/^(un)?flag\s*/i, "").trim();
@@ -6256,7 +6261,7 @@
       const res = await window.mySpace.tasks.move({ ref: m[1].trim(), bucket: m[2].toLowerCase() });
       if (!res?.ok) return { ok: false, error: res?.error || "Move failed" };
       await syncTasksIfOpen(ctx, { page: res.item?.bucket || "all", itemId: res.item?.id });
-      return { ok: true, message: `Moved · ${res.item?.title || m[1]} → ${res.item?.bucket}` };
+      return { ok: true, message: `Moved, ${res.item?.title || m[1]} → ${res.item?.bucket}` };
     }
 
     if (/^schedule(\s|$)/i.test(t) || /^today(\s|$)/i.test(t)) {
@@ -6283,7 +6288,7 @@
       const res = await window.mySpace.tasks.addProject({ name });
       if (!res?.ok) return { ok: false, error: res?.error || "Could not create project" };
       await openTasks(ctx, { page: "all", projectId: res.project?.id });
-      return { ok: true, message: `Project · ${res.project?.name}` };
+      return { ok: true, message: `Project, ${res.project?.name}` };
     }
 
     if (/^(delete|rm|remove)(\s|$)/i.test(t)) {
@@ -6292,7 +6297,7 @@
       const res = await window.mySpace.tasks.delete({ ref });
       if (!res?.ok) return { ok: false, error: res?.error || "Could not delete" };
       await syncTasksIfOpen(ctx, { page: "inbox" });
-      return { ok: true, message: `Deleted · ${ref}` };
+      return { ok: true, message: `Deleted, ${ref}` };
     }
 
     if (/^open(\s|$)/i.test(t)) {
@@ -6304,7 +6309,7 @@
       if (pages.includes(ref.toLowerCase())) {
         const page = ref.toLowerCase() === "home" ? "inbox" : ref.toLowerCase();
         await openTasks(ctx, { page });
-        return { ok: true, message: `Opened Tasks · ${page}` };
+        return { ok: true, message: `Opened Tasks, ${page}` };
       }
       const res = await window.mySpace.tasks.get(ref);
       if (!res?.ok) return { ok: false, error: res?.error || "Not found" };
@@ -6313,7 +6318,7 @@
         action: "openTask",
         param: res.item.id,
       });
-      return { ok: true, message: `Opened · ${res.item.title || "Task"}` };
+      return { ok: true, message: `Opened, ${res.item.title || "Task"}` };
     }
 
     return {
@@ -6325,8 +6330,8 @@
   function formatChatCommandHelp() {
     return [
       "Chat is a ChatGPT-style app powered by Mind",
-      "chat(new) · chat(list) · chat(open) · chat(settings) · chat(help)",
-    ].join(" · ");
+      "chat(new), chat(list), chat(open), chat(settings), chat(help)",
+    ].join(": ");
   }
 
   async function executeChatCommands(inner, ctx) {
@@ -6380,9 +6385,9 @@
 
   function formatTranslateCommandHelp() {
     return [
-      "translate(hello) · translate(שלום) · translate(bonjour -> en) · translate(hello to hebrew)",
-      "translate(text:shalom, from:he, to:en) · translate(detect bonjour)",
-      "translate(languages) · translate(history) · translate(open phrases)",
+      "translate(hello), translate(שלום), translate(bonjour -> en), translate(hello to hebrew)",
+      "translate(text:shalom, from:he, to:en), translate(detect bonjour)",
+      "translate(languages), translate(history), translate(open phrases)",
     ].join(" · ");
   }
 
@@ -6403,9 +6408,7 @@
     let text = "";
     let page = null;
     let toExplicit = false;
-
     if (!original) return { text: "", from, to, page, toExplicit };
-
     const arrow = original.match(/^(.+?)\s*(?:->|=>|→)\s*([^\s,]+)\s*$/u);
     if (arrow) {
       return {
@@ -6428,7 +6431,6 @@
       keys.includes("q") ||
       keys.includes("source") ||
       (allKv && (keys.includes("to") || keys.includes("from")));
-
     if (classicTranslate) {
       page = map.page || null;
       text = String(map.text || map.q || map.source || map.query || positional.join(" ") || "").trim();
@@ -6447,7 +6449,6 @@
       }
       return { text, from, to, page, toExplicit };
     }
-
     let work = original;
     const keyRe = /\b(from|to|into|target)\s*[:=]\s*([a-zA-Z-]{2,}|[^\s,]+)/gi;
     work = work.replace(keyRe, (_full, key, val) => {
@@ -6459,7 +6460,6 @@
       }
       return " ";
     });
-
     const naturalTo = work.match(/^(?:to|into)\s+([a-zA-Z-]{2,}|\S+)\s+(.+)$/i);
     if (naturalTo && looksLikeLangToken(naturalTo[1])) {
       to = naturalTo[1];
@@ -6474,7 +6474,6 @@
       toExplicit = true;
       return { text, from, to, page: null, toExplicit };
     }
-
     text = work.replace(/\s+/g, " ").trim();
     if (
       (text.startsWith('"') && text.endsWith('"')) ||
@@ -6497,7 +6496,6 @@
 
     const res = await window.mySpace.translate.text(args);
     if (!res?.ok) return { ok: false, error: res?.error || "Translation failed" };
-
     try {
       await window.mySpace.translate.addHistory?.({
         source: res.source || text,
@@ -7078,7 +7076,6 @@
     if (!rest) {
       return { error: "Usage: host(run <runtime> file:<path> [args:…] [cwd:…] [wait:true|false])" };
     }
-
     rest = rest.replace(/\s+--\s+/, " ");
     const tokens = rest.match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g) || [];
     const runtime = (tokens.shift() || "").replace(/^["']|["']$/g, "");
@@ -7211,17 +7208,17 @@
       if (res.detached) {
         return {
           ok: true,
-          message: `Started ${parsed.runtime} · ${res.script || parsed.scriptPath}${res.pid ? ` (pid ${res.pid})` : ""}`,
+          message: `Started ${parsed.runtime}, ${res.script || parsed.scriptPath}${res.pid ? ` (pid ${res.pid})` : ""}`,
         };
       }
       const preview = String(res.stdout || res.message || "Done")
         .split(/\r?\n/)
         .slice(0, 6)
         .join("\n");
-      const dur = res.durationMs != null ? ` · ${res.durationMs}ms` : "";
+      const dur = res.durationMs != null ? `, ${res.durationMs}ms` : "";
       return {
         ok: true,
-        message: `${parsed.runtime} · ${res.script || parsed.scriptPath}${dur}\n${preview}`,
+        message: `${parsed.runtime}, ${res.script || parsed.scriptPath}${dur}\n${preview}`,
       };
     }
 
@@ -7234,10 +7231,11 @@
   function formatAppCommandHelp() {
     return [
       "app(scaffold todo name:My Todo template:minimal icon:📦)",
-      "app(register todo) · app(list) · app(status)",
-      "pack(build todo). zip user app for share",
+      "app(register todo), app(list), app(status)",
+      "pack(build todo), pack(install) / pack(install file.myapp.zip)",
+      "app(install) same as pack(install)",
       "app(help)",
-    ].join(" · ");
+    ].join(": ");
   }
 
   function parseAppScaffoldArgs(t) {
@@ -7303,10 +7301,17 @@
       if (parsed.error) return { ok: false, error: parsed.error };
       const res = await window.mySpace.appBuilder.scaffold(parsed);
       if (!res?.ok) return { ok: false, error: res?.error || "Scaffold failed" };
+      if (res.registered) {
+        try {
+          await ctx.reloadFromProfile?.();
+          ctx.refreshDesktop?.();
+        } catch {
+        }
+      }
       const next = (res.next || []).join(" · ");
       return {
         ok: true,
-        message: `Scaffolded ${res.app?.name || parsed.id} · ${res.path}${res.registered ? " · registered" : ""}${next ? `\nNext: ${next}` : ""}`,
+        message: `Scaffolded ${res.app?.name || parsed.id} · ${res.path}${res.registered ? " · registered on desktop" : ""}${next ? `\nNext: ${next}` : ""}`,
       };
     }
 
@@ -7315,9 +7320,14 @@
       if (!id) return { ok: false, error: "Usage: app(register todo)" };
       const res = await window.mySpace.appBuilder.register({ id });
       if (!res?.ok) return { ok: false, error: res?.error || "Register failed" };
+      try {
+        await ctx.reloadFromProfile?.();
+        ctx.refreshDesktop?.();
+      } catch {
+      }
       return {
         ok: true,
-        message: `Registered ${res.app?.name || id} on desktop`,
+        message: `Registered ${res.app?.name || id} on desktop: open with: run ${id}`,
       };
     }
 
@@ -7327,6 +7337,10 @@
       const res = await window.mySpace.appBuilder.build({ id });
       if (!res?.ok) return { ok: false, error: res?.error || "Build failed" };
       return { ok: true, message: res.message || `Built ${res.path}` };
+    }
+
+    if (/^install(\s|$)/i.test(t)) {
+      return executePackCommands(`install ${t.replace(/^install\s*/i, "").trim()}`.trim(), ctx);
     }
 
     return {
@@ -7623,7 +7637,7 @@
 
     if (lower === "new" || lower === "create") {
       await openStudies(ctx, { page: "templates" });
-      return { ok: true, message: "Opened Studies · templates (pick one to create)" };
+      return { ok: true, message: "Opened Studies, templates (pick one to create)" };
     }
 
     if (/^list(\s|$)/i.test(t) || lower === "ls") {
@@ -7899,7 +7913,6 @@
     const t = String(inner || "").trim();
     const lower = t.toLowerCase();
     const pages = ["home", "quiz", "scores"];
-
     if (!window.mySpace?.flags) {
       return { ok: false, error: "Flag Quiz shell API unavailable" };
     }
@@ -7982,7 +7995,6 @@
     const t = String(inner || "").trim();
     const lower = t.toLowerCase();
     const pages = ["figures", "events", "collection"];
-
     if (!window.mySpace?.history) {
       return { ok: false, error: "History shell API unavailable" };
     }
@@ -8134,7 +8146,6 @@
     const lower = t.toLowerCase();
     const pages = ["navigate", "catalog", "nasa", "reports", "aliens"];
     const views = ["cosmos", "ocean", "earth"];
-
     if (!window.mySpace?.space) {
       return { ok: false, error: "Space shell API unavailable" };
     }
@@ -8620,7 +8631,6 @@
   async function executeMslCommands(inner, ctx) {
     const t = String(inner || "").trim();
     const lower = t.toLowerCase();
-
     if (!window.mySpace?.msl) {
       return { ok: false, error: "MSL shell API unavailable" };
     }
@@ -8636,17 +8646,17 @@
 
     if (lower === "workshop" || lower === "mint") {
       await openMsl(ctx, { page: "mint" });
-      return { ok: true, message: "Opened MSL · mint" };
+      return { ok: true, message: "Opened MSL, mint" };
     }
 
     if (lower === "inject") {
       await openMsl(ctx, { page: "inject" });
-      return { ok: true, message: "Opened MSL · inject" };
+      return { ok: true, message: "Opened MSL, inject" };
     }
 
     if (lower === "about") {
       await openMsl(ctx, { page: "about" });
-      return { ok: true, message: "Opened MSL · about" };
+      return { ok: true, message: "Opened MSL, about" };
     }
 
     if (/^(list|caps|capabilities)(\s|$)/i.test(t) || lower === "ls") {
@@ -8659,7 +8669,7 @@
         .map((c) => `${c.id}${c.kind ? ` (${c.kind})` : ""}`);
       return {
         ok: true,
-        message: `MSL caps (${caps.length}): ${lines.join(" · ")}${
+        message: `MSL caps (${caps.length}): ${lines.join(": ")}${
           caps.length > 20 ? "…" : ""
         }`,
       };
@@ -8698,7 +8708,7 @@
       return {
         ok: true,
         message: `Resolved · ${res.capability || "?"}${
-          res.result?.ok === false ? ` · ${res.result.error}` : ""
+          res.result?.ok === false ? `, ${res.result.error}` : ""
         }`,
       };
     }
@@ -8725,10 +8735,10 @@
   function formatPulseCommandHelp() {
     return [
       "Pulse: Link Bus (internal apps + Composio external tools)",
-      "pulse(panel) · pulse(external) · pulse(routes) · pulse(log) · pulse(stats)",
-      "pulse(send notes create title=Hi) · pulse(send composio status)",
-      "pulse(send composio connect toolkit=github) · pulse(send composio sync)",
-      "pulse(pub pulse.ping message=hi) · pulse(sub notes.*) · pulse(help)",
+      "pulse(panel), pulse(external), pulse(routes), pulse(log), pulse(stats)",
+      "pulse(send notes create title=Hi), pulse(send composio status)",
+      "pulse(send composio connect toolkit=github), pulse(send composio sync)",
+      "pulse(pub pulse.ping message=hi), pulse(sub notes.*), pulse(help)",
     ].join(" · ");
   }
 
@@ -8744,7 +8754,6 @@
   async function executePulseCommands(inner, ctx) {
     const t = String(inner || "").trim();
     const lower = t.toLowerCase();
-
     if (!window.mySpace?.link) {
       return { ok: false, error: "Pulse shell API unavailable" };
     }
@@ -8859,8 +8868,8 @@
 
   function formatResolveCommandHelp() {
     return [
-      "resolve(open) · resolve(inbox) · resolve(status) · resolve(list)",
-      "resolve(ask <app> <CODE>) · resolve(playbooks)",
+      "resolve(open), resolve(inbox), resolve(status), resolve(list)",
+      "resolve(ask <app> <CODE>), resolve(playbooks)",
       "pulse(send resolve report appId:notes code:LOAD_FAILED message:…)",
       "resolve(help)",
     ].join(" · ");
@@ -8868,31 +8877,30 @@
 
   function formatUpdatesCommandHelp() {
     return [
-      "updates(open) · updates(pending) · updates(history) · updates(about)",
-      "updates(status) · updates(check) · updates(list)",
+      "updates(open), updates(pending), updates(history), updates(about)",
+      "updates(status), updates(check), updates(list)",
       "updates(help)",
     ].join(" · ");
   }
 
   function formatNetworkCommandHelp() {
     return [
-      "network(open) · network(status) · network(check) · network(adapters)",
-      "network(ports) · network(about) · network(settings)",
+      "network(open), network(status), network(check), network(adapters)",
+      "network(ports), network(about), network(settings)",
       "network(help)",
-    ].join(" · ");
+    ].join(": ");
   }
 
   function formatInfoCommandHelp() {
     return [
-      "info(open) · info(services) · info(apps) · info(external) · info(about)",
+      "info(open), info(services), info(apps), info(external), info(about)",
       "info(help)",
-    ].join(" · ");
+    ].join(": ");
   }
 
   async function executeUpdatesCommands(inner, ctx) {
     const t = String(inner || "").trim();
     const lower = t.toLowerCase();
-
     if (!window.mySpace?.updates) {
       return { ok: false, error: "Updates shell API unavailable" };
     }
@@ -8922,7 +8930,7 @@
       const c = res.counts || {};
       return {
         ok: true,
-        message: `Updates: ${c.pending || 0} pending · ${c.applied || 0} applied · ${c.all || 0} in catalog`,
+        message: `Updates: ${c.pending || 0} pending, ${c.applied || 0} applied, ${c.all || 0} in catalog`,
       };
     }
 
@@ -9026,7 +9034,7 @@
       const items = res.ports || [];
       if (!items.length) return { ok: true, message: "No listening ports" };
       const lines = items.map(
-        (p) => `${p.protocol} :${p.localPort} · ${p.processName || "?"} · pid ${p.pid || "—"}`
+        (p) => `${p.protocol} :${p.localPort}, ${p.processName || "?"}, pid ${p.pid || ":"}`
       );
       return { ok: true, message: lines.join("\n") };
     }
@@ -9049,22 +9057,22 @@
 
     if (lower === "services" || lower === "platform" || lower === "service") {
       await openInfo(ctx, { page: "services" });
-      return { ok: true, message: "Opened Info · services" };
+      return { ok: true, message: "Opened Info, services" };
     }
 
     if (lower === "apps" || lower === "app") {
       await openInfo(ctx, { page: "apps" });
-      return { ok: true, message: "Opened Info · apps" };
+      return { ok: true, message: "Opened Info, apps" };
     }
 
     if (lower === "external" || lower === "externals") {
       await openInfo(ctx, { page: "external" });
-      return { ok: true, message: "Opened Info · external" };
+      return { ok: true, message: "Opened Info, external" };
     }
 
     if (lower === "about") {
       await openInfo(ctx, { page: "about" });
-      return { ok: true, message: "Opened Info · about" };
+      return { ok: true, message: "Opened Info, about" };
     }
 
     return { ok: false, error: `Unknown info command: try info(help)` };
@@ -9084,17 +9092,17 @@
 
     if (["panel", "open", "home", "inbox"].includes(lower)) {
       await openResolve(ctx, { page: "inbox" });
-      return { ok: true, message: "Opened Resolve · inbox" };
+      return { ok: true, message: "Opened Resolve, inbox" };
     }
 
     if (lower === "playbooks") {
       await openResolve(ctx, { page: "playbooks" });
-      return { ok: true, message: "Opened Resolve · playbooks" };
+      return { ok: true, message: "Opened Resolve, playbooks" };
     }
 
     if (lower === "about") {
       await openResolve(ctx, { page: "about" });
-      return { ok: true, message: "Opened Resolve · about" };
+      return { ok: true, message: "Opened Resolve, about" };
     }
 
     if (lower === "status") {
@@ -9102,7 +9110,7 @@
       if (!res?.ok) return { ok: false, error: res?.error || "Could not read status" };
       return {
         ok: true,
-        message: `Resolve: ${res.open || 0} open · ${res.resolved || 0} resolved · ${res.playbooks || 0} playbooks`,
+        message: `Resolve: ${res.open || 0} open, ${res.resolved || 0} resolved, ${res.playbooks || 0} playbooks`,
       };
     }
 
@@ -9886,7 +9894,7 @@
       "shell(open): open the Shell command atlas (Platform → Shell)",
       "shell(overview) · shell(language) · shell(core) · shell(modules)",
       "console(…): same atlas (Console app retired)",
-      "Type commands on the desktop shell line · long programs → Scripts",
+      "Type commands on the desktop shell line · long programs → Runtime",
       "alias / macro / when: manage shortcuts in the live shell language",
     ].join(" · ");
   }

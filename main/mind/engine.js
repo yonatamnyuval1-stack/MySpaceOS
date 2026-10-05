@@ -270,7 +270,12 @@ async function testProvider(args = {}) {
           provider: "ollama",
           message: `Local ok · ${(ping.models || []).slice(0, 5).join(", ") || "no models"}`,
         }
-      : { ok: false, error: ping.error || "Ollama offline" };
+      : {
+          ok: false,
+          error:
+            ping.error ||
+            "Ollama isn’t running. Start it locally, or disable Ollama in Mind → Setup.",
+        };
   }
   const res = await complete({
     task: task || "quick",

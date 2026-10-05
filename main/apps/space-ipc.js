@@ -30,9 +30,21 @@ const NEO_FALLBACK_FILE = () => path.join(__dirname, "..", "..", "data", "space-
 const UAP_DOCS_DIR = () => path.join(__dirname, "..", "..", "apps", "space", "data", "uap-docs");
 const UAP_CATALOG_FILE = () => path.join(UAP_DOCS_DIR(), "catalog.json");
 const ALIENS_HUB_FILE = () => path.join(__dirname, "..", "..", "apps", "space", "data", "aliens-hub.json");
-const NASA_KEY = process.env.NASA_API_KEY || "DEMO_KEY";
+/** Shared NASA Open APIs demo key — product uses this so users never need their own key. */
+const NASA_KEY = String(process.env.NASA_API_KEY || "DEMO_KEY").trim() || "DEMO_KEY";
+const USING_DEMO_KEY = NASA_KEY === "DEMO_KEY";
+const DEMO_KEY_NOTE =
+  "Using NASA’s shared demo access (no personal key needed). Live feeds can be busy — cached or sample data may appear.";
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+
+function withNasaMeta(payload) {
+  return {
+    ...payload,
+    usingDemoKey: USING_DEMO_KEY,
+    demoKeyNote: USING_DEMO_KEY ? DEMO_KEY_NOTE : "",
+  };
+}
 
 let catalogCache = null;
 let starsCache = null;
@@ -539,7 +551,9 @@ async function fetchNeoFeed(startDate, endDate) {
       return {
         feed: fallback,
         fromCache: true,
-        cacheNote: "NASA NEO API busy: showing bundled sample asteroids.",
+        cacheNote: USING_DEMO_KEY
+          ? "NASA NEO demo access is busy — showing bundled sample asteroids."
+          : "NASA NEO API busy: showing bundled sample asteroids.",
       };
     }
     throw new Error("Near-Earth object feed unavailable.");
@@ -601,7 +615,9 @@ async function fetchMarsPhotos(rover = "curiosity", sol = null) {
     return {
       photos: [],
       fromCache: true,
-      cacheNote: "Mars rover API unavailable (rate limit or offline). Try again later.",
+      cacheNote: USING_DEMO_KEY
+        ? "Mars photos via NASA demo access are busy or offline — try again in a bit."
+        : "Mars rover API unavailable (rate limit or offline). Try again later.",
     };
   }
 }
@@ -630,7 +646,9 @@ async function fetchApod(date) {
       return {
         apod: cached.apod,
         fromCache: true,
-        cacheNote: "NASA servers are busy (503). Showing your last saved picture.",
+        cacheNote: USING_DEMO_KEY
+          ? "NASA demo access is busy — showing your last saved picture."
+          : "NASA servers are busy (503). Showing your last saved picture.",
       };
     }
     const fallback = readJson(APOD_FALLBACK_FILE(), null);
@@ -867,14 +885,23 @@ async function handleSpaceInvoke(channel, args) {
       return { ok: true, body, wiki };
     }
 
+    if (channel === "nasa.status") {
+      return withNasaMeta({ ok: true });
+    }
+
     if (channel === "apod.today") {
       const result = await fetchApod(args?.date);
-      return { ok: true, ...result };
+      return withNasaMeta({ ok: true, ...result });
     }
 
     if (channel === "nasa.missions.list") {
       const missions = listMissions(args || {});
-      return { ok: true, missions, count: missions.length, updatedAt: loadMissions().updatedAt };
+      return withNasaMeta({
+        ok: true,
+        missions,
+        count: missions.length,
+        updatedAt: loadMissions().updatedAt,
+      });
     }
 
     if (channel === "nasa.missions.get") {
@@ -904,17 +931,17 @@ async function handleSpaceInvoke(channel, args) {
       const end = String(args?.endDate || todayIso());
       const start = String(args?.startDate || addDaysIso(end, -6));
       const result = await fetchNeoFeed(start, end);
-      return { ok: true, ...result, startDate: start, endDate: end };
+      return withNasaMeta({ ok: true, ...result, startDate: start, endDate: end });
     }
 
     if (channel === "nasa.images.search") {
       const result = await fetchNasaImages(args?.q, args?.page || 1);
-      return { ok: true, ...result };
+      return withNasaMeta({ ok: true, ...result });
     }
 
     if (channel === "nasa.mars.photos") {
       const result = await fetchMarsPhotos(args?.rover, args?.sol);
-      return { ok: true, ...result };
+      return withNasaMeta({ ok: true, ...result });
     }
 
     if (channel === "storage.load") {

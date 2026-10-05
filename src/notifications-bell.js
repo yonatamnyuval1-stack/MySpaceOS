@@ -9,7 +9,6 @@
     const v = I.t(key, vars);
     return v === key ? fill(fallback || key) : v;
   }
-
   const APP_LABELS = {
     "day-planner": "Today",
     contacts: "Contacts",
@@ -19,18 +18,15 @@
     "world-clock": "Clock",
     builds: "Builds",
     "os-bridge": "OS Bridge",
-    mail: "Mail",
+    mail: "Connect",
     system: "My Space",
   };
-
   const BELL_SVG =
     '<svg class="taskbar-svg-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">' +
     '<path d="M6 9.5a6 6 0 0 1 12 0c0 7 3 7 3 7H3s3 0 3-7"/>' +
     '<path d="M10.3 19.5a1.7 1.7 0 0 0 3.4 0"/>' +
     "</svg>";
-
   const PAGE_ICON = "brand/atom-white.png";
-
   let items = [];
   let unread = 0;
   let unsub = null;
@@ -114,28 +110,22 @@
   function senderKeyFromNotification(n) {
     const direct = String(n?.route?.fromEmail || "").trim().toLowerCase();
     if (direct.includes("@")) return direct;
-
     const from = String(n?.route?.from || "").trim();
     const fromEmail = extractEmail(from);
     if (fromEmail) return fromEmail;
-
     const titleEmail = extractEmail(n?.title);
     if (titleEmail) return titleEmail;
-
     const bodyEmail = extractEmail(n?.body);
     if (bodyEmail) return bodyEmail;
     if (from) {
       const name = from.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().toLowerCase();
       if (name.length >= 2) return name;
     }
-
     const fromName = String(n?.route?.fromName || "").replace(/\s+/g, " ").trim().toLowerCase();
     if (fromName.length >= 2) return fromName;
-
     const title = String(n?.title || "").trim();
     const namePart = title.split(/\s+[—–-]\s+/)[0]?.trim().toLowerCase();
     if (namePart && namePart.length >= 2 && !namePart.includes("new mail")) return namePart;
-
     return "";
   }
 
@@ -213,7 +203,6 @@
     const empty = pageRoot.querySelector("#notif-page-empty");
     const count = pageRoot.querySelector("#notif-page-count");
     if (!list || !empty) return;
-
     if (count) {
       count.textContent =
         unread > 0
@@ -222,7 +211,6 @@
             ? tt("shell.notifications.count", "{n} notifications", { n: items.length })
             : tt("shell.notifications.empty", "No notifications");
     }
-
     empty.hidden = items.length > 0;
     list.hidden = items.length === 0;
     list.innerHTML = items
@@ -259,7 +247,6 @@
         </article>`;
       })
       .join("");
-
     list.querySelectorAll("[data-open]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const n = items.find((x) => x.id === btn.dataset.open);
@@ -272,12 +259,37 @@
       });
     });
     list.querySelectorAll("[data-dismiss]").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const n = items.find((x) => x.id === btn.dataset.dismiss);
-        if (n && isUpdateNotification(n) && n.route?.updateId) {
-          await window.mySpace?.updates?.skip?.(n.route.updateId);
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = String(btn.getAttribute("data-dismiss") || btn.dataset.dismiss || "").trim();
+        if (!id) return;
+        btn.disabled = true;
+        const n = items.find((x) => x.id === id);
+        try {
+          if (n && isUpdateNotification(n) && n.route?.updateId) {
+            try {
+              await window.mySpace?.updates?.skip?.(n.route.updateId);
+            } catch {
+              /* still dismiss the card */
+            }
+          }
+          const res = await window.mySpace?.notifications?.remove?.(id);
+          if (res && res.ok === false) {
+            window.showMySpaceToast?.(res.error || "Could not dismiss");
+            btn.disabled = false;
+            return;
+          }
+          // Optimistic local update in case broadcast is delayed/missed.
+          items = items.filter((x) => x.id !== id);
+          unread = items.filter((x) => !x.read).length;
+          updateBadge();
+          renderPageList();
+          if (res && Array.isArray(res.items)) applySnapshot(res);
+        } catch (err) {
+          btn.disabled = false;
+          window.showMySpaceToast?.(err?.message || "Could not dismiss");
         }
-        await window.mySpace?.notifications?.remove?.(btn.dataset.dismiss);
       });
     });
     list.querySelectorAll("[data-block-sender]").forEach((btn) => {
@@ -403,14 +415,12 @@
         </aside>
       </div>
     `;
-
     root.querySelector("#notif-mark-all")?.addEventListener("click", async () => {
       await window.mySpace?.notifications?.markAllRead?.();
     });
     root.querySelector("#notif-clear")?.addEventListener("click", async () => {
       await window.mySpace?.notifications?.clear?.({});
     });
-
     const settingsOverlay = root.querySelector("#notif-settings-overlay");
     const openSettings = () => {
       if (!settingsOverlay) return;
@@ -425,7 +435,6 @@
     settingsOverlay?.querySelectorAll("[data-close-settings]").forEach((el) => {
       el.addEventListener("click", closeSettings);
     });
-
     root.querySelector("#notif-mail-alerts")?.addEventListener("change", async (e) => {
       const res = await window.mySpace?.notifications?.setPrefs?.({
         mailAlertsEnabled: e.target.checked,
@@ -439,7 +448,6 @@
         );
       }
     });
-
     const addBlocked = async () => {
       const input = root.querySelector("#notif-block-input");
       const email = String(input?.value || "").trim();
@@ -461,7 +469,6 @@
         addBlocked();
       }
     });
-
     pageRoot = root;
     applyPageChrome();
     return root;
@@ -518,26 +525,21 @@
   function bind() {
     const btn = document.getElementById("btn-notifications");
     if (!btn || !window.mySpace?.notifications) return;
-
     decorateButton();
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       openPage();
     });
-
     unsub = window.mySpace.notifications.onUpdated((snap) => applySnapshot(snap));
     refresh();
   }
-
   window.addEventListener("myspace-i18n-applied", () => {
     if (pageRoot) applyPageChrome();
   });
-
   window.MySpaceNotificationsBell = {
     open: openPage,
     refresh,
   };
-
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", bind);
   } else {

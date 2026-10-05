@@ -1,15 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 const { app } = require("electron");
-
 const DEFAULT_BASE_URL = process.env.MODEL_FLOW_BASE_URL || "http://127.0.0.1:8080/v1";
 const DEFAULT_MODEL = "primary";
 const LAB_PROGRAM = "model flow";
 const LAB_PLAN = "model flow";
-const PRODUCT_LAB_API_KEY =
-  process.env.MODEL_FLOW_PRODUCT_KEY ||
-  "lab_ac8da903c9aca2075f9faaf035b39876154b8e8c096ad3ad57b42302abdfce0b";
-
+const PRODUCT_LAB_API_KEY = process.env.MODEL_FLOW_PRODUCT_KEY || "";
 const WIRED_TOOL_IDS = new Set([
   "model",
   "email",
@@ -98,7 +94,6 @@ const BASE_TOOLS = [
     description: "Web stage: fetch public URL context",
   },
 ];
-
 const LAB_TOOLKIT_TO_FLOW = {
   gmail: "email",
   mail: "email",
@@ -112,7 +107,6 @@ const LAB_TOOLKIT_TO_FLOW = {
   web_search: "search",
   search: "search",
 };
-
 const TOOL_ALIASES = {
   gmail: "email",
   mail: "email",
@@ -130,7 +124,6 @@ const TOOL_ALIASES = {
   google_super: "google",
   web_search: "search",
 };
-
 const PROVIDER_LABELS = {
   gmail: "Gmail",
   googlesheets: "Google Sheets",
@@ -143,7 +136,6 @@ const PROVIDER_LABELS = {
   translate: "Translate",
   model: "Model",
 };
-
 const LAB_TOOLS_TTL_MS = 5 * 60 * 1000;
 const LAB_TOOLKIT_FETCH_MS = 12_000;
 const LAB_CHAT_TIMEOUT_MS = 55_000;
@@ -155,10 +147,7 @@ let mergedToolsCache = {
   liveIds: new Set(LIVE_TOOL_IDS),
 };
 let labToolsInflight = null;
-
-/** @deprecated use mergedToolsCache — kept for module export compat */
 const TOOLS = BASE_TOOLS;
-
 const LAB_REPLY_RULES = [
   "Reply in clear human language only.",
   "Never include scaffolding like: OK:, Toolkit:, Action:, ResourceIds:, Summary:, Next:, Prefer setting action.",
@@ -287,7 +276,6 @@ function rebuildMergedTools(labToolkits = []) {
 function extractMessageText(data) {
   const layer0Text = String(data?.layer0?.output?.text || "").trim();
   const content = data?.choices?.[0]?.message?.content;
-
   let fromContent = "";
   if (typeof content === "string") {
     fromContent = content.trim();
@@ -310,7 +298,6 @@ function extractMessageText(data) {
       .join("\n")
       .trim();
   }
-
   if (layer0Text && layer0Text.length >= fromContent.length) return layer0Text;
   if (fromContent) return fromContent;
   return layer0Text;
@@ -332,11 +319,9 @@ function summarizeLabActivity(activity) {
 function parseLabToolkitsFromResponse(data) {
   const fromJson = data?.layer0?.output?.json?.toolkits;
   if (Array.isArray(fromJson) && fromJson.length) return fromJson;
-
   const text = extractMessageText(data);
   const parsed = extractJsonObject(text);
   if (Array.isArray(parsed?.toolkits) && parsed.toolkits.length) return parsed.toolkits;
-
   return [];
 }
 
@@ -367,11 +352,18 @@ async function labHttp(cfg, { messages, temperature = 0.2, timeoutMs = LAB_CHAT_
     if (err?.name === "AbortError") {
       throw new Error(`Model Lab timed out after ${Math.round(timeoutMs / 1000)}s`);
     }
+    const msg = String(err?.message || err || "");
+    if (/econnrefused|fetch failed|enotfound|econnreset|etimedout|network/i.test(msg)) {
+      throw new Error(
+        `Model Lab isn’t reachable at ${cfg.baseUrl || "localhost:8080"}. ` +
+          "Start Lab on this PC, or clear the Lab key under Connection to use local planning. " +
+          `(${msg})`
+      );
+    }
     throw err;
   } finally {
     clearTimeout(timer);
   }
-
   let data = null;
   const rawText = await res.text();
   try {
@@ -379,11 +371,9 @@ async function labHttp(cfg, { messages, temperature = 0.2, timeoutMs = LAB_CHAT_
   } catch {
     data = { raw: rawText };
   }
-
   if (!res.ok) {
     throw new Error(formatLabHttpError(res, data));
   }
-
   return data;
 }
 
@@ -429,21 +419,16 @@ async function ensureLabTools(cfg = getApiConfig(), { wait = false } = {}) {
   if (!cfg.apiKey) {
     return rebuildMergedTools([]);
   }
-
   const hasCache = mergedToolsCache.tools.length > 0 && labToolkitsCache.at > 0;
   const stale = !labToolkitsCache.at || Date.now() - labToolkitsCache.at > LAB_TOOLS_TTL_MS;
-
   if (hasCache && !stale) return mergedToolsCache;
-
   if (hasCache && stale) {
     scheduleLabToolsRefresh(cfg);
     return mergedToolsCache;
   }
-
   if (wait) {
     return scheduleLabToolsRefresh(cfg);
   }
-
   if (!mergedToolsCache.tools.length) rebuildMergedTools([]);
   scheduleLabToolsRefresh(cfg);
   return mergedToolsCache.tools.length ? mergedToolsCache : rebuildMergedTools([]);
@@ -584,7 +569,6 @@ function localPlan(task) {
   const wantsSheets = isSheetsIntent(t);
   const wantsEmailRead =
     isEmailReadIntent(t) || (wantsSheets && /מייל|email|mail|inbox/i.test(t));
-
   steps.push({
     id: uid("step"),
     tool: "model",
@@ -706,7 +690,6 @@ function localPlan(task) {
   if (wantsEmailRead && wantsSheets) summary = "Read inbox → create Google Sheet → share link.";
   else if (wantsEmailRead) summary = "Read inbox → summarize → answer (not send).";
   else if (wantsSheets) summary = "Create Google Sheet → share link.";
-
   return {
     id: uid("flow"),
     title: clip(t, 72) || "Untitled flow",
@@ -764,11 +747,9 @@ function normalizeFlow(parsed, task) {
     })
     .filter(Boolean)
     .slice(0, 12);
-
   const wantsSheets = isSheetsIntent(task);
   const wantsEmailRead =
     isEmailReadIntent(task) || (wantsSheets && /מייל|email|mail|inbox/i.test(String(task || "")));
-
   if (wantsEmailRead && !wantsSheets) {
     const hasRead = steps.some(
       (s) => s.tool === "email" && String(s.config?.action || "").toLowerCase() === "read"
@@ -796,9 +777,7 @@ function normalizeFlow(parsed, task) {
   }
 
   if (!steps.length) return localPlan(task);
-
   steps = steps.map((s) => ({ ...s, chips: configChips(s.config) }));
-
   return {
     id: uid("flow"),
     title: String(parsed.title || clip(task, 72) || "Proposed flow").slice(0, 100),
@@ -875,16 +854,20 @@ async function planFlow(task) {
   }
 
   await ensureLabTools(cfg, { wait: false });
-
   try {
     const flow = await planWithModelLab(trimmed, cfg);
     return { ok: true, flow, mode: "model-lab", program: cfg.program, plan: cfg.plan };
   } catch (err) {
     const fallback = localPlan(trimmed);
     const billing = /balance|billing|quota/i.test(String(err.message || ""));
+    const offline = /isn['’]t reachable|timed out|econnrefused|fetch failed/i.test(
+      String(err.message || "")
+    );
     fallback.summary = billing
       ? `Lab out of credit: showing local plan. Approve will need Lab top-up for Gmail/Sheets. (${err.message})`
-      : `Model Lab planning failed (${err.message}). Showing local draft instead.`;
+      : offline
+        ? `Model Lab isn’t running — showing a local draft plan. The OS is fine; start Lab or keep working offline. (${err.message})`
+        : `Model Lab planning failed (${err.message}). Showing local draft instead.`;
     return { ok: true, flow: fallback, mode: "local-fallback", warning: err.message };
   }
 }
@@ -968,7 +951,6 @@ function parseLabScaffold(text) {
       .trim();
   }
   summary = summary.replace(/\s+/g, " ").trim();
-
   const newest = summary.match(
     /\[1\]\s*(?:Newest\s*\/\s*latest message:\s*)?([\s\S]*?)(?=\s*\[2\]|$)/i
   );
@@ -978,7 +960,6 @@ function parseLabScaffold(text) {
       .replace(/\s+/g, " ")
       .trim();
   }
-
   const facts = [];
   const subj = summary.match(/\bSubject:\s*([^|]+?)(?=\s+From:|$)/i);
   const from = summary.match(/\bFrom:\s*([^|]+?)(?=\s+To:|\s+Date:|$)/i);
@@ -988,7 +969,6 @@ function parseLabScaffold(text) {
   if (date) facts.push({ key: "Date", value: date[1].trim().slice(0, 40) });
   const title = summary.match(/\bTitle:\s*([^|]+?)(?=\s+Spreadsheet|\s+URL:|$)/i);
   if (title) facts.push({ key: "Title", value: title[1].trim().slice(0, 120) });
-
   return {
     toolkit: toolkit ? toolkit.toLowerCase() : null,
     action: action || null,
@@ -1022,10 +1002,9 @@ function buildDisplay(result, step = {}) {
     parsed.toolkit ||
     providerFromActivity(result.activity) ||
     (tool === "email" ? "gmail" : tool === "sheets" ? "googlesheets" : null);
-
   let summary = parsed.summary || rawText || (result.ok ? "Done" : "Failed");
   if (status === "staged" && !parsed.toolkit) {
-    summary = String(result.message || "Staged: adapter not wired yet");
+    summary = String(result.message || "This step is not available yet — nothing was sent.");
   }
   if (tool === "model" && /understand|ready for tool stages/i.test(summary) && !result.answer) {
     summary = String(result.message || summary);
@@ -1033,7 +1012,6 @@ function buildDisplay(result, step = {}) {
   if (tool === "notify") {
     summary = clip(String(result.notify || result.message || summary), 280);
   }
-
   const facts = [...(parsed.facts || [])];
   if (provider) {
     facts.unshift({
@@ -1042,9 +1020,7 @@ function buildDisplay(result, step = {}) {
     });
   }
   if (parsed.action) facts.push({ key: "Action", value: parsed.action.replace(/_/g, " ") });
-
   const links = parsed.links.length ? parsed.links : extractUrls(rawText);
-
   return {
     status,
     tool,
@@ -1089,7 +1065,6 @@ async function runEmailViaLab(step, ctx) {
   const task = String(ctx?.flow?.task || "");
   const isRead = action === "read" || action === "list" || action === "inbox";
   const prior = lastAnswerFromResults(ctx.results);
-
   const system = [
     "You are Model Flow executing ONE email step only.",
     isRead
@@ -1098,7 +1073,6 @@ async function runEmailViaLab(step, ctx) {
     LAB_REPLY_RULES,
     "Return: from, subject, date, and a short body summary (read): or to/subject confirmation (send).",
   ].join("\n");
-
   let userMsg;
   if (isRead) {
     userMsg = `Fetch ONLY my last/newest received email and summarize it.\nUser task context: ${task || "(none)"}`;
@@ -1114,7 +1088,6 @@ async function runEmailViaLab(step, ctx) {
       .filter(Boolean)
       .join("\n");
   }
-
   const { text, activity } = await labChat(
     [
       { role: "system", content: system },
@@ -1123,11 +1096,9 @@ async function runEmailViaLab(step, ctx) {
     cfg,
     { timeoutMs: LAB_TOOL_STEP_MS }
   );
-
   if (!text) {
     return { ok: false, tool: "email", label, error: "Model Lab returned empty Gmail result", activity };
   }
-
   return {
     ok: true,
     tool: "email",
@@ -1153,21 +1124,19 @@ async function runSheetsViaLab(step, ctx) {
   const priorRaw = lastAnswerFromResults(ctx.results);
   const prior = priorRaw && !isAckNoise(priorRaw) ? priorRaw : "";
   const action = String(config.action || "create").toLowerCase();
-
   const system = [
     "You are Model Flow executing ONE Google Sheets step only.",
     action === "update"
       ? "Use Google Sheets tools to UPDATE an existing spreadsheet the user named."
       : "Use Google Sheets tools to CREATE a NEW spreadsheet and write the requested content.",
     "Source of truth is the USER TASK (and Prior tool content if present).",
-    "NEVER write protocol / status text into cells (e.g. “Request understood”, “ready for tool stages”).",
+    "NEVER write protocol / status text into cells.",
     "Do not open or quote unrelated existing sheets unless the user named them.",
     "Do not invent spreadsheet URLs: only report the real URL returned by the Sheets tool.",
     "Do not send email. Do not re-fetch Gmail unless Prior content is missing and the task requires inbox data.",
     LAB_REPLY_RULES,
     "Reply with the sheet title and the real URL only.",
   ].join("\n");
-
   const userMsg = [
     `Action: ${action}`,
     config.title ? `Preferred title: ${config.title}` : null,
@@ -1178,7 +1147,6 @@ async function runSheetsViaLab(step, ctx) {
   ]
     .filter(Boolean)
     .join("\n\n");
-
   const { text, activity } = await labChat(
     [
       { role: "system", content: system },
@@ -1187,11 +1155,9 @@ async function runSheetsViaLab(step, ctx) {
     cfg,
     { timeoutMs: LAB_TOOL_STEP_MS }
   );
-
   if (!text) {
     return { ok: false, tool: "sheets", label, error: "Model Lab returned empty Sheets result", activity };
   }
-
   return {
     ok: true,
     tool: "sheets",
@@ -1211,7 +1177,6 @@ async function runModelViaLab(step, ctx) {
   const prompt = String(config.prompt || config.task || "").trim();
   const task = String(ctx?.flow?.task || "");
   const cfg = getApiConfig();
-
   if (!cfg.apiKey) {
     if (prior && !isAckNoise(prior)) {
       return {
@@ -1230,7 +1195,6 @@ async function runModelViaLab(step, ctx) {
       error: "No Lab key: open Connection, save a Model Lab API key, then retry.",
     };
   }
-
   const system = [
     prior
       ? "Polish the prior tool result into a clear answer for the user. Keep facts; do not invent."
@@ -1238,7 +1202,6 @@ async function runModelViaLab(step, ctx) {
     "Do not call Gmail or Sheets tools in this step unless drafting text that requires no side effects.",
     LAB_REPLY_RULES,
   ].join(" ");
-
   const userContent = [
     task ? `User task: ${task}` : null,
     prompt ? `Step instruction: ${prompt}` : null,
@@ -1248,7 +1211,6 @@ async function runModelViaLab(step, ctx) {
   ]
     .filter(Boolean)
     .join("\n\n");
-
   const { text } = await labChat(
     [
       { role: "system", content: system },
@@ -1257,7 +1219,6 @@ async function runModelViaLab(step, ctx) {
     cfg,
     { temperature: prior ? 0.25 : 0.4, timeoutMs: LAB_CHAT_TIMEOUT_MS }
   );
-
   const answer = (text && !isAckNoise(text) ? text : "") || prior || "";
   if (!answer) {
     return {
@@ -1267,7 +1228,6 @@ async function runModelViaLab(step, ctx) {
       error: "Model Lab returned no usable text for this step",
     };
   }
-
   return {
     ok: true,
     tool: "model",
@@ -1290,21 +1250,19 @@ async function runLabToolkitStep(step, ctx) {
       ok: false,
       tool,
       label,
-      error: `Model Lab API key missing — cannot run ${labToolkit}`,
+      error: `Model Lab API key missing: cannot run ${labToolkit}`,
     };
   }
 
   const task = String(ctx?.flow?.task || "");
   const prior = lastAnswerFromResults(ctx.results);
   const toolkitName = PROVIDER_LABELS[labToolkit] || labToolkit.replace(/_/g, " ");
-
   const system = [
     `You are Model Flow executing ONE ${toolkitName} (${labToolkit}) step only.`,
     "Use the toolkit tools needed for this step. Do not run unrelated toolkits.",
     LAB_REPLY_RULES,
     "Return a concise human summary of what you did.",
   ].join("\n");
-
   const userMsg = [
     task ? `Flow task: ${task}` : null,
     label ? `Step: ${label}` : null,
@@ -1315,7 +1273,6 @@ async function runLabToolkitStep(step, ctx) {
   ]
     .filter(Boolean)
     .join("\n\n");
-
   const { text, activity } = await labChat(
     [
       { role: "system", content: system },
@@ -1324,7 +1281,6 @@ async function runLabToolkitStep(step, ctx) {
     cfg,
     { timeoutMs: LAB_TOOL_STEP_MS }
   );
-
   if (!text) {
     return {
       ok: false,
@@ -1334,7 +1290,6 @@ async function runLabToolkitStep(step, ctx) {
       activity,
     };
   }
-
   return {
     ok: true,
     tool,
@@ -1561,7 +1516,6 @@ async function runStep(step, ctx = {}) {
   const tool = step.tool;
   const config = step.config || {};
   const label = step.label || defaultStepLabel(tool, config);
-
   switch (tool) {
     case "model":
       return runModelViaLab(step, ctx);
@@ -1716,13 +1670,11 @@ async function runFlow(rawFlow, opts = {}) {
   const flow = prepareFlowForRun(rawFlow);
   if (!flow?.steps?.length) return { ok: false, error: "No steps to run" };
   await ensureLabTools(getApiConfig(), { wait: false });
-
   const fromIndex = Math.min(
     Math.max(Number(opts.fromIndex) || 0, 0),
     flow.steps.length
   );
   const prior = Array.isArray(opts.priorResults) ? opts.priorResults.slice(0, fromIndex) : [];
-
   const cfg = getApiConfig();
   const remaining = flow.steps.slice(fromIndex);
   const needsLab = remaining.some((s) =>
@@ -1946,7 +1898,6 @@ async function handleModelFlowInvoke(channel, args = {}) {
       return { ok: false, error: `Unknown model-flow channel: ${channel}` };
   }
 }
-
 module.exports = {
   handleModelFlowInvoke,
   TOOLS,

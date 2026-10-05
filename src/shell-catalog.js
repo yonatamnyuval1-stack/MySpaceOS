@@ -32,7 +32,7 @@
     "code-lexicon": "Code Lexicon",
     "model-flow": "Model Flow",
     "shell-console": "Shell (Atlas)",
-    scripts: "Scripts",
+    scripts: "Runtime",
     "world-maps": "World Maps",
     mail: "Connect / Mail",
   };
@@ -197,7 +197,7 @@
         `macro name = ${alias}(…); other(…): multi-step personal macro`,
         `when <trigger> then ${alias}(…): react to events`,
         `if check … then ${alias}(…) else …: conditional runs`,
-        `Long multi-step programs belong in Scripts (Platform → Scripts), not in one-line macros.`,
+        `Long multi-step programs belong in Runtime (Platform → Runtime), not in one-line macros.`,
       ],
     });
 
@@ -246,7 +246,7 @@
           ? layers.map((l) => `${l.name} — ${l.role}`)
           : [
               "My Space Language: grammar + operations",
-              "Scripts: runtime for saved programs",
+              "Runtime: place for saved programs",
               "Shell: atlas + entry surfaces",
               "Platform services: Jobs, Scheduler, … called by operations",
               "Host languages: Python/Node logic via host(…) when wired",
@@ -324,7 +324,7 @@
       {
         heading: "Chaining",
         paragraphs: [
-          "Use ; to stop on the first failing step. Use | to continue even when a step fails. Prefer Scripts for long programs.",
+          "Use ; to stop on the first failing step. Use | to continue even when a step fails. Prefer Runtime for long programs.",
         ],
         items: [
           "cmd; cmd: sequential, abort on error",
@@ -360,14 +360,14 @@
       {
         heading: "Loops (loop / while / for)",
         paragraphs: [
-          "Iteration is intentionally capped (safety). For heavy or long automation use Scripts or Jobs.",
+          "Iteration is intentionally capped (safety). For heavy or long automation use Runtime or Jobs.",
         ],
         items: splitBullets(cmds.formatLoopHelp?.() || ""),
       },
       {
         heading: "Aliases, macros, and when-rules",
         paragraphs: [
-          "Stored in the language engine (synced across the desktop). Short personal automation — long programs belong in Scripts.",
+          "Stored in the language engine (synced across the desktop). Short personal automation — long programs belong in Runtime.",
         ],
         items: [
           "alias name = command: create/update",
@@ -408,18 +408,18 @@
         {
           heading: "Role in My Space",
           paragraphs: [
-            `Platform → Shell is the atlas for ${name}: not a second language and not the Scripts runtime.`,
+            `Platform → Shell is the atlas for ${name}: not a second language and not the Runtime app.`,
             `${name} orchestrates the OS: launch apps, call platform services (Jobs, Scheduler, Mind, Files, MSL, Pulse, Permissions, …), chain steps, and automate. Every module(…) verb is a language operation.`,
             "This atlas is generated from the live ROUTE_REGISTRY and module help: the same sources help and check routes use — expanded for reading.",
-            "Type on the desktop shell line or command palette. Author long programs in Scripts. Queue heavy work through Jobs. Time contracts live in Scheduler (schedule(…) in the language).",
+            "Type on the desktop shell line or command palette. Author long programs in Runtime. Queue heavy work through Jobs. Time contracts live in Scheduler (schedule(…) in the language).",
           ],
         },
         {
-          heading: "Language · Scripts · Shell · Services",
+          heading: "Language · Runtime · Shell · Services",
           paragraphs: [lang?.layerBlurb?.() || ""],
           items: [
             `Language: ${name} (grammar + operations)`,
-            "Scripts: runtime / library for saved language programs",
+            "Runtime: library for saved language programs",
             "Shell: this atlas + desktop line + palette (entry & map)",
             "Services: Jobs, Scheduler, Files, … invoked by operations",
           ],
@@ -429,7 +429,7 @@
           items: [
             "Desktop shell line: primary place to run language lines",
             "Command palette: search operations and actions",
-            "Platform → Scripts: author and run saved multi-step programs",
+            "Platform → Runtime: author and run saved multi-step programs",
             "Platform → Jobs: capacity and compute queue (not a second syntax)",
             "Platform → Scheduler: time contracts (schedule(…) from the language)",
             "Platform → Shell: this atlas (documentation), not a second runner",
@@ -567,7 +567,7 @@
           heading: "This surface",
           paragraphs: [
             "Platform → Shell opens this atlas for My Space Language. shell(open) and console(open) also open it.",
-            "Shell is the map/entry, not the language itself and not the Scripts runtime. Type on the desktop line; author long programs in Scripts; call Scheduler/Jobs as schedule(…)/jobs(…).",
+            "Shell is the map/entry, not the language itself and not the Runtime app. Type on the desktop line; author long programs in Runtime; call Scheduler/Jobs as schedule(…)/jobs(…).",
           ],
           items: [
             "shell(open) · shell(overview) · shell(language) · shell(modules) · shell(core)",

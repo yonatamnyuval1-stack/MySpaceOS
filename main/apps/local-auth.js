@@ -2,13 +2,11 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const { app } = require("electron");
-
 const SCRYPT_OPTS = { N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
 const SESSION_DAYS = 30;
 const MIN_USERNAME = 3;
 const MAX_USERNAME = 32;
-const MIN_PASSWORD = 6;
-
+const MIN_PASSWORD = 8;
 /** @type {Map<string, { userId: string, username: string, remember: boolean }>} */
 const sessions = new Map();
 /** @type {Map<string, string|null>} */
@@ -174,7 +172,6 @@ async function tryRestoreSession(appId) {
     await clearSession(appId);
     return null;
   }
-
   if (String(saved.userId).startsWith("ms_")) {
     await fs.promises.mkdir(userDir(accountsRoot, saved.userId), { recursive: true });
     sessions.set(appId, {
@@ -218,7 +215,7 @@ async function authStatus(appId) {
   };
 }
 
-async function register(appId, usernameRaw, password, remember = true) {
+async function register(appId, usernameRaw, password, remember = false) {
   const username = normalizeUsername(usernameRaw);
   const userErr = validateUsername(username);
   if (userErr) return { ok: false, error: userErr };
@@ -253,7 +250,6 @@ async function register(appId, usernameRaw, password, remember = true) {
     remember: Boolean(remember),
   });
   await persistSession(appId, Boolean(remember));
-
   return { ok: true, user: { id: user.id, username: user.username } };
 }
 
@@ -262,7 +258,6 @@ async function login(appId, usernameRaw, password, remember = false) {
   if (!username || !password) {
     return { ok: false, error: "Username and password required" };
   }
-
   const accountsRoot = getAccountsRoot(appId);
   const store = await loadUsersStore(accountsRoot);
   const user = store.users.find((u) => u.username === username);
@@ -272,14 +267,12 @@ async function login(appId, usernameRaw, password, remember = false) {
 
   await fs.promises.mkdir(userDir(accountsRoot, user.id), { recursive: true });
   await runLegacyMigrator(appId, user.id, accountsRoot);
-
   sessions.set(appId, {
     userId: user.id,
     username: user.username,
     remember: Boolean(remember),
   });
   await persistSession(appId, remember);
-
   return { ok: true, user: { id: user.id, username: user.username } };
 }
 
@@ -288,7 +281,7 @@ async function logout(appId) {
   return { ok: true };
 }
 
-async function bindMyspaceSession(appId, { userId, username, remember = true } = {}) {
+async function bindMyspaceSession(appId, { userId, username, remember = false } = {}) {
   const id = String(userId || "").trim();
   const name = normalizeUsername(username) || id;
   if (!id.startsWith("ms_")) {

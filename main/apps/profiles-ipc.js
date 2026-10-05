@@ -9,7 +9,6 @@ const {
   createAuthRecord,
 } = require("./vault-crypto");
 const profile = require("../myspace-profile");
-const identity = require("../myspace-identity");
 
 function dataPath() {
   return profile.profileScopedPath("profiles.json");
@@ -39,12 +38,33 @@ function uid(prefix) {
   return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 }
 
-function readConfigVaultPassword() {
+function userConfigCandidates() {
+  const paths = [userConfigPath()];
   try {
-    const cfg = JSON.parse(fs.readFileSync(userConfigPath(), "utf8"));
-    return cfg?.vault?.masterPassword || null;
+    paths.push(profile.profileScopedPath("user-config.json"));
   } catch {
-    return null;
+  }
+  try {
+    paths.push(path.join(app.getPath("userData"), "user-config.json"));
+  } catch {
+  }
+  return paths;
+}
+
+/** Remove legacy plaintext vault.masterPassword from any user-config.json copies. */
+function scrubLegacyPlaintextMasterPassword() {
+  for (const p of userConfigCandidates()) {
+    try {
+      if (!fs.existsSync(p)) continue;
+      const cfg = JSON.parse(fs.readFileSync(p, "utf8"));
+      if (!cfg?.vault || cfg.vault.masterPassword == null) continue;
+      delete cfg.vault.masterPassword;
+      if (cfg.vault && typeof cfg.vault === "object" && Object.keys(cfg.vault).length === 0) {
+        delete cfg.vault;
+      }
+      fs.writeFileSync(p, JSON.stringify(cfg, null, 2), "utf8");
+    } catch {
+    }
   }
 }
 
@@ -64,20 +84,10 @@ async function saveVaultFile(data) {
 }
 
 async function ensureVaultInitialized() {
-  let file = await loadVaultFile();
+  scrubLegacyPlaintextMasterPassword();
+  const file = await loadVaultFile();
   if (file?.auth?.salt && file?.auth?.hash) return file;
-
-  // Per My Space account: do not seed vault from install-wide config password.
-  // Each signed-in OS user creates their own master password on first unlock.
-  if (identity.getCurrentUser()?.id) return file;
-
-  const configPw = readConfigVaultPassword();
-  if (!configPw) return file;
-
-  const auth = createAuthRecord(configPw);
-  const key = deriveKey(configPw, Buffer.from(auth.salt, "base64"));
-  file = { auth, cipher: encryptJson(key, []) };
-  await saveVaultFile(file);
+  // Vault is created on first unlock with a user-chosen master password — never from plaintext config.
   return file;
 }
 

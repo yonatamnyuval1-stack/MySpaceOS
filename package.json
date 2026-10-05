@@ -6,7 +6,7 @@
   "author": "Jonatan",
   "scripts": {
     "preview": "powershell -NoProfile -ExecutionPolicy Bypass -File ./serve.ps1",
-    "start": "npm run check:browser-apps && electron .",
+    "start": "npm run check:browser-apps && npm run check:release-hygiene && electron .",
     "start:raw": "electron .",
     "history:build": "node scripts/build-history-cache.js",
     "geography:build": "node scripts/build-geography-learn.js",
@@ -14,6 +14,7 @@
     "icons:build": "node scripts/build-icon-library.js",
     "smoke:shell": "electron ./scripts/smoke-shell-lang.js",
     "check:browser-apps": "node scripts/check-browser-apps.js",
+    "check:release-hygiene": "node scripts/check-release-hygiene.js",
     "space:stars": "node scripts/generate-space-stars.js",
     "space:ocean": "node scripts/generate-space-ocean.js",
     "space:earth": "node scripts/generate-earth-world.js",
@@ -28,7 +29,7 @@
     "build:linux:dir": "electron-builder --linux --dir"
   },
   "devDependencies": {
-    "electron": "^35.0.0",
+    "electron": "^35.7.5",
     "electron-builder": "^25.1.8",
     "lucide-static": "^0.511.0"
   },
@@ -46,6 +47,7 @@
       "main/**/*",
       "src/**/*",
       "apps/**/*",
+      "shared/**/*",
       "world-maps/**/*",
       "!world-maps/node_modules/**",
       "!world-maps/dist/**",
@@ -59,9 +61,15 @@
       "config/platform-services.json",
       "config/mail-oauth.example.json",
       "!config/user-config.json",
+      "!config/mail-oauth.json",
+      "!config/mind-bootstrap.local.json",
+      "!config/secrets.json",
       "!**/*.md",
       "!dist/**",
-      "!scripts/**"
+      "!scripts/**",
+      "!**/smoke-*.js",
+      "!.tmp-theme-smoke/**",
+      "!tmp-*/**"
     ],
     "win": {
       "target": [

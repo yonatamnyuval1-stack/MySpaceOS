@@ -2,12 +2,12 @@
   "use strict"
 
   const LANGUAGES = [
-    { id: "en", name: "English", nativeName: "English", rtl: false, locale: "en-US", htmlLang: "en" },
-    { id: "he", name: "Hebrew", nativeName: "עברית", rtl: true, locale: "he-IL", htmlLang: "he" },
-    { id: "ar", name: "Arabic", nativeName: "العربية", rtl: true, locale: "ar-SA", htmlLang: "ar" },
-    { id: "fr", name: "French", nativeName: "Français", rtl: false, locale: "fr-FR", htmlLang: "fr" },
-    { id: "ru", name: "Russian", nativeName: "Русский", rtl: false, locale: "ru-RU", htmlLang: "ru" },
-    { id: "es", name: "Spanish", nativeName: "Español", rtl: false, locale: "es-ES", htmlLang: "es" },
+    { id: "en", name: "English", nativeName: "English", rtl: false, locale: "en-US", htmlLang: "en", complete: true },
+    { id: "he", name: "Hebrew", nativeName: "עברית", rtl: true, locale: "he-IL", htmlLang: "he", complete: true },
+    { id: "ar", name: "Arabic", nativeName: "العربية", rtl: true, locale: "ar-SA", htmlLang: "ar", complete: false },
+    { id: "fr", name: "French", nativeName: "Français", rtl: false, locale: "fr-FR", htmlLang: "fr", complete: false },
+    { id: "ru", name: "Russian", nativeName: "Русский", rtl: false, locale: "ru-RU", htmlLang: "ru", complete: false },
+    { id: "es", name: "Spanish", nativeName: "Español", rtl: false, locale: "es-ES", htmlLang: "es", complete: false },
   ];
 
   const BY_ID = Object.fromEntries(LANGUAGES.map((l) => [l.id, l]));
@@ -35,8 +35,16 @@
     return Boolean(meta(raw).rtl);
   }
 
+  function isComplete(raw) {
+    return Boolean(meta(raw).complete);
+  }
+
   function list() {
     return LANGUAGES.slice();
+  }
+
+  function listComplete() {
+    return LANGUAGES.filter((l) => l.complete);
   }
 
   function ids() {
@@ -52,9 +60,11 @@
     IDS,
     normalizeLang,
     isSupported,
+    isComplete,
     meta,
     isRtl,
     list,
+    listComplete,
     ids,
     appUiLanguageOptions,
   };

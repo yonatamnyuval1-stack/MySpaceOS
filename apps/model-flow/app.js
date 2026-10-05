@@ -503,8 +503,8 @@
       setStatus("Review", "pending");
       ui.approveNote.textContent =
         staged > 0
-          ? `${staged} staged step${staged === 1 ? "" : "s"} will not execute yet.`
-          : "Live tools run only after you approve.";
+          ? `${staged} step${staged === 1 ? "" : "s"} are not available yet and will be skipped.`
+          : "Tools run only after you approve.";
     } else if (studioPhase === "run") {
       setStatus("Running", "running");
     } else {
@@ -518,7 +518,7 @@
         const live = toolsCache.find((t) => t.id === step.tool)?.live;
         const liveBadge =
           live === false
-            ? `<span class="step-live is-staged">Staged</span>`
+            ? `<span class="step-live is-staged">Unavailable</span>`
             : live
               ? `<span class="step-live is-live">Live</span>`
               : "";
@@ -686,8 +686,8 @@
   }
 
   function renderToolsList() {
+    // Hide unfinished tools from the product UI (calendar/files/web stay out until live).
     const live = toolsCache.filter((t) => t.live !== false);
-    const staged = toolsCache.filter((t) => t.live === false);
     const renderGroup = (title, items) => {
       if (!items.length) return "";
       return `<section class="tool-group">
@@ -707,8 +707,7 @@
       </section>`;
     };
     ui.toolsList.innerHTML =
-      renderGroup("Live", live) + renderGroup("Staged", staged) ||
-      '<p class="side-empty">No tools listed.</p>';
+      renderGroup("Available", live) || '<p class="side-empty">No tools listed.</p>';
   }
 
   async function refreshTools() {

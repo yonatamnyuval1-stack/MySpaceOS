@@ -25,10 +25,8 @@
     return false;
   }
   function refresh() {}
-
   window.addEventListener("myspace-i18n-applied", () => {
     if (isOpen()) refresh();
   });
-
   window.MySpaceInfoPanel = { show, hide, toggle, isOpen, refresh };
 })();

@@ -1,15 +1,16 @@
 window.ProfilesPages = window.ProfilesPages || {};
-
 window.ProfilesPages.vault = (function () {
   const { escapeHtml, invoke, uid, formatTime } = window.Profiles;
   const page = document.getElementById("page-vault");
   let unlocked = false;
+  let initialized = false;
   let entries = [];
   let editingId = null;
   let pendingOpenId = null;
 
   async function scan() {
     const status = await invoke("vault.status");
+    initialized = Boolean(status.initialized);
     if (status.unlocked) {
       unlocked = true;
       try {
@@ -32,14 +33,26 @@ window.ProfilesPages.vault = (function () {
   }
 
   function showLock() {
+    const isCreate = !initialized;
     page.innerHTML = `
       <div class="vault-lock card-panel">
         <span class="vault-lock-icon">🔐</span>
         <h2>Password Vault</h2>
-        <p class="muted">Encrypted storage for passwords & secrets</p>
+        <p class="muted">${
+          isCreate
+            ? "Choose a master password to encrypt this vault. You will need it every time you unlock."
+            : "Encrypted storage for passwords & secrets"
+        }</p>
         <form id="vault-unlock-form" class="vault-unlock-form">
-          <input type="password" id="vault-password" class="field-input vault-pw-input" placeholder="Master password" autofocus />
-          <button type="submit" class="btn btn-primary">Unlock</button>
+          <input type="password" id="vault-password" class="field-input vault-pw-input" placeholder="${
+            isCreate ? "Create master password" : "Master password"
+          }" autofocus />
+          ${
+            isCreate
+              ? `<input type="password" id="vault-password2" class="field-input vault-pw-input" placeholder="Confirm master password" />`
+              : ""
+          }
+          <button type="submit" class="btn btn-primary">${isCreate ? "Create vault" : "Unlock"}</button>
         </form>
         <p class="vault-error bad" id="vault-unlock-error" hidden></p>
       </div>`;
@@ -48,10 +61,24 @@ window.ProfilesPages.vault = (function () {
       const pw = page.querySelector("#vault-password").value;
       const errEl = page.querySelector("#vault-unlock-error");
       errEl.hidden = true;
+      if (isCreate) {
+        const pw2 = page.querySelector("#vault-password2")?.value || "";
+        if (pw.length < 6) {
+          errEl.textContent = "Master password must be at least 6 characters";
+          errEl.hidden = false;
+          return;
+        }
+        if (pw !== pw2) {
+          errEl.textContent = "Passwords do not match";
+          errEl.hidden = false;
+          return;
+        }
+      }
       try {
         const res = await invoke("vault.unlock", { password: pw });
         entries = res.entries || [];
         unlocked = true;
+        initialized = true;
         showVault();
         flushPendingOpen();
       } catch (err) {
@@ -73,7 +100,6 @@ window.ProfilesPages.vault = (function () {
       </div>
       <div class="vault-grid" id="vault-grid"></div>
       <aside class="vault-editor hidden" id="vault-editor"></aside>`;
-
     page.querySelector("#vault-add").addEventListener("click", () => openEditor(null));
     page.querySelector("#vault-lock-btn").addEventListener("click", async () => {
       await invoke("vault.lock");
@@ -136,7 +162,6 @@ window.ProfilesPages.vault = (function () {
       </article>`
       )
       .join("");
-
     grid.querySelectorAll(".vault-card[data-id]").forEach((card) => {
       card.addEventListener("click", (e) => {
         if (e.target.closest("button")) return;
@@ -207,13 +232,11 @@ window.ProfilesPages.vault = (function () {
           ${id ? `<button type="button" class="btn btn-danger" id="ve-delete">Delete</button>` : ""}
         </div>
       </form>`;
-
     editor.querySelector("#vault-ed-close").addEventListener("click", () => {
       editingId = null;
       editor.classList.add("hidden");
       renderGrid();
     });
-
     editor.querySelector("#vault-ed-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const saved = {
@@ -249,12 +272,10 @@ window.ProfilesPages.vault = (function () {
       editor.classList.add("hidden");
       renderGrid();
     });
-
     renderGrid();
   }
 
   function bind() {}
-
   async function openEntry(id) {
     if (!id) return false;
     if (!unlocked) {
@@ -272,6 +293,5 @@ window.ProfilesPages.vault = (function () {
     await openEditor(id);
     return true;
   }
-
   return { id: "vault", page, scan, bind, openEntry, openEditor };
 })();

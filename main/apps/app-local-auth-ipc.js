@@ -5,7 +5,6 @@ const { BrowserWindow } = require("electron");
 const { getLocalAuth, isLocalAuthChannel } = require("./local-auth");
 const identity = require("../myspace-identity");
 const profile = require("../myspace-profile");
-
 /** @type {Map<string, (auth: ReturnType<getLocalAuth>) => void | Promise<void>>} */
 const prepareHooks = new Map();
 
@@ -17,7 +16,6 @@ function broadcastMyspaceIdentityChanged() {
     try {
       win.webContents.send("myspace-identity-changed", payload);
     } catch {
-      /* ignore */
     }
   }
 }
@@ -129,30 +127,35 @@ function loginNavigateTo(moduleId) {
 async function continueWithMyspace(moduleId, args = {}) {
   await identity.tryRestoreSession();
   let user = identity.getCurrentUser();
-
+  let inheritedGuestData = false;
   if (!user && args?.username && args?.password) {
     const mode = args.mode === "register" ? "register" : "login";
+    const before = await profile.guestInheritStatus();
     const result =
       mode === "register"
-        ? await identity.register(args.username, args.password, args.remember !== false)
+        ? await identity.register(args.username, args.password, Boolean(args.remember))
         : await identity.login(args.username, args.password, Boolean(args.remember));
     if (!result.ok) return result;
     user = result.user;
-    await profile.onIdentitySignedIn(user);
+    const migration = await profile.onIdentitySignedIn(user);
     await profile.notifyProfileSwitched();
     broadcastMyspaceIdentityChanged();
+    inheritedGuestData =
+      Boolean(before?.willInheritGuestData) && migration?.servicesMigratedTo === user.id;
+  } else if (user?.id) {
+    await profile.onIdentitySignedIn(user);
   }
-
   if (!user) {
     const status = await identity.authStatus();
+    const inherit = await profile.guestInheritStatus();
     return {
       ok: false,
       needOsLogin: true,
       hasUsers: status.hasUsers,
+      willInheritGuestData: Boolean(inherit.willInheritGuestData),
       error: "Sign in to My Space to continue",
     };
   }
-
   const manifest = readAppManifest(moduleId) || {};
   const appName = String(manifest.name || moduleId).trim() || moduleId;
   const scopes = [
@@ -167,7 +170,6 @@ async function continueWithMyspace(moduleId, args = {}) {
       detail: "Used so this app keeps your data separate from other accounts",
     },
   ];
-
   if (!args.consent) {
     return {
       ok: false,
@@ -175,24 +177,24 @@ async function continueWithMyspace(moduleId, args = {}) {
       user: { id: user.id, username: user.username },
       app: { id: moduleId, name: appName, icon: manifest.icon || null },
       scopes,
+      inheritedGuestData,
       error: "Allow this app to use your My Space account",
     };
   }
-
   const auth = await prepareLocalAuth(moduleId);
   const bound = await auth.bindMyspaceSession({
     userId: user.id,
     username: user.username,
-    remember: args.remember !== false,
+    remember: Boolean(args.remember),
   });
   if (!bound.ok) return bound;
-
   const appUrl = resolveAppEntryUrl(moduleId) || appNavigateTo(moduleId);
   return {
     ok: true,
     user: bound.user,
     myspaceUser: user,
     navigateTo: appUrl || undefined,
+    inheritedGuestData,
   };
 }
 
@@ -204,54 +206,46 @@ async function handleAppLocalAuthInvoke(moduleId, channel, args = {}) {
   if (!hasLocalAuth(moduleId)) {
     return { ok: false, error: "App does not use local auth" };
   }
-
   const auth = await prepareLocalAuth(moduleId);
   const appUrl = resolveAppEntryUrl(moduleId) || appNavigateTo(moduleId);
   const loginUrl = resolveLoginEntryUrl(moduleId) || loginNavigateTo(moduleId);
-
   switch (ch) {
     case "auth-status":
       await auth.tryRestoreSession();
       return auth.authStatus();
-
-    case "auth-myspace-status":
-      return identity.authStatus();
-
+    case "auth-myspace-status": {
+      const status = await identity.authStatus();
+      const inherit = await profile.guestInheritStatus();
+      return { ...status, ...inherit };
+    }
     case "auth-continue-myspace":
       return continueWithMyspace(moduleId, args);
-
     case "auth-register": {
       const result = await auth.register(args?.username, args?.password, Boolean(args?.remember));
       if (result.ok && appUrl) result.navigateTo = appUrl;
       return result;
     }
-
     case "auth-login": {
       const result = await auth.login(args?.username, args?.password, Boolean(args?.remember));
       if (result.ok && appUrl) result.navigateTo = appUrl;
       return result;
     }
-
     case "auth-logout": {
       await auth.logout();
       return { ok: true, navigateTo: loginUrl || undefined };
     }
-
     case "auth-enter-app": {
       if (!auth.getCurrentUser()) {
         return { ok: false, error: "Not signed in" };
       }
       return { ok: true, navigateTo: appUrl || undefined };
     }
-
     case "auth-current-user":
       return auth.getCurrentUser();
-
     default:
       return { ok: false, error: `Unknown auth channel: ${ch}` };
   }
 }
-
 module.exports = {
   handleAppLocalAuthInvoke,
   hasLocalAuth,

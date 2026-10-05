@@ -1,8 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 const https = require("https");
-const { MapPinXInside } = require("lucide-static");
-
 const ROOT = path.join(__dirname, "..");
 const OUT = path.join(ROOT, "data", "stocks-symbols.json");
 const DATA = path.join(ROOT, "data");
@@ -143,7 +141,6 @@ async function main() {
   );
   console.log(`Wrote ${symbols.length} symbols → ${OUT}`);
 }
-
 main().catch((err) => {
   console.error(err);
   process.exit(1);

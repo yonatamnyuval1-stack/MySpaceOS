@@ -409,13 +409,13 @@
     },
     {
       "id": "scripts",
-      "name": "Scripts",
+      "name": "Runtime",
       "type": "myapp",
       "module": "scripts",
       "icon": "📜",
       "iconPath": "apps/scripts/logo.png",
       "hidden": true,
-      "description": "Runtime for My Space Language programs: open from Platform → Scripts"
+      "description": "OS runtime studio: Language programs & host tools. Open from Platform → Runtime"
     },
     {
       "id": "edge",

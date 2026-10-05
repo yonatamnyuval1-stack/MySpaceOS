@@ -19,7 +19,7 @@
     },
     {
       "id": "browser",
-      "name": "Browser",
+      "name": "My Space Browser",
       "tier": "major",
       "series": "web",
       "seriesLabel": "Web",
@@ -69,15 +69,15 @@
     },
     {
       "id": "scripts",
-      "name": "Scripts",
+      "name": "Runtime",
       "tier": "major",
       "series": "shell",
       "seriesLabel": "Shell",
       "accent": "cyan",
       "mark": "atom-cyan",
       "action": "open-scripts",
-      "tagline": "Runtime for My Space Language programs",
-      "summary": "Save and run multi-line programs written in My Space Language. Scripts is the runtime/library; Shell is the atlas; platform services are what many operations call. Open from Platform → Scripts. Language: scripts(…).",
+      "tagline": "OS language & host tools",
+      "summary": "Save and run multi-line programs written in My Space Language. Runtime is the library; Shell is the atlas; platform services are what many operations call. Open from Platform → Runtime. Language: scripts(…).",
       "surfaces": [
         { "id": "library", "label": "Library", "hint": "Saved programs" },
         { "id": "new", "label": "New", "hint": "Create a program" }

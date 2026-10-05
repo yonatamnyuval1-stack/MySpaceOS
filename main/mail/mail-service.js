@@ -43,24 +43,37 @@ function findAccount(accountId) {
   return state.accounts.find((a) => a.id === accountId) || null;
 }
 
-async function connectProvider(providerId) {
-  const provider = getProvider(providerId);
-  if (!provider) return { ok: false, error: "Unknown provider" };
-  if (providerId !== "gmail") {
-    return provider.startOAuth();
+function purgeUnsupportedAccounts() {
+  const state = loadAccounts();
+  const bad = state.accounts.filter((a) => String(a.provider || "").toLowerCase() !== "gmail");
+  for (const gone of bad) {
+    try {
+      removeAccount(gone.id);
+    } catch {
+    }
   }
+  return bad.length;
+}
+
+async function connectProvider(providerId) {
+  const id = String(providerId || "").toLowerCase();
+  if (id !== "gmail") {
+    return { ok: false, error: "Only Gmail is supported for Mail accounts" };
+  }
+  const provider = getProvider(id);
+  if (!provider) return { ok: false, error: "Unknown provider" };
 
   const oauth = await provider.startOAuth();
   if (!oauth.ok) return oauth;
 
   const existing = loadAccounts().accounts.find(
-    (a) => a.provider === providerId && a.email.toLowerCase() === oauth.profile.email.toLowerCase()
+    (a) => a.provider === "gmail" && a.email.toLowerCase() === oauth.profile.email.toLowerCase()
   );
   const accountId = existing?.id || uid();
 
   upsertAccount({
     id: accountId,
-    provider: providerId,
+    provider: "gmail",
     email: oauth.profile.email,
     displayName: oauth.profile.displayName || oauth.profile.email,
     lastHistoryId: oauth.profile.historyId || null,
@@ -86,6 +99,7 @@ async function disconnectAccount(accountId) {
 }
 
 async function accountStatus() {
+  purgeUnsupportedAccounts();
   return { ok: true, accounts: listAccountsPublic(), providers: listProviders() };
 }
 
@@ -111,8 +125,8 @@ async function listMessages(accountId, opts = {}) {
     return { ok: true, messages: [], fromCache: true, empty: true };
   }
 
-  if (provider.id !== "gmail") {
-    return provider.listMessages(auth.accessToken, opts);
+  if (!provider || provider.id !== "gmail") {
+    return { ok: false, error: "Only Gmail is supported for Mail accounts" };
   }
 
   const listed = await provider.listMessageIds(auth.accessToken, {
@@ -186,7 +200,9 @@ async function listLabels(accountId, opts = {}) {
 async function syncAccount(accountId, { notify = false } = {}) {
   const account = findAccount(accountId);
   if (!account || !account.syncEnabled) return { ok: false, error: "Account not found or sync disabled" };
-  if (account.provider !== "gmail") return { ok: false, error: "Sync not implemented for this provider yet" };
+  if (account.provider !== "gmail") {
+    return { ok: false, error: "Only Gmail is supported for Mail accounts" };
+  }
 
   const provider = getProvider(account.provider);
   const auth = await ensureAccessToken(account);
@@ -274,4 +290,5 @@ module.exports = {
   syncAll,
   ensureAccessToken,
   findAccount,
+  purgeUnsupportedAccounts,
 };

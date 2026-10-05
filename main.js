@@ -26,7 +26,7 @@ const { handleAiChatInvoke, setAiChatMainWindowGetter } = require("./main/apps/a
 const { loadState, saveState, handleShellConsoleInvoke } = require("./main/apps/shell-console-ipc");
 const { startReminderService } = require("./main/apps/contacts-ipc");
 const { startDayPlannerReminderService } = require("./main/apps/day-planner-ipc");
-const { startStocksAlertService } = require("./main/apps/stocks-ipc");
+const { startStocksAlertService, checkAlerts } = require("./main/apps/stocks-ipc");
 const { handleNotificationsInvoke } = require("./main/apps/notifications-center");
 const { startUpdatesService, handleUpdatesInvoke } = require("./main/apps/updates-service");
 const { startNetworkService, handleNetworkInvoke } = require("./main/apps/network-service");
@@ -63,6 +63,7 @@ const {
   stopAllSessions,
   fallbackExternal,
   isEmbedAvailable,
+  dropDeadSession,
 } = require("./main/embed-session");
 const {
   available: connectEdgeAvailable,
@@ -70,7 +71,6 @@ const {
   navigateConnectEdge,
 } = require("./main/connect-edge-session");
 const connectEdgeSession = require("./main/connect-edge-session");
-
 const DEFAULT_CONFIG_PATH = path.join(__dirname, "config", "apps.json");
 const USER_DATA_DIR = path.join(app.getPath("appData"), "my-space");
 app.setPath("userData", USER_DATA_DIR);
@@ -123,7 +123,6 @@ function normalizeUiLanguage(raw) {
     return "en";
   }
 }
-
 let osUiLanguageMemory = null;
 
 function readOsUiLanguage() {
@@ -165,12 +164,20 @@ function broadcastLanguageChanged(language) {
 
 async function applyIdentitySession(result) {
   if (!result?.ok || !result.user) return result;
-  await profile.onIdentitySignedIn(result.user);
+  const before = await profile.guestInheritStatus();
+  const migration = await profile.onIdentitySignedIn(result.user);
   await profile.notifyProfileSwitched();
   refreshOsUiLanguageMemoryFromDisk();
   broadcastMyspaceIdentityChanged();
   broadcastLanguageChanged(readOsUiLanguage());
-  return { ...result, profileDir: profile.profileDir(result.user.id) };
+  const inheritedGuestData =
+    Boolean(before?.willInheritGuestData) &&
+    migration?.servicesMigratedTo === result.user.id;
+  return {
+    ...result,
+    profileDir: profile.profileDir(result.user.id),
+    inheritedGuestData,
+  };
 }
 
 function loadActiveConfig() {
@@ -362,14 +369,12 @@ async function resolveAppIcon(appEntry) {
       return nativeImage.createFromPath(full).toDataURL();
     }
   }
-
   if (appEntry.type === "external") {
     const exePath = findExecutable(appEntry);
     if (exePath) {
       return getFileIconDataUrl(exePath);
     }
   }
-
   if (appEntry.type === "url" && appEntry.url) {
     return faviconUrlForSite(appEntry.url);
   }
@@ -391,7 +396,6 @@ async function resolveMyApp(appEntry) {
     appDir = userDir;
   }
   const manifestPath = path.join(appDir, "manifest.json");
-
   let entry = appEntry.entry || "index.html";
   let contentRoot = appDir;
   let manifest = null;
@@ -402,24 +406,20 @@ async function resolveMyApp(appEntry) {
       contentRoot = path.resolve(appDir, manifest.contentRoot);
     }
   }
-
   const preloadPath = path.join(appDir, "preload.js");
   const preloadFile = fs.existsSync(preloadPath) ? pathToFileURL(preloadPath).href : null;
-
   if (manifest?.auth?.type === "local") {
     const auth = await prepareLocalAuth(moduleId);
     await auth.tryRestoreSession();
     const signedIn = Boolean(auth.getCurrentUser());
     let targetUrl = signedIn ? resolveAppEntryUrl(moduleId) : resolveLoginEntryUrl(moduleId);
     let launchPreload = preloadFile;
-
     if (!signedIn && targetUrl && /\/shared\/local-auth\/login\.html/i.test(targetUrl)) {
       const sharedPreload = path.join(__dirname, "apps", "shared", "local-auth", "preload.js");
       if (fs.existsSync(sharedPreload)) {
         launchPreload = pathToFileURL(sharedPreload).href;
       }
     }
-
     if (targetUrl) {
       return {
         ok: true,
@@ -430,12 +430,10 @@ async function resolveMyApp(appEntry) {
       };
     }
   }
-
   const entryPath = path.join(contentRoot, entry);
   if (!fs.existsSync(entryPath)) {
     return { ok: false, error: `App "${moduleId}" is not installed` };
   }
-
   return {
     ok: true,
     mode: "myapp",
@@ -458,7 +456,6 @@ function parseStartupShellRun(argv = process.argv.slice(1)) {
   }
   return parts.join(" ").trim() || null;
 }
-
 let pendingStartupShellRun = parseStartupShellRun();
 let pendingSpaceFiles = collectSpaceFilesFromArgv(process.argv);
 const gotSingleInstanceLock = app.isPackaged ? app.requestSingleInstanceLock() : true;
@@ -489,7 +486,6 @@ function deliverSpaceFiles(filePaths) {
     send();
   }
 }
-
 if (gotSingleInstanceLock) {
   app.on("second-instance", (_event, argv) => {
     const files = collectSpaceFilesFromArgv(argv);
@@ -523,7 +519,6 @@ function createWindow(options = {}) {
   win.once("ready-to-show", () => {
     if (!win.isDestroyed()) win.show();
   });
-
   spaceWindows.add(win);
   win.on("closed", () => {
     spaceWindows.delete(win);
@@ -532,11 +527,9 @@ function createWindow(options = {}) {
       setAiChatMainWindowGetter(() => getFocusedSpaceWindow() || mainWindow);
     }
   });
-
   win.loadFile(path.join(__dirname, "src", "index.html"), {
     query: options.secondary ? { secondary: "1" } : {},
   });
-
   win.webContents.once("did-finish-load", () => {
     setTimeout(() => {
       if (win.isDestroyed()) return;
@@ -548,7 +541,6 @@ function createWindow(options = {}) {
         .catch((err) => console.error("[boot-check-fail]", String(err)));
     }, 2500);
   });
-
   if (!options.secondary && pendingSpaceFiles.length) {
     const files = pendingSpaceFiles.slice();
     pendingSpaceFiles = [];
@@ -559,7 +551,6 @@ function createWindow(options = {}) {
       }, 900);
     });
   }
-
   if (!options.secondary && pendingStartupShellRun) {
     const shellLine = pendingStartupShellRun;
     pendingStartupShellRun = null;
@@ -575,13 +566,11 @@ function createWindow(options = {}) {
       }, 900);
     });
   }
-
   win.webContents.on("render-process-gone", (_event, details) => {
     if (details.reason === "crashed" || details.reason === "oom") {
       win.reload();
     }
   });
-
   win.webContents.on("before-input-event", (event, input) => {
     if (input.key === "F11" && input.type === "keyDown") {
       win.setFullScreen(!win.isFullScreen());
@@ -591,14 +580,12 @@ function createWindow(options = {}) {
       event.preventDefault();
     }
   });
-
   if (!options.secondary || !mainWindow || mainWindow.isDestroyed()) {
     mainWindow = win;
   }
   setAiChatMainWindowGetter(() => getFocusedSpaceWindow() || mainWindow);
   return win;
 }
-
 ipcMain.handle("get-config", async () => {
   try {
     await identity.tryRestoreSession();
@@ -657,17 +644,19 @@ ipcMain.handle("reset-user-data", async () => {
   }
   return { ok: true };
 });
-
 ipcMain.handle("myspace-identity", async (_event, action, args = {}) => {
   try {
     switch (String(action || "")) {
-      case "status":
-        return await identity.authStatus();
+      case "status": {
+        const status = await identity.authStatus();
+        const inherit = await profile.guestInheritStatus();
+        return { ...status, ...inherit };
+      }
       case "current":
         await identity.tryRestoreSession();
         return identity.getCurrentUser();
       case "register": {
-        const result = await identity.register(args.username, args.password, args.remember !== false);
+        const result = await identity.register(args.username, args.password, Boolean(args.remember));
         return applyIdentitySession(result);
       }
       case "login": {
@@ -690,7 +679,6 @@ ipcMain.handle("myspace-identity", async (_event, action, args = {}) => {
   }
 });
 ipcMain.handle("resolve-app-icon", (_event, appEntry) => resolveAppIcon(appEntry));
-
 ipcMain.handle("scan-installed-apps", async () => {
   const programs = scanInstalledPrograms();
   const slice = programs.slice(0, 400);
@@ -702,7 +690,6 @@ ipcMain.handle("scan-installed-apps", async () => {
   );
   return withIcons;
 });
-
 ipcMain.handle("validate-external-app", async (_event, data) => {
   const paths = data.paths || [];
   const target = findExecutable({ paths });
@@ -718,7 +705,6 @@ ipcMain.handle("validate-external-app", async (_event, data) => {
     iconData: await getFileIconDataUrl(target),
   };
 });
-
 ipcMain.handle("pick-executable", async (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   const result = await dialog.showOpenDialog(win, {
@@ -729,11 +715,9 @@ ipcMain.handle("pick-executable", async (event) => {
     ],
     properties: ["openFile"],
   });
-
   if (result.canceled || !result.filePaths.length) {
     return { canceled: true };
   }
-
   const filePath = result.filePaths[0];
   return {
     canceled: false,
@@ -751,7 +735,6 @@ async function prepareForExternalHandoff(win) {
     await new Promise((r) => setTimeout(r, 150));
   }
 }
-
 ipcMain.handle("focus-external-app", async (event, exePath) => {
   if (!exePath) {
     return { ok: false, error: "No program path" };
@@ -760,7 +743,6 @@ ipcMain.handle("focus-external-app", async (event, exePath) => {
   await prepareForExternalHandoff(win);
   return focusExternalApp(exePath);
 });
-
 ipcMain.handle("embed-app", async (event, action, args = {}) => {
   const win = BrowserWindow.fromWebContents(event.sender) || mainWindow;
   switch (action) {
@@ -782,7 +764,6 @@ ipcMain.handle("embed-app", async (event, action, args = {}) => {
       return { ok: false, error: `Unknown embed-app action: ${action}` };
   }
 });
-
 ipcMain.handle("connect-edge", async (event, action, args = {}) => {
   const win = BrowserWindow.fromWebContents(event.sender) || mainWindow;
   switch (action) {
@@ -804,7 +785,6 @@ ipcMain.handle("connect-edge", async (event, action, args = {}) => {
       return { ok: false, error: `Unknown connect-edge action: ${action}` };
   }
 });
-
 ipcMain.handle("open-system-url", async (_event, url) => {
   const normalized = normalizeUrl(url);
   if (!normalized) {
@@ -813,12 +793,10 @@ ipcMain.handle("open-system-url", async (_event, url) => {
   await shell.openExternal(normalized);
   return { ok: true, url: normalized };
 });
-
 ipcMain.handle("resolve-app-path", async (_event, appEntry) => {
   if (!appEntry || typeof appEntry !== "object") {
     return { ok: false, error: "Invalid app" };
   }
-
   if (appEntry.type === "myapp") {
     const moduleId = appEntry.module || appEntry.id;
     const appDir = path.join(__dirname, "apps", moduleId);
@@ -827,8 +805,6 @@ ipcMain.handle("resolve-app-path", async (_event, appEntry) => {
     }
     return { ok: true, path: appDir, kind: "folder" };
   }
-
-
   if (appEntry.type === "external") {
     const target = findExecutable(appEntry);
     if (!target) {
@@ -836,10 +812,8 @@ ipcMain.handle("resolve-app-path", async (_event, appEntry) => {
     }
     return { ok: true, path: target, kind: "file" };
   }
-
   return { ok: false, error: "No path for this shortcut type." };
 });
-
 ipcMain.handle("reveal-path", async (_event, targetPath, kind) => {
   if (!targetPath || typeof targetPath !== "string") {
     return { ok: false, error: "Invalid path" };
@@ -847,20 +821,16 @@ ipcMain.handle("reveal-path", async (_event, targetPath, kind) => {
   if (!fs.existsSync(targetPath)) {
     return { ok: false, error: "Path not found" };
   }
-
   if (kind === "folder") {
     const err = await shell.openPath(targetPath);
     return err ? { ok: false, error: err } : { ok: true };
   }
-
   shell.showItemInFolder(targetPath);
   return { ok: true };
 });
-
 ipcMain.handle("backup", async (event, action, args) => {
   return handleBackup(action, args || {}, event);
 });
-
 ipcMain.handle("space-file", async (event, action, args) => {
   try {
     return await handleSpaceFileInvoke(action, args || {}, event);
@@ -868,7 +838,6 @@ ipcMain.handle("space-file", async (event, action, args) => {
     return { ok: false, error: err?.message || String(err) };
   }
 });
-
 ipcMain.handle("shell-engine", async (_event, action, args) => {
   if (action === "load") return loadState();
   if (action === "save") return saveState(args);
@@ -877,7 +846,6 @@ ipcMain.handle("shell-engine", async (_event, action, args) => {
   }
   return { ok: false, error: `Unknown shell-engine action: ${action}` };
 });
-
 ipcMain.handle("myapp-invoke", async (event, moduleId, channel, args) => {
   try {
     return await fault.runObserved(moduleId, channel, () =>
@@ -895,60 +863,47 @@ ipcMain.handle("myapp-invoke", async (event, moduleId, channel, args) => {
     throw err;
   }
 });
-
 ipcMain.handle("msl", async (_event, channel, args) => {
   return fault.runObserved("msl", channel, () => handleMslInvoke("desktop", channel, args || {}));
 });
-
 ipcMain.handle("jobs", async (_event, channel, args) => {
   return fault.runObserved("jobs", channel, () => handleJobsInvoke("desktop", channel, args || {}));
 });
-
 ipcMain.handle("scheduler", async (_event, channel, args) => {
   return fault.runObserved("scheduler", channel, () =>
     handleSchedulerInvoke("desktop", channel, args || {})
   );
 });
-
 ipcMain.handle("host", async (_event, channel, args) => {
   return fault.runObserved("host", channel, () => handleHostInvoke(channel, args || {}));
 });
-
 ipcMain.handle("app-builder", async (_event, channel, args) => {
   return fault.runObserved("app-builder", channel, () => handleAppBuilderInvoke(channel, args || {}));
 });
-
 ipcMain.handle("mind", async (_event, channel, args) => {
   return fault.runObserved("mind", channel, () => handleMindInvoke("desktop", channel, args || {}));
 });
-
 ipcMain.handle("link", async (event, channel, args) => {
   return fault.runObserved("link", channel, () =>
     handleLinkInvoke("desktop", channel, args || {}, event)
   );
 });
-
 ipcMain.handle("resolve", async (_event, channel, args) => {
   return handleResolveInvoke("desktop", channel, args || {});
 });
-
 ipcMain.handle("parts", async (_event, channel, args) => {
   return fault.runObserved("parts", channel, () => handlePartsInvoke(channel, args || {}));
 });
-
 ipcMain.handle("ai-chat", async (event, action, args) => {
   return fault.runObserved("ai-chat", action, () => handleAiChatInvoke(action, args || {}, event));
 });
-
 ipcMain.handle("launch-app", async (_event, appEntry) => {
   if (appEntry.type === "builtin") {
     return { ok: true, mode: "builtin", builtin: appEntry.id };
   }
-
   if (appEntry.type === "myapp") {
     return await resolveMyApp(appEntry);
   }
-
   if (appEntry.type === "url") {
     const url = normalizeUrl(appEntry.url);
     if (!url) {
@@ -956,22 +911,18 @@ ipcMain.handle("launch-app", async (_event, appEntry) => {
     }
     return { ok: true, mode: "webview", url, forceInApp: true };
   }
-
   if (appEntry.type === "external") {
     const target = findExecutable(appEntry);
     if (!target) {
       return { ok: false, error: "App not found. remove it and add again via Start" };
     }
-
     const inAppUrl = normalizeUrl(appEntry.inAppUrl);
     if (inAppUrl && isLocalDashboardUrl(inAppUrl)) {
       return { ok: true, mode: "webview", url: inAppUrl, forceInApp: true };
     }
-
     const iconData = await resolveAppIcon(appEntry);
     const openMode = String(appEntry.openMode || "workspace").toLowerCase();
     const canEmbed = isEmbedAvailable() && shouldEmbedExecutable(target);
-
     if (openMode === "external" || !canEmbed) {
       return {
         ok: true,
@@ -982,7 +933,6 @@ ipcMain.handle("launch-app", async (_event, appEntry) => {
         autoLaunch: true,
       };
     }
-
     return {
       ok: true,
       mode: "embedded",
@@ -990,13 +940,10 @@ ipcMain.handle("launch-app", async (_event, appEntry) => {
       iconData,
     };
   }
-
   return { ok: false, error: "Unknown app type" };
 });
-
 const { desktopSearch } = require("./main/apps/desktop-search");
 const { getMyspaceBrowserHome } = require("./main/mail/hub-service");
-
 ipcMain.handle("desktop-search", async (_event, query) => {
   try {
     return await desktopSearch(query);
@@ -1004,7 +951,6 @@ ipcMain.handle("desktop-search", async (_event, query) => {
     return { ok: false, error: err?.message || String(err), results: [] };
   }
 });
-
 ipcMain.handle("myspace-browser-home", async () => {
   try {
     return getMyspaceBrowserHome();
@@ -1012,7 +958,6 @@ ipcMain.handle("myspace-browser-home", async () => {
     return { ok: false, error: err?.message || String(err) };
   }
 });
-
 ipcMain.handle("myspace-browser-bookmarks", async () => {
   try {
     const cfg = loadActiveConfig();
@@ -1031,12 +976,10 @@ ipcMain.handle("myspace-browser-bookmarks", async () => {
     return { ok: false, error: err?.message || String(err), bookmarks: [] };
   }
 });
-
 ipcMain.handle("open-new-window", () => {
   const win = createWindow({ secondary: true });
   return { ok: true, id: win.id };
 });
-
 ipcMain.handle("app-lifecycle", async (_event, action) => {
   try {
     return handleAppLifecycle(action);
@@ -1044,7 +987,6 @@ ipcMain.handle("app-lifecycle", async (_event, action) => {
     return { ok: false, error: err?.message || String(err) };
   }
 });
-
 const { handleShellUx } = require("./main/apps/shell-ux-ipc");
 ipcMain.handle("shell-ux", async (_event, channel, args) => {
   try {
@@ -1053,7 +995,6 @@ ipcMain.handle("shell-ux", async (_event, channel, args) => {
     return { ok: false, error: err?.message || String(err) };
   }
 });
-
 ipcMain.handle("notifications", async (_event, channel, args) => {
   try {
     return await handleNotificationsInvoke(channel, args || {});
@@ -1061,7 +1002,6 @@ ipcMain.handle("notifications", async (_event, channel, args) => {
     return { ok: false, error: err?.message || String(err) };
   }
 });
-
 ipcMain.handle("updates", async (_event, channel, args) => {
   try {
     return await handleUpdatesInvoke(channel, args || {});
@@ -1069,7 +1009,6 @@ ipcMain.handle("updates", async (_event, channel, args) => {
     return { ok: false, error: err?.message || String(err) };
   }
 });
-
 ipcMain.handle("network", async (_event, channel, args) => {
   try {
     return await handleNetworkInvoke(channel, args || {});
@@ -1077,7 +1016,6 @@ ipcMain.handle("network", async (_event, channel, args) => {
     return { ok: false, error: err?.message || String(err) };
   }
 });
-
 ipcMain.handle("storage", async (_event, channel, args) => {
   try {
     return await handleStorageInvoke(channel, args || {});
@@ -1085,7 +1023,6 @@ ipcMain.handle("storage", async (_event, channel, args) => {
     return { ok: false, error: err?.message || String(err) };
   }
 });
-
 ipcMain.handle("themes", async (_event, channel, args) => {
   try {
     return await handleThemesInvoke(channel, args || {});
@@ -1093,7 +1030,6 @@ ipcMain.handle("themes", async (_event, channel, args) => {
     return { ok: false, error: err?.message || String(err) };
   }
 });
-
 ipcMain.handle("mail", async (_event, action, args) => {
   try {
     return await handleMailInvoke(action, args || {});
@@ -1109,7 +1045,6 @@ ipcMain.handle("mail", async (_event, action, args) => {
     return { ok: false, error: msg };
   }
 });
-
 app.whenReady().then(async () => {
   try {
     fault.install({ ipcMain });
@@ -1118,6 +1053,10 @@ app.whenReady().then(async () => {
   }
   try {
     await identity.tryRestoreSession();
+    const user = identity.getCurrentUser();
+    if (user?.id) {
+      await profile.onIdentitySignedIn(user);
+    }
   } catch (err) {
     console.error("My Space identity restore failed:", err);
   }
@@ -1137,7 +1076,6 @@ app.whenReady().then(async () => {
   } catch (err) {
     console.error("Backup restore failed:", err);
   }
-
   createWindow();
   startReminderService();
   startDayPlannerReminderService();
@@ -1158,7 +1096,6 @@ app.whenReady().then(async () => {
   } catch (err) {
     console.warn("Connect session harden failed:", err?.message || err);
   }
-
   const emitToFocused = (channel) => {
     const win = getFocusedSpaceWindow();
     if (!win || win.isDestroyed()) return;

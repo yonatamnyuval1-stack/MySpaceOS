@@ -1,6 +1,5 @@
 window.RemoteHubControl = (function () {
   const { invoke } = window.RemoteHub;
-
   const modal = document.getElementById("control-modal");
   const backdrop = document.getElementById("control-modal-backdrop");
   const closeBtn = document.getElementById("control-modal-close");
@@ -14,11 +13,9 @@ window.RemoteHubControl = (function () {
   const btnRdp = document.getElementById("control-rdp");
   const btnAgentFolder = document.getElementById("control-agent-folder");
   const btnViewOnly = document.getElementById("control-view-only");
+  const tokenInput = document.getElementById("control-agent-token");
   const overlay = document.getElementById("control-overlay");
-
   const AGENT_PORT = 8765;
-  const AGENT_TOKEN = "myspace";
-
   let ws = null;
   let connected = false;
   let lastHost = "";
@@ -27,7 +24,6 @@ window.RemoteHubControl = (function () {
   let screenH = 1080;
   let moveTimer = null;
   let lastMove = null;
-
   const VK = {
     Enter: 0x0d,
     Backspace: 0x08,
@@ -171,9 +167,28 @@ window.RemoteHubControl = (function () {
     overlay?.classList.remove("hidden");
   }
 
-  function connectWs() {
+  function currentToken() {
+    return String(tokenInput?.value || "").trim();
+  }
+
+  async function persistTokenIfNeeded(token) {
+    if (!machineId || !token) return;
+    try {
+      const loaded = await invoke("storage.load");
+      const data = loaded?.data;
+      if (!data?.machines) return;
+      const idx = data.machines.findIndex((m) => m.id === machineId);
+      if (idx < 0) return;
+      if (data.machines[idx].agentToken === token) return;
+      data.machines[idx] = { ...data.machines[idx], agentToken: token };
+      await invoke("storage.save", { data });
+    } catch {
+    }
+  }
+
+  function connectWs(token) {
     return new Promise((resolve, reject) => {
-      const url = `ws://${lastHost}:${AGENT_PORT}?token=${encodeURIComponent(AGENT_TOKEN)}`;
+      const url = `ws://${lastHost}:${AGENT_PORT}?token=${encodeURIComponent(token)}`;
       const socket = new WebSocket(url);
       const timeout = setTimeout(() => {
         try {
@@ -182,7 +197,6 @@ window.RemoteHubControl = (function () {
         }
         reject(new Error("Agent connection timed out."));
       }, 8000);
-
       socket.onopen = () => {
         clearTimeout(timeout);
         ws = socket;
@@ -192,11 +206,10 @@ window.RemoteHubControl = (function () {
         screen.classList.add("control-screen--live");
         overlay?.classList.add("hidden");
         screen.focus();
-        setStatus("Connected — mouse & keyboard active", "ok");
+        setStatus("Connected: mouse & keyboard active", "ok");
         setHint("Click the screen to capture keyboard. Esc closes (when screen focused).");
         resolve();
       };
-
       socket.onmessage = (ev) => {
         try {
           const msg = JSON.parse(ev.data);
@@ -208,12 +221,10 @@ window.RemoteHubControl = (function () {
         } catch (_) {
         }
       };
-
       socket.onerror = () => {
         clearTimeout(timeout);
         reject(new Error("Could not connect to Remote Agent."));
       };
-
       socket.onclose = () => {
         if (connected) {
           connected = false;
@@ -230,6 +241,13 @@ window.RemoteHubControl = (function () {
 
   async function connect() {
     if (!lastHost) return;
+    const token = currentToken();
+    if (!token) {
+      setStatus("Agent token required.", "bad");
+      setHint("Paste the token from install.ps1 on the target PC.");
+      tokenInput?.focus();
+      return;
+    }
     setStatus("Checking agent…", "muted");
     const probe = await invoke("agent.probe", { host: lastHost, port: AGENT_PORT });
     if (!probe?.agentReady) {
@@ -239,26 +257,41 @@ window.RemoteHubControl = (function () {
     }
     setStatus("Connecting…", "muted");
     try {
-      await connectWs();
+      await connectWs(token);
+      await persistTokenIfNeeded(token);
     } catch (err) {
       setStatus(err.message || "Connection failed", "bad");
+      setHint("Wrong token? Re-copy from the target’s install.ps1 output or agent-config.json.");
     }
   }
 
-  function open({ host, id, user }) {
+  async function open({ host, id, user, agentToken }) {
     lastHost = String(host || "").trim();
     machineId = id || null;
     if (!lastHost) return;
-
     titleEl.textContent = `Control · ${lastHost}`;
     modal.classList.remove("hidden");
     img.src = "";
     disconnect();
+    let token = String(agentToken || "").trim();
+    if (!token && machineId) {
+      try {
+        const loaded = await invoke("storage.load");
+        const m = loaded?.data?.machines?.find((x) => x.id === machineId);
+        token = String(m?.agentToken || "").trim();
+      } catch {
+      }
+    }
+    if (tokenInput) tokenInput.value = token;
     setStatus("Ready. Click Connect for full control.", "muted");
-    setHint("Requires My Space Agent on the target (port 8765). Enable access → Remote Agent.");
+    setHint(
+      token
+        ? "Requires My Space Agent on the target (port 8765)."
+        : "Paste the Agent token from install.ps1 on the target, then Connect."
+    );
     invoke("agent.probe", { host: lastHost }).then((p) => {
       if (p?.agentReady) {
-        setStatus("Agent detected — click Connect.", "ok");
+        setStatus(token ? "Agent detected: click Connect." : "Agent detected: paste token, then Connect.", "ok");
       }
     });
   }
@@ -280,7 +313,6 @@ window.RemoteHubControl = (function () {
       alert(err.message);
     }
   }
-
   backdrop?.addEventListener("click", close);
   closeBtn?.addEventListener("click", close);
   btnConnect?.addEventListener("click", connect);
@@ -291,7 +323,6 @@ window.RemoteHubControl = (function () {
     close();
     window.RemoteHubViewer?.open({ host: lastHost });
   });
-
   screen?.addEventListener("mousemove", onMouseMove);
   screen?.addEventListener("mousedown", onMouseDown);
   screen?.addEventListener("mouseup", onMouseUp);
@@ -299,6 +330,5 @@ window.RemoteHubControl = (function () {
   screen?.addEventListener("contextmenu", (e) => e.preventDefault());
   screen?.addEventListener("keydown", onKey);
   screen?.addEventListener("keyup", onKey);
-
   return { open, close, connect, disconnect };
 })();

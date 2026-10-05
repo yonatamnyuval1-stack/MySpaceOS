@@ -10,3 +10,9 @@ contextBridge.exposeInMainWorld("myspaceBrowser", {
     ipcRenderer.sendToHost("myspace-browser-navigate", { url: String(url || "") });
   },
 });
+try {
+  const { attachOsI18n } = require("../shared/i18n/preload-bridge");
+  attachOsI18n(contextBridge, ipcRenderer);
+} catch (err) {
+  console.error("[myspace-browser preload] i18n bridge failed:", err);
+}

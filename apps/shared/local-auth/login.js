@@ -71,6 +71,7 @@
     osPassword2: document.getElementById("os-password2"),
     osLabelPassword2: document.getElementById("os-label-password2"),
     osRemember: document.getElementById("os-remember"),
+    osGuestNote: document.getElementById("os-guest-note"),
     osError: document.getElementById("os-error"),
     osSubmit: document.getElementById("os-submit"),
     osCancel: document.getElementById("os-cancel"),
@@ -144,12 +145,13 @@
     const label = ui.btnMyspaceLabel || ui.btnMyspace;
     if (myspaceUser?.username) {
       label.textContent = `Continue as ${myspaceUser.username}`;
-      ui.myspaceHint.textContent = "Confirm once: no password needed";
+      ui.myspaceHint.textContent =
+        "Uses your My Space OS account (already signed in). You’ll confirm access once — no second password.";
     } else {
       label.textContent = "Continue with My Space";
       ui.myspaceHint.textContent = osHasUsers
-        ? "Use your signed-in My Space account across apps"
-        : "Create a My Space account once: use it in every app";
+        ? "Sign in to your My Space OS account, then approve this app. Local app accounts below stay separate."
+        : "Create a My Space OS account once for the desktop and every app. Or use a local account below for this app only.";
     }
   }
 
@@ -180,6 +182,7 @@
     ui.firstNote.classList.toggle("hidden", hasUsers);
 
     ui.rememberWrap.classList.toggle("hidden", isRegister);
+    if (isRegister && ui.remember) ui.remember.checked = false;
     ui.labelPassword2.classList.toggle("hidden", !isRegister);
     ui.password2.classList.toggle("hidden", !isRegister);
 
@@ -201,8 +204,8 @@
     osMode = next;
     const isRegister = osMode === "register";
     ui.osSub.textContent = isRegister
-      ? "Create your My Space account (used across apps)"
-      : "Sign in to My Space once, then approve this app";
+      ? "Create your My Space OS account (desktop + apps on this PC)"
+      : "Sign in to My Space OS, then approve this app";
     ui.osSubmit.textContent = isRegister ? "Create account" : "Sign in";
     ui.osTabSignIn.disabled = !osHasUsers;
     ui.osTabSignIn.classList.toggle("login-tab-disabled", !osHasUsers);
@@ -211,14 +214,25 @@
     ui.osLabelPassword2.classList.toggle("hidden", !isRegister);
     ui.osPassword2.classList.toggle("hidden", !isRegister);
     ui.osPassword2.required = isRegister;
+    if (ui.osGuestNote) {
+      ui.osGuestNote.classList.toggle("hidden", !(isRegister && willInheritGuestData));
+    }
     showOsError("");
   }
+
+  let willInheritGuestData = false;
 
   function openOsSheet() {
     closeConsentSheet();
     ui.osSheet.classList.remove("hidden");
     setOsMode(osHasUsers ? "signin" : "register");
     ui.osUsername.focus();
+  }
+
+  function explainGuestInherit() {
+    window.alert(
+      "This first My Space account inherited your previous Guest desktop settings and local data on this PC.\n\nLater accounts start empty and do not share that Guest data."
+    );
   }
 
   function closeOsSheet() {
@@ -264,6 +278,7 @@
     const result = await auth.continueWithMyspace(payload || {});
     if (result?.needOsLogin) {
       osHasUsers = Boolean(result.hasUsers);
+      willInheritGuestData = Boolean(result.willInheritGuestData);
       openOsSheet();
       return result;
     }
@@ -272,6 +287,9 @@
       refreshMyspaceHint();
       openConsentSheet(result);
       return result;
+    }
+    if (result?.ok && result?.inheritedGuestData) {
+      explainGuestInherit();
     }
     return result;
   }
@@ -285,11 +303,13 @@
         const ms = await auth.myspaceStatus();
         osHasUsers = Boolean(ms?.hasUsers);
         myspaceUser = ms?.signedIn ? ms.user : null;
+        willInheritGuestData = Boolean(ms?.willInheritGuestData);
         refreshMyspaceHint();
       }
     } catch {
       osHasUsers = false;
       myspaceUser = null;
+      willInheritGuestData = false;
       refreshMyspaceHint();
     }
 
@@ -313,7 +333,7 @@
     ui.btnMyspace.disabled = true;
     if (ui.btnMyspaceLabel) ui.btnMyspaceLabel.textContent = "Please wait…";
     try {
-      const result = await doContinueMyspace({ remember: true });
+      const result = await doContinueMyspace({ remember: false });
       if (!result?.ok && !result?.needOsLogin && !result?.needConsent) {
         showError(result?.error || "Could not continue with My Space");
       }
@@ -329,7 +349,7 @@
     showConsentError("");
     ui.consentAllow.disabled = true;
     try {
-      const result = await doContinueMyspace({ consent: true, remember: true });
+      const result = await doContinueMyspace({ consent: true, remember: false });
       if (!result?.ok && !result?.needConsent && !result?.needOsLogin) {
         showConsentError(result?.error || "Could not continue");
       }
@@ -363,11 +383,14 @@
       });
       if (result?.needConsent) {
         closeOsSheet();
+        if (result?.inheritedGuestData) explainGuestInherit();
         return;
       }
       if (!result?.ok) {
         showOsError(result?.error || "Could not sign in to My Space");
+        return;
       }
+      if (result?.inheritedGuestData) explainGuestInherit();
     } catch (err) {
       showOsError(err?.message || "Could not sign in to My Space");
     } finally {
@@ -430,13 +453,13 @@
         result = await auth.register({
           username,
           password,
-          remember: ui.remember.checked,
+          remember: false,
         });
       } else {
         result = await auth.login({
           username,
           password,
-          remember: ui.remember.checked,
+          remember: Boolean(ui.remember?.checked),
         });
       }
 

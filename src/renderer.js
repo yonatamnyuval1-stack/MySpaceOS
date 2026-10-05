@@ -184,7 +184,6 @@ function renderWelcomeHub() {
       );
     }
   }
-
   const status = document.getElementById("welcome-status");
   if (status) {
     const openCount = window.MySpaceWorkspace?.getTabs?.()?.length || 0;
@@ -212,7 +211,6 @@ function renderWelcomeHub() {
       <span class="welcome-chip"><strong>${openCount}</strong> ${tt("shell.welcome.openNowSuffix", "open now")}</span>
       <span class="welcome-chip">${dateLabel}</span>`;
   }
-
   const countEl = document.getElementById("welcome-apps-count");
   if (countEl) countEl.textContent = tt("shell.welcome.available", "{n} available", { n: apps.length });
   const appsEl = document.getElementById("welcome-apps");
@@ -243,12 +241,10 @@ function renderWelcomeHub() {
       });
     });
   }
-
   const tipsEl = document.getElementById("welcome-tips");
   if (tipsEl) {
     tipsEl.innerHTML = welcomeTips().map((t) => `<li>${t}</li>`).join("");
   }
-
   const logEl = document.getElementById("welcome-changelog");
   if (logEl) {
     logEl.innerHTML = welcomeChangelog()
@@ -260,7 +256,6 @@ function renderWelcomeHub() {
       )
       .join("");
   }
-
   const runningEl = document.getElementById("welcome-running");
   if (runningEl) {
     const tabs = window.MySpaceWorkspace?.getTabs?.() || [];
@@ -284,7 +279,6 @@ function renderWelcomeHub() {
       });
     }
   }
-
   if (!welcomeBound) {
     welcomeBound = true;
     document.getElementById("welcome-actions")?.addEventListener("click", (e) => {
@@ -305,7 +299,6 @@ function renderWelcomeHub() {
     });
   }
 }
-
 document.getElementById("btn-platform-services")?.addEventListener("click", () => {
   window.MySpacePlatformCatalog?.toggle?.();
 });
@@ -346,7 +339,6 @@ function applyHeader() {
   updateClock();
   if (!builtinPanel.classList.contains("hidden")) renderWelcomeHub();
 }
-
 window.applyMySpaceHeader = applyHeader;
 
 function selectApp(appId) {
@@ -416,7 +408,6 @@ async function createAppTile(app, index) {
     selectApp(app.id);
     openIconMenu(e.clientX, e.clientY, app);
   });
-
   return { btn, index, app };
 }
 
@@ -453,7 +444,6 @@ function handleAppMenuAction(action, app) {
       showToast("Open another app first, then use Open split");
       return;
     }
-
     const other = window.MySpaceConfig.getApps().find((a) => a.id === otherTab.appId);
     if (!other) {
       showToast("Could not find the other open app");
@@ -544,6 +534,7 @@ function buildShellContext() {
     openSettings,
     addApp: () => addApp("browse"),
     refreshDesktop,
+    reloadFromProfile: () => window.MySpaceConfig?.reloadFromProfile?.(),
     sortDesktop: () => {
       window.MySpaceConfig.sortAppsAlphabetically();
       refreshDesktop({ relayout: true });
@@ -631,7 +622,6 @@ async function logShellHistory(line, result, source) {
   }
 }
 let shellHotkeyLock = false;
-
 function openShellLine(x, y) {
   if (shellHotkeyLock && (x == null || y == null)) return;
   if (x == null || y == null) {
@@ -750,7 +740,6 @@ function openCommandPalette() {
     },
   });
 }
-
 const SESSION_KEY = "myspace-session-v1";
 let sessionSaveTimer = null;
 
@@ -795,13 +784,11 @@ async function restoreSession(session) {
         restored += 1;
         continue;
       }
-
       if (entry.mode === "panel" && entry.appId === "settings") {
         openSettings();
         restored += 1;
         continue;
       }
-
       if (!entry.appId) continue;
       const app = window.MySpaceConfig.getApps().find((a) => a.id === entry.appId);
       if (!app) continue;
@@ -828,13 +815,11 @@ async function restoreSession(session) {
       console.warn("session restore skipped:", entry, err);
     }
   }
-
   if (activeTabAfter) {
     window.MySpaceWorkspace.showWorkspace(activeTabAfter.id);
   } else if (session.frameOpen === false) {
     window.MySpaceWorkspace.minimizeToDesktop();
   }
-
   if (session.snapLeftAppId && session.snapRightAppId) {
     const tabs = window.MySpaceWorkspace.getTabs() || [];
     const left = tabs.find((t) => t.appId === session.snapLeftAppId && t.mode !== "external");
@@ -843,7 +828,6 @@ async function restoreSession(session) {
       window.MySpaceWorkspace.snapSideBySide(left.id, right.id);
     }
   }
-
   return restored > 0;
 }
 
@@ -870,7 +854,6 @@ function dismissDesktopIntro() {
 }
 
 function maybeShowDesktopIntro() {
-  // Owned by desktop-intro.js — always shows after splash.
   void window.MySpaceDesktopIntro?.show?.();
 }
 
@@ -883,7 +866,6 @@ async function runStartupSequence() {
   }
   await launchStartupApps();
 }
-
 let jobsRuntimeDepth = 0;
 let directWorkInFlight = 0;
 const JOBS_EXTREME_LOAD_THRESHOLD = 8;
@@ -894,7 +876,6 @@ function shouldQueueThroughJobs(source, opts = {}) {
   if (src === "msl" || src === "background" || src === "jobs-enqueue") return true;
   return directWorkInFlight >= JOBS_EXTREME_LOAD_THRESHOLD;
 }
-
 window.MySpaceShellBridge = {
   async executeCommand(line, source = "bridge", opts = {}) {
     const trimmed = String(line || "").trim();
@@ -909,7 +890,6 @@ window.MySpaceShellBridge = {
         jobsRuntimeDepth -= 1;
       }
     }
-
     const useJobs =
       !!window.mySpace?.jobs?.run && shouldQueueThroughJobs(source, opts);
     if (useJobs) {
@@ -943,6 +923,9 @@ window.MySpaceShellBridge = {
     }
   },
   async executeProgram(body, source = "bridge", opts = {}) {
+    if (!window.MySpaceShellCommands?.executeProgram) {
+      return { ok: false, error: "Shell language runtime unavailable" };
+    }
     if (source === "jobs-internal" || source === "jobs-runner") {
       jobsRuntimeDepth += 1;
       try {
@@ -1065,7 +1048,6 @@ window.MySpaceMindChat = {
     window.MySpaceMindPanel?.show?.("setup");
   },
 };
-
 window.MySpaceFlow = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1089,7 +1071,6 @@ window.MySpaceFlow = {
     }
   },
 };
-
 window.MySpaceConnect = {
   async open() {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1118,13 +1099,12 @@ window.MySpaceConnect = {
     }
   },
 };
-
 window.MySpaceScripts = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
     const app = apps.find((a) => a.id === "scripts" || a.module === "scripts");
     if (!app) {
-      showToast("Scripts unavailable");
+      showToast("Runtime unavailable");
       return null;
     }
     try {
@@ -1137,12 +1117,11 @@ window.MySpaceScripts = {
       }
       return tab;
     } catch (err) {
-      showToast(err?.message || "Could not open Scripts");
+      showToast(err?.message || "Could not open Runtime");
       return null;
     }
   },
 };
-
 window.MySpaceSystemInfo = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1195,7 +1174,6 @@ window.MySpaceOsBridge = {
     }
   },
 };
-
 window.MySpaceFiles = {
   async open(route) {
     const raw = route?.page || "browse";
@@ -1226,7 +1204,6 @@ window.MySpaceFiles = {
     }
   },
 };
-
 window.MySpacePulse = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1257,7 +1234,6 @@ window.MySpacePulse = {
     }
   },
 };
-
 window.MySpaceMsl = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1283,7 +1259,6 @@ window.MySpaceMsl = {
     }
   },
 };
-
 window.MySpaceParts = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -1316,7 +1291,6 @@ window.MySpaceParts = {
     }
   },
 };
-
 window.MySpacePermissions = {
   async open(route) {
     const apps = window.MySpaceConfig?.getApps?.() || [];
@@ -2005,7 +1979,7 @@ function setupAccountChip() {
     closeMenu();
     setSheetMode(Boolean(isRegister));
     if (form) form.reset();
-    if (remember) remember.checked = true;
+    if (remember) remember.checked = false;
     sheet?.classList.remove("hidden");
     username?.focus();
   }
@@ -2026,8 +2000,8 @@ function setupAccountChip() {
     currentUser = user || null;
     const signedIn = Boolean(user?.username);
     if (label) {
-      label.textContent = signedIn ? user.username : t("shell.account.guest", null, "Guest");
-      if (!signedIn) label.setAttribute("data-i18n", "shell.account.guest");
+      label.textContent = signedIn ? user.username : t("shell.account.notSignedIn", null, "Not signed in");
+      if (!signedIn) label.setAttribute("data-i18n", "shell.account.notSignedIn");
       else label.removeAttribute("data-i18n");
     }
     if (avatar) {
@@ -2118,7 +2092,7 @@ function setupAccountChip() {
     }
     if (submit) submit.disabled = true;
     try {
-      const payload = { username: u, password: p, remember: remember?.checked !== false };
+      const payload = { username: u, password: p, remember: Boolean(remember?.checked) };
       const res = registerMode
         ? await window.mySpace.identity.register(payload)
         : await window.mySpace.identity.login(payload);
@@ -2148,7 +2122,6 @@ function setupAccountChip() {
     await refreshAccountUi(data?.user || null);
     await reloadDesktopForProfile();
   });
-
   void syncFromStatus();
 }
 
@@ -2242,7 +2215,6 @@ function setupKeyboard() {
       if (window.MySpaceShellLine?.isOpen?.()) {
         window.MySpaceShellLine.hide();
         return;
-      }
       }
       if (window.MySpaceStartMenu?.isOpen?.()) {
         window.MySpaceStartMenu.close();
@@ -2473,7 +2445,6 @@ async function init() {
     },
     onShortcuts: () => window.MySpaceShortcutsHelp?.show?.(),
   });
-
   const shellCtx = buildShellContext();
   window.MySpaceShellWhen?.init({
     showToast,
@@ -2486,7 +2457,6 @@ async function init() {
     if (/[\s"]/.test(p)) return `"${p.replace(/"/g, "")}"`;
     return p;
   }
-
   async function openSpacePaths(paths) {
     const list = (paths || []).filter(Boolean);
     for (const filePath of list) {
@@ -2506,7 +2476,6 @@ async function init() {
   window.mySpace?.spaceFile?.onOpen?.((data) => {
     openSpacePaths(data?.paths || (data?.path ? [data.path] : []));
   });
-
   document.addEventListener("dragover", (e) => {
     const items = [...(e.dataTransfer?.items || [])];
     if (items.some((it) => it.kind === "file")) {
@@ -2520,7 +2489,6 @@ async function init() {
     e.preventDefault();
     openSpacePaths(files.map((f) => f.path).filter(Boolean));
   });
-
   const isSecondaryWindow = new URLSearchParams(window.location.search).get("secondary") === "1";
   let startupSettings = null;
   if (!isSecondaryWindow) {
@@ -2534,13 +2502,62 @@ async function init() {
   } catch {
   }
 }
-init().catch(async (err) => {
-  console.error(err);
+function showBootFailure(err) {
+  const detail = String(err && err.message ? err.message : err || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 200);
   try {
-    document.body.dataset.bootError = String(err && err.message ? err.message : err);
+    document.body.dataset.bootError = detail || "unknown";
   } catch {
   }
-  await dismissBootSplash();
-  const detail = err && err.message ? String(err.message).slice(0, 120) : "";
-  showToast(detail ? `Startup error: ${detail}` : "Startup error: check the console (F12)");
+  if (bootSplashPctRaf) {
+    cancelAnimationFrame(bootSplashPctRaf);
+    bootSplashPctRaf = 0;
+  }
+  const skip = document.documentElement.classList.contains("boot-splash-skip");
+  const el = document.getElementById("boot-splash");
+  if (skip || !el) {
+    showToast(
+      detail
+        ? tt("shell.boot.errorToast", "Startup error: {detail}", { detail })
+        : tt("shell.boot.errorToastGeneric", "Startup error — check the console (F12)")
+    );
+    return;
+  }
+  el.dataset.dismissing = "";
+  el.classList.remove("is-done");
+  el.classList.add("is-error");
+  el.setAttribute("aria-busy", "false");
+  el.setAttribute("role", "alert");
+  const panel = document.getElementById("boot-splash-error");
+  if (panel) panel.hidden = false;
+  const title = document.getElementById("boot-splash-error-title");
+  if (title) {
+    title.textContent = tt("shell.boot.errorTitle", "My Space couldn’t start");
+  }
+  const hint = document.getElementById("boot-splash-error-hint");
+  if (hint) {
+    hint.textContent = tt(
+      "shell.boot.errorHint",
+      "Try Reload. If it keeps failing, open the console (F12)."
+    );
+  }
+  const detailEl = document.getElementById("boot-splash-error-detail");
+  if (detailEl) {
+    detailEl.textContent =
+      detail || tt("shell.boot.errorUnknown", "Unknown startup error");
+  }
+  const reload = document.getElementById("boot-splash-reload");
+  if (reload) {
+    reload.textContent = tt("shell.boot.reload", "Reload");
+    reload.onclick = () => location.reload();
+  }
+  if (typeof window.__showBootFailure === "function") {
+    window.__showBootFailure(detail);
+  }
+}
+init().catch((err) => {
+  console.error(err);
+  showBootFailure(err);
 });

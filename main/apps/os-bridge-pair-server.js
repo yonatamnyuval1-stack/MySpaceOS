@@ -12,6 +12,8 @@ const MAX_CLIPBOARD_IMAGE = 8 * 1024 * 1024;
 const CODE_TTL_MS = 15 * 60 * 1000;
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
 const FILE_OFFER_TTL_MS = 2 * 60 * 60 * 1000;
+const PAIR_MAX_ATTEMPTS = 5;
+const PAIR_LOCKOUT_MS = 60 * 1000;
 
 function bridgeRoot() {
   const profile = require("../myspace-profile");
@@ -86,7 +88,7 @@ function lanIPv4s() {
 }
 
 function genCode() {
-  return String(Math.floor(100000 + Math.random() * 900000));
+  return String(crypto.randomInt(100000, 1000000));
 }
 
 function genToken() {
@@ -475,8 +477,41 @@ class PairServer extends EventEmitter {
     this.port = DEFAULT_PORT;
     this.pairCode = null;
     this.pairCodeExpires = 0;
-    this.sessions = new Map(); 
+    this.sessions = new Map();
+    this.pairFailByIp = new Map();
     this.running = false;
+  }
+
+  clientIp(req) {
+    const raw = req?.socket?.remoteAddress || req?.connection?.remoteAddress || "";
+    return String(raw).replace(/^::ffff:/, "") || "unknown";
+  }
+
+  pairLockoutRemaining(ip) {
+    const row = this.pairFailByIp.get(ip);
+    if (!row?.lockedUntil) return 0;
+    const left = row.lockedUntil - Date.now();
+    if (left <= 0) {
+      this.pairFailByIp.delete(ip);
+      return 0;
+    }
+    return left;
+  }
+
+  recordPairFailure(ip) {
+    const row = this.pairFailByIp.get(ip) || { count: 0, lockedUntil: 0 };
+    if (row.lockedUntil && row.lockedUntil > Date.now()) return row;
+    row.count += 1;
+    if (row.count >= PAIR_MAX_ATTEMPTS) {
+      row.lockedUntil = Date.now() + PAIR_LOCKOUT_MS;
+      row.count = 0;
+    }
+    this.pairFailByIp.set(ip, row);
+    return row;
+  }
+
+  clearPairFailures(ip) {
+    this.pairFailByIp.delete(ip);
   }
 
   status() {
@@ -588,9 +623,6 @@ class PairServer extends EventEmitter {
     const body = JSON.stringify(obj);
     res.writeHead(status, {
       "Content-Type": "application/json; charset=utf-8",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type, X-Bridge-Token",
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     });
     res.end(body);
   }
@@ -599,11 +631,7 @@ class PairServer extends EventEmitter {
     try {
       const url = new URL(req.url || "/", `http://127.0.0.1:${this.port}`);
       if (req.method === "OPTIONS") {
-        res.writeHead(204, {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "Content-Type, X-Bridge-Token",
-          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        });
+        res.writeHead(405, { Allow: "GET, POST" });
         res.end();
         return;
       }
@@ -626,6 +654,16 @@ class PairServer extends EventEmitter {
       }
 
       if (req.method === "POST" && url.pathname === "/api/pair") {
+        const ip = this.clientIp(req);
+        const lockLeft = this.pairLockoutRemaining(ip);
+        if (lockLeft > 0) {
+          const secs = Math.ceil(lockLeft / 1000);
+          return this.sendJson(res, 429, {
+            ok: false,
+            error: `Too many wrong codes — try again in ${secs}s`,
+            retryAfterSec: secs,
+          });
+        }
         const raw = await this.readBody(req, 64 * 1024);
         let body = {};
         try {
@@ -638,8 +676,22 @@ class PairServer extends EventEmitter {
           return this.sendJson(res, 400, { ok: false, error: "Code expired — refresh on PC" });
         }
         if (code !== this.pairCode) {
-          return this.sendJson(res, 403, { ok: false, error: "Wrong pairing code" });
+          const row = this.recordPairFailure(ip);
+          if (row.lockedUntil && row.lockedUntil > Date.now()) {
+            const secs = Math.ceil((row.lockedUntil - Date.now()) / 1000);
+            return this.sendJson(res, 429, {
+              ok: false,
+              error: `Too many wrong codes — try again in ${secs}s`,
+              retryAfterSec: secs,
+            });
+          }
+          const left = PAIR_MAX_ATTEMPTS - row.count;
+          return this.sendJson(res, 403, {
+            ok: false,
+            error: left > 0 ? `Wrong pairing code (${left} tries left)` : "Wrong pairing code",
+          });
         }
+        this.clearPairFailures(ip);
         const token = genToken();
         const savedName = typeof this.getSavedDeviceName === "function" ? this.getSavedDeviceName(body.deviceId) : null;
         const session = {
@@ -682,7 +734,6 @@ class PairServer extends EventEmitter {
         res.writeHead(200, {
           "Content-Type": mime,
           "Content-Disposition": `attachment; filename="${safeName(name)}"`,
-          "Access-Control-Allow-Origin": "*",
         });
         fs.createReadStream(full).pipe(res);
         return;

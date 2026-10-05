@@ -7,7 +7,7 @@ const SCRYPT_OPTS = { N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
 const SESSION_DAYS = 30;
 const MIN_USERNAME = 3;
 const MAX_USERNAME = 32;
-const MIN_PASSWORD = 6;
+const MIN_PASSWORD = 8;
 
 /** @type {{ userId: string, username: string, remember: boolean } | null} */
 let session = null;
@@ -164,7 +164,7 @@ async function authStatus() {
   };
 }
 
-async function register(usernameRaw, password, remember = true) {
+async function register(usernameRaw, password, remember = false) {
   const username = normalizeUsername(usernameRaw);
   const userErr = validateUsername(username);
   if (userErr) return { ok: false, error: userErr };

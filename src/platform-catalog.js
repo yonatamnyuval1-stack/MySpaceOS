@@ -14,7 +14,6 @@
     const v = I.t(key, vars);
     return v === key ? fill(fallback || key) : v;
   }
-
   const MARK_SRC = {
     "atom-white": "brand/atom-white.png",
     "atom-green": "brand/atom-green.png",
@@ -24,9 +23,7 @@
     "atom-rose": "brand/atom-rose.png",
     "atom-slate": "brand/atom-slate.png",
   };
-
   const DUAL_MODE_ACTIONS = new Set(["open-bridge", "open-files", "open-mind"]);
-
   const PANEL_ONLY_ACTIONS = new Set([]);
 
   async function loadCatalog() {
@@ -183,7 +180,6 @@
       if (ra !== rb) return ra - rb;
       return a.localeCompare(b);
     });
-
     return keys.map((k) => map.get(k));
   }
 
@@ -259,7 +255,6 @@
     '<path d="M12 2v10"/>' +
     '<path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>' +
     "</svg>";
-
   let powerMenuOpen = false;
 
   function setPowerMenuOpen(next) {
@@ -724,9 +719,9 @@
           }
           const cmd = surfaceId === "new" ? "scripts(new)" : "scripts(open)";
           const res = await window.MySpaceShellBridge?.executeCommand?.(cmd, "platform");
-          if (res && res.ok === false) toast(res.error || "Could not open Scripts");
+          if (res && res.ok === false) toast(res.error || "Could not open Runtime");
         } catch (err) {
-          toast(err?.message || "Could not open Scripts");
+          toast(err?.message || "Could not open Runtime");
         }
       })();
       return;

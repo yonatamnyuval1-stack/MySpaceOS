@@ -40,10 +40,10 @@ const CATALOG = [
   },
   {
     id: "browser",
-    name: "Browser",
+    name: "New web tab",
     category: "browser",
-    categoryLabel: "Browser",
-    description: "Generic browser tab: type any address",
+    categoryLabel: "Web tab",
+    description: "Blank tab in My Space Browser — type any address",
     color: "#1a73e8",
     openUrl: "https://www.google.com/webhp",
     kind: "web",

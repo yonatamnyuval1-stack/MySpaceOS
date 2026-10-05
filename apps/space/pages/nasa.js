@@ -200,6 +200,22 @@ window.SpacePages.nasa = (function () {
     }
   }
 
+  async function refreshDemoNote() {
+    const note = document.getElementById("nasa-demo-note");
+    if (!note) return;
+    try {
+      const res = await invoke("nasa.status", {});
+      if (res?.usingDemoKey) {
+        note.hidden = false;
+        if (res.demoKeyNote) note.textContent = res.demoKeyNote;
+      } else {
+        note.hidden = true;
+      }
+    } catch {
+      note.hidden = false;
+    }
+  }
+
   function bind() {
     tabBar?.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-nasa-tab]");
@@ -223,6 +239,7 @@ window.SpacePages.nasa = (function () {
   }
 
   function scan() {
+    void refreshDemoNote();
     setTab(activeTab);
   }
 

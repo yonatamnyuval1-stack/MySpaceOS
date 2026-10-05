@@ -1,9 +1,7 @@
 window.RemoteHubPages = window.RemoteHubPages || {};
-
 window.RemoteHubPages.machines = (function () {
   const { escapeHtml, invoke, uid, formatTime, typeLabel, CONNECTION_TYPES, QUICK_ACTIONS } =
     window.RemoteHub;
-
   const page = document.getElementById("page-machines");
   const statsEl = document.getElementById("machines-stats");
   const gridEl = document.getElementById("machines-grid");
@@ -13,7 +11,6 @@ window.RemoteHubPages.machines = (function () {
   const favOnly = document.getElementById("machines-favorites-only");
   const lastScanEl = document.getElementById("machines-last-scan");
   const btnAdd = document.getElementById("btn-add-machine");
-
   let machines = [];
   let statusMap = {};
   let selectedId = null;
@@ -81,7 +78,6 @@ window.RemoteHubPages.machines = (function () {
       });
       return;
     }
-
     gridEl.innerHTML = list
       .map((m) => {
         const sel = m.id === selectedId ? " selected" : "";
@@ -106,7 +102,6 @@ window.RemoteHubPages.machines = (function () {
         </article>`;
       })
       .join("");
-
     gridEl.querySelectorAll(".machine-card").forEach((card) => {
       card.addEventListener("click", (e) => {
         if (e.target.closest("[data-connect]") || e.target.closest("[data-fav]")) return;
@@ -116,14 +111,12 @@ window.RemoteHubPages.machines = (function () {
         if (e.key === "Enter") openEditor(card.dataset.id);
       });
     });
-
     gridEl.querySelectorAll("[data-connect]").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         connect(btn.dataset.connect);
       });
     });
-
     gridEl.querySelectorAll("[data-fav]").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -149,7 +142,6 @@ window.RemoteHubPages.machines = (function () {
       </tr>`
       )
       .join("");
-
     tbody.querySelectorAll("tr[data-id]").forEach((row) => {
       row.addEventListener("click", (e) => {
         if (e.target.closest("[data-connect]")) return;
@@ -261,7 +253,13 @@ window.RemoteHubPages.machines = (function () {
         <legend>Wake-on-LAN (optional)</legend>
         <label><span>MAC address</span><input type="text" id="ed-mac" value="${escapeHtml(m.macAddress)}" placeholder="AA:BB:CC:DD:EE:FF" /></label>
       </fieldset>`;
-    return (fields[type] || fields.rdp) + wol;
+    const agent = `
+      <fieldset class="fieldset-wol">
+        <legend>Remote Agent</legend>
+        <label><span>Agent token</span><input type="password" id="ed-agent-token" value="${escapeHtml(m.agentToken || "")}" placeholder="From install.ps1 on target" autocomplete="off" spellcheck="false" /></label>
+        <p class="field-hint">Random token created by install.ps1: required for Control.</p>
+      </fieldset>`;
+    return (fields[type] || fields.rdp) + wol + agent;
   }
 
   function openEditor(id) {
@@ -288,6 +286,7 @@ window.RemoteHubPages.machines = (function () {
           macAddress: "",
           psUser: "",
           customCommand: "",
+          agentToken: "",
           notes: "",
           favorite: false,
           tags: [],
@@ -296,12 +295,10 @@ window.RemoteHubPages.machines = (function () {
     ui.shell.classList.add("detail-open");
     ui.detailPanel.classList.remove("hidden");
     ui.detailTitle.textContent = existing ? `Edit · ${existing.name}` : "Add machine";
-
     const typeOptions = CONNECTION_TYPES.map(
       (t) =>
         `<option value="${t.id}" ${draft.connectionType === t.id ? "selected" : ""}>${escapeHtml(t.label)}</option>`
     ).join("");
-
     const st = statusMap[draft.id];
     const quickBtns = QUICK_ACTIONS.map(
       (a) =>
@@ -328,14 +325,18 @@ window.RemoteHubPages.machines = (function () {
           <button type="button" class="btn" id="ed-connect">Connect now</button>
         </div>
       </form>`;
-
     ui.detailBody.querySelectorAll(".quick-action").forEach((btn) => {
       btn.addEventListener("click", async () => {
         await saveFromForm();
         const mode = btn.dataset.mode;
         if (mode === "control") {
           const host = draft.host;
-          window.RemoteHubControl?.open({ host, id: draft.id, user: draft.psUser || draft.rdpUser || "" });
+          window.RemoteHubControl?.open({
+            host,
+            id: draft.id,
+            user: draft.psUser || draft.rdpUser || "",
+            agentToken: draft.agentToken || "",
+          });
           return;
         }
         if (mode === "view") {
@@ -421,6 +422,8 @@ window.RemoteHubPages.machines = (function () {
     if (mac) draft.macAddress = mac.value.trim();
     const custom = root.querySelector("#ed-custom");
     if (custom) draft.customCommand = custom.value.trim();
+    const agentToken = root.querySelector("#ed-agent-token");
+    if (agentToken) draft.agentToken = agentToken.value.trim();
 
     const idx = machines.findIndex((m) => m.id === draft.id);
     if (idx >= 0) machines[idx] = { ...draft };

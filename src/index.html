@@ -75,6 +75,48 @@
         font-variant-numeric: tabular-nums;
         color: #8fd6ef;
       }
+      .boot-splash-error {
+        display: none;
+        max-width: 22rem;
+        padding: 0 1.25rem;
+        text-align: center;
+        color: #e8eef5;
+      }
+      .boot-splash.is-error .boot-splash-ring,
+      .boot-splash.is-error .boot-splash-pct {
+        display: none;
+      }
+      .boot-splash.is-error .boot-splash-error {
+        display: block;
+      }
+      .boot-splash-error h1 {
+        margin: 0 0 0.5rem;
+        font-size: 1.15rem;
+        font-weight: 600;
+      }
+      .boot-splash-error p {
+        margin: 0 0 0.65rem;
+        font-size: 0.9rem;
+        line-height: 1.45;
+        color: #a8b4c4;
+      }
+      .boot-splash-error-detail {
+        font-family: ui-monospace, Consolas, monospace;
+        font-size: 0.78rem;
+        color: #c9d4e2;
+        word-break: break-word;
+      }
+      .boot-splash-reload {
+        margin-top: 0.35rem;
+        padding: 0.55rem 1.15rem;
+        border: 1px solid rgba(143, 214, 239, 0.35);
+        border-radius: 8px;
+        background: rgba(143, 214, 239, 0.12);
+        color: #e8eef5;
+        font: inherit;
+        font-size: 0.9rem;
+        cursor: pointer;
+      }
       @keyframes boot-spill-spin {
         to {
           transform: rotate(360deg);
@@ -95,7 +137,7 @@
         function tickBootPct() {
           var el = document.getElementById("boot-splash-pct");
           var splash = document.getElementById("boot-splash");
-          if (!el || !splash || splash.classList.contains("is-done")) return;
+          if (!el || !splash || splash.classList.contains("is-done") || splash.classList.contains("is-error")) return;
           var elapsed = performance.now() - window.__bootSplashStartedAt;
           var pct = window.__bootSplashReady
             ? 100
@@ -106,6 +148,33 @@
           if (pct < 100) requestAnimationFrame(tickBootPct);
         }
         requestAnimationFrame(tickBootPct);
+        window.__showBootFailure = function (message) {
+          var splash = document.getElementById("boot-splash");
+          if (!splash) return;
+          splash.classList.add("is-error");
+          splash.setAttribute("aria-busy", "false");
+          splash.setAttribute("role", "alert");
+          var panel = document.getElementById("boot-splash-error");
+          if (panel) panel.hidden = false;
+          var detail = document.getElementById("boot-splash-error-detail");
+          if (detail && !detail.textContent) {
+            detail.textContent = String(message || "").slice(0, 200);
+          } else if (detail && message) {
+            detail.textContent = String(message || "").slice(0, 200);
+          }
+          var reload = document.getElementById("boot-splash-reload");
+          if (reload) reload.onclick = function () { location.reload(); };
+          try {
+            document.body.dataset.bootError = String(message || "unknown").slice(0, 200);
+          } catch (e) {}
+        };
+        window.addEventListener("error", function (ev) {
+          var splash = document.getElementById("boot-splash");
+          if (!splash || splash.classList.contains("is-done") || splash.classList.contains("is-error")) return;
+          var msg = (ev && ev.message) || "Script failed while starting";
+          if (/Loading chunk|Script error/i.test(msg)) return;
+          window.__showBootFailure(msg);
+        });
       })();
     </script>
   </head>
@@ -116,6 +185,12 @@
         <img class="boot-splash-logo" src="brand/atom-white.png" alt="" width="64" height="64" />
       </div>
       <p class="boot-splash-pct" id="boot-splash-pct">0%</p>
+      <div class="boot-splash-error" id="boot-splash-error" hidden>
+        <h1 id="boot-splash-error-title">My Space couldn’t start</h1>
+        <p id="boot-splash-error-hint">Try Reload. If it keeps failing, open the console (F12).</p>
+        <p class="boot-splash-error-detail" id="boot-splash-error-detail"></p>
+        <button type="button" class="boot-splash-reload" id="boot-splash-reload">Reload</button>
+      </div>
     </div>
     <div class="shell" id="desktop">
       <aside class="app-rail" id="app-rail" data-i18n-aria="shell.rail.apps" aria-label="Apps" aria-hidden="true">
@@ -265,7 +340,7 @@
               aria-expanded="false"
             >
               <img class="taskbar-account-avatar" id="account-avatar" src="brand/atom-white.png" alt="" width="18" height="18" />
-              <span class="taskbar-account-label" id="account-label" data-i18n="shell.account.guest">Guest</span>
+              <span class="taskbar-account-label" id="account-label" data-i18n="shell.account.notSignedIn">Not signed in</span>
             </button>
             <div class="taskbar-account-menu hidden" id="account-menu" role="menu" data-i18n-aria="shell.account.menu" aria-label="Account">
               <p class="taskbar-account-menu-head" id="account-menu-head" data-i18n="shell.account.notSignedIn">Not signed in</p>
@@ -297,6 +372,12 @@
           <span data-i18n="shell.account.sheetTitle">My Space account</span>
         </h2>
         <p class="os-account-sub" id="os-account-sub" data-i18n="shell.account.sheetSub">Sign in to sync desktop settings to your profile</p>
+        <p class="os-account-explain" data-i18n="shell.account.osVsApp">
+          This is your My Space OS account for the desktop. Apps can use Continue with My Space, or their own local accounts.
+        </p>
+        <p class="os-account-guest-note hidden" id="os-account-guest-note" data-i18n="shell.account.guestInherit" role="note">
+          First account on this PC inherits current Guest desktop settings and local data into that profile.
+        </p>
         <div class="os-account-tabs" id="os-account-tabs">
           <button type="button" class="os-account-tab active" id="os-account-tab-signin" data-mode="signin" data-i18n="shell.account.signIn">Sign in</button>
           <button type="button" class="os-account-tab" id="os-account-tab-register" data-mode="register" data-i18n="shell.account.create">Create account</button>
@@ -305,11 +386,11 @@
           <label class="os-account-label" for="os-account-username" data-i18n="shell.account.username">Username</label>
           <input type="text" id="os-account-username" class="os-account-input" autocomplete="username" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9_]+" />
           <label class="os-account-label" for="os-account-password" data-i18n="shell.account.password">Password</label>
-          <input type="password" id="os-account-password" class="os-account-input" autocomplete="current-password" required minlength="6" />
+          <input type="password" id="os-account-password" class="os-account-input" autocomplete="current-password" required minlength="8" />
           <label class="os-account-label hidden" for="os-account-password2" id="os-account-label-password2" data-i18n="shell.account.confirmPassword">Confirm password</label>
-          <input type="password" id="os-account-password2" class="os-account-input hidden" autocomplete="new-password" minlength="6" />
+          <input type="password" id="os-account-password2" class="os-account-input hidden" autocomplete="new-password" minlength="8" />
           <label class="os-account-check">
-            <input type="checkbox" id="os-account-remember" checked />
+            <input type="checkbox" id="os-account-remember" />
             <span data-i18n="shell.account.remember">Keep me signed in</span>
           </label>
           <p class="os-account-error hidden" id="os-account-error" role="alert"></p>

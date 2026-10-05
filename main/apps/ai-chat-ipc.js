@@ -1,23 +1,55 @@
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
+const { app } = require("electron");
 const { runAgentLoop } = require("../ai/agent-loop");
 const { listAiTools, setAiToolActive } = require("../ai/tools-registry");
 const {
   tryLocalIntent,
   isLabInfraError,
   friendlyLabError,
+  friendlyOfflineAiError,
 } = require("../ai/local-intents");
 const { createMindSideChat, syncMindSideChat } = require("./chat-ipc");
-
-const LAB_API_KEY =
-  "lab_ac8da903c9aca2075f9faaf035b39876154b8e8c096ad3ad57b42302abdfce0b";
-const LAB_PROJECT_ID = "mlprj_6822a7873f13cc3a";
+const { INSTALL_WIDE_DIRS } = require("../myspace-profile");
 const LAB_PROGRAM = "operating system";
 const LAB_BASE_URL = process.env.LAYER0_LAB_BASE_URL || "http://127.0.0.1:8080/v1";
 const LAB_MODEL = "primary";
+const LAB_FETCH_TIMEOUT_MS = Number(process.env.LAYER0_LAB_FETCH_TIMEOUT_MS) || 20_000;
+
+function readLabLocalConfig() {
+  try {
+    const bootPath = path.join(app.getAppPath(), "config", "lab.local.json");
+    if (!fs.existsSync(bootPath)) return {};
+    const raw = JSON.parse(fs.readFileSync(bootPath, "utf8"));
+    return raw && typeof raw === "object" ? raw : {};
+  } catch {
+    return {};
+  }
+}
+
+function getLabApiKey() {
+  const local = readLabLocalConfig();
+  return (
+    String(process.env.LAYER0_LAB_API_KEY || "").trim() ||
+    String(process.env.MODEL_FLOW_API_KEY || "").trim() ||
+    String(process.env.MODEL_FLOW_PRODUCT_KEY || "").trim() ||
+    String(local.apiKey || local.labApiKey || "").trim() ||
+    ""
+  );
+}
+
+function getLabProjectId() {
+  const local = readLabLocalConfig();
+  return (
+    String(process.env.LAYER0_LAB_PROJECT_ID || "").trim() ||
+    String(local.projectId || "").trim() ||
+    "mlprj_6822a7873f13cc3a"
+  );
+}
 
 const MAX_MESSAGES = 40;
 const MAX_CONTENT = 12000;
-
 let getMainWindow = () => null;
 
 function setAiChatMainWindowGetter(fn) {
@@ -54,27 +86,51 @@ function withLabProcess(body) {
   return payload;
 }
 
-async function labFetch(path, { method = "GET", body, conversationId } = {}) {
-  const url = `${LAB_BASE_URL.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
+async function labFetch(reqPath, { method = "GET", body, conversationId } = {}) {
+  const apiKey = getLabApiKey();
+  if (!apiKey) {
+    const err = new Error(
+      "Lab API key missing: set LAYER0_LAB_API_KEY or config/lab.local.json"
+    );
+    err.status = 0;
+    throw err;
+  }
+  const projectId = getLabProjectId();
+  const url = `${LAB_BASE_URL.replace(/\/$/, "")}${reqPath.startsWith("/") ? reqPath : `/${reqPath}`}`;
   const headers = {
-    Authorization: `Bearer ${LAB_API_KEY}`,
+    Authorization: `Bearer ${apiKey}`,
     "Content-Type": "application/json",
-    "X-Project-Id": LAB_PROJECT_ID,
+    "X-Project-Id": projectId,
     "X-Lab-Program": LAB_PROGRAM,
   };
   if (conversationId) {
     headers["X-Lab-Conversation-Id"] = conversationId;
   }
-
-  const isChatCompletions = /\/chat\/completions\/?$/i.test(path);
+  const isChatCompletions = /\/chat\/completions\/?$/i.test(reqPath);
   const finalBody =
     body && isChatCompletions ? withLabProcess(body) : body || undefined;
-
-  const res = await fetch(url, {
-    method,
-    headers,
-    body: finalBody ? JSON.stringify(finalBody) : undefined,
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), Math.max(3000, LAB_FETCH_TIMEOUT_MS));
+  let res;
+  try {
+    res = await fetch(url, {
+      method,
+      headers,
+      signal: controller.signal,
+      body: finalBody ? JSON.stringify(finalBody) : undefined,
+    });
+  } catch (err) {
+    if (err?.name === "AbortError") {
+      const timed = new Error(
+        `Model Lab timed out after ${Math.round(LAB_FETCH_TIMEOUT_MS / 1000)}s (not reachable on localhost:8080)`
+      );
+      timed.status = 0;
+      throw timed;
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
   let data = null;
   const text = await res.text();
   try {
@@ -122,7 +178,14 @@ async function chatViaMindFallback(normalized) {
   try {
     const engine = require("../mind/engine");
     const snap = engine.snapshot?.() || {};
-    if (!snap.ready && !snap.hasKey) return null;
+    if (!snap.ready && !snap.hasKey) {
+      return {
+        ok: false,
+        error:
+          "No Gemini key and local Ollama isn’t enabled. Open Mind → Setup to add a key or turn on Ollama.",
+        model: "mind",
+      };
+    }
     const result = await engine.chat({
       task: "chat",
       messages: normalized,
@@ -171,7 +234,6 @@ async function chatCompletions(messages, conversationId, windowGetter) {
       : typeof getMainWindow === "function"
         ? getMainWindow
         : () => null;
-
   try {
     const local = await tryLocalIntent(normalized, resolveWindow);
     if (local?.ok) {
@@ -179,14 +241,33 @@ async function chatCompletions(messages, conversationId, windowGetter) {
       return {
         ...local,
         conversationId: convId,
-        projectId: LAB_PROJECT_ID,
+        projectId: getLabProjectId(),
         program: LAB_PROGRAM,
         model: "local-intent",
       };
     }
   } catch {
   }
-
+  const mindFirst = await chatViaMindFallback(normalized);
+  if (mindFirst?.ok) {
+    persistMindChat(convId, normalized, mindFirst);
+    return {
+      ...mindFirst,
+      conversationId: convId,
+      projectId: getLabProjectId(),
+      program: LAB_PROGRAM,
+    };
+  }
+  if (mindFirst && !mindFirst.ok) {
+    return {
+      ok: false,
+      error:
+        mindFirst.error ||
+        "Add a Gemini key in Mind → Setup (or enable Ollama for local tasks).",
+      conversationId: convId,
+      program: LAB_PROGRAM,
+    };
+  }
   try {
     const result = await runAgentLoop({
       labFetch,
@@ -200,7 +281,7 @@ async function chatCompletions(messages, conversationId, windowGetter) {
     return {
       ...result,
       conversationId: convId,
-      projectId: LAB_PROJECT_ID,
+      projectId: getLabProjectId(),
       program: LAB_PROGRAM,
     };
   } catch (err) {
@@ -212,7 +293,7 @@ async function chatCompletions(messages, conversationId, windowGetter) {
           return {
             ...local,
             conversationId: convId,
-            projectId: LAB_PROJECT_ID,
+            projectId: getLabProjectId(),
             program: LAB_PROGRAM,
             model: "local-intent",
             labError: err.message || String(err),
@@ -220,27 +301,14 @@ async function chatCompletions(messages, conversationId, windowGetter) {
         }
       } catch {
       }
-
-      const mind = await chatViaMindFallback(normalized);
-      if (mind?.ok) {
-        persistMindChat(convId, normalized, mind);
-        return {
-          ...mind,
-          conversationId: convId,
-          projectId: LAB_PROJECT_ID,
-          program: LAB_PROGRAM,
-          labError: err.message || String(err),
-        };
-      }
-      if (mind && !mind.ok && mind.error) {
-        return {
-          ok: false,
-          error: `${friendlyLabError(err)} · Mind: ${mind.error}`,
-          status: err.status || 0,
-          conversationId: convId,
-          program: LAB_PROGRAM,
-        };
-      }
+      return {
+        ok: false,
+        error:
+          "Add a Gemini key in Mind → Setup to use Mind Chat (Lab isn’t required right now).",
+        status: err.status || 0,
+        conversationId: convId,
+        program: LAB_PROGRAM,
+      };
     }
     return {
       ok: false,
@@ -268,7 +336,6 @@ async function handleAiChatInvoke(action, args = {}, event = null) {
     if (senderWin && !senderWin.isDestroyed()) return senderWin;
     return typeof getMainWindow === "function" ? getMainWindow() : null;
   };
-
   switch (action) {
     case "chat":
       return chatCompletions(args.messages, args.conversationId, windowGetter);
@@ -298,7 +365,7 @@ async function handleAiChatInvoke(action, args = {}, event = null) {
     case "meta":
       return {
         ok: true,
-        projectId: LAB_PROJECT_ID,
+        projectId: getLabProjectId(),
         program: LAB_PROGRAM,
         model: LAB_MODEL,
         baseUrl: LAB_BASE_URL,
@@ -307,12 +374,11 @@ async function handleAiChatInvoke(action, args = {}, event = null) {
       return { ok: false, error: `Unknown ai-chat action: ${action}` };
   }
 }
-
 module.exports = {
   handleAiChatInvoke,
   setAiChatMainWindowGetter,
   newConversationId,
   LAB_PROGRAM,
-  LAB_PROJECT_ID,
+  getLabProjectId,
   LAB_MODEL,
 };

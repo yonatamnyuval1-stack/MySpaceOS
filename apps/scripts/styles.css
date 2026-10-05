@@ -224,18 +224,54 @@ textarea {
 }
 
 .tree-empty {
-  padding: 0.85rem 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0.35rem 0.25rem;
+  padding: 0.9rem 0.75rem;
+  border: 1px dashed color-mix(in srgb, var(--muted) 45%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--panel, var(--bg)) 88%, transparent);
   color: var(--muted);
 }
 .tree-empty p {
   margin: 0;
-  font-size: 0.84rem;
 }
-
+.tree-empty-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
 .tree-empty-hint {
-  margin-top: 0.35rem !important;
-  font-size: 0.75rem !important;
-  opacity: 0.85;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  opacity: 0.9;
+}
+.tree-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+}
+.tree-empty-btn {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--muted) 40%, transparent);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.74rem;
+  padding: 0.28rem 0.55rem;
+  cursor: pointer;
+}
+.tree-empty-btn:hover {
+  border-color: color-mix(in srgb, var(--accent, #5b9fd4) 55%, transparent);
+  background: color-mix(in srgb, var(--accent, #5b9fd4) 12%, transparent);
+}
+.tree-empty-btn-primary {
+  border-color: color-mix(in srgb, var(--accent, #5b9fd4) 60%, transparent);
+  background: color-mix(in srgb, var(--accent, #5b9fd4) 18%, transparent);
+  font-weight: 600;
 }
 
 .tree-node {

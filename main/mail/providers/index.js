@@ -1,12 +1,8 @@
 const gmail = require("./gmail");
-const microsoft = require("./microsoft");
-const imap = require("./imap");
 const { isProviderConfigured } = require("../mail-config");
 
 const PROVIDERS = {
   [gmail.id]: gmail,
-  [microsoft.id]: microsoft,
-  [imap.id]: imap,
 };
 
 function getProvider(providerId) {
@@ -18,7 +14,7 @@ function listProviders() {
     id: p.id,
     label: p.label,
     configured: isProviderConfigured(p.id),
-    available: p.id === "gmail",
+    available: true,
   }));
 }
 

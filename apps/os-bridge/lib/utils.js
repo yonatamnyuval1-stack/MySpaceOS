@@ -1,8 +1,4 @@
-const { SsrfErrorCodes } = require("@composio/core");
-const { WholeWord } = require("lucide-static");
-
 window.OsBridge = window.OsBridge || {};
-
 window.OsBridge.invoke = async function (channel, args) {
   if (!window.myApp?.invoke) {
     throw new Error("Open OS Bridge inside My Space.");
@@ -15,7 +11,6 @@ window.OsBridge.invoke = async function (channel, args) {
   }
   return result;
 };
-
 window.OsBridge.escapeHtml = function (s) {
   return String(s ?? "")
     .replace(/&/g, "&amp;")
@@ -23,7 +18,6 @@ window.OsBridge.escapeHtml = function (s) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 };
-
 window.OsBridge.formatBytes = function (n) {
   const v = Number(n) || 0;
   if (v < 1024) return `${v} B`;
@@ -31,7 +25,6 @@ window.OsBridge.formatBytes = function (n) {
   if (v < 1024 * 1024 * 1024) return `${(v / (1024 * 1024)).toFixed(1)} MB`;
   return `${(v / (1024 * 1024 * 1024)).toFixed(2)} GB`;
 };
-
 window.OsBridge.toast = function (msg) {
   const el = document.getElementById("toast");
   if (!el) return;

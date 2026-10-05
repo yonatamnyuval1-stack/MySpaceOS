@@ -60,6 +60,7 @@ profiles.json
 mail-tokens.enc
 hub-secrets.enc
 mind-secrets.json
+apps/remote-hub/agent/agent-config.json
 composio-secrets.json
 model-flow-secrets.json
 

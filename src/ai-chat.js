@@ -349,6 +349,13 @@
     document.getElementById("ai-chat-messages")?.appendChild(pending);
     scrollToBottom();
 
+    const hangTimer = setTimeout(() => {
+      const textEl = pending.querySelector(".ai-chat-bubble-text");
+      if (textEl && pending.isConnected) {
+        textEl.textContent = "Still waiting for Mind… add a Gemini key in Mind → Setup if chat isn’t set up yet.";
+      }
+    }, 12_000);
+
     try {
       if (!window.mySpace?.aiChat?.chat) {
         throw new Error("AI bridge unavailable — restart My Space");
@@ -356,6 +363,7 @@
       const convId = await ensureConversation();
       const payload = messages.map((m) => ({ role: m.role, content: m.content }));
       const res = await window.mySpace.aiChat.chat(payload, convId);
+      clearTimeout(hangTimer);
       pending.remove();
       if (!res?.ok) {
         throw new Error(res?.error || "Chat failed");
@@ -378,6 +386,7 @@
         window.MySpaceWorkspace?.showWorkspace?.(activeBefore);
       }
     } catch (err) {
+      clearTimeout(hangTimer);
       pending.remove();
       const msg = err?.message || String(err);
       messages.push({ role: "assistant", content: `⚠️ ${msg}` });
@@ -387,6 +396,7 @@
         window.MySpaceWorkspace?.showWorkspace?.(activeBefore);
       }
     } finally {
+      clearTimeout(hangTimer);
       setBusy(false);
       input?.focus();
     }

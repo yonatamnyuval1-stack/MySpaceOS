@@ -18,7 +18,6 @@ function add(en, he, rows) {
     he[k] = h;
   }
 }
-
 const services = [
   ["os", "My Space OS", "Personal desktop layer on your OS", "Desktop layer for pins, wallpaper, and apps", "שכבת שולחן העבודה של My Space", "שכבת שולחן עבודה אישית", "שולחן עבודה, סיכות, טפט והפעלת תוכניות"],
   ["browser", "Browser", "In-app browsing and unified search", "Browse without leaving the shell", "דפדפן", "גלישה וחיפוש מאוחד", "גלישה בלי לצאת מהמעטפת"],
@@ -46,10 +45,8 @@ const services = [
   ["files", "Files", "Browse this PC inside My Space", "Places, drives, favorites, recent", "קבצים", "עיון במחשב בתוך My Space", "מקומות, כוננים, מועדפים ואחרונים"],
   ["permissions", "Permissions", "Gates for AI, jobs, and bridge", "Tools, notifications, and trust", "הרשאות", "שערים ל־AI, משימות וגשר", "כלים, התראות ואמון"],
 ];
-
 const en = {};
 const he = {};
-
 add(en, he, [
   ["shell.taskbar", "Taskbar", "שורת המשימות"],
   ["shell.start.title", "Start: add programs", "התחל: הוסף תוכניות"],
@@ -117,6 +114,12 @@ add(en, he, [
   ["shell.intro.brand", "My Space", "My Space"],
   ["shell.intro.line", "Your personal space on this computer.", "המרחב האישי שלך במחשב הזה."],
   ["shell.intro.enter", "Enter desktop", "כניסה לשולחן העבודה"],
+  ["shell.boot.errorTitle", "My Space couldn’t start", "My Space לא הצליח להיטען"],
+  ["shell.boot.errorHint", "Try Reload. If it keeps failing, open the console (F12).", "נסו טען מחדש. אם זה חוזר — פתחו את הקונסול (F12)."],
+  ["shell.boot.errorUnknown", "Unknown startup error", "שגיאת הפעלה לא ידועה"],
+  ["shell.boot.reload", "Reload", "טען מחדש"],
+  ["shell.boot.errorToast", "Startup error: {detail}", "שגיאת הפעלה: {detail}"],
+  ["shell.boot.errorToastGeneric", "Startup error — check the console (F12)", "שגיאת הפעלה — בדקו את הקונסול (F12)"],
   ["shell.welcome.kicker", "My Space", "My Space"],
   ["shell.welcome.services", "Services", "שירותים"],
   ["shell.welcome.servicesTitle", "Platform services", "שירותי פלטפורמה"],
@@ -323,7 +326,6 @@ add(en, he, [
   ["shell.notifications.count", "{n} notifications", "{n} התראות"],
   ["shell.notifications.unread", "{n} unread", "{n} שלא נקראו"],
 ]);
-
 add(en, he, [
   ["settings.cat.general", "General", "כללי"],
   ["settings.cat.backgrounds", "Backgrounds", "רקעים"],
@@ -345,6 +347,7 @@ add(en, he, [
   ["settings.language.fr", "French", "Français"],
   ["settings.language.ru", "Russian", "Русский"],
   ["settings.language.es", "Spanish", "Español"],
+  ["settings.language.partialLabel", "{name} (preview)", "{name} (תצוגה מקדימה)"],
   ["settings.region.arSA", "Saudi Arabia (ar-SA)", "ערב הסעודית (ar-SA)"],
   ["settings.region.ruRU", "Russia (ru-RU)", "רוסיה (ru-RU)"],
   ["settings.region", "Region format", "פורמט אזורי"],
@@ -489,7 +492,6 @@ add(en, he, [
     "Select wallpapers to use. With 2 or more, they rotate every 5 minutes.",
     "בחרו טפטים לשימוש. עם 2 או יותר — הם מתחלפים כל 5 דקות.",
   ],
-
   ["settings.tools.loading", "Loading tools…", "טוען כלים…"],
   ["settings.tools.unavailable", "Tools API unavailable.", "ממשק הכלים אינו זמין."],
   ["settings.tools.loadError", "Could not load tools.", "לא ניתן לטעון כלים."],
@@ -572,7 +574,6 @@ add(en, he, [
   ["settings.apps.about.url", "URL", "כתובת"],
   ["settings.apps.about.paths", "Paths", "נתיבים"],
 ]);
-
 add(en, he, [
   ["service.common.refresh", "Refresh", "רענון"],
   ["service.common.about", "About", "אודות"],
@@ -623,7 +624,6 @@ add(en, he, [
   ["service.common.secondary", "Secondary", "משני"],
   ["service.common.ghost", "Ghost", "שקוף"],
 ]);
-
 add(en, he, [
   ["service.files.places", "Places", "מקומות"],
   ["service.files.drives", "Drives", "כוננים"],
@@ -657,7 +657,6 @@ add(en, he, [
   ["service.files.deleteConfirm", "Delete?", "למחוק?"],
   ["service.files.recycleConfirm", "Move to Recycle Bin?", "להעביר לסל המיחזור?"],
 ]);
-
 add(en, he, [
   ["service.jobs.queue", "Queue", "תור"],
   ["service.jobs.active", "Active", "פעיל"],
@@ -683,7 +682,6 @@ add(en, he, [
   ["service.jobs.saveContract", "Save contract", "שמור חוזה"],
   ["service.jobs.aboutTitle", "About Jobs", "אודות Jobs"],
 ]);
-
 add(en, he, [
   ["service.scheduler.active", "Active", "פעיל"],
   ["service.scheduler.all", "All", "הכול"],
@@ -722,7 +720,6 @@ add(en, he, [
   ["service.scheduler.aboutShellTitle", "Shell, Scripts", "מעטפת · סקריפטים"],
   ["service.scheduler.blurb", "Time contracts that fire shell, scripts, and Jobs.", "חוזי זמן שמפעילים מעטפת, סקריפטים ו־Jobs."],
 ]);
-
 add(en, he, [
   ["service.themes.apps", "Apps", "אפליקציות"],
   ["service.themes.about", "About", "אודות"],
@@ -748,7 +745,6 @@ add(en, he, [
     "Themes מאפשר להחליף בהיר/כהה וסגנונות כפתורים לכל אפליקציה. ההעדפות נשמרות במאפייני העמוד וב־CSS: בלי hooks ב־preload, כך שאפליקציות ממשיכות להיטען גם אם Themes נכשל. חלונות פתוחים מתעדכנים רק לכתובת של אותה אפליקציה.",
   ],
 ]);
-
 add(en, he, [
   ["service.permissions.overview", "Overview", "סקירה"],
   ["service.permissions.tools", "AI tools", "כלי AI"],
@@ -787,7 +783,6 @@ add(en, he, [
   ["service.permissions.aboutShellTitle", "Shell", "מעטפת"],
   ["service.permissions.blurb", "Decide what Mind, Jobs, Bridge, and external tools may do on this PC.", "החליטו מה Mind, Jobs, Bridge וכלים חיצוניים רשאים לעשות במחשב זה."],
 ]);
-
 add(en, he, [
   ["service.pulse.apps", "Apps", "אפליקציות"],
   ["service.pulse.external", "External", "חיצוני"],
@@ -799,12 +794,11 @@ add(en, he, [
   ["service.pulse.back", "← Back", "← חזרה"],
   ["service.pulse.blurb", "Apps inside My Space, plus Composio tools outside it.", "אפליקציות בתוך My Space, וכלים חיצוניים של Composio."],
 ]);
-
 add(en, he, [
   ["service.scripts.tagline", "Language runtime", "סביבת שפה"],
   ["service.scripts.new", "New script", "סקריפט חדש"],
   ["service.scripts.foot", "My Space Language programs", "תוכניות My Space Language"],
-  ["service.scripts.namePlaceholder", "Script name", "שם סקריפט"],
+  ["service.scripts.namePlaceholder", "untitled.msos", "untitled.msos"],
   ["service.scripts.meta", "Command-line name: type it after right-click on the desktop", "שם לשורת הפקודה: הקלידו אחרי לחיצה ימנית בשולחן העבודה"],
   ["service.scripts.stopOnError", "Stop on error", "עצור בשגיאה"],
   ["service.scripts.duplicate", "Duplicate", "שכפל"],
@@ -818,7 +812,6 @@ add(en, he, [
   ["service.scripts.outputEmpty", "Run a script to see each step here.", "הריצו סקריפט כדי לראות כל שלב כאן."],
   ["service.scripts.listAria", "Saved scripts", "סקריפטים שמורים"],
 ]);
-
 add(en, he, [
   ["service.updates.current", "Current", "נוכחי"],
   ["service.updates.history", "History", "היסטוריה"],
@@ -878,7 +871,6 @@ add(en, he, [
   ["service.updates.aboutGlanceHistory", "History: full catalog changelog", "היסטוריה — יומן שינויים מלא מהקטלוג"],
   ["service.updates.aboutGlanceCheck", "Check now: refresh the catalog for pending releases", "בדוק עכשיו — רענון הקטלוג לגרסאות ממתינות"],
 ]);
-
 add(en, he, [
   ["service.network.status", "Status", "סטטוס"],
   ["service.network.adapters", "Adapters", "מתאמים"],
@@ -952,7 +944,6 @@ add(en, he, [
   ],
   ["service.network.aboutShellTitle", "Shell", "מעטפת"],
 ]);
-
 add(en, he, [
   ["service.storage.status", "Status", "סטטוס"],
   ["service.storage.apps", "Apps", "אפליקציות"],
@@ -1000,7 +991,6 @@ add(en, he, [
   ],
   ["service.storage.aboutShellTitle", "Shell", "מעטפת"],
 ]);
-
 add(en, he, [
   ["service.backup.status", "Status", "סטטוס"],
   ["service.backup.history", "History", "היסטוריה"],
@@ -1048,7 +1038,6 @@ add(en, he, [
   ],
   ["service.backup.aboutShellTitle", "Shell", "מעטפת"],
 ]);
-
 add(en, he, [
   ["service.bridge.devices", "Devices", "מכשירים"],
   ["service.bridge.places", "Places", "מקומות"],
@@ -1058,7 +1047,6 @@ add(en, he, [
   ["service.bridge.devicesSub", "Pair a phone on the same Wi‑Fi", "צימוד טלפון באותה רשת Wi‑Fi"],
   ["service.bridge.sidebar", "Local Wi‑Fi, not Remote Hub", "Wi‑Fi מקומי, לא Remote Hub"],
 ]);
-
 add(en, he, [
   ["service.resolve.inbox", "Inbox", "דואר נכנס"],
   ["service.resolve.playbooks", "Playbooks", "מדריכי תיקון"],
@@ -1120,7 +1108,6 @@ add(en, he, [
   ["service.msl.aboutShellTitle", "Shell", "מעטפת"],
   ["service.msl.blurb", "Cross-app capability bus. mint msl:v1 keys and inject them into AI apps.", "אוטובוס יכולות בין אפליקציות. יצירת מפתחות msl:v1 והזרקה לאפליקציות AI."],
 ]);
-
 add(en, he, [
   ["service.parts.explore", "Explore", "עיון"],
   ["service.parts.publish", "Publish", "פרסום"],
@@ -1180,7 +1167,6 @@ add(en, he, [
   ["service.parts.aboutShellTitle", "Shell", "מעטפת"],
   ["service.parts.blurb", "Reusable code modules: adopt into any app without host coupling.", "מודולי קוד לשימוש חוזר: אימוץ לכל אפליקציה בלי צימוד למארח."],
 ]);
-
 add(en, he, [
   ["service.mind.title", "Mind", "Mind"],
   ["service.mind.subtitle", "Mind Chat: pick a task, get an answer", "Mind Chat: בחרו משימה וקבלו תשובה"],
@@ -1197,7 +1183,6 @@ add(en, he, [
   ["service.mind.foot", "mind(ask …), mind(quick …), mind(think …)", "mind(ask …), mind(quick …), mind(think …)"],
   ["service.mind.task", "Task", "משימה"],
 ]);
-
 add(en, he, [
   ["service.info.all", "All", "הכול"],
   ["service.info.services", "Services", "שירותים"],
@@ -1212,9 +1197,7 @@ add(en, he, [
   ["service.info.backCatalog", "← Catalog", "← קטלוג"],
   ["service.info.aboutSub", "How Info fits in My Space", "איך Info משתלב ב־My Space"],
 ]);
-
 add(en, he, [
-  // ── Notes ──
   ["app.notes.name", "Notes", "פתקים"],
   ["app.notes.tagline", "Quick capture", "תיעוד מהיר"],
   ["app.notes.navAria", "Views", "תצוגות"],
@@ -1574,7 +1557,6 @@ add(en, he, [
   ["app.worldClock.sw.lapCol", "Lap", "הקפה"],
   ["app.worldClock.sw.totalCol", "Total", "סה״כ"],
 ]);
-
 for (const [id, name, tag, sum, nameHe, tagHe, sumHe] of services) {
   en[`platform.${id}.name`] = name;
   en[`platform.${id}.tagline`] = tag;
@@ -1583,7 +1565,6 @@ for (const [id, name, tag, sum, nameHe, tagHe, sumHe] of services) {
   he[`platform.${id}.tagline`] = tagHe;
   he[`platform.${id}.summary`] = sumHe;
 }
-
 const aliases = {
   "settings.timezone": "settings.time.zone",
   "settings.timezoneHint": "settings.time.zoneHint",
@@ -1643,7 +1624,6 @@ for (const [alias, target] of Object.entries(aliases)) {
   if (en[target] != null) en[alias] = en[target];
   if (he[target] != null) he[alias] = he[target];
 }
-
 add(en, he, [
   [
     "settings.timezone.system",
@@ -1720,13 +1700,11 @@ function mergeExistingLocale(lang, obj) {
   }
   return merged;
 }
-
 const mergedEn = mergeExistingLocale("en", en);
 const mergedHe = mergeExistingLocale("he", he);
 if (mergedEn || mergedHe) {
   console.log("merged existing locale keys", { en: mergedEn, he: mergedHe });
 }
-
 const enKeys = Object.keys(en);
 const heKeys = Object.keys(he);
 const missingInHe = enKeys.filter((k) => !(k in he));

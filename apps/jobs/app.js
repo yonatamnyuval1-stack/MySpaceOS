@@ -5,9 +5,7 @@
     const v = I.t(key, vars);
     return v === key ? (fallback || key) : v;
   }
-
   const PAGES = ["queue", "active", "done", "enqueue", "capacity", "about"];
-
   const state = {
     page: "queue",
     jobs: [],
@@ -19,7 +17,6 @@
     enqueueTitle: "",
     unsub: null,
   };
-
   const el = {
     nav: document.getElementById("main-nav"),
     blurb: document.getElementById("sidebar-blurb"),
@@ -190,7 +187,6 @@
         </article>`;
       })
       .join("");
-
     listEl.querySelectorAll("[data-cancel]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         await api()?.cancel?.(btn.dataset.cancel);
@@ -211,30 +207,29 @@
   function paintEnqueue() {
     if (!el.enqueuePanel) return;
     const kind = state.enqueueKind;
+    const safeKind = kind === "noop" ? "shell" : kind;
+    if (safeKind !== kind) state.enqueueKind = safeKind;
     const label =
-      kind === "script"
+      safeKind === "script"
         ? tt("service.jobs.scriptName", "Script name")
-        : kind === "delay"
+        : safeKind === "delay"
           ? tt("service.jobs.milliseconds", "Milliseconds")
-          : kind === "noop"
-            ? "—"
-            : tt("service.jobs.shellCommand", "Shell command");
+          : tt("service.jobs.shellCommand", "Shell command");
     const placeholder =
-      kind === "shell"
+      safeKind === "shell"
         ? tt("service.jobs.placeholderShell", "e.g. msl(list)")
-        : kind === "script"
+        : safeKind === "script"
           ? tt("service.jobs.placeholderScript", "e.g. morning")
-          : kind === "delay"
+          : safeKind === "delay"
             ? "1500"
             : "";
     el.enqueuePanel.innerHTML = `
       <label class="field">
         <span>${escapeHtml(tt("service.jobs.kindLabel", "Kind"))}</span>
         <select id="enq-kind">
-          <option value="shell" ${kind === "shell" ? "selected" : ""}>${escapeHtml(tt("service.jobs.shellCommand", "Shell command"))}</option>
-          <option value="script" ${kind === "script" ? "selected" : ""}>${escapeHtml(tt("service.jobs.savedScript", "Saved script"))}</option>
-          <option value="delay" ${kind === "delay" ? "selected" : ""}>${escapeHtml(tt("service.jobs.delayMs", "Delay (ms)"))}</option>
-          <option value="noop" ${kind === "noop" ? "selected" : ""}>${escapeHtml(tt("service.jobs.noopSmoke", "No-op (smoke test)"))}</option>
+          <option value="shell" ${safeKind === "shell" ? "selected" : ""}>${escapeHtml(tt("service.jobs.shellCommand", "Shell command"))}</option>
+          <option value="script" ${safeKind === "script" ? "selected" : ""}>${escapeHtml(tt("service.jobs.savedScript", "Saved script"))}</option>
+          <option value="delay" ${safeKind === "delay" ? "selected" : ""}>${escapeHtml(tt("service.jobs.delayMs", "Delay (ms)"))}</option>
         </select>
       </label>
       <label class="field">
@@ -244,12 +239,12 @@
       <label class="field">
         <span>${escapeHtml(label)}</span>
         <input id="enq-text" type="text" value="${escapeHtml(state.enqueueText)}" spellcheck="false"
-          ${kind === "noop" ? "disabled" : ""} placeholder="${escapeHtml(placeholder)}" />
+          placeholder="${escapeHtml(placeholder)}" />
       </label>
       <button type="button" class="btn btn-primary" id="enq-submit">${escapeHtml(tt("service.jobs.enqueue", "Enqueue"))}</button>`;
-
     document.getElementById("enq-kind")?.addEventListener("change", (e) => {
-      state.enqueueKind = e.target.value;
+      const next = e.target.value === "noop" ? "shell" : e.target.value;
+      state.enqueueKind = next;
       state.enqueueText = "";
       paintEnqueue();
     });
@@ -292,7 +287,6 @@
     const poolRun = state.stats?.pools || {};
     const exceptions = Array.isArray(c.exceptions) ? c.exceptions : [];
     if (!el.capacityPanel) return;
-
     el.capacityPanel.innerHTML = `
       <p class="hint" style="padding-top:1rem">
         ${escapeHtml(tt("service.jobs.poolHint", "Four compute pools. Interactive and Connect are never paused by Focus or daily budget."))}
@@ -415,7 +409,6 @@
         priority: row.querySelector("[data-ex-priority]")?.value || "normal",
       }))
       .filter((ex) => String(ex.match).trim());
-
     const res = await api()?.setCapacity?.({
       pools: {
         interactive: { maxConcurrent: Number(panel.querySelector("#pool-interactive")?.value) },
@@ -533,15 +526,12 @@
     state.filter.done = el.doneSearch.value || "";
     paintJobList(el.doneList, el.doneEmpty, "done");
   });
-
   window.JobsApp = {
     setPage,
     applyRoute,
     refresh,
   };
-
   window.addEventListener("myspace-i18n-applied", () => paint());
-
   ensureLive();
   void refresh()
     .then(() => setPage("queue"))

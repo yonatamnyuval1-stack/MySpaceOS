@@ -1,10 +1,9 @@
 window.CouponsPages = window.CouponsPages || {};
-
 window.CouponsPages.wallet = (function () {
   const { escapeHtml, invoke, uid, formatDate, TYPE_META } = window.Coupons;
   const page = document.getElementById("page-wallet");
-
   let unlocked = false;
+  let initialized = false;
   let entries = [];
   let filter = "all";
   let editingId = null;
@@ -18,12 +17,12 @@ window.CouponsPages.wallet = (function () {
 
   async function scan() {
     const status = await invoke("coupons.status");
+    initialized = Boolean(status.initialized);
     if (status.unlocked) {
       unlocked = true;
       try {
         await refreshEntries();
       } catch {
-        /* ignore */
       }
       showWallet();
       flushPendingOpen();
@@ -41,14 +40,26 @@ window.CouponsPages.wallet = (function () {
   }
 
   function showLock() {
+    const isCreate = !initialized;
     page.innerHTML = `
       <div class="wallet-lock card-panel">
         <span class="wallet-lock-icon">🎟️</span>
         <h2>Coupons Wallet</h2>
-        <p class="muted">Encrypted storage for gift codes & promos</p>
+        <p class="muted">${
+          isCreate
+            ? "Choose a master password to encrypt this wallet. You will need it every time you unlock."
+            : "Encrypted storage for gift codes & promos"
+        }</p>
         <form id="wallet-unlock-form" class="wallet-unlock-form">
-          <input type="password" id="wallet-password" class="field-input wallet-pw-input" placeholder="Master password" autofocus />
-          <button type="submit" class="btn btn-primary">Unlock</button>
+          <input type="password" id="wallet-password" class="field-input wallet-pw-input" placeholder="${
+            isCreate ? "Create master password" : "Master password"
+          }" autofocus />
+          ${
+            isCreate
+              ? `<input type="password" id="wallet-password2" class="field-input wallet-pw-input" placeholder="Confirm master password" />`
+              : ""
+          }
+          <button type="submit" class="btn btn-primary">${isCreate ? "Create wallet" : "Unlock"}</button>
         </form>
         <p class="wallet-error bad" id="wallet-unlock-error" hidden></p>
       </div>`;
@@ -57,10 +68,24 @@ window.CouponsPages.wallet = (function () {
       const pw = page.querySelector("#wallet-password").value;
       const errEl = page.querySelector("#wallet-unlock-error");
       errEl.hidden = true;
+      if (isCreate) {
+        const pw2 = page.querySelector("#wallet-password2")?.value || "";
+        if (pw.length < 6) {
+          errEl.textContent = "Master password must be at least 6 characters";
+          errEl.hidden = false;
+          return;
+        }
+        if (pw !== pw2) {
+          errEl.textContent = "Passwords do not match";
+          errEl.hidden = false;
+          return;
+        }
+      }
       try {
         const res = await invoke("coupons.unlock", { password: pw });
         entries = res.entries || [];
         unlocked = true;
+        initialized = true;
         showWallet();
         flushPendingOpen();
       } catch (err) {
@@ -88,7 +113,6 @@ window.CouponsPages.wallet = (function () {
       </div>
       <div class="wallet-grid" id="wallet-grid"></div>
       <aside class="wallet-editor hidden" id="wallet-editor"></aside>`;
-
     page.querySelector("#wallet-add").addEventListener("click", () => openEditor(null));
     page.querySelector("#wallet-lock-btn").addEventListener("click", async () => {
       await invoke("coupons.lock");
@@ -147,7 +171,7 @@ window.CouponsPages.wallet = (function () {
             </div>
           </div>
           <div class="wallet-code-line">
-            <code>${escapeHtml(e.code || "—")}</code>
+            <code>${escapeHtml(e.code || ":")}</code>
             ${value}
           </div>
           ${expiry}
@@ -160,7 +184,6 @@ window.CouponsPages.wallet = (function () {
         </article>`;
       })
       .join("");
-
     grid.querySelectorAll(".wallet-card[data-id]").forEach((card) => {
       card.addEventListener("click", (e) => {
         if (e.target.closest("button")) return;
@@ -226,7 +249,6 @@ window.CouponsPages.wallet = (function () {
         redeemedAt: "",
       };
     }
-
     const editor = page.querySelector("#wallet-editor");
     editor.classList.remove("hidden");
     const typeOptions = Object.entries(TYPE_META)
@@ -235,7 +257,6 @@ window.CouponsPages.wallet = (function () {
           `<option value="${k}"${entry.type === k ? " selected" : ""}>${escapeHtml(v.label)}</option>`
       )
       .join("");
-
     editor.innerHTML = `
       <header class="wallet-editor-head">
         <h3>${id ? "Edit coupon" : "New coupon"}</h3>
@@ -265,19 +286,16 @@ window.CouponsPages.wallet = (function () {
           ${id ? `<button type="button" class="btn btn-danger" id="we-delete">Delete</button>` : ""}
         </div>
       </form>`;
-
     editor.querySelector("#we-type").addEventListener("change", (e) => {
       const t = e.target.value;
       const meta = TYPE_META[t];
       if (meta) editor.querySelector("#we-icon").value = meta.icon;
     });
-
     editor.querySelector("#wallet-ed-close").addEventListener("click", () => {
       editingId = null;
       editor.classList.add("hidden");
       renderGrid();
     });
-
     editor.querySelector("#wallet-ed-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const type = editor.querySelector("#we-type").value;
@@ -313,7 +331,6 @@ window.CouponsPages.wallet = (function () {
       if (count) count.textContent = `${entries.length} coupons`;
       renderGrid();
     });
-
     editor.querySelector("#we-delete")?.addEventListener("click", async () => {
       if (!confirm("Delete this coupon permanently?")) return;
       await invoke("coupons.delete", { id: entry.id });
@@ -322,7 +339,6 @@ window.CouponsPages.wallet = (function () {
       editor.classList.add("hidden");
       renderGrid();
     });
-
     renderGrid();
   }
 
@@ -338,12 +354,10 @@ window.CouponsPages.wallet = (function () {
     try {
       if (!entries.length) await refreshEntries();
     } catch {
-      /* ignore */
     }
     if (!page.querySelector("#wallet-editor")) showWallet();
     await openEditor(id);
     return true;
   }
-
   return { id: "wallet", page, scan, bind, openEntry, openEditor };
 })();
