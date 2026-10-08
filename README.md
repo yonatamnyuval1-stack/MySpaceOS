@@ -2,11 +2,14 @@
 This is the desktop I wanted on top of Windows: my apps in one place, a shell that actually talks to them, and a space that feels mine.
 It is not a website, and it is not trying to replace Windows. It is a personal layer that sits on top and stays on this PC.
 
-## See it without installing
+## See it / download it
 
-Open the live [screenshot walkthrough](https://yonatamnyuval1-stack.github.io/MySpaceOS/demo/) — no download, just a tour of what it looks like.
+- **Live demo** (screenshots): [yonatamnyuval1-stack.github.io/MySpaceOS/demo](https://yonatamnyuval1-stack.github.io/MySpaceOS/demo/)
+- **Windows installer (.exe)**: [latest GitHub Release](https://github.com/yonatamnyuval1-stack/MySpaceOS/releases/latest)
 
-## Run it
+Download **My Space Setup …exe**, install, then open My Space. Windows may warn about an unsigned app (SmartScreen): More info → Run anyway if you trust this repo.
+
+## Run from source
 
 You need [Node.js](https://nodejs.org) (LTS is fine).
 
