@@ -106,15 +106,13 @@ function validateId(id) {
 function templateFiles(id, name, template, icon) {
   const display = String(name || id).slice(0, 60);
   const emoji = String(icon || "📦").slice(0, 4);
-
   const manifest = {
     id,
     name: display,
     version: "0.1.0",
-    description: `User-built app — ${display}`,
+    description: `User-built app: ${display}`,
     userBuilt: true,
   };
-
   const pulse = {
     profile: { tagline: display, icon: emoji, color: "#7dd3fc" },
     commands: [
@@ -124,7 +122,6 @@ function templateFiles(id, name, template, icon) {
     ],
     events: [],
   };
-
   const preload = `const { contextBridge, ipcRenderer } = require("electron");
 const MODULE_ID = ${JSON.stringify(id)};
 contextBridge.exposeInMainWorld("myApp", {
@@ -133,7 +130,6 @@ contextBridge.exposeInMainWorld("myApp", {
     ipcRenderer.invoke("myapp-invoke", MODULE_ID, channel, args || {}),
 });
 `;
-
   const indexHtml = `<!DOCTYPE html>
 <html lang="en" data-theme="dark" data-theme-base="dark">
   <head>
@@ -175,7 +171,6 @@ contextBridge.exposeInMainWorld("myApp", {
   </body>
 </html>
 `;
-
   const styles = `:root {
   --bg: #0a0e18;
   --panel: #121828;
@@ -206,7 +201,6 @@ html, body { margin: 0; height: 100%; font-family: var(--font); color: var(--tex
 .item-list li span { color: var(--muted); font-size: 0.85rem; }
 .hint { color: var(--muted); font-size: 0.85rem; margin-top: 1rem; white-space: pre-wrap; }
 `;
-
   const appJs = `(() => {
   const api = () => window.myApp;
   const listEl = document.getElementById("item-list");
@@ -242,7 +236,6 @@ html, body { margin: 0; height: 100%; font-family: var(--font); color: var(--tex
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
   }
-
   document.getElementById("btn-add")?.addEventListener("click", async () => {
     await invoke("items.add", {
       title: "New item",
@@ -255,7 +248,6 @@ html, body { margin: 0; height: 100%; font-family: var(--font); color: var(--tex
   refresh();
 })();
 `;
-
   const hostMainJs = `/**
  * Host logic for ${display} (Node).
  * Edit this file, then from My Space Shell:
@@ -269,32 +261,25 @@ console.log("[${id}] host ready");
 if (args.length) console.log("[${id}] args:", args.join(" "));
 else console.log("[${id}] tip: pass args after --  e.g. host(run node file:tools/${id}/main.js -- hello)");
 `;
-
   const hostMainPy = `#!/usr/bin/env python3
 """Host logic for ${display} (Python).
 Edit this file, then from My Space Shell:
   host(run python file:tools/${id}/main.py)
-
 UI: user-apps/${id}/  |  Host: this script
 """
 import sys
-
 print(f"[${id}] host ready (python)")
 if len(sys.argv) > 1:
     print(f"[${id}] args:", " ".join(sys.argv[1:]))
 else:
     print(f"[${id}] tip: host(run python file:tools/${id}/main.py -- hello)")
 `;
-
   const readme = `# ${display}
-
 User-built My Space app.
-
 ## Layout
 - \`index.html\` / \`app.js\` / \`styles.css\`: window UI inside My Space
 - \`tools/${id}/main.js\`: Node host logic
 - \`tools/${id}/main.py\`: Python host logic
-
 ## Ritual (My Space Language)
 \`\`\`
 app(scaffold ${id} name:${display})
@@ -303,10 +288,8 @@ host(run python file:tools/${id}/main.py)
 run ${id}
 pack(build ${id})
 \`\`\`
-
 My Space Language wires the app into the desktop. Node/Python own the heavy logic.
 `;
-
   return {
     manifest,
     pulse,
@@ -338,12 +321,10 @@ async function scaffoldApp(args = {}) {
   if (fs.existsSync(repoAppDir)) {
     return { ok: false, error: `App id "${id}" already exists in built-in apps/` };
   }
-
   const dest = userAppDir(id);
   if (fs.existsSync(dest)) {
     return { ok: false, error: `User app "${id}" already exists. delete user-apps/${id} first` };
   }
-
   const files = templateFiles(id, name, template, icon);
   fs.mkdirSync(dest, { recursive: true });
   const writeMap = {
@@ -355,11 +336,9 @@ async function scaffoldApp(args = {}) {
     "app.js": files.appJs,
     "README.md": files.readme,
   };
-
   for (const [rel, content] of Object.entries(writeMap)) {
     fs.writeFileSync(path.join(dest, rel), content, "utf8");
   }
-
   const workspace = ensureWorkspaceRoot();
   const toolDir = path.join(workspace, "tools", id);
   fs.mkdirSync(toolDir, { recursive: true });
@@ -378,7 +357,6 @@ async function scaffoldApp(args = {}) {
     path: dest,
     workspaceTool: `tools/${id}/main.js`,
   };
-
   const reg = readRegistry();
   reg.apps = reg.apps.filter((a) => a.id !== id);
   reg.apps.push(entry);
@@ -388,7 +366,6 @@ async function scaffoldApp(args = {}) {
     const regRes = await registerApp({ id });
     registered = regRes.ok;
   }
-
   return {
     ok: true,
     app: entry,
@@ -414,7 +391,6 @@ async function registerApp(args = {}) {
   if (!isUserAppModule(id)) {
     return { ok: false, error: `User app not found: ${id}. Run app(scaffold ${id}) first.` };
   }
-
   const reg = readRegistry();
   const meta = reg.apps.find((a) => a.id === id);
   const cfg = readUserConfig();
@@ -422,7 +398,6 @@ async function registerApp(args = {}) {
   cfg.removedAppIds = Array.isArray(cfg.removedAppIds)
     ? cfg.removedAppIds.filter((x) => x !== id)
     : [];
-
   const entry = {
     id,
     name: meta?.name || id,
@@ -432,7 +407,6 @@ async function registerApp(args = {}) {
     description: meta?.description || `User-built app — ${id}`,
     userBuilt: true,
   };
-
   const idx = cfg.apps.findIndex((a) => a.id === id);
   if (idx >= 0) cfg.apps[idx] = { ...cfg.apps[idx], ...entry };
   else cfg.apps.push(entry);
@@ -487,7 +461,6 @@ async function buildAppPack(args = {}) {
   if (!isUserAppModule(id)) {
     return { ok: false, error: `User app not found: ${id}` };
   }
-
   const srcDir = userAppDir(id);
   const profile = require("../myspace-profile");
   const exportsDir = profile.profileScopedPath("exports");
@@ -514,12 +487,10 @@ async function buildAppPack(args = {}) {
       ),
       "utf8"
     );
-
     const toolResolved = resolveWorkspacePath(`tools/${id}`);
     if (toolResolved.ok && fs.existsSync(toolResolved.path)) {
       await fs.promises.cp(toolResolved.path, path.join(staging, "tools", id), { recursive: true });
     }
-
     if (fs.existsSync(zipPath)) fs.unlinkSync(zipPath);
     await compressFolderToZip(staging, zipPath);
   } finally {
@@ -528,7 +499,6 @@ async function buildAppPack(args = {}) {
     } catch {
     }
   }
-
   const st = await fs.promises.stat(zipPath);
   return {
     ok: true,
@@ -628,20 +598,18 @@ async function installAppPack(args = {}) {
   if (!/\.zip$/i.test(zipPath)) {
     return { ok: false, error: "Expected a .zip / .myapp.zip file" };
   }
-
   const profile = require("../myspace-profile");
   const extractRoot = path.join(
     profile.profileScopedPath("exports"),
     `.install-${Date.now()}`
   );
-
   try {
     await expandZipToFolder(zipPath, extractRoot);
     const found = findAppRootInExtract(extractRoot);
     if (!found) {
       return {
         ok: false,
-        error: "Not a My Space app pack (missing package.json / app folder with index.html)",
+        error: "Not a My Space app pack",
       };
     }
     const { id, appDir, meta } = found;

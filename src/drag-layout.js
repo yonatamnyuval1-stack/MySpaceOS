@@ -6,6 +6,8 @@
   const MARGIN_X = 20;
   const MARGIN_Y = 16;
   const DRAG_THRESHOLD = 5;
+  /** Default icons down each column (shrinks only if the window is shorter). */
+  const ICONS_PER_COLUMN = 8;
   const DEFAULT_ORDER = [
     "notes",
     "tasks",
@@ -64,8 +66,10 @@
 
   function rowsForHeight(height) {
     const usable = Math.max(1, height - MARGIN_Y * 2);
-    return Math.max(4, Math.min(10, Math.floor(usable / (TILE_H + GAP_Y))));
+    const fit = Math.max(1, Math.floor((usable + GAP_Y) / (TILE_H + GAP_Y)));
+    return Math.max(1, Math.min(ICONS_PER_COLUMN, fit));
   }
+
   function cellAt(col, row) {
     return {
       x: MARGIN_X + col * (TILE_W + GAP_X),
@@ -109,27 +113,47 @@
     return cellAt(Math.floor(index / rows), index % rows);
   }
 
+  function hasSavedPosition(positions, id) {
+    const p = positions[id];
+    return !!(p && Number.isFinite(Number(p.x)) && Number.isFinite(Number(p.y)));
+  }
+
   function positionsNeedRelayout(appIds) {
     const positions = getPositions();
-    const pts = [];
+    if (!appIds?.length) return true;
     for (const id of appIds) {
-      const p = positions[id];
-      if (!p || !Number.isFinite(Number(p.x)) || !Number.isFinite(Number(p.y))) {
-        return true;
-      }
-      pts.push({ x: Number(p.x), y: Number(p.y) });
-    }
-    if (!pts.length) return true;
-    let overlaps = 0;
-    for (let i = 0; i < pts.length; i++) {
-      for (let j = i + 1; j < pts.length; j++) {
-        if (Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y) < 40) {
-          overlaps += 1;
-          if (overlaps >= 2) return true;
-        }
-      }
+      if (!hasSavedPosition(positions, id)) return true;
     }
     return false;
+  }
+
+  function fillMissingPositions(gridEl, appIds) {
+    const positions = getPositions();
+    const defaults = defaultPositionsForApps(appIds, gridEl);
+    const taken = new Set();
+    for (const id of appIds) {
+      const key = String(id);
+      if (!hasSavedPosition(positions, key)) continue;
+      const p = positions[key];
+      taken.add(`${Math.round(Number(p.x))},${Math.round(Number(p.y))}`);
+    }
+    const freeDefaults = [];
+    for (const pos of defaults.values()) {
+      const k = `${Math.round(pos.x)},${Math.round(pos.y)}`;
+      if (!taken.has(k)) freeDefaults.push(pos);
+    }
+    let freeIdx = 0;
+    let filled = 0;
+    appIds.forEach((id, index) => {
+      const key = String(id);
+      if (hasSavedPosition(positions, key)) return;
+      let pos = freeDefaults[freeIdx++];
+      if (!pos) pos = defaultPosition(index, gridEl);
+      const next = { x: Math.round(pos.x), y: Math.round(pos.y) };
+      window.MySpaceConfig?.setPosition?.(key, next.x, next.y);
+      filled += 1;
+    });
+    return filled;
   }
 
   function applyLayout(gridEl, appIds, { persist, layoutVersion } = {}) {
@@ -211,7 +235,6 @@
       originY = parseFloat(btn.style.top) || 0;
       btn.setPointerCapture(e.pointerId);
     });
-
     btn.addEventListener("pointermove", (e) => {
       if (!pointerActive) return;
       const dx = e.clientX - startX;
@@ -225,7 +248,6 @@
       btn.style.left = `${next.x}px`;
       btn.style.top = `${next.y}px`;
     });
-
     const endDrag = (e) => {
       if (!pointerActive) return;
       pointerActive = false;
@@ -260,7 +282,6 @@
   function relayoutDefaultGroups(gridEl) {
     relayoutFromAppOrder(gridEl);
   }
-
   window.MySpaceDrag = {
     applyPosition,
     enableDrag,
@@ -268,8 +289,10 @@
     relayoutFromAppOrder,
     relayoutDefaultGroups,
     defaultPositionsForApps,
+    fillMissingPositions,
     positionsAreBroken: positionsNeedRelayout,
     positionsNeedRelayout,
     applyLayout,
+    ICONS_PER_COLUMN,
   };
 })();

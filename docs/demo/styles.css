@@ -1,0 +1,101 @@
+:root {
+  --ink: #e8eef6;
+  --muted: #9aabbe;
+  --bg0: #0b121c;
+  --bg1: #142033;
+  --line: rgba(232, 238, 246, 0.12);
+  --accent: #7eb8c9;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Source Sans 3", system-ui, sans-serif;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  color-scheme: dark;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 600px at 70% -10%, rgba(126, 184, 201, 0.18), transparent 55%),
+    radial-gradient(900px 500px at 10% 20%, rgba(40, 70, 110, 0.45), transparent 50%),
+    linear-gradient(180deg, var(--bg1), var(--bg0) 40%, #080d14);
+}
+.hero {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 4.5rem 1.5rem 2.5rem;
+  text-align: center;
+}
+.hero-mark {
+  display: block;
+  margin: 0 auto 1rem;
+  filter: drop-shadow(0 8px 24px rgba(126, 184, 201, 0.25));
+}
+.hero-brand {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.hero-line {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.hero-sub {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--muted);
+}
+.tour {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 5rem;
+}
+.shot {
+  margin: 0 0 3.5rem;
+}
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  background: #000;
+}
+.shot figcaption {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  margin-top: 0.9rem;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.shot-num {
+  flex: 0 0 auto;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+@media (max-width: 640px) {
+  .hero {
+    padding-top: 3rem;
+  }
+  .shot figcaption {
+    font-size: 0.98rem;
+  }
+}

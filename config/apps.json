@@ -20,7 +20,7 @@
       "icon": "⬡",
       "iconPath": "src/brand/atom-white.png",
       "hidden": true,
-      "description": "Encyclopedia of every app & platform service — open from Platform → Info"
+      "description": "Encyclopedia of every app & platform service: open from Platform → Info"
     },
     {
       "id": "docs",

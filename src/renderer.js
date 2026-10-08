@@ -1,3 +1,7 @@
+const { build } = require("../apps/shared/msl-key");
+const { ensureWorkspaceRoot } = require("../main/apps/files-ipc");
+const { FIGURE_CATEGORIES } = require("../main/apps/history-wiki-seed");
+
 const appGrid = document.getElementById("app-grid");
 const workspace = document.querySelector(".workspace");
 const builtinPanel = document.getElementById("builtin-panel");
@@ -401,7 +405,6 @@ async function createAppTile(app, index) {
     selectApp(app.id);
     await launchApp(app);
   });
-
   btn.addEventListener("contextmenu", (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -468,7 +471,7 @@ function handleAppMenuAction(action, app) {
       return;
     }
     showToast(`Pinned "${app.name}" to top`);
-    refreshDesktop({ relayout: true });
+    refreshDesktop();
     return;
   }
   if (action === "pin-taskbar") {
@@ -547,7 +550,7 @@ function buildShellContext() {
       const result = window.MySpaceConfig.pinToTaskbar(appId);
       if (result?.ok !== false) {
         window.MySpaceConfig.moveAppToTop(appId);
-        refreshDesktop({ relayout: true });
+        refreshDesktop();
         window.MySpaceTaskbar?.refresh?.();
       }
       return result?.ok === false ? result : { ok: true };
@@ -556,7 +559,7 @@ function buildShellContext() {
       const result = window.MySpaceConfig.unpinFromTaskbar(appId);
       if (result?.ok !== false) {
         window.MySpaceConfig.moveAppToBottom(appId);
-        refreshDesktop({ relayout: true });
+        refreshDesktop();
         window.MySpaceTaskbar?.refresh?.();
       }
       return result?.ok === false ? result : { ok: true };
@@ -1034,7 +1037,6 @@ function initialLaunchIcon(app) {
   if (app.iconData) return app.iconData;
   return window.MySpaceIcons?.resolveIconFromConfig(app) || null;
 }
-
 window.MySpaceMindChat = {
   async open(route) {
     const app = window.MySpaceConfig?.getApps?.()?.find((a) => a.id === "chat" || a.module === "chat");
@@ -1143,7 +1145,6 @@ window.MySpaceSystemInfo = {
     }
   },
 };
-
 window.MySpaceOsBridge = {
   async open(route) {
     const pageMap = { share: "actions" };
@@ -1863,15 +1864,17 @@ async function refreshDesktop(options = {}) {
   const layoutOnce = () => {
     const ids = built.map((x) => x.app.id);
     const force = options.relayout === "groups" || options.relayout === true;
-    const incomplete = window.MySpaceDrag?.positionsNeedRelayout?.(ids);
     const layoutVer = Number(window.MySpaceConfig?.getSettings?.()?.desktopIconLayoutVersion) || 0;
-    const LAYOUT_VERSION = 4;
-    if (force || incomplete || layoutVer < LAYOUT_VERSION) {
+    const LAYOUT_VERSION = 6;
+    if (force || layoutVer < LAYOUT_VERSION) {
       window.MySpaceDrag.applyLayout(appGrid, ids, {
         persist: true,
         layoutVersion: LAYOUT_VERSION,
       });
     } else {
+      if (window.MySpaceDrag?.positionsNeedRelayout?.(ids)) {
+        window.MySpaceDrag.fillMissingPositions?.(appGrid, ids);
+      }
       built.forEach(({ btn, index, app }) => {
         window.MySpaceDrag.applyPosition(btn, app.id, index, appGrid, null);
       });
@@ -1882,7 +1885,6 @@ async function refreshDesktop(options = {}) {
     });
     refreshOpenIndicators();
   };
-
   requestAnimationFrame(() => requestAnimationFrame(layoutOnce));
 }
 
@@ -2020,7 +2022,7 @@ function setupAccountChip() {
     btnSwitch?.classList.toggle("hidden", !signedIn);
     btnSignOut?.classList.toggle("hidden", !signedIn);
     btn.title = signedIn
-      ? `My Space — ${user.username}`
+      ? `My Space: ${user.username}`
       : t("shell.account.title", null, "My Space account");
   }
   window.__myspaceRefreshAccountI18n = () => refreshAccountUi(currentUser);
@@ -2234,7 +2236,6 @@ function setupKeyboard() {
     }
   });
 }
-
 const BOOT_SPLASH_MIN_MS = 5000;
 const bootSplashStartedAt = window.__bootSplashStartedAt || performance.now();
 let bootSplashPctRaf = 0;
@@ -2502,6 +2503,7 @@ async function init() {
   } catch {
   }
 }
+
 function showBootFailure(err) {
   const detail = String(err && err.message ? err.message : err || "")
     .replace(/\s+/g, " ")
@@ -2521,7 +2523,7 @@ function showBootFailure(err) {
     showToast(
       detail
         ? tt("shell.boot.errorToast", "Startup error: {detail}", { detail })
-        : tt("shell.boot.errorToastGeneric", "Startup error — check the console (F12)")
+        : tt("shell.boot.errorToastGeneric", "Startup error: check the console (F12)")
     );
     return;
   }
