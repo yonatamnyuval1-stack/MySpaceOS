@@ -5,7 +5,7 @@ It is not a website, and it is not trying to replace Windows. It is a personal l
 ## See it / download it
 
 - **Live demo** (screenshots): [yonatamnyuval1-stack.github.io/MySpaceOS/demo](https://yonatamnyuval1-stack.github.io/MySpaceOS/demo/)
-- **Windows installer (.exe)**: [latest GitHub Release](https://github.com/yonatamnyuval1-stack/MySpaceOS/releases/latest)
+- **Windows installer (.exe)**: [My Space Setup 0.1.70](https://github.com/yonatamnyuval1-stack/MySpaceOS/releases/download/v0.1.70/My.Space.Setup.0.1.70.exe) · [all releases](https://github.com/yonatamnyuval1-stack/MySpaceOS/releases)
 
 Download **My Space Setup …exe**, install, then open My Space. Windows may warn about an unsigned app (SmartScreen): More info → Run anyway if you trust this repo.
 
