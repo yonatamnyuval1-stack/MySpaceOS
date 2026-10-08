@@ -4,7 +4,7 @@ It is not a website, and it is not trying to replace Windows. It is a personal l
 
 ## See it without installing
 
-Open the [screenshot walkthrough](docs/demo/index.html) in a browser. No download, just a tour of what it looks like.
+Open the live [screenshot walkthrough](https://yonatamnyuval1-stack.github.io/MySpaceOS/demo/) — no download, just a tour of what it looks like.
 
 ## Run it
 
