@@ -1,41 +1,43 @@
-# My Space
-This is the desktop I wanted on top of Windows: my apps in one place, a shell that actually talks to them, and a space that feels mine.
-It is not a website, and it is not trying to replace Windows. It is a personal layer that sits on top and stays on this PC.
+# MySpaceOS
 
-## See it / download it
+I built MySpaceOS to have a single place where I can gather all the projects and applications I build, and create protocols between them.
 
-- **Live demo** (screenshots): [yonatamnyuval1-stack.github.io/MySpaceOS/demo](https://yonatamnyuval1-stack.github.io/MySpaceOS/demo/)
-- **Windows installer (.exe)**: [My Space Setup 0.1.70](https://github.com/yonatamnyuval1-stack/MySpaceOS/releases/download/v0.1.70/My.Space.Setup.0.1.70.exe) · [all releases](https://github.com/yonatamnyuval1-stack/MySpaceOS/releases)
+## Description
 
-Download **My Space Setup …exe**, install, then open My Space. Windows may warn about an unsigned app (SmartScreen): More info → Run anyway if you trust this repo.
+It runs as an operating system layer on Windows. You get a real desktop (icons, taskbar, virtual desktops), dozens of apps and services I built, and protocols so those internal systems can pass data and call each other. There is also a shell language and runtime for longer automation.
 
-## Run from source
+## Screenshot
 
-You need [Node.js](https://nodejs.org) (LTS is fine).
+![MySpaceOS desktop](docs/screenshots/01-desktop.png)
 
-```bat
-open.bat
-```
+## Getting Started
 
-Or: `npm install`, then `npm start`.
+### Dependencies
 
-Use those: do not open `src/index.html` in Chrome. This is a desktop app.
+- Windows 10 or 11
+- Download the `.exe` and you’re good. if you want to run from the code: Node.js (LTS)
 
-## What’s inside
+### Installing
 
-- **Desktop**: icons, taskbar, virtual desktops, your wallpaper
-- **Apps**: notes, chat, maps, stocks, and the rest living under one shell
-- **Platform**: Files, Jobs, Themes, Permissions, and friends from the atom menu
-- **Shell / Runtime**: type My Space Language on the desktop line, or keep longer programs in Runtime
-- **Mind**: the built-in AI. Paste a Gemini key in Mind → Setup
-- **Resolve**: when something breaks, the report stays here on your machine (nothing is phoned home)
-The full handbook is inside the app: open **Docs**.
+**installer**
 
-## Keys and secrets
+1. Go to https://github.com/yonatamnyuval1-stack/MySpaceOS/releases/latest
+2. Download the .exe
+3. run it and finish the setup
 
-Mind asks for a **Gemini** API key. Keep real keys out of git: copy from `config/*.example.json` when you need local config.
-Optional local helpers (Ollama, etc.) are noted in [docs/localhost-services.md](docs/localhost-services.md). Missing them is normal; the OS still runs.
+### Executing
+
+Open MySpaceOS from the Start menu or the desktop shortcut.
+When you're inside:
+You'll see many apps inside already (mainly intended for daily use), and if you click the Myspace electron icon (the one located to the right of the switch desktop button), a list of dozens of built-in services in the operating system will be displayed (such as a browser, AI chat, etc.).
+
+## Help
+
+Demo (screenshots): https://yonatamnyuval1-stack.github.io/MySpaceOS/demo/
+Installer again: https://github.com/yonatamnyuval1-stack/MySpaceOS/releases/latest
+
+## Authors
+Jonathan Jacob
 
 ## License
-
-Copyright © 2026. A `LICENSE` file may follow: until then, ask before redistributing.
+MIT
